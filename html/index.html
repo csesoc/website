@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head></head>
+<body>
+    <div class="text_input">
+        <input id="textbox" type="text" />
+        <button onclick="buttonClick()">Send</button>
+    </div>
+    <div id="messages">
+
+    </div>
+
+    <script>
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        let socket = new WebSocket("ws://localhost:8080/edit?document=" + urlParams.get("document"))
+        socket.onopen = () => {
+            console.log("opened connection")
+            socket.send("hi from client")
+        }
+        socket.onclose = () => {
+            console.log("disconnected")
+        }
+
+        socket.onmessage = (message) => {
+            var messageBox = document.getElementById("messages")
+            messageBox.appendChild(document.createTextNode(message.data))
+            messageBox.appendChild(document.createElement("br"))
+        }
+
+        let buttonClick = () => {
+            var data = document.getElementById("textbox").value
+            document.getElementById("textbox").value = ""
+
+            socket.send(data)
+        }
+    </script>
+
+</body>
+
+</html>
