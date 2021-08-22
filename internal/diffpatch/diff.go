@@ -72,8 +72,6 @@ func preprocess(a string, b string) ([]string, []string) {
 	return nil, nil
 }
 
-//https://blog.jcoglan.com/2017/02/15/the-myers-diff-algorithm-part-2/
-
 // This implementation of the Myers' diff algorithm works on words as opposed to charachters
 // words are our minimum required level of precision for accuracy (could also do chars but too computationally expensive)
 // note: the algorithm works on the basis of "how do we transform a -> b" with the least amount of edits
