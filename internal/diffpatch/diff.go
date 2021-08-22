@@ -1,19 +1,8 @@
 package diffpatch
 
-// Simple library to implement text based diffing and patching
-// The goal is that this is transpiled to JS and serves as the client code too
-
-func min(a int, b int) int {
-	if a <= b {
-		return a
-	} else {
-		return b
-	}
-}
-
 // finds the index indicating the end of the longest common prefix between
 // the two strings, simple O(log n) divide and conquer algo
-func FindCommonPrefix(a []string, b []string) int {
+func findCommonPrefix(a []string, b []string) int {
 	n := min(len(a), len(b))
 	if n <= 1 {
 		if n == 1 && a[0] == b[0] {
@@ -24,8 +13,8 @@ func FindCommonPrefix(a []string, b []string) int {
 
 	// recurse on subarrays
 	var mid = n / 2
-	lowerIndex := FindCommonPrefix(a[:mid], b[:mid])
-	higherIndex := FindCommonPrefix(a[mid:], b[mid:])
+	lowerIndex := findCommonPrefix(a[:mid], b[:mid])
+	higherIndex := findCommonPrefix(a[mid:], b[mid:])
 
 	// determine what index to actually return :)
 	if lowerIndex == -1 {
@@ -40,7 +29,7 @@ func FindCommonPrefix(a []string, b []string) int {
 
 // finds the index markining the begining of the common suffix
 // like FindCommonPrefix, simple O(log n) divide and conquer algo
-func FindCommonSuffix(a []string, b []string) int {
+func findCommonSuffix(a []string, b []string) int {
 	n := min(len(a), len(b))
 	if n <= 1 {
 		if n == 1 && a[len(a)-1] == b[len(b)-1] {
@@ -51,8 +40,8 @@ func FindCommonSuffix(a []string, b []string) int {
 
 	// once again, recurse on subarrays
 	var mid = n / 2
-	lowerIndex := FindCommonSuffix(a[:mid], b[:mid])
-	higherIndex := FindCommonSuffix(a[mid:], b[mid:])
+	lowerIndex := findCommonSuffix(a[:mid], b[:mid])
+	higherIndex := findCommonSuffix(a[mid:], b[mid:])
 
 	// determine what index to actually return :)
 	if higherIndex == -1 {
@@ -72,32 +61,93 @@ func preprocess(a string, b string) ([]string, []string) {
 	return nil, nil
 }
 
-// This implementation of the Myers' diff algorithm works on words as opposed to charachters
+type pair struct {
+	x int
+	y int
+}
+
+// This implementation of the Myers' string diff algorithm works on words as opposed to charachters
 // words are our minimum required level of precision for accuracy (could also do chars but too computationally expensive)
-// note: the algorithm works on the basis of "how do we transform a -> b" with the least amount of edits
-// the idea is we "remove values" from a and "add values from b" to a
-func MyersDiff(a []string, b []string) {
-	type pair struct {
-		numDelete int
-		numAdd    int
-	}
+// algorithm is just a BFS through the edit space graph
+// TODO: optimise by actually implementing the pseudocode in the paper and not some wacky custom BFS algo
+func myersDiff(a []string, b []string) []pair {
 	max := len(a) + len(b)
-	// algorithm is just a BFS through the edit space graph
-	maxEndPoints := []int{}
+	var extendPath = func(vertex pair) pair {
+		for vertex.x < len(a) && vertex.y < len(b) && a[vertex.x] == b[vertex.y] {
+			vertex.x++
+			vertex.y++
+		}
+		return vertex
+	}
+	predMatrix := make(map[pair]pair)
+	predMatrix[pair{0, 0}] = extendPath(pair{0, 0})
+	fronteir := []pair{predMatrix[pair{0, 0}]}
 
-	// for each distance d from src
+	var computePath func(pair, pair) []pair
+	computePath = func(t pair, s pair) []pair {
+		if s == t {
+			return []pair{s}
+		}
+
+		return append(computePath(t, predMatrix[s]), s)
+	}
+
+	// for each distance d from src, compute the
+	// verticies in the BFS fronteir
 	for d := 0; d < max; d++ {
-		var x = 0
-		// for each furthest reacing "k-path"
-		for k := -d; k <= d; k += 2 {
-			if (k == -d) || (maxEndPoints[k-1] < maxEndPoints[k+1]) {
-				x = maxEndPoints[k+1]
-			} else {
-				x = maxEndPoints[k-1] + 1
-			}
-			y := x - k
+		prevFronteir := fronteir
+		newFronteir := []pair{}
+		terminate := false
 
+		for k := 0; k < len(prevFronteir); k++ {
+			vertex := prevFronteir[k]
+			if vertex.x >= len(a) && vertex.y >= len(b) {
+				terminate = true
+				break
+			}
+
+			// from a vertex we can: follow a diagonal, add a char, delete a char
+			addChar := extendPath(pair{vertex.x, vertex.y + 1})
+			deleteChar := extendPath(pair{vertex.x + 1, vertex.y})
+			if _, ok := predMatrix[addChar]; !ok {
+				predMatrix[addChar] = vertex
+			}
+			if _, ok := predMatrix[deleteChar]; !ok {
+				predMatrix[deleteChar] = vertex
+			}
+			newFronteir = append(newFronteir, deleteChar, addChar)
+		}
+		fronteir = newFronteir
+
+		if terminate {
+			break
 		}
 	}
 
+	// recurse on the pred matrix to find the shortest path from (0, 0) -> (len(a), len(b))
+	return computePath(pair{0, 0}, pair{len(a), len(b)})
+}
+
+// function that converts the output of the Myer's diff algorithm to an edit script
+func myersDiffToEditScript(a, b []string, myersDiff []pair) []Edit {
+	edits := []Edit{}
+	for i := 0; i < len(myersDiff)-1; i++ {
+		// skip if we are on the same diagonals
+		if myersDiff[i].x-myersDiff[i].y == myersDiff[i+1].x-myersDiff[i+1].y {
+			continue
+		}
+
+		// find the change that connects i -> i + 1
+		edit := Edit{
+			isInsertion: myersDiff[i].y < myersDiff[i+1].y,
+		}
+
+		if edit.isInsertion {
+			edit.value = b[myersDiff[i].y]
+		} else {
+			edit.value = a[myersDiff[i].x]
+		}
+		edits = append(edits, edit)
+	}
+	return edits
 }

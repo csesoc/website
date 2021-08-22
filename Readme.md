@@ -10,4 +10,5 @@ And go to `http://localhost:8080?document={what ever}`, other clients can connec
 The algorithm being used is an "uncommon?" algorithm so some papers outlining many of the algos used can be found here
  - [Differential Synchronisation Algorithm](https://neil.fraser.name/writing/sync/eng047-fraser.pdf)
  - [Myer's Difference Algorithm](http://www.xmailserver.org/diff2.pdf)
+ - [A cool blog post](https://blog.jcoglan.com/2017/02/12/the-myers-diff-algorithm-part-1/)
  - [String Difference Strategies](https://neil.fraser.name/writing/diff/)
