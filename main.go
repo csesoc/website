@@ -1,13 +1,14 @@
 package main
 
 import (
-	websocket "DiffSync/internal/websocket"
+	service "DiffSync/internal/service"
 	"log"
 	"net/http"
 )
 
 func main() {
-	http.HandleFunc("/edit", websocket.EditEndpoint)
+	http.HandleFunc("/edit", service.EditEndpoint)
+	http.HandleFunc("/preview", service.PreviewHTTPHandler)
 	http.Handle("/", http.FileServer(http.Dir("./html")))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

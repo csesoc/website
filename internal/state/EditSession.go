@@ -17,7 +17,7 @@ type EditSession struct {
 }
 
 // creates a new editor for a target document
-func newEditorOn(on *Document, socket *websocket.Conn) *EditSession {
+func NewEditorOn(on *Document, socket *websocket.Conn) *EditSession {
 	return &EditSession{
 		Shadow:       "",
 		BackupShadow: "",
@@ -28,5 +28,7 @@ func newEditorOn(on *Document, socket *websocket.Conn) *EditSession {
 }
 
 func (session *EditSession) Write(message []byte) {
-	session.On.Sync <- message
+	session.On.Sync <- Payload{
+		session.ID, message,
+	}
 }

@@ -5,6 +5,11 @@ Experimental respository for the CSESoc CMS, usage is simple; to build and run t
 make start
 ```
 And go to `http://localhost:8080?document={what ever}`, other clients can connect at this same URL and start communicating :)
+Live previews are served via: `http://localhost:8080/preview?document={what ever}`
+
+# TODO
+ - [] Reimplement diffmatchpatch from scracth instead of relying on a library
+    - the library is rather outdated
 
 ## Resources
 The algorithm being used is an "uncommon?" algorithm so some papers outlining many of the algos used can be found here
