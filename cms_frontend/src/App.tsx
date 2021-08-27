@@ -1,11 +1,17 @@
 import React from 'react';
 import Dashboard from './pages/Dashboard';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import './css/styles.css'
 
-function App() {
+
+const App: React.FC = () => {
   return (
     <div className="App">
-      <Dashboard/>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={Dashboard}/>
+        </Switch>
+      </Router>
     </div>
   );
 }
