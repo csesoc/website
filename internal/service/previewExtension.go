@@ -2,7 +2,6 @@ package diffsyncService
 
 import (
 	diffsync "DiffSync/internal/state"
-	"fmt"
 	"html"
 	"net/http"
 
@@ -112,7 +111,6 @@ func PreviewHTTPHandler(w http.ResponseWriter, r *http.Request) {
 		if extension.GetExtensionName() == PREVIEW_EXTENSION_NAME {
 			// read the client text and output it
 			preview := extension.(*Previewer)
-			fmt.Printf("ping pong")
 			// safety?? whats that?
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			w.Write([]byte("<!DOCTYPE html><head></head><body>" + html.UnescapeString(preview.previewText) + "</body>"))

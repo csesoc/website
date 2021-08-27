@@ -20,9 +20,11 @@ type DocumentManager struct {
 func NewDocumentManager() *DocumentManager {
 	return &DocumentManager{
 		openDocuments: NewConcurrentMap(),
+
 		// extension to load in when we create a document
 		extensionsToLoad: []reflect.Type{
-			reflect.TypeOf(Previewer{})},
+			reflect.TypeOf(Previewer{}),
+			reflect.TypeOf(AutoSaver{})},
 	}
 }
 
@@ -42,6 +44,13 @@ func (manager *DocumentManager) OpenDocument(documentID string) *state.Document 
 				newPreviewer.Construct(state.NewEditorOn(document, nil))
 
 				document.LoadAndStartExtension(newPreviewer)
+
+				break
+			case reflect.TypeOf(AutoSaver{}):
+				newSaver := new(AutoSaver)
+				newSaver.Construct(state.NewEditorOn(document, nil))
+
+				document.LoadAndStartExtension(newSaver)
 
 				break
 			default:

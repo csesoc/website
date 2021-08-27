@@ -19,3 +19,9 @@ func Read(id, dir string) string {
 
 	return fileBuffer.String()
 }
+
+// pretty pleasee close ur file pointers owo, meant to override file contents
+func Open(id, dir string) (*os.File, error) {
+	file, err := os.Create(fmt.Sprintf("storage/%s", id))
+	return file, err
+}
