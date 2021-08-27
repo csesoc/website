@@ -2,7 +2,7 @@
 
 Experimental respository for the CSESoc CMS, usage is simple; to build and run type
 
-Note: the code is ugly, the design is hacky but its just a prototype to flesh out ideas.
+<b>Note: the code is ugly, the design is hacky but its just a prototype to flesh out ideas.</b>
 ```sh
 make start
 ```
@@ -10,8 +10,8 @@ And go to `http://localhost:8080?document={what ever}`, other clients can connec
 Live previews are served via: `http://localhost:8080/preview?document={what ever}`
 
 # TODO
- - [] Reimplement diffmatchpatch from scracth instead of relying on a library
-    - the library is rather outdated
+ - [ ] Reimplement diffmatchpatch from scracth instead of relying on a library
+ - [ ] the library is rather outdated
 
 ## Resources
 The algorithm being used is an "uncommon?" algorithm so some papers outlining many of the algos used can be found here
