@@ -1,6 +1,8 @@
 # DiffSync
 
 Experimental respository for the CSESoc CMS, usage is simple; to build and run type
+
+Note: the code is ugly, the design is hacky but its just a prototype to flesh out ideas.
 ```sh
 make start
 ```
