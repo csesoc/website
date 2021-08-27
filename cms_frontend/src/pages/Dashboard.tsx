@@ -1,5 +1,5 @@
 import React from 'react'
-import SideBar from 'src/components/SideBar';
+import SideBar from 'src/components/SideBar/SideBar';
 import FileRenderer from 'src/components/FileRenderer/FileRenderer';
 
 
