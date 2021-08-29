@@ -1,7 +1,7 @@
-FROM golang:1.17-alpine
+FROM golang:1.17-alpine as build-env
 
 # make current working directory /app
-WORKDIR /app
+WORKDIR /go/app
 
 # copy go.mod and go.sum
 COPY go.mod .
@@ -13,9 +13,12 @@ RUN go mod download
 # copying source files
 COPY . . 
 
-# run make
-CMD ["make"]
-
 EXPOSE 8080
 
+# export environment variable for gopath
+ENV GOPATH /go
+
+# run make
+# might start the app
 CMD ["go", "run", "main.go"]
+
