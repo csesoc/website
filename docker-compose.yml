@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  cms_frontend:
+    container_name: cms_frontend
+    build: ./cms_frontend
+    volumes:
+      # Note must include node_modules as a seperate volume
+      - '/app/node_modules'
+      - './cms_frontend:/app'
+    ports:
+      - 3000:3000
+
