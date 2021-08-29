@@ -13,6 +13,9 @@ import (
 
 const EXAMPLE_EXTENSION_NAME string = "extension.my_extension"
 
+var requiredExtensions []string = []string{"extension.another_extension",
+	"extension.a_cool_extension"}
+
 type MyExtension struct {
 	document.StrippedClient  // base functionality
 	document.DocManagerAdmin // access level
@@ -28,4 +31,14 @@ func NewMyExtension() *MyExtension {
 		},
 		document.DocManagerAdmin{},
 	}
+}
+
+// Construct marks the begining of the life for our "example extension"
+// we can do runtime extenion loading here :)
+func (e *MyExtension) Construct(connectedDoc uuid.UUID) {
+
+	// Load in the extensions we want :)
+	e.DocManagerAdmin.LoadExtensions(connectedDoc, AllocateExtensions(
+		requiredExtensions...,
+	)...)
 }

@@ -25,6 +25,11 @@ func closeDocument(documentID uuid.UUID) error {
 	return nil
 }
 
+// loadExtension allows you to load an extension given a document UUID
+func loadExtensions(documentID uuid.UUID, extensions ...Extension) {
+	// todo: implement
+}
+
 // syncWith attempts to sync a shadow with a document with a given docID
 func syncWith(docID uuid.UUID, shadow string) {
 
@@ -54,6 +59,10 @@ func (manager DocManagerAdmin) SyncWith(docID uuid.UUID, shadow string) {
 	syncWith(docID, shadow)
 }
 
+func (manager DocManagerAdmin) LoadExtensions(docID uuid.UUID, extension ...Extension) {
+	loadExtensions(docID, extension...)
+}
+
 func (manager DocManagerAdmin) GetExtensionInstance(docID uuid.UUID, extensionName string) *Extension {
 	return getExtensionInstance(docID, extensionName)
 }
@@ -66,8 +75,4 @@ type DocManagerUser struct{}
 // accessilbe methods from DocManagerUser
 func (manager DocManagerUser) SyncWith(docID uuid.UUID, shadow string) {
 	syncWith(docID, shadow)
-}
-
-func (manager DocManagerUser) GetExtensionInstance(docID uuid.UUID, extensionName string) *Extension {
-	return getExtensionInstance(docID, extensionName)
 }

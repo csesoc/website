@@ -16,6 +16,10 @@ type Extension interface {
 	GetShadow() string
 	Synchronise([]diffmatchpatch.Patch)
 
+	// LifeCycle operations
+	Construct(uuid.UUID)
+	Destruct(uuid.UUID)
+
 	// Regular mechanisms
 	Spin()
 	Stop()
