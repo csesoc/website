@@ -10,4 +10,11 @@ services:
       - './cms_frontend:/app'
     ports:
       - 3000:3000
+  backend:
+    container_name: go_backend
+    build: ./Backend
+    volumes:
+      - './Backend:/app'
+    ports:
+      - 8080:8080
 
