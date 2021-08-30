@@ -1,3 +1,15 @@
+# Build Instructions
+Building the app fresh after installation
+run:
+`docker compose up --build`
+
+For all subsequent running of apps
+run:
+`docker compose up`
+or
+`docker compose up -d`
+
+
 # DiffSync
 
 Experimental respository for the CSESoc CMS, usage is simple; to build and run type
