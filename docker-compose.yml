@@ -8,6 +8,7 @@ services:
       # Note must include node_modules as a seperate volume
       - '/app/node_modules'
       - './cms_frontend:/app'
+    stdin_open: true
     ports:
       - 3000:3000
   backend:
