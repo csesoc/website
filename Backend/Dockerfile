@@ -11,11 +11,12 @@ COPY . .
 
 # downloding dependencies
 RUN go mod download
+RUN apk add --update npm
 
-# RUN npm install in local html
-CMD ["cd", "html"]
-CMD ["npm", "install"]
-CMD ["cd", "..."]
+WORKDIR html
+RUN npm install
+WORKDIR ..
+
 
 EXPOSE 8080
 
