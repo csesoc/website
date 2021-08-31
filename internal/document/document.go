@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/google/uuid"
+	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
 type Document struct {
@@ -18,7 +19,17 @@ type Document struct {
 	readingExtensions sync.RWMutex
 
 	// events to react to
-	syncEvent chan string
+	syncEvent    chan SyncPayload
+	stopSpinning chan bool
+
+	dmp *diffmatchpatch.DiffMatchPatch
+}
+
+// SyncPayload defines the arguments for a sync operation against
+// a document
+type SyncPayload struct {
+	Shadow  *string
+	Patches []diffmatchpatch.Patch
 }
 
 // NewDocument returns a new instance of a document allocated on the heap
@@ -28,6 +39,10 @@ func NewDocument(baseText string) *Document {
 		baseText:         baseText,
 		isSpinning:       false,
 		loadedExtensions: make(map[string]Extension),
+
+		syncEvent:    make(chan SyncPayload),
+		stopSpinning: make(chan bool),
+		dmp:          diffmatchpatch.New(),
 	}
 }
 
@@ -41,6 +56,9 @@ func (doc *Document) LoadExtension(ext Extension) error {
 		return errors.New("extension already loaded into document")
 	}
 	doc.loadedExtensions[ext.GetName()] = ext
+
+	ext.Load(doc.id)
+	go ext.Spin()
 	return nil
 }
 
@@ -56,15 +74,31 @@ func (doc *Document) GetExtensionInstace(extensionName string) (Extension, error
 	return nil, errors.New("extension already loaded into document")
 }
 
-// SyncText attempts to sync the local state of the document against
-// a specified shadow text, it then alerts all loadedExtension of this new
+// SyncTextWithShadow attemps to sync the local state of the document against
+// a specified shadow
+func (doc *Document) SyncTextWithShadow(shadow *string) error {
+	if !doc.isSpinning {
+		return errors.New("requested document is not spinning")
+	}
+
+	// create a payload
+	payload := SyncPayload{
+		Patches: doc.dmp.PatchMake(doc.baseText, *shadow),
+		Shadow:  shadow,
+	}
+	doc.syncEvent <- payload
+	return nil
+}
+
+// SyncTextWithPayload attempts to sync the local state of the document against
+// a specified synchronisation payload, it then alerts all loadedExtension of this new
 // synchronisation
-func (doc *Document) SyncText(shadow string) error {
+func (doc *Document) SyncTextWithPayload(payload SyncPayload) error {
 	if !doc.isSpinning {
 		return errors.New("requested document is not spinning")
 	}
 	// pass over the sync event handler
-	doc.syncEvent <- shadow
+	doc.syncEvent <- payload
 	return nil
 }
 
@@ -73,12 +107,62 @@ func (doc *Document) SyncText(shadow string) error {
 // as its own independent goroutine and interfaced with via the appropriate methods
 func (doc *Document) Spin() {
 	doc.isSpinning = true
+
 	for {
 		select {
-		case _ = <-doc.syncEvent:
+		case payload := <-doc.syncEvent:
+			// parse the patches into the diffmatchpatch library
+			if len(payload.Patches) == 0 {
+				continue
+			}
+
+			// Apply the patch to the document text
+			// it is assumed that the patches have already been applied
+			// to the extension shadow
+			newText, _ := doc.dmp.PatchApply(payload.Patches, doc.baseText)
+			newShadow, _ := doc.dmp.PatchApply(payload.Patches, *payload.Shadow)
+			doc.baseText = newText
+			*payload.Shadow = newShadow
+
+			for _, ext := range doc.loadedExtensions {
+
+				// sometimes extensions dont have a defined shadow
+				// check that the one we are trying to sync with does
+				if ext.GetShadow() != nil {
+					patches := doc.dmp.PatchMake(*ext.GetShadow(), doc.baseText)
+					ext.SetShadow(doc.baseText)
+
+					// propogate edits to extension
+					if len(patches) != 0 {
+						ext.Synchronise(patches)
+					}
+				} else {
+					ext.SyncShadowAgainst(&doc.baseText)
+				}
+			}
+
 			break
+		case _ = <-doc.stopSpinning:
+			doc.isSpinning = false
+			// Stop extensions
+			for _, ext := range doc.loadedExtensions {
+				ext.Unload(doc.id)
+				ext.Stop()
+			}
+			return
 		default:
 			continue
 		}
 	}
+}
+
+// Stop terminates the spinning of a document
+// if it is spinning, otherwise it throws and error
+func (doc *Document) Stop() error {
+	if !doc.isSpinning {
+		return errors.New("document is not spinning, nothing to stop")
+	}
+
+	doc.stopSpinning <- true
+	return nil
 }

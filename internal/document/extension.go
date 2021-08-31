@@ -13,12 +13,14 @@ type Extension interface {
 	GetTrackingDoc() uuid.UUID
 
 	// Synchronisation mechanisms
-	GetShadow() string
+	GetShadow() *string
+	SetShadow(string)
+	SyncShadowAgainst(*string)
 	Synchronise([]diffmatchpatch.Patch)
 
 	// LifeCycle operations
-	Construct(uuid.UUID)
-	Destruct(uuid.UUID)
+	Load(uuid.UUID)
+	Unload(uuid.UUID)
 
 	// Regular mechanisms
 	Spin()
@@ -39,13 +41,13 @@ func (client StrippedClient) GetName() string {
 	return client.Name
 }
 
-func (client StrippedClient) GetShadow() string {
-	return client.Shadow
+func (client StrippedClient) GetShadow() *string {
+	return &client.Shadow
 }
 
-// TODO: implemement Synchronise
+// General implementation of a sycnronisation operation
 func (client StrippedClient) Synchronise([]diffmatchpatch.Patch) {
-
+	// todo: do later
 }
 
 // TODO: implement
