@@ -23,7 +23,6 @@
 /vendor/
 /Godeps/
 
-go.sum
 # End of https://www.toptal.com/developers/gitignore/api/go
 
 node_modules

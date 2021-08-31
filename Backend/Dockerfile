@@ -12,7 +12,10 @@ COPY . .
 # downloding dependencies
 RUN go mod download
 
-# copying source files
+# RUN npm install in local html
+CMD ["cd", "html"]
+CMD ["npm", "install"]
+CMD ["cd", "..."]
 
 EXPOSE 8080
 
