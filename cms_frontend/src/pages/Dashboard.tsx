@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
+import { IconButton } from "@material-ui/core";
+import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 
 import SideBar from 'src/components/SideBar/SideBar';
 import FileRenderer from 'src/components/FileRenderer/FileRenderer';
@@ -13,6 +16,12 @@ interface FileFormat {
   type: string
 }
 
+const Directory = styled.h3`
+  display: inline-block;
+  margin-left: 20px;
+  margin-right: 10px;
+`;
+
 const sortFiles = (files: FileFormat[]) => {
   return files.sort((first, second) => {
     if (first.type !== second.type) {
@@ -25,14 +34,30 @@ const sortFiles = (files: FileFormat[]) => {
 
     return first.filename.localeCompare(second.filename);
   });
-}
+};
 
 const Dashboard: React.FC = () => {
   const [dir, setDir] = useState("root" as FolderName);
 
+  const getParent = () => {
+    return dir.split("/").slice(0, -1).join("/");
+  }
+
   const toParent = () => {
-    const parent = dir.split("/").slice(0, -1).join("/") as FolderName;
+    const parent = getParent() as FolderName;
     setDir(parent);
+  }
+
+  const hasParent = () => {
+    const parent = getParent();
+
+    for (const key in Files) {
+      if (parent === key) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   const fileClick = (name: string) => {
@@ -53,9 +78,14 @@ const Dashboard: React.FC = () => {
   return (
     <div style={{ display: 'flex' }}>
       <SideBar />
-      <div style={{ flex: 1, display: 'inline-block' }}>
-        <p>{dir}</p>
-        <button onClick={() => toParent()}>^</button>
+      <div style={{ flex: 1 }}>
+        <Directory>{dir}</Directory>
+        <IconButton
+          disabled={!hasParent()}
+          onClick={() => toParent()}
+          style={{ display: "inline-block", border: "1px solid grey" }}>
+          <ExpandLessIcon />
+        </IconButton>
         <div style={{ display: 'flex' }}>
           {sortFiles(Files[dir]).map((file, index) => {
             return (
@@ -77,6 +107,6 @@ const Dashboard: React.FC = () => {
       </div>
     </div>
   )
-}
+};
 
 export default Dashboard;

@@ -26,7 +26,7 @@ const FolderContainer: React.FC<FolderProps> = ({ filename, onClick }) => {
       <IconContainer>
         <FolderIcon style={{
           color: "#999999",
-          height: "297px",
+          height: "307px",
           width: "100%"
         }} />
         {filename}
