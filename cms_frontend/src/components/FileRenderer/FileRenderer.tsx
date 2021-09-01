@@ -1,42 +1,33 @@
 import React from 'react';
-import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-import FolderIcon from '@material-ui/icons/Folder';
-import styled from 'styled-components';
+
+import FolderContainer from "./FolderContainer";
+import FileContainer from "./FileContainer";
+
+import Default from "src/images/default.png";
 
 // type declaration for props
-interface FileProps {
+interface RenderProps {
   filename: string,
-  type: string
+  type: string,
+  // Functions for when user clicks on a file/folder
+  onFileClick: () => void,
+  onFolderClick: () => void
 }
-
-// style declaration using styled components
-// must be capitalised
-const IconContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: 20px;
-`
 
 // Typescript Declaration
 // uses the interface defined above
 // imports the icons from material UI
-const FileRenderer: React.FC<FileProps> = ({ filename, type }) => {
+const FileRenderer: React.FC<RenderProps> = ({ filename, type, onFileClick, onFolderClick }) => {
   return (
-    <>
-    {type === "folder" && (
-      <IconContainer>
-        <FolderIcon/>
-        {filename}
-      </IconContainer>
-    )}
-    {type === "file" && (
-      <IconContainer>
-        <InsertDriveFileIcon/>
-        {filename}
-      </IconContainer>
-    )}
-    </>
+    <div>
+      {type === "folder" && (
+        <FolderContainer filename={filename} onClick={onFolderClick} />
+      )}
+      {type === "file" && (
+        <FileContainer filename={filename} onClick={onFileClick} image={Default} />
+      )}
+    </div>
   )
 }
 
-export default FileRenderer
+export default FileRenderer;
