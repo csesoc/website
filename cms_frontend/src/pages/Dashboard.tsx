@@ -1,6 +1,7 @@
 import React from 'react'
 import SideBar from 'src/components/SideBar/SideBar';
 import FileRenderer from 'src/components/FileRenderer/FileRenderer';
+import NewDialogue from 'src/components/NewDialogue/NewDialogue';
 
 
 const dummy_files = [
@@ -26,6 +27,7 @@ const Dashboard: React.FC = () => {
   return (
     <div style={{display: 'flex'}}>
       <SideBar/>
+      <NewDialogue/>
       {dummy_files.map((file)=> {
         return (
           <FileRenderer filename={file.filename} type={file.type} />
