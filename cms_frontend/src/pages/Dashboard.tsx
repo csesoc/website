@@ -9,6 +9,7 @@ import FileRenderer from 'src/components/FileRenderer/FileRenderer';
 import Files from "src/data/dummy_structure.json";
 type FolderName = keyof typeof Files;
 
+// Heading to display current directory, separated out to avoid inline styling
 const Directory = styled.h3`
   display: inline-block;
   margin-left: 20px;
@@ -18,15 +19,19 @@ const Directory = styled.h3`
 const Dashboard: React.FC = () => {
   const [dir, setDir] = useState("root" as FolderName);
 
+  // Gets the parent directory of our current directory, does not check
+  // if that directory exists
   const getParent = () => {
     return dir.split("/").slice(0, -1).join("/");
   }
 
+  // Moves our current directory up (analogous to `cd ..`)
   const toParent = () => {
     const parent = getParent() as FolderName;
     setDir(parent);
   }
 
+  // Checks if our current directory has a parent directory
   const hasParent = () => {
     const parent = getParent();
 
@@ -52,8 +57,6 @@ const Dashboard: React.FC = () => {
     // TODO: fill with API call
   }
 
-  // map function maps out all the objects
-  // there is inline styling, use with caution
   return (
     <div style={{ display: 'flex' }}>
       <SideBar />
