@@ -5,36 +5,15 @@ import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 
 import SideBar from 'src/components/SideBar/SideBar';
 import FileRenderer from 'src/components/FileRenderer/FileRenderer';
-import FileContainer from 'src/components/FileRenderer/FileContainer';
 
-import NewPost from "src/images/new_post.png";
 import Files from "src/data/dummy_structure.json";
 type FolderName = keyof typeof Files;
-
-interface FileFormat {
-  filename: string,
-  type: string
-}
 
 const Directory = styled.h3`
   display: inline-block;
   margin-left: 20px;
   margin-right: 10px;
 `;
-
-const sortFiles = (files: FileFormat[]) => {
-  return files.sort((first, second) => {
-    if (first.type !== second.type) {
-      if (first.type === "folder") {
-        return -1;
-      } else {
-        return 1;
-      }
-    }
-
-    return first.filename.localeCompare(second.filename);
-  });
-};
 
 const Dashboard: React.FC = () => {
   const [dir, setDir] = useState("root" as FolderName);
@@ -69,7 +48,7 @@ const Dashboard: React.FC = () => {
     setDir(childName);
   }
 
-  const createFile = () => {
+  const newFile = () => {
     // TODO: fill with API call
   }
 
@@ -86,24 +65,11 @@ const Dashboard: React.FC = () => {
           style={{ display: "inline-block", border: "1px solid grey" }}>
           <ExpandLessIcon />
         </IconButton>
-        <div style={{ display: 'flex' }}>
-          {sortFiles(Files[dir]).map((file, index) => {
-            return (
-              <div style={{ flexBasis: "25%" }}>
-                <FileRenderer
-                  key={index}
-                  filename={file.filename}
-                  type={file.type}
-                  onFileClick={() => fileClick(file.filename)}
-                  onFolderClick={() => folderClick(file.filename)} />
-              </div>
-            )
-          })}
-          <FileContainer
-            filename="New"
-            onClick={() => createFile()}
-            image={NewPost} />
-        </div>
+        <FileRenderer
+          files={Files[dir]}
+          onFileClick={fileClick}
+          onFolderClick={folderClick}
+          onNewFile={newFile} />
       </div>
     </div>
   )

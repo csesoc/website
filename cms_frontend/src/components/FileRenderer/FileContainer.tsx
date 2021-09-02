@@ -9,8 +9,8 @@ import styled from 'styled-components';
 
 interface FileProps {
   filename: string,
-  onClick: () => void,
   image: string
+  onClick: () => void,
 }
 
 // Carry over styled component from FileRenderer.tsx
@@ -33,7 +33,7 @@ const HoverImage = styled.img`
   }
 `
 
-const FileContainer: React.FC<FileProps> = ({ filename, onClick, image }) => {
+const FileContainer: React.FC<FileProps> = ({ filename, image, onClick }) => {
   return (
     <div onClick={onClick}>
       <IconContainer>
