@@ -24,7 +24,6 @@ services:
     image: postgres
     restart: always
     user: postgres
-    build: ./postgres
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: test_db
