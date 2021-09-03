@@ -49,28 +49,26 @@ const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick
     // Mapping over all files given from Dashboard, with a little bit
     // of inline styling to facilitate flex divs
     <div style={{ display: "flex" }}>
-      {sorted.map((file, index) => {
-        return (
-          <div key={index} style={{ flexBasis: "25%" }}>
-            {file.type === "folder" && (
-              <FolderContainer
-                filename={file.filename}
-                onClick={() => onFolderClick(file.filename)} />
-            )}
-            {file.type === "file" && (
-              <FileContainer
-                filename={file.filename}
-                image={Default}
-                onClick={() => onFileClick(file.filename)} />
-            )}
-          </div>
-        );
-      })}
+      {sorted.map((file, index) => (
+        <div key={index} style={{ flexBasis: "25%" }}>
+          {file.type === "folder" && (
+            <FolderContainer
+              filename={file.filename}
+              onClick={() => onFolderClick(file.filename)} />
+          )}
+          {file.type === "file" && (
+            <FileContainer
+              filename={file.filename}
+              image={Default}
+              onClick={() => onFileClick(file.filename)} />
+          )}
+        </div>
+      ))}
       <div style={{ flexBasis: "25%" }}>
         <FileContainer
           filename="New"
-          onClick={onNewFile}
-          image={NewPost} />
+          image={NewPost}
+          onClick={onNewFile} />
       </div>
     </div>
   )
