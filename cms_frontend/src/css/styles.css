@@ -5,3 +5,14 @@
 body {
   margin: 0;
 }
+
+.sidebar-header {
+  font-family: sans-serif;
+  font-size: xx-large;
+  margin: 2rem;
+  font-weight: bold;
+}
+
+.sidebar-button {
+  width: 170px;
+}
