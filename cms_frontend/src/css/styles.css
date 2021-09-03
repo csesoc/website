@@ -4,10 +4,10 @@
 
 body {
   margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .sidebar-header {
-  font-family: sans-serif;
   font-size: xx-large;
   margin: 2rem;
   font-weight: bold;
