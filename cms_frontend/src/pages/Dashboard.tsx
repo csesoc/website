@@ -27,7 +27,7 @@ const Dashboard: React.FC = () => {
   return (
     <div style={{display: 'flex'}}>
       <SideBar/>
-      <NewDialogue/>
+      <NewDialogue directory = {"./"} isCore = {false}/>
       {dummy_files.map((file)=> {
         return (
           <FileRenderer filename={file.filename} type={file.type} />
