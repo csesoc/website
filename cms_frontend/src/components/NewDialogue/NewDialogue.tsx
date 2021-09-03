@@ -2,6 +2,7 @@ import { Button, TextField } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 import React from 'react';
 import styled from 'styled-components';
+import TemplateSelector from './TemplateSelector';
 
 
 const Container = styled.div`
@@ -19,14 +20,6 @@ const Body = styled.div`
   display: flex;
   flex-direction: row; 
   height: 50%;
-`
-
-// Temporary placeholder until we implement the selector element
-const TemplateSelector = styled.div` 
-  display: flex;
-  width: 60%;
-  background: #f1f1f1;
-  margin: 15px;
 `
 
 // Temporary placeholder until we implement the selector element
@@ -51,9 +44,7 @@ const NewDialogue: React.FC<DialogueProps> = ({directory, isCore}) => {
         <TextField label="title"/>
       </div>
       <Body>
-        <TemplateSelector>
-          (select template)
-        </TemplateSelector>
+        <TemplateSelector/>
         <TemplatePreview>
           (preview)
         </TemplatePreview>
