@@ -1,0 +1,1 @@
+RUN psql -d test_db -f infile

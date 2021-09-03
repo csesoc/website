@@ -10,6 +10,12 @@ or
 `docker compose up -d`
 
 
+# postgres Instructions
+access interactive terminal by running `docker exec -it pg_container bash`
+now run this command `psql -d test_db -f infile` to load the dummy data we have prepared in ./postgres/infile
+
+
+
 # DiffSync
 
 Experimental respository for the CSESoc CMS, usage is simple; to build and run type
