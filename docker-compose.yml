@@ -15,7 +15,8 @@ services:
     container_name: go_backend
     build: ./Backend
     volumes:
-      - './Backend:/app'
+      - './Backend:/go/src/DiffSync'
+      - './Backend/${GO_MOD}:/go/src/DiffSync/go.mod'
     ports:
       - 8080:8080
 

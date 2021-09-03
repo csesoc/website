@@ -1,8 +1,7 @@
+SERVICE := go-hotreload
 
-start:
-	go build
-	./DiffSync
+dev:
+	GO_MOD=go.mod docker compose up
 
-
-clean:
-	rm -rf *.o DiffSync
+dev-build:
+	GO_MOD=go.mod docker compose up --build

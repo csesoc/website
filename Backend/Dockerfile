@@ -12,6 +12,7 @@ COPY . .
 # downloding dependencies
 RUN go mod download
 RUN apk add --update npm
+RUN go get github.com/githubnemo/CompileDaemon
 
 WORKDIR html
 RUN npm install
@@ -24,4 +25,6 @@ EXPOSE 8080
 ENV GOPATH /go
 
 # might start the app
-CMD ["go", "run", "main.go"]
+#CMD ["go", "run", "main.go"]
+
+ENTRYPOINT CompileDaemon --build="go build main.go" --command="./main"
