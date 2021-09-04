@@ -77,10 +77,7 @@ func TestValidEmail(t *testing.T) {
 
 	// CASE: aaaa@hotmail.com
 	user = User{Email: "asdasd@hotmail.com", Password: "abc"}
-	if assert.NotNil(t, user.isValidEmail()) {
-		obj := user.isValidEmail()
-		assert.Equal(t, "email format invalid", obj.Error())
-	}
+	assert.Nil(t, user.isValidEmail())
 
 	// CASE: non-whitelisted symbols
 	user = User{Email: "asda`'\"sd@hotmail.com", Password: "abc"}
