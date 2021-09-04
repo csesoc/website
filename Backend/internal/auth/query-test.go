@@ -12,9 +12,9 @@ import (
 
 type Person struct {
 	Id    int    `json:"id"`
-	Name  string `json:"name"`
-	First string `json: "first"`
-	Pass  string `json: "pass"`
+	Email string `json:"email"`
+	First string `json:"first"`
+	Pass  string `json:"pass"`
 }
 
 type People []Person
@@ -36,7 +36,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		item := Person{}
 		// log.Print(rows)
-		rows.Scan(&item.Id, &item.Name, &item.First, &item.Pass)
+		rows.Scan(&item.Id, &item.Email, &item.First, &item.Pass)
 		peopleList = append(peopleList, item)
 	}
 
@@ -46,6 +46,6 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 
 	// print to body
-	fmt.Fprintf(w, string(json))
+	fmt.Fprint(w, string(json))
 
 }
