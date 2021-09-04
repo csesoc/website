@@ -28,9 +28,8 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	// ping database
+	// query
 	rows, _ := db.Query("SELECT * from person;")
-	log.Println("HALJSDLAJ")
 
 	var peopleList People
 	// put sql query into json
@@ -43,6 +42,10 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	json, _ := (json.Marshal(peopleList))
 	//log.Println(string(out))
+
+	w.Header().Set("content-type", "application/json")
+
+	// print to body
 	fmt.Fprintf(w, string(json))
 
 }
