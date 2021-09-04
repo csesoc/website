@@ -1,3 +1,11 @@
+// TITLE: Login functions
+// Created by (Jacky: FafnirZ) (09/21)
+// Last modified by (Jacky: FafnirZ)(04/09/21)
+// # # #
+/*
+This module handles the database query and parsing of data for the login functions
+as well as some error handling
+**/
 package database
 
 import (
@@ -39,7 +47,7 @@ func GetCredentials(email string) (string, error) {
 		// against error based brute force attacks against username then password
 		return "", errors.New("invalid credentials")
 	} else if len(results) > 1 { // handles case: if there is more than 1 email returned
-		return "", errors.New("there happens to be a duplicate email !!!!HACKERMAN ALERT!!!!")
+		return "", errors.New("!!!!HACKERMAN ALERT!!!!there happens to be a duplicate email ")
 	}
 
 	return results[0], nil

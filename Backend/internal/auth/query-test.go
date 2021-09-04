@@ -1,3 +1,11 @@
+// TITLE: Login functions
+// Created by (Jacky: FafnirZ) (09/21)
+// Last modified by (Jacky: FafnirZ)(04/09/21)
+// # # #
+/*
+This is just some testing code which utilises the postgres driver
+and parses the data into suitable json format
+**/
 package auth
 
 import (
