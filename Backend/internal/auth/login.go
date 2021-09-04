@@ -11,7 +11,6 @@ package auth
 
 import (
 	_db "DiffSync/internal/database"
-	"log"
 
 	"encoding/json"
 	"errors"
@@ -53,6 +52,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 
 		// get fields from form
@@ -66,12 +66,13 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		err = user.isValidEmail()
 		if err != nil {
 			throwErr(err, w)
+			return
 		}
 
-		// checking credentials
-		err = user.checkCredentials()
+		err = user.checkPassword()
 		if err != nil {
 			throwErr(err, w)
+			return
 		}
 	}
 
@@ -89,30 +90,27 @@ func (u *User) isValidEmail() error {
 	// if the email doesnt match, throw error
 	if match := r.MatchString(u.Email); !match {
 		return errors.New("email format invalid")
+
 	}
-	return nil
-}
-
-// check for plaintest for now
-// todo hashing and stuff
-func (u *User) checkCredentials() error {
-	// handle if user doesnt exist
-
-	// handle if user exists but password isnt correct
-
-	// if credentials are correct, do not throw error
-	log.Print(u.checkPassword())
-
 	return nil
 }
 
 // todo checks if password is the same
 // inports getCredentials from internal database package
-func (u *User) checkPassword() bool {
-	stored_password := _db.GetCredentials(u.Email)
+func (u *User) checkPassword() error {
 
-	// if hashed input password == stored password
-	return u.hashPassword() == stored_password
+	stored_password, err := _db.GetCredentials(u.Email)
+	if err != nil {
+		// other error checks are done within GetCredentials() and passed out
+		return err
+	}
+
+	if u.hashPassword() != stored_password {
+		return errors.New("invalid credentials")
+	}
+
+	return nil
+
 }
 
 // todo hash function
