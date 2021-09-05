@@ -11,6 +11,7 @@ package auth
 
 import (
 	_db "DiffSync/internal/database"
+	"log"
 
 	"encoding/json"
 	"errors"
@@ -74,6 +75,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			throwErr(err, w)
 			return
 		}
+
+		// else create a session if user's session isnt already created
+		// todo
+		//
 	}
 
 }
@@ -90,7 +95,6 @@ func (u *User) isValidEmail() error {
 	// if the email doesnt match, throw error
 	if match := r.MatchString(u.Email); !match {
 		return errors.New("email format invalid")
-
 	}
 	return nil
 }
@@ -99,14 +103,16 @@ func (u *User) isValidEmail() error {
 // inports getCredentials from internal database package
 func (u *User) checkPassword() error {
 
-	stored_password, err := _db.GetCredentials(u.Email)
-	if err != nil {
-		// other error checks are done within GetCredentials() and passed out
-		return err
-	}
+	// hash the user's password first
+	hashedPassword := u.hashPassword()
 
-	if u.hashPassword() != stored_password {
+	matches := _db.CredentialsMatch(u.Email, hashedPassword)
+	if matches == 0 {
 		return errors.New("invalid credentials")
+	} else if matches > 1 { // if more than 1 result is returned
+		log.Print("!!alert!! duplicate results found")
+		// will handle this differently later
+		return errors.New("internal server error")
 	}
 
 	return nil
@@ -115,6 +121,6 @@ func (u *User) checkPassword() error {
 
 // todo hash function
 func (u *User) hashPassword() string {
-	// todo
+	// todo currently does not hash the password
 	return u.Password
 }
