@@ -86,10 +86,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 // check username is valid
 // uses a relatively strict regular expression
 func (u *User) isValidEmail() error {
-	// a very basic email regex with quite strict rules
-	// only alphanumeric words
+	// email must be > 2 characters before the domain
 	// white lists a few domains which are allowed
-	regex := `([a-zA-Z0-9]+)+@(([a-zA-Z0-9])*\.(unsw|com|co|uk|edu|au))(\.(com|edu|au))*`
+	// match alphanumeric greater than 2 letters
+	// followed by optional (.something) greater than 0 times
+	// I know it will fail the z{8} z{6} cases
+	regex := `^(z[0-9]{7}|([a-zA-Z0-9]{2,})+(\.[a-zA-Z0-9]+)*)@(gmail.com|ad.unsw.edu|student.unsw.edu|hotmail.com|outlook.com)(.au)?$`
 	r, _ := regexp.Compile(regex)
 
 	// if the email doesnt match, throw error
@@ -99,7 +101,6 @@ func (u *User) isValidEmail() error {
 	return nil
 }
 
-// todo checks if password is the same
 // inports getCredentials from internal database package
 func (u *User) checkPassword() error {
 
