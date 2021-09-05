@@ -79,6 +79,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		// else create a session if user's session isnt already created
 		// todo
 		//
+		// placeholder return success for now
+		// i know this is bad
+		throwErr(errors.New("success"), w)
 	}
 
 }
@@ -106,6 +109,12 @@ func (u *User) checkPassword() error {
 
 	// hash the user's password first
 	hashedPassword := u.hashPassword()
+
+	// do not need input validation for password, since the password
+	// gets hashed before being placed into sql query
+	// the user does not have direct control over the sql query
+	// i.e. even if the user puts ' or 1= '1
+	// the hashed value will not be an injection command
 
 	matches := _db.CredentialsMatch(u.Email, hashedPassword)
 	if matches == 0 {

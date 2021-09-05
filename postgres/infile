@@ -7,6 +7,6 @@ CREATE TABLE person (
 );
 
 INSERT INTO person (Email, First_name, Password)
-VALUES ('test@test.com', 'adam', 'password');
+VALUES ('z0000000@ad.unsw.edu.au', 'adam', 'password');
 INSERT INTO person(Email, First_name, Password)
-VALUES ('asdas@asdads.com', 'adamee', 'password');
+VALUES ('adam.smith@gmail.com', 'adamee', 'password');
