@@ -1,87 +1,80 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
 
 const Container = styled.div`
   width: 250px;
   background: lightgrey;
   height: 100vh;
 `
-// Wrapper component
+const SidebarTitle = styled.div`
+  font-size: xx-large;
+  margin: 2rem;
+  font-weight: bold;
+`
+const ButtonFlex = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  grid-gap: 80px;
+`
+const ButtonGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  grid-gap: 30px;
+`
+
+interface SidebarProps {
+  bgColor: string;
+}
+
+const SidebarButton = styled(Button)<SidebarProps>`
+  && {
+    width: 160px;
+    variant: contained;
+    background-color: ${props => props.bgColor};
+    border-radius: 20px;
+    text-transform: none;
+  }
+`
+
+// Wrapper component ${props => props.color}
 const SideBar: React.FC = () => {
   return (
     <Container>
-      <div className="sidebar-header">
+      <SidebarTitle>
         Welcome "name"
-      </div>
-      <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      >
-        <Box>
-          <Button
-          variant="contained"
-          className="sidebar-button"
-          >
+      </SidebarTitle>
+      <ButtonFlex>
+          <ButtonGroup>
+          <SidebarButton bgColor="#F88282">
             Blog
-          </Button>
-        </Box>
-        <Box>
-          <Button 
-          variant="contained"
-          className="sidebar-button"
-          >
+          </SidebarButton>
+          <SidebarButton bgColor="#F88282">
             Core pages
-          </Button>
-        </Box>
-        <Box>
-          <Button 
-          variant="contained"
-          className="sidebar-button"
-          color="primary"
-          >
+          </SidebarButton>
+          </ButtonGroup>
+          <ButtonGroup>
+          <SidebarButton bgColor="#82A3F8">
             New page
-          </Button>
-        </Box>
-        <Box>
-          <Button 
-          variant="contained"
-          className="sidebar-button"
-          color="primary"
-          >
+          </SidebarButton>
+          <SidebarButton bgColor="#82A3F8">
             New folder
-          </Button>
-        </Box>
-        <Box>
-          <Button 
-          variant="contained"
-          className="sidebar-button"
-          color="secondary"
-          >
+          </SidebarButton>
+          </ButtonGroup>
+          <ButtonGroup>
+          <SidebarButton bgColor="#B8E8E8">
             Edit
-          </Button>
-        </Box>
-          <Box>
-          <Button 
-          variant="contained"
-          className="sidebar-button"
-          color="secondary"
-          >
+          </SidebarButton>
+          <SidebarButton bgColor="#B8E8E8"> 
             Feature
-          </Button>
-        </Box>
-        <Box>
-          <Button 
-          variant="contained"
-          className="sidebar-button"
-          color="secondary"
-          >
+          </SidebarButton>
+          <SidebarButton bgColor="#B8E8E8">
             Recycle
-          </Button>
-      </Box>
-      </Box>
+          </SidebarButton>
+          </ButtonGroup>
+      </ButtonFlex>
     </Container>
   )
 }

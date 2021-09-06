@@ -19,4 +19,19 @@ services:
       - './Backend/${GO_MOD}:/go/src/DiffSync/go.mod'
     ports:
       - 8080:8080
+  db:
+    container_name: pg_container
+    image: postgres
+    restart: always
+    user: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: test_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - './postgres/infile:/infile'
+      - 'pg_data:/var/lib/postgresql/data'
+volumes:
+  pg_data:
 
