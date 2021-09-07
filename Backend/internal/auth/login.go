@@ -11,6 +11,7 @@ package auth
 
 import (
 	_db "DiffSync/internal/database"
+	_session "DiffSync/internal/session"
 	"log"
 
 	"encoding/json"
@@ -45,7 +46,11 @@ func throwErr(err error, w http.ResponseWriter) {
 // EXPECT it to be from a form (handle non form requests)
 // email=___&password=____
 // content-type: x-www-urlencoded
-
+/*
+	curl -v -d email=john.smith@gmail.com \
+	-d password=password \
+	localhost:8080/login
+*/
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
@@ -77,11 +82,14 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// else create a session if user's session isnt already created
-		// todo
-		//
-		// placeholder return success for now
-		// i know this is bad
-		throwErr(errors.New("success"), w)
+		_session.CreateSession(w, r, user.Email)
+
+		// will change to FRONTEND_URI soon
+		http.Redirect(w, r, "http://localhost:3000/dashboard", http.StatusMovedPermanently)
+
+	case "DEFAULT":
+		// only post requests are allowed
+		http.Redirect(w, r, "http://localhost:3000/login", http.StatusMovedPermanently)
 	}
 
 }
