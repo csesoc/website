@@ -10,7 +10,7 @@ user exists
 package auth
 
 import (
-	_db "DiffSync/internal/database"
+	_db "DiffSync/database"
 	_session "DiffSync/internal/session"
 	"log"
 
@@ -20,6 +20,22 @@ import (
 	"net/http"
 	"regexp"
 )
+
+var httpDbPool database.Pool
+
+func init() {
+	var err error
+	httpDbPool, err = database.NewPool(database.Config{
+		HostAndPort: "db:5432",
+		User:        "postgres",
+		Password:    "postgres",
+		Database:    "test_db",
+	})
+
+	if err != nil {
+		log.Print(err.Error())
+	}
+}
 
 type User struct {
 	Email    string
