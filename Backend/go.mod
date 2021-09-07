@@ -10,6 +10,7 @@ require (
 	github.com/docker/cli v20.10.8+incompatible // indirect
 	github.com/docker/docker v20.10.8+incompatible // indirect
 	github.com/google/uuid v1.3.0
+	github.com/gorilla/schema v1.2.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/jackc/pgtype v1.8.1
 	github.com/jackc/pgx v3.6.2+incompatible // indirect
