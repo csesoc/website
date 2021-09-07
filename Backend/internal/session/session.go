@@ -107,10 +107,9 @@ func IsAuthenticated(w http.ResponseWriter, r *http.Request) (bool, error) {
 // if there exists such a user
 func getUsers(s *sessions.Session) User {
 	val := s.Values["user"]
-	var user = User{}
-	user, ok := val.(User)
-	if !ok {
+	if user, ok := val.(User); ok {
+		return user
+	} else {
 		return User{Authenticated: false}
 	}
-	return user
 }

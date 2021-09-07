@@ -102,10 +102,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 		// will change to FRONTEND_URI soon
 		http.Redirect(w, r, "http://localhost:3000/dashboard", http.StatusMovedPermanently)
-
+		break
 	case "DEFAULT":
 		// only post requests are allowed
 		http.Redirect(w, r, "http://localhost:3000/login", http.StatusMovedPermanently)
+		break
 	}
 
 }
