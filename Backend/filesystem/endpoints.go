@@ -24,7 +24,7 @@ func init() {
 	})
 
 	if err != nil {
-		panic(err)
+		log.Print(err.Error())
 	}
 }
 
