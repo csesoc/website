@@ -4,7 +4,16 @@ import (
 	"DiffSync/database"
 	"context"
 	"errors"
+
+	"github.com/jackc/pgtype"
 )
+
+type EntityInfo struct {
+	EntityID   int
+	EntityName string
+	IsDocument bool
+	Children   []string
+}
 
 const ADMIN int = 1
 const USER int = 2
@@ -24,13 +33,52 @@ func createFilesystemEntity(pool database.Pool, parent int, logicalName string, 
 // createFilesystemEntityAtRoot creates a new entity with root as its parent
 func createFilesystemEntityAtRoot(pool database.Pool, logicalName string, ownerGroup int, isDocument bool) (int, error) {
 	// pool is thread safe so its calm
+	root, err := getRootID(pool)
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := createFilesystemEntity(pool, root, logicalName, ownerGroup, isDocument)
+
+	return id, err
+}
+
+// getRootID returns the id of the root directory
+func getRootID(pool database.Pool) (int, error) {
+	// pool is thread safe so its calm
 	var parentID int
 	err := pool.GetConn().QueryRow(context.Background(), "SELECT EntityID FROM filesystem WHERE parent IS NULL").Scan(&parentID)
 	if err != nil {
-		return 0, errors.New("failed to create a new DB entry")
+		return 0, errors.New("failed to find root id")
 	}
 
-	id, err := createFilesystemEntity(pool, parentID, logicalName, ownerGroup, isDocument)
+	return parentID, nil
+}
 
-	return id, err
+// getFilesystemInfo returns information regarding a specific file system entity
+func getFilesystemInfo(pool database.Pool, docID int) (EntityInfo, error) {
+	entity := EntityInfo{}
+	children := pgtype.Hstore{}
+
+	err := pool.GetConn().QueryRow(context.Background(), "SELECT EntityID, LogicalName, IsDocument, Children FROM filesystem WHERE EntityID = $1",
+		docID).Scan(&entity.EntityID, &entity.EntityName, &entity.IsDocument, &children)
+	if err != nil {
+		return EntityInfo{}, errors.New("failed to read from database")
+	}
+
+	for k := range children.Map {
+		entity.Children = append(entity.Children, k)
+	}
+
+	return entity, nil
+}
+
+// getRootInfo gets the file information for the root
+func getRootInfo(pool database.Pool) (EntityInfo, error) {
+	rootID, err := getRootID(pool)
+	if err != nil {
+		return EntityInfo{}, err
+	}
+	info, err := getFilesystemInfo(pool, rootID)
+	return info, err
 }

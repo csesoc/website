@@ -28,7 +28,19 @@ func TestMain(m *testing.M) {
 		log.Fatalf(err.Error())
 	}
 
+	defer pool.Close()
 	os.Exit(m.Run())
+}
+
+func TestRootRetrieval_Integration(t *testing.T) {
+	assert := assert.New(t)
+
+	root, err := getRootInfo(pool)
+	if assert.Nil(err) {
+		assert.Equal("root", root.EntityName)
+		assert.False(root.IsDocument)
+		assert.Greater(len(root.Children), 0)
+	}
 }
 
 func TestRootInsert_Integration(t *testing.T) {
@@ -60,5 +72,21 @@ func TestRootInsert_Integration(t *testing.T) {
 		if _, exists := expectedChildren.Map[strconv.Itoa(newDoc)]; !exists {
 			assert.True(false)
 		}
+	}
+}
+
+func TestDocumentInfoRetrieval_Integration(t *testing.T) {
+	assert := assert.New(t)
+
+	newDoc, err := createFilesystemEntityAtRoot(pool, "test_doc", ADMIN, true)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	info, err := getFilesystemInfo(pool, newDoc)
+	if assert.Nil(err) {
+		assert.True(info.IsDocument)
+		assert.Equal("test_doc", info.EntityName)
+		assert.Empty(info.Children)
 	}
 }
