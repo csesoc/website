@@ -10,7 +10,7 @@ user exists
 package auth
 
 import (
-	_db "DiffSync/internal/database"
+	"DiffSync/database"
 	"log"
 
 	"encoding/json"
@@ -19,6 +19,22 @@ import (
 	"net/http"
 	"regexp"
 )
+
+var httpDbPool database.Pool
+
+func init() {
+	var err error
+	httpDbPool, err = database.NewPool(database.Config{
+		HostAndPort: "db:5432",
+		User:        "postgres",
+		Password:    "postgres",
+		Database:    "test_db",
+	})
+
+	if err != nil {
+		log.Print(err.Error())
+	}
+}
 
 type User struct {
 	Email    string
@@ -116,7 +132,7 @@ func (u *User) checkPassword() error {
 	// i.e. even if the user puts ' or 1= '1
 	// the hashed value will not be an injection command
 
-	matches := _db.CredentialsMatch(u.Email, hashedPassword)
+	matches := CredentialsMatch(u.Email, hashedPassword)
 	if matches == 0 {
 		return errors.New("invalid credentials")
 	} else if matches > 1 { // if more than 1 result is returned
