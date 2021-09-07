@@ -50,8 +50,7 @@ func init() {
 func CreateSession(w http.ResponseWriter, r *http.Request, email string) {
 	session, err := store.Get(r, cookie_prefix)
 	if err != nil {
-		log.Println("an error has occurred getting session")
-		log.Print(err)
+		log.Println("an error has occurred getting session", err.Error())
 		return
 	}
 
@@ -65,8 +64,7 @@ func CreateSession(w http.ResponseWriter, r *http.Request, email string) {
 	// save session
 	err = session.Save(r, w)
 	if err != nil {
-		log.Println("an error has occurred saving session")
-		log.Print(err)
+		log.Println("an error has occurred saving session", err.Error())
 		return
 	}
 
@@ -77,8 +75,7 @@ func CreateSession(w http.ResponseWriter, r *http.Request, email string) {
 func RemoveSession(w http.ResponseWriter, r *http.Request) {
 	session, err := store.Get(r, cookie_prefix)
 	if err != nil {
-		log.Println("an error has occurred getting session")
-		log.Print(err)
+		log.Println("an error has occurred getting session", err.Error())
 	}
 	session.Values["Authenticated"] = false
 	session.Save(r, w)

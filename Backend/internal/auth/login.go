@@ -10,7 +10,7 @@ user exists
 package auth
 
 import (
-	_db "DiffSync/database"
+	"DiffSync/database"
 	_session "DiffSync/internal/session"
 	"log"
 
@@ -141,7 +141,7 @@ func (u *User) checkPassword() error {
 	// i.e. even if the user puts ' or 1= '1
 	// the hashed value will not be an injection command
 
-	matches := _db.CredentialsMatch(u.Email, hashedPassword)
+	matches := CredentialsMatch(u.Email, hashedPassword)
 	if matches == 0 {
 		return errors.New("invalid credentials")
 	} else if matches > 1 { // if more than 1 result is returned
