@@ -4,7 +4,6 @@ package diffsyncService
 // the package includes the main websocket entry listening method
 
 import (
-	diffsyncService "DiffSync/internal/service"
 	diffsync "DiffSync/internal/state"
 	"log"
 	"net/http"
@@ -12,7 +11,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var docManager = diffsyncService.NewDocumentManager()
+var docManager = NewDocumentManager()
 var Upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
