@@ -10,7 +10,8 @@ import FolderIcon from '@material-ui/icons/Folder';
 
 interface FolderProps {
   filename: string,
-  onClick: () => void
+  onClick: () => void,
+  onRename: (prev: string, next: string) => void
 }
 
 const IconContainer = styled.div`
@@ -26,7 +27,7 @@ const FolderContainer: React.FC<FolderProps> = ({ filename, onClick }) => {
       <IconContainer>
         <FolderIcon style={{
           color: "#999999",
-          height: "307px",
+          height: "100%",
           width: "100%"
         }} />
         {filename}

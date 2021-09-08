@@ -5,19 +5,22 @@ import Button from '@material-ui/core/Button';
 const Container = styled.div`
   width: 250px;
   background: lightgrey;
-  height: 100vh;
+  height: 100%;
 `
+
 const SidebarTitle = styled.div`
   font-size: xx-large;
   margin: 2rem;
   font-weight: bold;
 `
+
 const ButtonFlex = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   grid-gap: 80px;
 `
+
 const ButtonGroup = styled.div`
   display: flex;
   flex-direction: column;
@@ -25,11 +28,11 @@ const ButtonGroup = styled.div`
   grid-gap: 30px;
 `
 
-interface SidebarProps {
+interface ButtonProps {
   bgColor: string;
 }
 
-const SidebarButton = styled(Button)<SidebarProps>`
+const SidebarButton = styled(Button)<ButtonProps>`
   && {
     width: 160px;
     variant: contained;
@@ -39,8 +42,12 @@ const SidebarButton = styled(Button)<SidebarProps>`
   }
 `
 
+interface SideBarProps {
+  onNewFolder: () => void;
+}
+
 // Wrapper component ${props => props.color}
-const SideBar: React.FC = () => {
+const SideBar: React.FC<SideBarProps> = ({ onNewFolder }) => {
   return (
     <Container>
       <SidebarTitle>
@@ -59,7 +66,7 @@ const SideBar: React.FC = () => {
           <SidebarButton bgColor="#82A3F8">
             New page
           </SidebarButton>
-          <SidebarButton bgColor="#82A3F8">
+          <SidebarButton bgColor="#82A3F8" onClick={onNewFolder}>
             New folder
           </SidebarButton>
           </ButtonGroup>
@@ -79,4 +86,4 @@ const SideBar: React.FC = () => {
   )
 }
 
-export default SideBar
+export default SideBar;

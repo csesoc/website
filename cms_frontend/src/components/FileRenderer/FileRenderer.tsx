@@ -19,6 +19,7 @@ interface RenderProps {
   // a new file respectively
   onFileClick: (name: string) => void,
   onFolderClick: (name: string) => void,
+  onRename: (prev: string, next: string) => void,
   onNewFile: () => void
 }
 
@@ -42,29 +43,32 @@ const sortFiles = (files: FileFormat[]) => {
 // Typescript Declaration
 // uses the interface defined above
 // imports the icons from material UI
-const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick, onNewFile }) => {
+const FileRenderer: React.FC<RenderProps> = (props) => {
+  const { files, onFileClick, onFolderClick, onRename, onNewFile } = props;
   const sorted = sortFiles(files);
 
   return (
     // Mapping over all files given from Dashboard, with a little bit
     // of inline styling to facilitate flex divs
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", flexWrap: "wrap" }}>
       {sorted.map((file, index) => (
-        <div key={index} style={{ flexBasis: "25%" }}>
+        <div key={file.filename + index} style={{ width: "24%" }}>
           {file.type === "folder" && (
             <FolderContainer
               filename={file.filename}
-              onClick={() => onFolderClick(file.filename)} />
+              onClick={() => onFolderClick(file.filename)}
+              onRename={onRename} />
           )}
           {file.type === "file" && (
             <FileContainer
               filename={file.filename}
               image={Default}
-              onClick={() => onFileClick(file.filename)} />
+              onClick={() => onFileClick(file.filename)}
+              onRename={onRename} />
           )}
         </div>
       ))}
-      <div style={{ flexBasis: "25%" }}>
+      <div style={{ width: "24%" }}>
         <FileContainer
           filename="New"
           image={NewPost}
