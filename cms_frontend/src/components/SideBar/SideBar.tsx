@@ -26,10 +26,14 @@ const ButtonGroup = styled.div`
 `
 
 interface SidebarProps {
+  newFileModalOpener: () => void;
+}
+
+interface SideBarButtonProps {
   bgColor: string;
 }
 
-const SidebarButton = styled(Button)<SidebarProps>`
+const SidebarButton = styled(Button) <SideBarButtonProps>`
   && {
     width: 160px;
     variant: contained;
@@ -40,40 +44,40 @@ const SidebarButton = styled(Button)<SidebarProps>`
 `
 
 // Wrapper component ${props => props.color}
-const SideBar: React.FC = () => {
+const SideBar: React.FC<SidebarProps> = ({ newFileModalOpener }) => {
   return (
     <Container>
       <SidebarTitle>
         Welcome "name"
       </SidebarTitle>
       <ButtonFlex>
-          <ButtonGroup>
+        <ButtonGroup>
           <SidebarButton bgColor="#F88282">
             Blog
           </SidebarButton>
           <SidebarButton bgColor="#F88282">
             Core pages
           </SidebarButton>
-          </ButtonGroup>
-          <ButtonGroup>
-          <SidebarButton bgColor="#82A3F8">
+        </ButtonGroup>
+        <ButtonGroup>
+          <SidebarButton bgColor="#82A3F8" onClick={newFileModalOpener}>
             New page
           </SidebarButton>
           <SidebarButton bgColor="#82A3F8">
             New folder
           </SidebarButton>
-          </ButtonGroup>
-          <ButtonGroup>
+        </ButtonGroup>
+        <ButtonGroup>
           <SidebarButton bgColor="#B8E8E8">
             Edit
           </SidebarButton>
-          <SidebarButton bgColor="#B8E8E8"> 
+          <SidebarButton bgColor="#B8E8E8">
             Feature
           </SidebarButton>
           <SidebarButton bgColor="#B8E8E8">
             Recycle
           </SidebarButton>
-          </ButtonGroup>
+        </ButtonGroup>
       </ButtonFlex>
     </Container>
   )

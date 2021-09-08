@@ -73,7 +73,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div style={{ display: 'flex' }}>
-      <SideBar />
+      <SideBar newFileModalOpener={handleModelOpen}/>
       <div style={{ flex: 1 }}>
         <Dialog
           open={modelOpen}
