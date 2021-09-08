@@ -16,18 +16,18 @@
             "img" : "./blog.jpg"
         },
         {
-            "name" : "Simple blog",
-            "description" : "A simple blog templates with a header, background image and body.",
+            "name" : "Simple blog 2",
+            "description" : "Here to demo scrollbox",
             "img" : "./blog.jpg"
         },
         {
-            "name" : "Blank page",
-            "description" : "A full-page content box",
+            "name" : "Blank page 2",
+            "description" : "Here to demo scrollbox",
             "img" : "./blog.jpg"
         },
         {
-            "name" : "Fullscreen image",
-            "description" : "A full page with only an image container for posting poggers memes.",
+            "name" : "Fullscreen image 2",
+            "description" : "Here to demo scrollbox",
             "img" : "./blog.jpg"
         }
     ]

@@ -1,10 +1,12 @@
-// Matt Rossouw
+// Scrollable selector for CMS templates
+// Matthew Rossouw, @omeh-a (09/2021)
+// # # # 
+// Note: currently draws from /data/templates.json. In future
+// this should draw from the backend, although it is not required
+// for our blogging MVP. State is tied to NewDialogue
 
-import { Button, Chip, Container, TextField } from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
 import React from 'react';
 import styled from 'styled-components';
-import { fileURLToPath } from 'url';
 import TemplateChip from './TemplateChip';
 
 
@@ -14,6 +16,11 @@ interface TemplateFile {
     name: string;
     description: string;
     img: string;
+}
+
+interface TemplateSelectorProps {
+    selected: string,
+    setSelected : (name: string) => void,
 }
 
 const ScrollDiv = styled.div`
@@ -31,15 +38,14 @@ const ScrollDiv = styled.div`
  * Subcomponent for NewDialogue which gets a list of
  * templates to present for selection by the user.
  */
-const TemplateSelector : React.FC = () => {
-
-
+const TemplateSelector : React.FC<TemplateSelectorProps> = ({selected, setSelected}) => {
     return (
         <ScrollDiv>
-     
             {templates["templates"].map((file: TemplateFile)=> {
                 return (
-                    <TemplateChip name={file.name} img={file.img} description={file.description}/>
+
+                    <TemplateChip name={file.name} isSelected={file.name == selected}
+                    img={file.img} description={file.description} click={() => {setSelected(file.name)}}/>
                 )                   
             })}
         </ScrollDiv>

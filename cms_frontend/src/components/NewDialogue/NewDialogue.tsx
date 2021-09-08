@@ -1,5 +1,10 @@
+// Modal window for creating a new page
+// Matthew Rossouw, @omeh-a (09/2021)
+// # # # 
+// This window is rendered modally - i.e. it does not require a new viewport.
+// It contains a template selector + preview, as well as a title field.
+
 import { Button, TextField } from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
 import React from 'react';
 import styled from 'styled-components';
 import TemplateSelector from './TemplateSelector';
@@ -9,9 +14,7 @@ const Container = styled.div`
   width: 300px;
   height: 350px;
   background: white;
-  position: absolute;
   padding: 10px;
-  border: 1px solid #c7c7c7;
   left: 40%;
   top: 30%;
 `
@@ -37,27 +40,44 @@ interface DialogueProps {
 
 // Wrapper component
 const NewDialogue: React.FC<DialogueProps> = ({directory, isCore}) => {
+  
+  
+  // Input box state
+  const [title, setTitle] = React.useState("untitled");
+
+  // Currently highlighted template
+  const [selected, setSelected] = React.useState("Simple blog");
+
+  // Title box event handler
+  const handleTitleChange = (event : React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value)
+  }
+
+
   return (
+    
     <Container>
       <div style={{paddingLeft:"15px"}}>
         {isCore ? (<strong>New core page</strong>) : (<p>New blog post in {directory}</p>)}
-        <TextField label="title"/>
+        <TextField label="title" onChange={handleTitleChange} value={title}/>
       </div>
       <Body>
-        <TemplateSelector/>
+        <TemplateSelector selected={selected} setSelected={setSelected}/>
         <TemplatePreview>
           (preview)
         </TemplatePreview>
       </Body>
       <div style = {{margin: "auto", width: "40%", padding:"15px"}}>
         <Button variant="outlined" color="secondary" onClick={() => {
-          // TODO: add handler for spawning new doc
-          alert("A new document appears!")
+          // TODO: add logic for spawning new doc + redirect to editor
+          alert(`new doc -> name: ${title} template: ${selected} type = 
+                ${isCore ? "CORE" : "BLOG"}`)
         }}>
           New page
         </Button>
       </div>
     </Container>
+
   )
 }
 
