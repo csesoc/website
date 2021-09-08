@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { IconButton } from "@material-ui/core";
+import { Button, Dialog, DialogContent, IconButton } from "@material-ui/core";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 
 import SideBar from 'src/components/SideBar/SideBar';
 import FileRenderer from 'src/components/FileRenderer/FileRenderer';
+import NewDialogue from 'src/components/NewDialogue/NewDialogue';
 
 import Files from "src/data/dummy_structure.json";
 type FolderName = keyof typeof Files;
@@ -18,6 +19,19 @@ const Directory = styled.h3`
 
 const Dashboard: React.FC = () => {
   const [dir, setDir] = useState("root" as FolderName);
+
+  // Modal state handler
+  const [modelOpen, setModelOpen] = React.useState(false);
+
+  // Modal opener
+  const handleModelOpen = () => {
+    setModelOpen(true);
+  }
+
+  // Modal closer
+  const handleModelClose = () => {
+    setModelOpen(false);
+  }
 
   // Gets the parent directory of our current directory, does not check
   // if that directory exists
@@ -61,6 +75,15 @@ const Dashboard: React.FC = () => {
     <div style={{ display: 'flex' }}>
       <SideBar />
       <div style={{ flex: 1 }}>
+        <Dialog
+          open={modelOpen}
+          onClose={handleModelClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <NewDialogue directory={dir} isCore={false} />
+          </DialogContent>
+        </Dialog>
         <Directory>{dir}</Directory>
         <IconButton
           disabled={!hasParent()}
@@ -72,8 +95,9 @@ const Dashboard: React.FC = () => {
           files={Files[dir]}
           onFileClick={fileClick}
           onFolderClick={folderClick}
-          onNewFile={newFile} />
+          onNewFile={handleModelOpen} />
       </div>
+      <Button> </Button>
     </div>
   )
 };
