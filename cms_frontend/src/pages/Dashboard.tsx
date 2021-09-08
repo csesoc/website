@@ -21,16 +21,16 @@ const Dashboard: React.FC = () => {
   const [dir, setDir] = useState("root" as FolderName);
 
   // Modal state handler
-  const [open, setOpen] = React.useState(false);
+  const [modelOpen, setModelOpen] = React.useState(false);
 
   // Modal opener
-  const handleOpen = () => {
-    setOpen(true);
+  const handleModelOpen = () => {
+    setModelOpen(true);
   }
 
   // Modal closer
-  const handleClose = () => {
-    setOpen(false);
+  const handleModelClose = () => {
+    setModelOpen(false);
   }
 
   // Gets the parent directory of our current directory, does not check
@@ -75,15 +75,15 @@ const Dashboard: React.FC = () => {
     <div style={{ display: 'flex' }}>
       <SideBar />
       <div style={{ flex: 1 }}>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogContent>
-          <NewDialogue directory = {dir} isCore = {false}/>
-        </DialogContent>
-      </Dialog>
+        <Dialog
+          open={modelOpen}
+          onClose={handleModelClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <NewDialogue directory={dir} isCore={false} />
+          </DialogContent>
+        </Dialog>
         <Directory>{dir}</Directory>
         <IconButton
           disabled={!hasParent()}
@@ -95,7 +95,7 @@ const Dashboard: React.FC = () => {
           files={Files[dir]}
           onFileClick={fileClick}
           onFolderClick={folderClick}
-          onNewFile={handleOpen} />
+          onNewFile={handleModelOpen} />
       </div>
       <Button> </Button>
     </div>
