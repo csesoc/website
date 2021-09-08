@@ -21,7 +21,7 @@ const Dashboard: React.FC = () => {
   const [dir, setDir] = useState("root" as FolderName);
 
   // Modal state handler
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
 
   // Modal opener
   const handleOpen = () => {
@@ -95,7 +95,7 @@ const Dashboard: React.FC = () => {
           files={Files[dir]}
           onFileClick={fileClick}
           onFolderClick={folderClick}
-          onNewFile={newFile} />
+          onNewFile={handleOpen} />
       </div>
       <Button> </Button>
     </div>
