@@ -1,17 +1,13 @@
 package filesystem
 
-// TODO: remove code duplication by abstracting out a lot of the input and paramater validation
-// will create a new task for this later
-
 import (
 	"DiffSync/database"
+	"DiffSync/httpUtil"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"strings"
-
-	"github.com/gorilla/schema"
 )
 
 var httpDbPool database.Pool
@@ -35,68 +31,38 @@ type ValidInfoRequest struct {
 	EntityID int `schema:"EntityID,required"`
 }
 
-func ThrowRequestError(w http.ResponseWriter, status int, message string) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	w.Write([]byte(fmt.Sprintf(`{
-		"status": 405,
-		"body": {
-			"response": "there was an error",
-			"more_info": "%s"
-		}
-		}`, message)))
-}
-
-func SendResponse(w http.ResponseWriter, marshaledJson string) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	w.Write([]byte(fmt.Sprintf(`{
-		"status": 200,
-		"body": {
-			"response": %s
-		}
-		}`, marshaledJson)))
-}
-
 // Defines endpoints consumable via the API
 func GetEntityInfo(w http.ResponseWriter, r *http.Request) {
-	decoder := schema.NewDecoder()
 	routes := strings.Split(r.URL.RequestURI(), "/")
-
-	err := r.ParseForm()
-	if err != nil {
-		ThrowRequestError(w, 400, "")
-		return
-	}
 
 	switch routes[len(routes)-1] {
 	case "root":
 		fileInfo, err := getRootInfo(httpDbPool)
 		if err != nil {
-			ThrowRequestError(w, 500, "something went wrong")
+			httpUtil.ThrowRequestError(w, 500, "something went wrong")
 			return
 		}
 
 		out, _ := json.Marshal(fileInfo)
-		SendResponse(w, string(out))
+		httpUtil.SendResponse(w, string(out))
 
 		break
 	default:
 		var input ValidInfoRequest
-		err = decoder.Decode(&input, r.Form)
-		if err != nil {
-			ThrowRequestError(w, 400, "missing RequestedID paramater")
-			return
-		}
+		if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"GET"}, map[int]string{
+			400: "missing EntityID paramater",
+			405: "invalid method",
+		}, &input); validRequest {
 
-		fileInfo, err := getFilesystemInfo(httpDbPool, input.EntityID)
-		if err != nil {
-			ThrowRequestError(w, 405, "unable to find entity with requested ID")
-			return
-		}
+			fileInfo, err := getFilesystemInfo(httpDbPool, input.EntityID)
+			if err != nil {
+				httpUtil.ThrowRequestError(w, 404, "unable to find entity with requested ID")
+				return
+			}
 
-		out, _ := json.Marshal(fileInfo)
-		SendResponse(w, string(out))
+			out, _ := json.Marshal(fileInfo)
+			httpUtil.SendResponse(w, string(out))
+		}
 		break
 	}
 }
@@ -110,66 +76,43 @@ type ValidEntityCreationRequest struct {
 }
 
 func CreateNewEntity(w http.ResponseWriter, r *http.Request) {
-	decoder := schema.NewDecoder()
-	err := r.ParseForm()
-	if err != nil {
-		ThrowRequestError(w, 400, "")
-		return
-	}
-
-	if r.Method != "POST" {
-		ThrowRequestError(w, 405, "invalid method")
-		return
-	}
 
 	var input ValidEntityCreationRequest
-	err = decoder.Decode(&input, r.Form)
-	if err != nil {
-		ThrowRequestError(w, 400, "missing paramaters, must have: LogicalName, OwnerGroup, IsDocument")
-		return
+	if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"POST"}, map[int]string{
+		400: "missing paramaters, must have: LogicalName, OwnerGroup, IsDocument",
+		405: "invalid method",
+	}, &input); validRequest {
+		var newID int
+		var err error
+
+		if input.Parent == 0 {
+			newID, err = createFilesystemEntityAtRoot(httpDbPool, input.LogicalName, input.OwnerGroup, input.IsDocument)
+		} else {
+			log.Print("hello there\n")
+			newID, err = createFilesystemEntity(httpDbPool, input.Parent, input.LogicalName, input.OwnerGroup, input.IsDocument)
+		}
+
+		if err != nil {
+			httpUtil.ThrowRequestError(w, 500, "unable to create entity (may be a duplicate)")
+		} else {
+			httpUtil.SendResponse(w, fmt.Sprintf(`{"success": true, "newID": %d}`, newID))
+		}
 	}
 
-	var newID int
-	if input.Parent == 0 {
-		newID, err = createFilesystemEntityAtRoot(httpDbPool, input.LogicalName, input.OwnerGroup, input.IsDocument)
-	} else {
-		log.Print("hello there\n")
-		newID, err = createFilesystemEntity(httpDbPool, input.Parent, input.LogicalName, input.OwnerGroup, input.IsDocument)
-	}
-
-	if err != nil {
-		ThrowRequestError(w, 500, "unable to create entity (may be a duplicate)")
-		return
-	}
-	SendResponse(w, fmt.Sprintf(`{"success": true, "newID": %d}`, newID))
 }
 
 // Handler for deleting filesystem entities
 func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request) {
-	decoder := schema.NewDecoder()
-	err := r.ParseForm()
-	if err != nil {
-		ThrowRequestError(w, 400, "")
-		return
-	}
-
-	if r.Method != "POST" {
-		ThrowRequestError(w, 405, "invalid method")
-		return
-	}
-
 	var input ValidInfoRequest
-	err = decoder.Decode(&input, r.Form)
-	if err != nil {
-		ThrowRequestError(w, 400, "missing paramaters, must have: EntityID")
-		return
+	if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"POST"}, map[int]string{
+		400: "missing paramaters, must have: LogicalName, OwnerGroup, IsDocument",
+		405: "invalid method",
+	}, &input); validRequest {
+		err := deleteEntity(httpDbPool, input.EntityID)
+		if err != nil {
+			httpUtil.ThrowRequestError(w, 500, "unable to delete, the requested entity is either the root directory or has children")
+		} else {
+			httpUtil.SendResponse(w, fmt.Sprintf(`{"success": true, "deleted": %d}`, input.EntityID))
+		}
 	}
-
-	err = deleteEntity(httpDbPool, input.EntityID)
-	if err != nil {
-		ThrowRequestError(w, 500, "unable to delete, the requested entity is either the root directory or has children")
-		return
-	}
-
-	SendResponse(w, fmt.Sprintf(`{"success": true, "deleted": %d}`, input.EntityID))
 }
