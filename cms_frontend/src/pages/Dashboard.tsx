@@ -7,7 +7,7 @@ import SideBar from 'src/components/SideBar/SideBar';
 import FileRenderer from 'src/components/FileRenderer/FileRenderer';
 
 // Cast JSON format to HashMap
-import type FileFormat from "src/types/FileFormat";
+import type { FileFormat } from "src/types/FileFormat";
 import Files from "src/data/DummyFiles";
 
 // Heading to display current directory, separated out to avoid inline styling
@@ -126,6 +126,9 @@ const Dashboard: React.FC = () => {
       return;
     }
 
+    // We have to map over again, since if we directly do
+    // `curr_folder[rename_index].filename = curr` then we change
+    // state outside of the `setFolder` function, breaking reactivity
     const updated = folder.map((item, index) => {
       if (index === rename_index) {
         return { ...item, filename: curr };

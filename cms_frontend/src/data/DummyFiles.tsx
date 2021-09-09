@@ -1,4 +1,4 @@
-import type FileFormat from "src/types/FileFormat";
+import type { FileFormat } from "src/types/FileFormat";
 import FilesRaw from "./dummy_structure.json";
 
 type FolderName = keyof typeof FilesRaw;

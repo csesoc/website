@@ -6,10 +6,7 @@ import FileContainer from "./FileContainer";
 import Default from "src/images/default.png";
 import NewPost from "src/images/new_post.png";
 
-interface FileFormat {
-  filename: string,
-  type: string
-}
+import type { FileFormat } from "src/types/FileFormat";
 
 // type declaration for props
 interface RenderProps {
