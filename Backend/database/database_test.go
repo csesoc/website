@@ -23,6 +23,7 @@ func TestMain(m *testing.M) {
 	})
 	if err != nil {
 		log.Fatalf(err.Error())
+		os.Exit(1)
 	}
 	defer pool.Close()
 	os.Exit(m.Run())
