@@ -1,5 +1,8 @@
 package filesystem
 
+// TODO: remove code duplication by abstracting out a lot of the input and paramater validation
+// will create a new task for this later
+
 import (
 	"DiffSync/database"
 	"encoding/json"
@@ -139,4 +142,34 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	SendResponse(w, fmt.Sprintf(`{"success": true, "newID": %d}`, newID))
+}
+
+// Handler for deleting filesystem entities
+func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request) {
+	decoder := schema.NewDecoder()
+	err := r.ParseForm()
+	if err != nil {
+		ThrowRequestError(w, 400, "")
+		return
+	}
+
+	if r.Method != "POST" {
+		ThrowRequestError(w, 405, "invalid method")
+		return
+	}
+
+	var input ValidInfoRequest
+	err = decoder.Decode(&input, r.Form)
+	if err != nil {
+		ThrowRequestError(w, 400, "missing paramaters, must have: EntityID")
+		return
+	}
+
+	err = deleteEntity(httpDbPool, input.EntityID)
+	if err != nil {
+		ThrowRequestError(w, 500, "unable to delete, the requested entity is either the root directory or has children")
+		return
+	}
+
+	SendResponse(w, fmt.Sprintf(`{"success": true, "deleted": %d}`, input.EntityID))
 }
