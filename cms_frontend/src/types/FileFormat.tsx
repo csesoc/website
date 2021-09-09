@@ -3,4 +3,4 @@ interface FileFormat {
   type: string
 }
 
-export default FileFormat;
+export type { FileFormat };
