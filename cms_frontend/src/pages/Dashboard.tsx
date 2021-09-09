@@ -7,19 +7,8 @@ import SideBar from 'src/components/SideBar/SideBar';
 import FileRenderer from 'src/components/FileRenderer/FileRenderer';
 
 // Cast JSON format to HashMap
-import FilesRaw from "src/data/dummy_structure.json";
-type FolderName = keyof typeof FilesRaw;
-
-interface FileFormat {
-  filename: string,
-  type: string
-}
-
-const Files = new Map<string, FileFormat[]>();
-
-for (const key in FilesRaw) {
-  Files.set(key, FilesRaw[key as FolderName]);
-}
+import type FileFormat from "src/types/FileFormat";
+import Files from "src/data/DummyFiles";
 
 // Heading to display current directory, separated out to avoid inline styling
 const Directory = styled.h3`
@@ -69,6 +58,11 @@ const Dashboard: React.FC = () => {
     return false;
   }
 
+  const updateFolder = (updated: FileFormat[]) => {
+    setFolder(updated);
+    Files.set(dir, updated);
+  }
+
   const newFolderName = () => {
     let index = 0;
     let folder_name = "New Folder";
@@ -81,23 +75,18 @@ const Dashboard: React.FC = () => {
     return folder_name;
   }
 
-  const updateFolder = (updated: FileFormat[]) => {
-    setFolder(updated);
-    Files.set(dir, updated);
-  }
-
   const newFolder = () => {
     const name = newFolderName();
 
     Files.set(`${dir}/${name}`, []);
 
-    let curr_folder = Files.get(dir) as FileFormat[];
-    curr_folder = [...curr_folder, {
+    let updated = Files.get(dir) as FileFormat[];
+    updated = [...updated, {
       filename: name,
       type: "folder"
     }];
 
-    updateFolder(curr_folder);
+    updateFolder(updated);
   }
 
   const fileClick = (name: string) => {
@@ -134,10 +123,18 @@ const Dashboard: React.FC = () => {
 
     if (rename_index === -1) {
       // TODO: error, cannot rename file that doesn't exist
+      return;
     }
 
-    curr_folder[rename_index].filename = curr;
-    updateFolder(curr_folder);
+    const updated = folder.map((item, index) => {
+      if (index === rename_index) {
+        return { ...item, filename: curr };
+      } else {
+        return item;
+      }
+    });
+
+    updateFolder(updated);
   }
 
   return (
