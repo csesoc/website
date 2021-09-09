@@ -17,15 +17,13 @@ VALUES ('john.smith@gmail.com', 'john', 'password');
 
 
 /* Stub for whenever jacky does it */
-DROP TABLE IF EXISTS CASCADE groups;
 CREATE TABLE groups (
   UID   SERIAL PRIMARY KEY,
   Name  VARCHAR(50) NOT NULL
 );
 INSERT INTO groups (Name)
   VALUES ('admin');
-
-
+  
 
 DROP TABLE IF EXISTS filesystem;
 CREATE TABLE filesystem (
@@ -102,22 +100,22 @@ END $$;
 
 /* Another utility procedure */
 DROP FUNCTION IF EXISTS delete_entity;
-CREATE OR REPLACE FUNCTION delete_entity (parentP INT, entityIDP INT) RETURNS void
+CREATE OR REPLACE FUNCTION delete_entity (entityIDP INT) RETURNS void
 LANGUAGE plpgsql
 AS $$
 DECLARE
   numKids INT := array_length(akeys((SELECT Children FROM filesystem WHERE EntityID = entityIDP)), 1);
+  parentP INT := (SELECT Parent FROM filesystem WHERE EntityID = entityIDP);
   isRoot  BOOLEAN := (SELECT Parent FROM filesystem WHERE EntityID = entityIDP) IS NULL;
 BEGIN
   /* If this is a directory and has kids raise an error */
   IF numKids > 0
   THEN
-    RAISE EXCEPTION 'cannot delete a directory with children';
+    RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'entity has children (please dont orphan them O_O )';
   END IF;
 
   IF isRoot THEN
-    RAISE EXCEPTION 'stop trying to delete root';
-    RETURN;
+    RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'stop trying to delete root >:(';
   END IF;
 
   DELETE FROM filesystem WHERE EntityID = entityIDP;
@@ -140,6 +138,6 @@ BEGIN
 
   wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document'::VARCHAR, 1, true));
   wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document_round_2'::VARCHAR, 1, true));
-  PERFORM delete_entity(oldEntity::INT, wasPopping::INT);
+  PERFORM delete_entity(wasPopping::INT);
   wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document_round_2'::VARCHAR, 1, true));
 END $$;

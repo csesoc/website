@@ -24,11 +24,6 @@ CREATE TABLE person (
   Password VARCHAR(50) NOT NULL
 );
 
-INSERT INTO person (Email, First_name, Password)
-VALUES ('test@test.com', 'adam', 'password');
-INSERT INTO person(Email, First_name, Password)
-VALUES ('asdas@asdads.com', 'adamee', 'password');
-
 
 /* Stub for whenever jacky does it */
 CREATE TABLE groups (
@@ -37,8 +32,7 @@ CREATE TABLE groups (
 );
 INSERT INTO groups (Name)
   VALUES ('admin');
-
-
+  
 
 DROP TABLE IF EXISTS filesystem;
 CREATE TABLE filesystem (
@@ -113,21 +107,29 @@ BEGIN
   RETURN newEntityID;
 END $$;
 
-
-/* Insert dummy data */
-DO $$
+/* Another utility procedure */
+DROP FUNCTION IF EXISTS delete_entity;
+CREATE OR REPLACE FUNCTION delete_entity (entityIDP INT) RETURNS void
+LANGUAGE plpgsql
+AS $$
 DECLARE
-  rootID        filesystem.EntityID%type;
-  newEntity     filesystem.EntityID%type;
-  wasPopping    filesystem.EntityID%type;
+  numKids INT := array_length(akeys((SELECT Children FROM filesystem WHERE EntityID = entityIDP)), 1);
+  parentP INT := (SELECT Parent FROM filesystem WHERE EntityID = entityIDP);
+  isRoot  BOOLEAN := (SELECT Parent FROM filesystem WHERE EntityID = entityIDP) IS NULL;
 BEGIN
-  SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE Parent IS NULL;
-  
-  newEntity := (SELECT new_entity(rootID::INT, 'downloads'::VARCHAR, 1, false));
-  newEntity := (SELECT new_entity(rootID::INT, 'documents'::VARCHAR, 1, false));
+  /* If this is a directory and has kids raise an error */
+  IF numKids > 0
+  THEN
+    RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'entity has children (please dont orphan them O_O )';
+  END IF;
 
-  wasPopping := (SELECT new_entity(newEntity::INT, 'cool_document'::VARCHAR, 1, true));
-  wasPopping := (SELECT new_entity(newEntity::INT, 'cool_document_round_2'::VARCHAR, 1, true));
+  IF isRoot THEN
+    RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'stop trying to delete root >:(';
+  END IF;
+
+  DELETE FROM filesystem WHERE EntityID = entityIDP;
+  UPDATE filesystem SET Children = Children - entityIDP::TEXT
+  WHERE EntityID = parentP;
 END $$;`
 
 // Please close your docker database spin ups, please and thank you
