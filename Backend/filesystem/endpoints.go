@@ -24,7 +24,7 @@ func init() {
 	})
 
 	if err != nil {
-		log.Print(err.Error())
+		//log.Print(err.Error())
 	}
 }
 
