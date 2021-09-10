@@ -48,9 +48,10 @@ const Dashboard: React.FC = () => {
     return found;
   }
 
-  const containsFilename = (name: string) => {
+  // Checks if a file/folder name already exists in our current directory
+  const containsFilename = (name: string, type: string) => {
     for (const item of folder) {
-      if (name === item.filename) {
+      if (item.type === type && name === item.filename) {
         return true;
       }
     }
@@ -58,16 +59,19 @@ const Dashboard: React.FC = () => {
     return false;
   }
 
+  // Updates our current folder state, also emitting it to the backend
+  // TODO: change to an API call once that's up
   const updateFolder = (updated: FileFormat[]) => {
     setFolder(updated);
     Files.set(dir, updated);
   }
 
+  // Finds the next available folder name
   const newFolderName = () => {
     let index = 0;
     let folder_name = "New Folder";
 
-    while (containsFilename(folder_name)) {
+    while (containsFilename(folder_name, "folder")) {
       index++;
       folder_name = `New Folder (${index})`;
     }
@@ -75,6 +79,7 @@ const Dashboard: React.FC = () => {
     return folder_name;
   }
 
+  // Creates a new folder with a generic name, like "New Folder (1)"
   const newFolder = () => {
     const name = newFolderName();
 
@@ -89,23 +94,28 @@ const Dashboard: React.FC = () => {
     updateFolder(updated);
   }
 
+  // Listener when we click on a file in the current directory
   const fileClick = (name: string) => {
     // TODO: fill with API call
   }
 
+  // Listener when we click on a folder in the current directory
   const folderClick = (name: string) => {
     const childName = `${dir}/${name}`;
     setDir(childName);
     setFolder(Files.get(childName) as FileFormat[]);
   }
 
+  // Listener when we create a new file
   const newFile = () => {
     // TODO: fill with API call
   }
 
+  // Listener when we rename a file/folder
   const rename = (prev: string, curr: string) => {
     let curr_folder = Files.get(dir) as FileFormat[];
     let rename_index = -1;
+    let same_name_index = -1;
 
     for (let i = 0; i < curr_folder.length; i++) {
       const item = curr_folder[i];
@@ -115,15 +125,22 @@ const Dashboard: React.FC = () => {
       }
 
       if (item.filename === curr) {
-        // Prevent renaming, we can't name something
-        // to a name that already exists
-        return;
+        same_name_index = i;
       }
     }
 
     if (rename_index === -1) {
       // TODO: error, cannot rename file that doesn't exist
       return;
+    } else if (same_name_index !== -1) {
+      const target = curr_folder[rename_index];
+      const same_name = curr_folder[same_name_index];
+
+      if (target.type === same_name.type) {
+        // Can't have two files/folders have the same name,
+        // but we can have a file have the same name as a folder
+        return;
+      }
     }
 
     // We have to map over again, since if we directly do

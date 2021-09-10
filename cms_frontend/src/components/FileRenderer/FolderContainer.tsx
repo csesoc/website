@@ -4,7 +4,7 @@
 // Wraps the contents of a folder stored on the CMS into its own
 // functional component, can be clicked on to access subdirectories
 
-import React from "react";
+import React, { useState } from "react";
 import styled from 'styled-components';
 import FolderIcon from '@material-ui/icons/Folder';
 
@@ -21,16 +21,44 @@ const IconContainer = styled.div`
   text-align: center;
 `;
 
-const FolderContainer: React.FC<FolderProps> = ({ filename, onClick }) => {
+const FolderContainer: React.FC<FolderProps> = ({ filename, onClick, onRename }) => {
+  const [toggle, setToggle] = useState(true);
+  const [name, setName] = useState(filename);
+  
+  const orig_name = filename;
+
   return (
-    <div onClick={onClick}>
+    <div>
       <IconContainer>
-        <FolderIcon style={{
-          color: "#999999",
-          height: "100%",
-          width: "100%"
-        }} />
-        {filename}
+        <FolderIcon
+          onClick={onClick}
+          style={{
+            color: "#999999",
+            height: "100%",
+            width: "100%"
+          }} />
+        {toggle ? (
+          <p
+            onDoubleClick={() => setToggle(false)}>
+            {filename}
+          </p>
+        ) : (
+          <input
+            type="text"
+            value={name}
+            onChange={event => setName(event.target.value)}
+            onKeyDown={event => {
+              if (event.key === "Enter" || event.key === "Escape") {
+                if (event.key === "Enter") {
+                  onRename(orig_name, name);
+                }
+
+                setToggle(true);
+                event.preventDefault();
+                event.stopPropagation();
+              }
+            }} />
+        )}
       </IconContainer>
     </div>
   );
