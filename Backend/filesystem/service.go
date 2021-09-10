@@ -82,3 +82,13 @@ func getRootInfo(pool database.Pool) (EntityInfo, error) {
 	info, err := getFilesystemInfo(pool, rootID)
 	return info, err
 }
+
+// deleteEntity removes an entity from the filesystem
+func deleteEntity(pool database.Pool, entityID int) error {
+	_, err := pool.GetConn().Exec(context.Background(),
+		"SELECT delete_entity($1)", entityID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
