@@ -6,7 +6,10 @@ CREATE TABLE person (
   UID serial PRIMARY KEY,
   Email VARCHAR(50) UNIQUE NOT NULL,
   First_name VARCHAR(50) NOT NULL,
-  Password VARCHAR(50) NOT NULL
+  Password VARCHAR(50) NOT NULL,
+
+  /* non duplicate email and password constraints */
+  CONSTRAINT no_dupes UNIQUE (email, password)
 );
 
 /* inserting two accounts into db */
