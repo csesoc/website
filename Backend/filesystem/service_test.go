@@ -39,7 +39,7 @@ func TestRootRetrieval_Integration(t *testing.T) {
 	if assert.Nil(err) {
 		assert.Equal("root", root.EntityName)
 		assert.False(root.IsDocument)
-		assert.Greater(len(root.Children), 0)
+		assert.GreaterOrEqual(len(root.Children), 0)
 	}
 }
 
@@ -89,4 +89,36 @@ func TestDocumentInfoRetrieval_Integration(t *testing.T) {
 		assert.Equal("test_doc", info.EntityName)
 		assert.Empty(info.Children)
 	}
+}
+
+func TestEntityDeletion(t *testing.T) {
+	assert := assert.New(t)
+	root, _ := getRootInfo(pool)
+
+	// Test setup
+	newDir, _ := createFilesystemEntityAtRoot(pool, "cool_dir", ADMIN, false)
+	newDoc, _ := createFilesystemEntity(pool, newDir, "cool_doc", ADMIN, true)
+
+	assert.NotNil(deleteEntity(pool, root.EntityID))
+	assert.NotNil(deleteEntity(pool, newDir))
+
+	assert.Nil(deleteEntity(pool, newDoc))
+	info, _ := getFilesystemInfo(pool, newDir)
+	assert.NotContains(strconv.Itoa(newDoc), info.Children)
+	assert.Nil(deleteEntity(pool, newDir))
+
+	root, _ = getRootInfo(pool)
+	assert.NotContains(strconv.Itoa(newDir), root.Children)
+
+	anotherDirectory, _ := createFilesystemEntityAtRoot(pool, "cheese", ADMIN, false)
+	nestedDirectory, _ := createFilesystemEntity(pool, anotherDirectory, "cheeseBurger", ADMIN, false)
+	file, _ := createFilesystemEntity(pool, nestedDirectory, "spinach", ADMIN, false)
+
+	assert.NotNil(deleteEntity(pool, nestedDirectory))
+	assert.Nil(deleteEntity(pool, file))
+	assert.Nil(deleteEntity(pool, nestedDirectory))
+	assert.Nil(deleteEntity(pool, anotherDirectory))
+
+	root, _ = getRootInfo(pool)
+	assert.NotContains(strconv.Itoa(anotherDirectory), root.Children)
 }

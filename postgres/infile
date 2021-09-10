@@ -17,15 +17,13 @@ VALUES ('john.smith@gmail.com', 'john', 'password');
 
 
 /* Stub for whenever jacky does it */
-DROP TABLE IF EXISTS CASCADE groups;
 CREATE TABLE groups (
   UID   SERIAL PRIMARY KEY,
   Name  VARCHAR(50) NOT NULL
 );
 INSERT INTO groups (Name)
   VALUES ('admin');
-
-
+  
 
 DROP TABLE IF EXISTS filesystem;
 CREATE TABLE filesystem (
@@ -100,6 +98,30 @@ BEGIN
   RETURN newEntityID;
 END $$;
 
+/* Another utility procedure */
+DROP FUNCTION IF EXISTS delete_entity;
+CREATE OR REPLACE FUNCTION delete_entity (entityIDP INT) RETURNS void
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  numKids INT := array_length(akeys((SELECT Children FROM filesystem WHERE EntityID = entityIDP)), 1);
+  parentP INT := (SELECT Parent FROM filesystem WHERE EntityID = entityIDP);
+  isRoot  BOOLEAN := (SELECT Parent FROM filesystem WHERE EntityID = entityIDP) IS NULL;
+BEGIN
+  /* If this is a directory and has kids raise an error */
+  IF numKids > 0
+  THEN
+    RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'entity has children (please dont orphan them O_O )';
+  END IF;
+
+  IF isRoot THEN
+    RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'stop trying to delete root >:(';
+  END IF;
+
+  DELETE FROM filesystem WHERE EntityID = entityIDP;
+  UPDATE filesystem SET Children = Children - entityIDP::TEXT
+  WHERE EntityID = parentP;
+END $$;
 
 /* Insert dummy data */
 DO $$
@@ -107,12 +129,15 @@ DECLARE
   rootID        filesystem.EntityID%type;
   newEntity     filesystem.EntityID%type;
   wasPopping    filesystem.EntityID%type;
+  oldEntity     filesystem.EntityID%type;
 BEGIN
   SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE Parent IS NULL;
   
   newEntity := (SELECT new_entity(rootID::INT, 'downloads'::VARCHAR, 1, false));
-  newEntity := (SELECT new_entity(rootID::INT, 'documents'::VARCHAR, 1, false));
+  oldEntity := (SELECT new_entity(rootID::INT, 'documents'::VARCHAR, 1, false));
 
-  wasPopping := (SELECT new_entity(newEntity::INT, 'cool_document'::VARCHAR, 1, true));
-  wasPopping := (SELECT new_entity(newEntity::INT, 'cool_document_round_2'::VARCHAR, 1, true));
+  wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document'::VARCHAR, 1, true));
+  wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document_round_2'::VARCHAR, 1, true));
+  PERFORM delete_entity(wasPopping::INT);
+  wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document_round_2'::VARCHAR, 1, true));
 END $$;
