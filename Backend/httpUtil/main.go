@@ -2,6 +2,7 @@ package httpUtil
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/schema"
@@ -55,7 +56,12 @@ func ParseParamsToSchema(w http.ResponseWriter, r *http.Request, acceptingMethod
 	}
 
 	decoder := schema.NewDecoder()
-	err = decoder.Decode(target, r.Form)
+	if r.Method != "POST" {
+		err = decoder.Decode(target, r.Form)
+	} else {
+		log.Print("hello")
+		err = decoder.Decode(target, r.PostForm)
+	}
 	if err != nil {
 		ThrowRequestError(w, 400, errorMessages[400])
 		return false
