@@ -30,6 +30,19 @@ func SendResponse(w http.ResponseWriter, marshaledJson string) {
 		}`, marshaledJson)))
 }
 
+func ThrowUnAuthorisedError(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusUnauthorized)
+	w.Write([]byte(fmt.Sprintf(`{
+		"status": "403",
+		"body": {
+			"response": "Unauthorized"
+		}	
+	}`)))
+	// todo switch to frontend URI from environment variable?
+	http.RedirectHandler("http://localhost:3000/403", http.StatusUnauthorized)
+}
+
 // ErrorMessages maps HTTP errors to specific messages
 type ErrorMessages map[int]string
 
