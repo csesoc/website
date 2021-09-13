@@ -112,6 +112,8 @@ const Dashboard: React.FC = () => {
   }
 
   // Listener when we rename a file/folder
+  // NOTE: doesn't recursively rename yet, hopefully backend
+  // handles this properly
   const rename = (prev: string, curr: string) => {
     let curr_folder = Files.get(dir) as FileFormat[];
     let rename_index = -1;

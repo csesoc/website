@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import FolderContainer from "./FolderContainer";
 import FileContainer from "./FileContainer";
@@ -7,6 +8,10 @@ import Default from "src/images/default.png";
 import NewPost from "src/images/new_post.png";
 
 import type { FileFormat } from "src/types/FileFormat";
+
+const FileFlex = styled.div`
+  width: 24%;
+`
 
 // type declaration for props
 interface RenderProps {
@@ -49,7 +54,7 @@ const FileRenderer: React.FC<RenderProps> = (props) => {
     // of inline styling to facilitate flex divs
     <div style={{ display: "flex", flexWrap: "wrap" }}>
       {sorted.map((file, index) => (
-        <div key={file.filename + index} style={{ width: "24%" }}>
+        <FileFlex key={file.filename + index}>
           {file.type === "folder" && (
             <FolderContainer
               filename={file.filename}
@@ -63,14 +68,14 @@ const FileRenderer: React.FC<RenderProps> = (props) => {
               onClick={() => onFileClick(file.filename)}
               onRename={onRename} />
           )}
-        </div>
+        </FileFlex>
       ))}
-      <div style={{ width: "24%" }}>
+      <FileFlex>
         <FileContainer
           filename="New"
           image={NewPost}
           onClick={onNewFile} />
-      </div>
+      </FileFlex>
     </div>
   )
 }

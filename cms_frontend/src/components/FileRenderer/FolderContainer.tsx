@@ -4,9 +4,10 @@
 // Wraps the contents of a folder stored on the CMS into its own
 // functional component, can be clicked on to access subdirectories
 
-import React, { useState } from "react";
+import React from "react";
 import styled from 'styled-components';
 import FolderIcon from '@material-ui/icons/Folder';
+import Renamable from "./Renamable";
 
 interface FolderProps {
   filename: string,
@@ -22,11 +23,6 @@ const IconContainer = styled.div`
 `;
 
 const FolderContainer: React.FC<FolderProps> = ({ filename, onClick, onRename }) => {
-  const [toggle, setToggle] = useState(true);
-  const [name, setName] = useState(filename);
-  
-  const orig_name = filename;
-
   return (
     <div>
       <IconContainer>
@@ -37,28 +33,9 @@ const FolderContainer: React.FC<FolderProps> = ({ filename, onClick, onRename })
             height: "100%",
             width: "100%"
           }} />
-        {toggle ? (
-          <p
-            onDoubleClick={() => setToggle(false)}>
-            {filename}
-          </p>
-        ) : (
-          <input
-            type="text"
-            value={name}
-            onChange={event => setName(event.target.value)}
-            onKeyDown={event => {
-              if (event.key === "Enter" || event.key === "Escape") {
-                if (event.key === "Enter") {
-                  onRename(orig_name, name);
-                }
-
-                setToggle(true);
-                event.preventDefault();
-                event.stopPropagation();
-              }
-            }} />
-        )}
+        <Renamable
+          name={filename}
+          onRename={onRename} />
       </IconContainer>
     </div>
   );
