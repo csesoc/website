@@ -21,7 +21,7 @@ interface RenderProps {
   // a new file respectively
   onFileClick: (name: string) => void,
   onFolderClick: (name: string) => void,
-  onRename: (prev: string, next: string) => void,
+  onRename: (type: string, prev: string, next: string) => void,
   onNewFile: () => void
 }
 
@@ -59,14 +59,14 @@ const FileRenderer: React.FC<RenderProps> = (props) => {
             <FolderContainer
               filename={file.filename}
               onClick={() => onFolderClick(file.filename)}
-              onRename={onRename} />
+              onRename={(prev, next) => onRename("folder", prev, next)} />
           )}
           {file.type === "file" && (
             <FileContainer
               filename={file.filename}
               image={Default}
               onClick={() => onFileClick(file.filename)}
-              onRename={onRename} />
+              onRename={(prev, next) => onRename("file", prev, next)} />
           )}
         </FileFlex>
       ))}

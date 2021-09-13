@@ -114,7 +114,7 @@ const Dashboard: React.FC = () => {
   // Listener when we rename a file/folder
   // NOTE: doesn't recursively rename yet, hopefully backend
   // handles this properly
-  const rename = (prev: string, curr: string) => {
+  const rename = (type: string, prev: string, curr: string) => {
     let curr_folder = Files.get(dir) as FileFormat[];
     let rename_index = -1;
     let same_name_index = -1;
@@ -122,7 +122,7 @@ const Dashboard: React.FC = () => {
     for (let i = 0; i < curr_folder.length; i++) {
       const item = curr_folder[i];
 
-      if (item.filename === prev) {
+      if (item.filename === prev && item.type === type) {
         rename_index = i;
       }
 
@@ -138,7 +138,7 @@ const Dashboard: React.FC = () => {
       const target = curr_folder[rename_index];
       const same_name = curr_folder[same_name_index];
 
-      if (target.type === same_name.type) {
+      if (type === same_name.type) {
         // Can't have two files/folders have the same name,
         // but we can have a file have the same name as a folder
         return;
