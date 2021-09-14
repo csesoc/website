@@ -92,3 +92,13 @@ func deleteEntity(pool database.Pool, entityID int) error {
 	}
 	return nil
 }
+
+// deleteEntity removes an entity from the filesystem
+func renameEntity(pool database.Pool, entityID int, newName string) error {
+	_, err := pool.GetConn().Exec(context.Background(),
+		"UPDATE filesystem SET logicalname = ($1) WHERE entityid = ($2)", newName, entityID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

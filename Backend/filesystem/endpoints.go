@@ -114,3 +114,24 @@ func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+type ValidRenameRequest struct {
+	EntityID int    `schema:"EntityID,required"`
+	NewName  string `schema:"NewName,required"`
+}
+
+// Handler for renaming filesystem entities
+func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request) {
+	var input ValidRenameRequest
+	if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"POST"}, map[int]string{
+		400: "missing paramaters, must have: NewName, EntityID",
+		405: "invalid method",
+	}, &input); validRequest {
+		err := renameEntity(httpDbPool, input.EntityID, input.NewName)
+		if err != nil {
+			httpUtil.ThrowRequestError(w, 500, "unable rename, the requested name is taken or this item is the root directory")
+		} else {
+			httpUtil.SendResponse(w, fmt.Sprintf(`{"success": true, "renamed": %d}`, input.EntityID))
+		}
+	}
+}
