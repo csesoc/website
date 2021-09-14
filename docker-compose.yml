@@ -3,11 +3,11 @@ version: "3.8"
 services:
   cms_frontend:
     container_name: cms_frontend
-    build: ./cms_frontend
+    build: ./Cms_frontend
     volumes:
       # Note must include node_modules as a seperate volume
       - '/app/node_modules'
-      - './cms_frontend:/app'
+      - './Cms_frontend:/app'
     stdin_open: true
     ports:
       - 3000:3000
@@ -32,7 +32,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - './postgres/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql'
+      - './Postgres/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql'
       - 'pg_data:/var/lib/postgresql/data'
 volumes:
   pg_data:
