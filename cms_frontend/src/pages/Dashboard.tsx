@@ -145,7 +145,6 @@ const Dashboard: React.FC = () => {
       // TODO: error, cannot rename file that doesn't exist
       return;
     } else if (same_name_index !== -1) {
-      const target = curr_folder[rename_index];
       const same_name = curr_folder[same_name_index];
 
       if (type === same_name.type) {
