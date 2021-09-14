@@ -45,8 +45,7 @@ const sortFiles = (files: FileFormat[]) => {
 // Typescript Declaration
 // uses the interface defined above
 // imports the icons from material UI
-const FileRenderer: React.FC<RenderProps> = (props) => {
-  const { files, onFileClick, onFolderClick, onRename, onNewFile } = props;
+const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick, onRename, onNewFile }) => {
   const sorted = sortFiles(files);
 
   return (

@@ -45,16 +45,7 @@ const Dashboard: React.FC = () => {
 
   // Checks if our current directory has a parent directory
   const hasParent = () => {
-    const parent = getParent();
-    let found = false;
-
-    Files.forEach((_, key) => {
-      if (key === parent) {
-        found = true;
-      }
-    });
-
-    return found;
+    return dir === "root";
   }
 
   // Checks if a file/folder name already exists in our current directory
