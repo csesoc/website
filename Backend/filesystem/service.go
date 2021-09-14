@@ -93,7 +93,7 @@ func deleteEntity(pool database.Pool, entityID int) error {
 	return nil
 }
 
-// deleteEntity removes an entity from the filesystem
+// renameEntity changes the logical name of a given object in the filesystem
 func renameEntity(pool database.Pool, entityID int, newName string) error {
 	_, err := pool.GetConn().Exec(context.Background(),
 		"UPDATE filesystem SET logicalname = ($1) WHERE entityid = ($2)", newName, entityID)
@@ -102,3 +102,21 @@ func renameEntity(pool database.Pool, entityID int, newName string) error {
 	}
 	return nil
 }
+
+// // getFilesystemInfo returns information regarding a specific file system entity
+// func getEntityChildren(pool database.Pool, docID int) (EntityInfo, error) {
+// 	entity := EntityInfo{}
+// 	children := pgtype.Hstore{}
+
+// 	err := pool.GetConn().QueryRow(context.Background(), "SELECT EntityID FROM filesystem WHERE Parent = $1",
+// 		docID).Scan(&entity.EntityID, &entity.EntityName, &entity.IsDocument, &children)
+// 	if err != nil {
+// 		return EntityInfo{}, errors.New("failed to read from database")
+// 	}
+
+// 	for k := range children.Map {
+// 		entity.Children = append(entity.Children, k)
+// 	}
+
+// 	return entity, nil
+// }

@@ -115,6 +115,25 @@ func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// // Handler for retrieving children
+// func GetChildren(w http.ResponseWriter, r *http.Request) {
+// 	var input ValidInfoRequest
+// 	if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"GET"}, map[int]string{
+// 		400: "missing EntityID paramater",
+// 		405: "invalid method",
+// 	}, &input); validRequest {
+
+// 		fileInfo, err := getEntityChildren(httpDbPool, input.EntityID)
+// 		if err != nil {
+// 			httpUtil.ThrowRequestError(w, 404, "unable to find entity with requested ID")
+// 			return
+// 		}
+
+// 		out, _ := json.Marshal(fileInfo)
+// 		httpUtil.SendResponse(w, string(out))
+// 	}
+// }
+
 type ValidRenameRequest struct {
 	EntityID int    `schema:"EntityID,required"`
 	NewName  string `schema:"NewName,required"`
