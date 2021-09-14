@@ -46,7 +46,6 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request) {
 		out, _ := json.Marshal(fileInfo)
 		httpUtil.SendResponse(w, string(out))
 
-		break
 	default:
 		var input ValidInfoRequest
 		if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"GET"}, map[int]string{
@@ -63,7 +62,6 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request) {
 			out, _ := json.Marshal(fileInfo)
 			httpUtil.SendResponse(w, string(out))
 		}
-		break
 	}
 }
 
