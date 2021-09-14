@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { IconButton } from "@material-ui/core";
+import { Dialog, DialogContent, IconButton } from "@material-ui/core";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 
 import SideBar from 'src/components/SideBar/SideBar';
 import FileRenderer from 'src/components/FileRenderer/FileRenderer';
+import NewDialogue from 'src/components/NewDialogue/NewDialogue';
 
 // Cast JSON format to HashMap
 import type { FileFormat } from "src/types/FileFormat";
@@ -20,6 +21,14 @@ const Directory = styled.h3`
 const Dashboard: React.FC = () => {
   const [dir, setDir] = useState("root");
   const [folder, setFolder] = useState(Files.get(dir) as FileFormat[]);
+
+  // Modal state handler
+  const [modalOpen, setModalOpen] = React.useState(false);
+
+  // Modal closer
+  const handleModalClose = () => {
+    setModalOpen(false);
+  }
 
   // Gets the parent directory of our current directory, does not check
   // if that directory exists
@@ -109,6 +118,7 @@ const Dashboard: React.FC = () => {
   // Listener when we create a new file
   const newFile = () => {
     // TODO: fill with API call
+    setModalOpen(true);
   }
 
   // Listener when we rename a file/folder
@@ -162,8 +172,17 @@ const Dashboard: React.FC = () => {
   return (
     <div style={{ display: 'flex' }}>
       <SideBar
+        onNewFile={newFile}
         onNewFolder={newFolder} />
       <div style={{ flex: 1 }}>
+        <Dialog
+          open={modalOpen}
+          onClose={handleModalClose}
+          aria-labelledby="form-dialog-title">
+          <DialogContent>
+            <NewDialogue directory={dir} isCore={false} />
+          </DialogContent>
+        </Dialog>
         <Directory>{dir}</Directory>
         <IconButton
           disabled={!hasParent()}

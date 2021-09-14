@@ -28,11 +28,16 @@ const ButtonGroup = styled.div`
   grid-gap: 30px;
 `
 
-interface ButtonProps {
+interface SideBarProps {
+  onNewFile: () => void,
+  onNewFolder: () => void
+}
+
+interface SideBarButtonProps {
   bgColor: string;
 }
 
-const SidebarButton = styled(Button)<ButtonProps>`
+const SidebarButton = styled(Button) <SideBarButtonProps>`
   && {
     width: 160px;
     variant: contained;
@@ -47,40 +52,40 @@ interface SideBarProps {
 }
 
 // Wrapper component ${props => props.color}
-const SideBar: React.FC<SideBarProps> = ({ onNewFolder }) => {
+const SideBar: React.FC<SideBarProps> = ({ onNewFile, onNewFolder }) => {
   return (
     <Container>
       <SidebarTitle>
         Welcome "name"
       </SidebarTitle>
       <ButtonFlex>
-          <ButtonGroup>
+        <ButtonGroup>
           <SidebarButton bgColor="#F88282">
             Blog
           </SidebarButton>
           <SidebarButton bgColor="#F88282">
             Core pages
           </SidebarButton>
-          </ButtonGroup>
-          <ButtonGroup>
-          <SidebarButton bgColor="#82A3F8">
+        </ButtonGroup>
+        <ButtonGroup>
+          <SidebarButton bgColor="#82A3F8" onClick={onNewFile}>
             New page
           </SidebarButton>
           <SidebarButton bgColor="#82A3F8" onClick={onNewFolder}>
             New folder
           </SidebarButton>
-          </ButtonGroup>
-          <ButtonGroup>
+        </ButtonGroup>
+        <ButtonGroup>
           <SidebarButton bgColor="#B8E8E8">
             Edit
           </SidebarButton>
-          <SidebarButton bgColor="#B8E8E8"> 
+          <SidebarButton bgColor="#B8E8E8">
             Feature
           </SidebarButton>
           <SidebarButton bgColor="#B8E8E8">
             Recycle
           </SidebarButton>
-          </ButtonGroup>
+        </ButtonGroup>
       </ButtonFlex>
     </Container>
   )
