@@ -6,16 +6,32 @@ import (
 	service "DiffSync/internal/service"
 	"log"
 	"net/http"
+
+	"github.com/rs/cors"
 )
 
 func main() {
-	http.HandleFunc("/edit", service.EditEndpoint)
-	http.HandleFunc("/preview", service.PreviewHTTPHandler)
-	http.HandleFunc("/filesystem/info", filesystem.GetEntityInfo)
-	http.HandleFunc("/filesystem/info/root", filesystem.GetEntityInfo)
-	http.HandleFunc("/filesystem/create", filesystem.CreateNewEntity)
-	http.HandleFunc("/filesystem/delete", filesystem.DeleteFilesystemEntity)
-	http.HandleFunc("/login", auth.LoginHandler)
-	http.Handle("/", http.FileServer(http.Dir("./html")))
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/edit", service.EditEndpoint)
+	mux.HandleFunc("/preview", service.PreviewHTTPHandler)
+	mux.HandleFunc("/filesystem/info", filesystem.GetEntityInfo)
+	mux.HandleFunc("/filesystem/info/root", filesystem.GetEntityInfo)
+	mux.HandleFunc("/filesystem/create", filesystem.CreateNewEntity)
+	mux.HandleFunc("/filesystem/delete", filesystem.DeleteFilesystemEntity)
+	mux.HandleFunc("/login", auth.LoginHandler)
+	mux.HandleFunc("/logout", auth.LogoutHandler)
+	mux.Handle("/", http.FileServer(http.Dir("./html")))
+
+	// CORS middleware added
+	c := cors.New(cors.Options{
+		// for testing purposes
+		AllowedOrigins:   []string{"localhost:3000"},
+		AllowedMethods:   []string{http.MethodGet, http.MethodPost},
+		AllowCredentials: true,
+	})
+	handler := cors.Default().Handler(mux)
+	handler = c.Handler(handler)
+
+	log.Fatal(http.ListenAndServe(":8080", handler))
 }

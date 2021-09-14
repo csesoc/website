@@ -17,6 +17,8 @@ INSERT INTO person (Email, First_name, Password)
 VALUES ('z0000000@ad.unsw.edu.au', 'adam', 'password');
 INSERT INTO person(Email, First_name, Password)
 VALUES ('john.smith@gmail.com', 'john', 'password');
+INSERT INTO person(Email, First_name, Password)
+VALUES ('jane.doe@gmail.com', 'jane', 'password');
 
 
 /* Stub for whenever jacky does it */

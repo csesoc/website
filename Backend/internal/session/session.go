@@ -38,7 +38,7 @@ func init() {
 		Path:     "/",     // domain path
 		MaxAge:   60 * 15, // expiry
 		HttpOnly: true,    // http only
-		Secure:   true,    // same site
+		// Secure:   true,    // disallow for now because it doesnt allow localhost setcookie to occur without SSL
 	}
 
 	//required
@@ -70,20 +70,21 @@ func CreateSession(w http.ResponseWriter, r *http.Request, email string) {
 
 }
 
-// todo REMOVE SESSION
 // delete session
 func RemoveSession(w http.ResponseWriter, r *http.Request) {
 	session, err := store.Get(r, cookie_prefix)
 	if err != nil {
 		log.Println("an error has occurred getting session", err.Error())
 	}
-	session.Values["Authenticated"] = false
+	// even if session does not exist
+	// the next two lines will send a
+	// Set-Cookie: session-token="" header which will make current session
+	// token which is stored on the frontend expire
+	session.Options.MaxAge = -1
 	session.Save(r, w)
 }
 
 // checks if user is authenticated
-// returns user obj
-// email : string
 func IsAuthenticated(w http.ResponseWriter, r *http.Request) (bool, error) {
 	store, err := store.Get(r, cookie_prefix)
 	if err != nil {
