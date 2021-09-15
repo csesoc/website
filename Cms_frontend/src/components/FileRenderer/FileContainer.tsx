@@ -6,11 +6,13 @@
 
 import React from "react";
 import styled from 'styled-components';
+import Renamable from "./Renamable";
 
 interface FileProps {
   filename: string,
-  image: string
+  image: string,
   onClick: () => void,
+  onRename?: (prev: string, next: string) => void
 }
 
 // Carry over styled component from FileRenderer.tsx
@@ -33,12 +35,20 @@ const HoverImage = styled.img`
   }
 `
 
-const FileContainer: React.FC<FileProps> = ({ filename, image, onClick }) => {
+const FileContainer: React.FC<FileProps> = ({ filename, image, onClick, onRename }) => {
   return (
-    <div onClick={onClick}>
+    <div>
       <IconContainer>
-        <HoverImage src={image} />
-        {filename}
+        <HoverImage
+          src={image}
+          onClick={onClick} />
+        {onRename === undefined ? (
+          <p>{filename}</p>
+        ) : (
+          <Renamable
+            name={filename}
+            onRename={onRename} />
+        )}
       </IconContainer>
     </div>
   );

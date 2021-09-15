@@ -7,10 +7,12 @@
 import React from "react";
 import styled from 'styled-components';
 import FolderIcon from '@material-ui/icons/Folder';
+import Renamable from "./Renamable";
 
 interface FolderProps {
   filename: string,
-  onClick: () => void
+  onClick: () => void,
+  onRename: (prev: string, next: string) => void
 }
 
 const IconContainer = styled.div`
@@ -20,16 +22,20 @@ const IconContainer = styled.div`
   text-align: center;
 `;
 
-const FolderContainer: React.FC<FolderProps> = ({ filename, onClick }) => {
+const FolderContainer: React.FC<FolderProps> = ({ filename, onClick, onRename }) => {
   return (
-    <div onClick={onClick}>
+    <div>
       <IconContainer>
-        <FolderIcon style={{
-          color: "#999999",
-          height: "307px",
-          width: "100%"
-        }} />
-        {filename}
+        <FolderIcon
+          onClick={onClick}
+          style={{
+            color: "#999999",
+            height: "100%",
+            width: "100%"
+          }} />
+        <Renamable
+          name={filename}
+          onRename={onRename} />
       </IconContainer>
     </div>
   );

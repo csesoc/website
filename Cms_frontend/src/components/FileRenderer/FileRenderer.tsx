@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import FolderContainer from "./FolderContainer";
 import FileContainer from "./FileContainer";
@@ -6,10 +7,11 @@ import FileContainer from "./FileContainer";
 import Default from "src/images/default.png";
 import NewPost from "src/images/new_post.png";
 
-interface FileFormat {
-  filename: string,
-  type: string
-}
+import type { FileFormat } from "src/types/FileFormat";
+
+const FileFlex = styled.div`
+  width: 24%;
+`
 
 // type declaration for props
 interface RenderProps {
@@ -19,6 +21,7 @@ interface RenderProps {
   // a new file respectively
   onFileClick: (name: string) => void,
   onFolderClick: (name: string) => void,
+  onRename: (type: string, prev: string, next: string) => void,
   onNewFile: () => void
 }
 
@@ -42,34 +45,36 @@ const sortFiles = (files: FileFormat[]) => {
 // Typescript Declaration
 // uses the interface defined above
 // imports the icons from material UI
-const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick, onNewFile }) => {
+const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick, onRename, onNewFile }) => {
   const sorted = sortFiles(files);
 
   return (
     // Mapping over all files given from Dashboard, with a little bit
     // of inline styling to facilitate flex divs
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", flexWrap: "wrap" }}>
       {sorted.map((file, index) => (
-        <div key={index} style={{ flexBasis: "25%" }}>
+        <FileFlex key={file.filename + index}>
           {file.type === "folder" && (
             <FolderContainer
               filename={file.filename}
-              onClick={() => onFolderClick(file.filename)} />
+              onClick={() => onFolderClick(file.filename)}
+              onRename={(prev, next) => onRename("folder", prev, next)} />
           )}
           {file.type === "file" && (
             <FileContainer
               filename={file.filename}
               image={Default}
-              onClick={() => onFileClick(file.filename)} />
+              onClick={() => onFileClick(file.filename)}
+              onRename={(prev, next) => onRename("file", prev, next)} />
           )}
-        </div>
+        </FileFlex>
       ))}
-      <div style={{ flexBasis: "25%" }}>
+      <FileFlex>
         <FileContainer
           filename="New"
           image={NewPost}
           onClick={onNewFile} />
-      </div>
+      </FileFlex>
     </div>
   )
 }
