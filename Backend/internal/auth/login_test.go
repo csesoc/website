@@ -1,3 +1,10 @@
+// TITLE: Login functions
+// Created by (Jacky: FafnirZ) (09/21)
+// Last modified by (Jacky: FafnirZ)(12/09/21)
+// # # #
+/*
+Test cases for login functions mainly email validation
+**/
 package auth
 
 import (

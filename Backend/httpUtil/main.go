@@ -2,7 +2,6 @@ package httpUtil
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/schema"
@@ -12,12 +11,12 @@ func ThrowRequestError(w http.ResponseWriter, status int, message string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	w.Write([]byte(fmt.Sprintf(`{
-		"status": 405,
+		"status": %d,
 		"body": {
 			"response": "there was an error",
 			"more_info": "%s"
 		}
-		}`, message)))
+		}`, status, message)))
 }
 
 func SendResponse(w http.ResponseWriter, marshaledJson string) {
@@ -59,7 +58,6 @@ func ParseParamsToSchema(w http.ResponseWriter, r *http.Request, acceptingMethod
 	if r.Method != "POST" {
 		err = decoder.Decode(target, r.Form)
 	} else {
-		log.Print("hello")
 		err = decoder.Decode(target, r.PostForm)
 	}
 	if err != nil {
