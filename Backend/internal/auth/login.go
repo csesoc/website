@@ -11,12 +11,11 @@ package auth
 
 import (
 	"DiffSync/database"
+	_httpUtil "DiffSync/httpUtil"
 	_session "DiffSync/internal/session"
 	"log"
 
-	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"regexp"
 )
@@ -49,16 +48,6 @@ type response struct {
 	Data string `json:"data"`
 }
 
-// generic function for returning error in a suitable
-// api format
-func throwErr(err error, w http.ResponseWriter) {
-	w.Header().Add("content-type", "application/json")
-	r := response{Data: err.Error()}
-	// jsonify data
-	response, _ := json.Marshal(r)
-	fmt.Fprint(w, string(response))
-}
-
 // EXPECT it to be from a form (handle non form requests)
 // email=___&password=____
 // content-type: x-www-urlencoded
@@ -76,7 +65,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
 		// get fields from form
 		email := r.FormValue("email")
 		password := r.FormValue("password")
@@ -87,13 +75,13 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		// input validation
 		err = user.isValidEmail()
 		if err != nil {
-			throwErr(err, w)
+			_httpUtil.ThrowRequestError(w, 500, err.Error())
 			return
 		}
 
 		err = user.checkPassword()
 		if err != nil {
-			throwErr(err, w)
+			_httpUtil.ThrowRequestError(w, 500, err.Error())
 			return
 		}
 
@@ -101,6 +89,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		_session.CreateSession(w, r, user.Email)
 
 		// will change to FRONTEND_URI soon
+		//_httpUtil.SendResponse(w, "success")
+
 		http.Redirect(w, r, "http://localhost:3000/dashboard", http.StatusMovedPermanently)
 		break
 	case "DEFAULT":

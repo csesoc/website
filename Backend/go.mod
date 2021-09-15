@@ -14,6 +14,7 @@ require (
 	github.com/gorilla/sessions v1.2.1
 	github.com/gorilla/websocket v1.4.2
 	github.com/gotestyourself/gotestyourself v2.2.0+incompatible // indirect
+	github.com/rs/cors v1.7.0
 	github.com/jackc/pgtype v1.8.1
 	github.com/jackc/pgx/v4 v4.13.0
 	github.com/lib/pq v1.10.3
