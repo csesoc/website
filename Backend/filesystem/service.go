@@ -87,8 +87,30 @@ func getRootInfo(pool database.Pool) (EntityInfo, error) {
 func deleteEntity(pool database.Pool, entityID int) error {
 	_, err := pool.GetConn().Exec(context.Background(),
 		"SELECT delete_entity($1)", entityID)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
+
+// renameEntity changes the logical name of a given object in the filesystem
+func renameEntity(pool database.Pool, entityID int, newName string) error {
+	_, err := pool.GetConn().Exec(context.Background(),
+		"UPDATE filesystem SET logicalname = ($1) WHERE entityid = ($2)", newName, entityID)
+	return err
+}
+
+// // getFilesystemInfo returns information regarding a specific file system entity
+// func getEntityChildren(pool database.Pool, docID int) (EntityInfo, error) {
+// 	entity := EntityInfo{}
+// 	children := pgtype.Hstore{}
+
+// 	err := pool.GetConn().QueryRow(context.Background(), "SELECT EntityID FROM filesystem WHERE Parent = $1",
+// 		docID).Scan(&entity.EntityID, &entity.EntityName, &entity.IsDocument, &children)
+// 	if err != nil {
+// 		return EntityInfo{}, errors.New("failed to read from database")
+// 	}
+
+// 	for k := range children.Map {
+// 		entity.Children = append(entity.Children, k)
+// 	}
+
+// 	return entity, nil
+// }

@@ -46,7 +46,6 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request) {
 		out, _ := json.Marshal(fileInfo)
 		httpUtil.SendResponse(w, string(out))
 
-		break
 	default:
 		var input ValidInfoRequest
 		if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"GET"}, map[int]string{
@@ -63,7 +62,6 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request) {
 			out, _ := json.Marshal(fileInfo)
 			httpUtil.SendResponse(w, string(out))
 		}
-		break
 	}
 }
 
@@ -113,6 +111,46 @@ func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request) {
 			httpUtil.ThrowRequestError(w, 500, "unable to delete, the requested entity is either the root directory or has children")
 		} else {
 			httpUtil.SendResponse(w, fmt.Sprintf(`{"success": true, "deleted": %d}`, input.EntityID))
+		}
+	}
+}
+
+// // Handler for retrieving children
+// func GetChildren(w http.ResponseWriter, r *http.Request) {
+// 	var input ValidInfoRequest
+// 	if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"GET"}, map[int]string{
+// 		400: "missing EntityID paramater",
+// 		405: "invalid method",
+// 	}, &input); validRequest {
+
+// 		fileInfo, err := getEntityChildren(httpDbPool, input.EntityID)
+// 		if err != nil {
+// 			httpUtil.ThrowRequestError(w, 404, "unable to find entity with requested ID")
+// 			return
+// 		}
+
+// 		out, _ := json.Marshal(fileInfo)
+// 		httpUtil.SendResponse(w, string(out))
+// 	}
+// }
+
+type ValidRenameRequest struct {
+	EntityID int    `schema:"EntityID,required"`
+	NewName  string `schema:"NewName,required"`
+}
+
+// Handler for renaming filesystem entities
+func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request) {
+	var input ValidRenameRequest
+	if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"POST"}, map[int]string{
+		400: "missing paramaters, must have: NewName, EntityID",
+		405: "invalid method",
+	}, &input); validRequest {
+		err := renameEntity(httpDbPool, input.EntityID, input.NewName)
+		if err != nil {
+			httpUtil.ThrowRequestError(w, 500, "unable rename, the requested name is most likely taken")
+		} else {
+			httpUtil.SendResponse(w, fmt.Sprintf(`{"success": true, "renamed": %d}`, input.EntityID))
 		}
 	}
 }

@@ -122,3 +122,21 @@ func TestEntityDeletion(t *testing.T) {
 	root, _ = getRootInfo(pool)
 	assert.NotContains(strconv.Itoa(anotherDirectory), root.Children)
 }
+
+func TestEntityRename(t *testing.T) {
+	assert := assert.New(t)
+
+	// Test setup
+	newDir, _ := createFilesystemEntityAtRoot(pool, "cool_dir", ADMIN, false)
+	newDoc, _ := createFilesystemEntity(pool, newDir, "cool_doc", ADMIN, true)
+	newDoc1, _ := createFilesystemEntity(pool, newDir, "cool_doc1", ADMIN, true)
+	newDoc2, _ := createFilesystemEntity(pool, newDir, "cool_doc2", ADMIN, true)
+
+	assert.NotNil(renameEntity(pool, newDoc, "cool_doc2"))
+	assert.NotNil(renameEntity(pool, newDoc1, "cool_doc2"))
+	assert.NotNil(renameEntity(pool, newDoc2, "cool_doc1"))
+
+	assert.Nil(renameEntity(pool, newDoc, "yabba dabba doo"))
+	assert.Nil(renameEntity(pool, newDir, "zoinks"))
+
+}

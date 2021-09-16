@@ -19,6 +19,7 @@ func main() {
 	mux.HandleFunc("/filesystem/info/root", filesystem.GetEntityInfo)
 	mux.HandleFunc("/filesystem/create", filesystem.CreateNewEntity)
 	mux.HandleFunc("/filesystem/delete", filesystem.DeleteFilesystemEntity)
+	mux.HandleFunc("/filesystem/rename", filesystem.RenameFilesystemEntity)
 	mux.HandleFunc("/login", auth.LoginHandler)
 	mux.HandleFunc("/logout", auth.LogoutHandler)
 	mux.Handle("/", http.FileServer(http.Dir("./html")))
