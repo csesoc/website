@@ -148,7 +148,7 @@ func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request) {
 	}, &input); validRequest {
 		err := renameEntity(httpDbPool, input.EntityID, input.NewName)
 		if err != nil {
-			httpUtil.ThrowRequestError(w, 500, "unable rename, the requested name is taken or this item is the root directory")
+			httpUtil.ThrowRequestError(w, 500, "unable rename, the requested name is most likely taken")
 		} else {
 			httpUtil.SendResponse(w, fmt.Sprintf(`{"success": true, "renamed": %d}`, input.EntityID))
 		}
