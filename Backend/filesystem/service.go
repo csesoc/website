@@ -97,20 +97,21 @@ func renameEntity(pool database.Pool, entityID int, newName string) error {
 	return err
 }
 
-// // getFilesystemInfo returns information regarding a specific file system entity
-// func getEntityChildren(pool database.Pool, docID int) (EntityInfo, error) {
-// 	entity := EntityInfo{}
-// 	children := pgtype.Hstore{}
+// getFilesystemInfo returns information regarding a specific file system entity
+func getEntityChildren(pool database.Pool, docID int) ([]string, error) {
+	children := pgtype.Hstore{}
 
-// 	err := pool.GetConn().QueryRow(context.Background(), "SELECT EntityID FROM filesystem WHERE Parent = $1",
-// 		docID).Scan(&entity.EntityID, &entity.EntityName, &entity.IsDocument, &children)
-// 	if err != nil {
-// 		return EntityInfo{}, errors.New("failed to read from database")
-// 	}
+	err := pool.GetConn().QueryRow(context.Background(), "SELECT children FROM filesystem WHERE entityid = $1",
+		docID).Scan(&children)
+	if err != nil {
+		return nil, errors.New("failed to read from database")
+	}
 
-// 	for k := range children.Map {
-// 		entity.Children = append(entity.Children, k)
-// 	}
+	list := []string{}
 
-// 	return entity, nil
-// }
+	for k := range children.Map {
+		list = append(list, k)
+	}
+
+	return list, nil
+}
