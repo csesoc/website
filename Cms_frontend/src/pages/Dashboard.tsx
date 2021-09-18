@@ -21,6 +21,7 @@ const Directory = styled.h3`
 const Dashboard: React.FC = () => {
   const [dir, setDir] = useState("root");
   const [folder, setFolder] = useState(Files.get(dir) as FileFormat[]);
+  const [activeFiles, setActiveFiles] = useState("");
 
   // Modal state handler
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -97,6 +98,7 @@ const Dashboard: React.FC = () => {
   // Listener when we click on a file in the current directory
   const fileClick = (name: string) => {
     // TODO: fill with API call
+    setActiveFiles(`${name}`);
   }
 
   // Listener when we click on a folder in the current directory
@@ -185,7 +187,8 @@ const Dashboard: React.FC = () => {
           onFileClick={fileClick}
           onFolderClick={folderClick}
           onRename={rename}
-          onNewFile={newFile} />
+          onNewFile={newFile}
+          activeFiles={activeFiles} />
       </div>
     </div>
   );
