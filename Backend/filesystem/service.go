@@ -4,6 +4,7 @@ import (
 	"DiffSync/database"
 	"context"
 	"errors"
+	"strconv"
 
 	"github.com/jackc/pgtype"
 )
@@ -97,8 +98,8 @@ func renameEntity(pool database.Pool, entityID int, newName string) error {
 	return err
 }
 
-// getFilesystemInfo returns information regarding a specific file system entity
-func getEntityChildren(pool database.Pool, docID int) ([]string, error) {
+// getFilesystemChildren returns the list of children for a file system entity
+func getEntityChildren(pool database.Pool, docID int) ([]EntityInfo, error) {
 	children := pgtype.Hstore{}
 
 	err := pool.GetConn().QueryRow(context.Background(), "SELECT children FROM filesystem WHERE entityid = $1",
@@ -107,10 +108,12 @@ func getEntityChildren(pool database.Pool, docID int) ([]string, error) {
 		return nil, errors.New("failed to read from database")
 	}
 
-	list := []string{}
+	list := []EntityInfo{}
 
 	for k := range children.Map {
-		list = append(list, k)
+		id, _ := strconv.Atoi(k)
+		info, _ := getFilesystemInfo(pool, id)
+		list = append(list, info)
 	}
 
 	return list, nil
