@@ -140,3 +140,46 @@ func TestEntityRename(t *testing.T) {
 	assert.Nil(renameEntity(pool, newDir, "zoinks"))
 
 }
+
+func TestEntityChildren(t *testing.T) {
+	assert := assert.New(t)
+
+	// Test setup
+
+	dir1, _ := createFilesystemEntityAtRoot(pool, "d1", ADMIN, false)
+	dir2, _ := createFilesystemEntityAtRoot(pool, "d2", ADMIN, false)
+	dir3, _ := createFilesystemEntityAtRoot(pool, "d3", ADMIN, false)
+	dir4, _ := createFilesystemEntityAtRoot(pool, "d4", ADMIN, false)
+	emptyDir, _ := createFilesystemEntityAtRoot(pool, "de", ADMIN, false)
+
+	for x := 1; x < 10; x++ {
+		if x%3 == 0 {
+			createFilesystemEntity(pool, dir1, "cool_doc"+string(x), ADMIN, true)
+		}
+		if x%5 == 0 {
+			createFilesystemEntity(pool, dir2, "cool_doc"+string(x), ADMIN, true)
+		}
+		if x%2 == 0 {
+			createFilesystemEntity(pool, dir3, "cool_doc"+string(x), ADMIN, true)
+		}
+		createFilesystemEntity(pool, dir4, "cool_doc"+string(x), ADMIN, true)
+	}
+
+	assert.NotNil(getEntityChildren(pool, dir1))
+	assert.NotNil(getEntityChildren(pool, dir2))
+	assert.NotNil(getEntityChildren(pool, dir3))
+	assert.NotNil(getEntityChildren(pool, dir4))
+
+	d1_kids, _ := getEntityChildren(pool, dir1)
+	d2_kids, _ := getEntityChildren(pool, dir2)
+	d3_kids, _ := getEntityChildren(pool, dir3)
+	d4_kids, _ := getEntityChildren(pool, dir4)
+	de_kids, _ := getEntityChildren(pool, emptyDir)
+
+	assert.True(len(d1_kids) == 3)
+	assert.True(len(d2_kids) == 1)
+	assert.True(len(d3_kids) == 4)
+	assert.True(len(d4_kids) == 9)
+	assert.True(len(de_kids) == 0)
+
+}
