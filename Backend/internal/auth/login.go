@@ -10,7 +10,6 @@ user exists
 package auth
 
 import (
-	"DiffSync/database"
 	_httpUtil "DiffSync/httpUtil"
 	_session "DiffSync/internal/session"
 	"log"
@@ -20,32 +19,9 @@ import (
 	"regexp"
 )
 
-var httpDbPool database.Pool
-
-func init() {
-	var err error
-	httpDbPool, err = database.NewPool(database.Config{
-		HostAndPort: "db:5432",
-		User:        "postgres",
-		Password:    "postgres",
-		Database:    "test_db",
-	})
-
-	if err != nil {
-		log.Print(err.Error())
-	}
-}
-
 type User struct {
 	Email    string
 	Password string
-}
-
-// data is in string because it could be
-// stringified json object
-// e.g. {"data":"email format invalid"}
-type response struct {
-	Data string `json:"data"`
 }
 
 // EXPECT it to be from a form (handle non form requests)

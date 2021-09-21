@@ -1,33 +1,40 @@
 CREATE EXTENSION hstore;
 SET timezone = 'Australia/Sydney';
 
+CREATE TABLE groups (
+  UID   SERIAL PRIMARY KEY,
+  Name  VARCHAR(50) NOT NULL,
+  Permission int UNIQUE NOT NULL
+  /* permission checks will check whether the permission level of user's group is higher than the clearance check */
+);
+INSERT INTO groups (Name, Permission)
+  VALUES ('admin', 900);
+INSERT INTO groups (name, Permission)
+  VALUES ('user', 500);
+
+
 DROP TABLE IF EXISTS person;
 CREATE TABLE person (
   UID serial PRIMARY KEY,
   Email VARCHAR(50) UNIQUE NOT NULL,
   First_name VARCHAR(50) NOT NULL,
   Password VARCHAR(50) NOT NULL,
+  isOfGroup int,
+
+  CONSTRAINT fk_AccessLevel FOREIGN KEY (isOfGroup)
+    REFERENCES groups(UID),
 
   /* non duplicate email and password constraints */
-  CONSTRAINT no_dupes UNIQUE (email, password)
+  CONSTRAINT no_dupes UNIQUE (Email, Password)
 );
 
 /* inserting two accounts into db */
-INSERT INTO person (Email, First_name, Password)
-VALUES ('z0000000@ad.unsw.edu.au', 'adam', 'password');
-INSERT INTO person(Email, First_name, Password)
-VALUES ('john.smith@gmail.com', 'john', 'password');
-INSERT INTO person(Email, First_name, Password)
-VALUES ('jane.doe@gmail.com', 'jane', 'password');
-
-
-/* Stub for whenever jacky does it */
-CREATE TABLE groups (
-  UID   SERIAL PRIMARY KEY,
-  Name  VARCHAR(50) NOT NULL
-);
-INSERT INTO groups (Name)
-  VALUES ('admin');
+INSERT INTO person (Email, First_name, Password, isOfGroup)
+VALUES ('z0000000@ad.unsw.edu.au', 'adam', 'password', 1);
+INSERT INTO person(Email, First_name, Password, isOfGroup)
+VALUES ('john.smith@gmail.com', 'john', 'password', 2);
+INSERT INTO person(Email, First_name, Password, isOfGroup)
+VALUES ('jane.doe@gmail.com', 'jane', 'password', 2);
   
 
 DROP TABLE IF EXISTS filesystem;
