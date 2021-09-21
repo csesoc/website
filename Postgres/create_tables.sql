@@ -28,13 +28,21 @@ CREATE TABLE person (
   CONSTRAINT no_dupes UNIQUE (Email, Password)
 );
 
+/* create user function plpgsql */
+DROP FUNCTION IF EXISTS create_normal_user;
+CREATE OR REPLACE FUNCTION create_normal_user (email VARCHAR, name VARCHAR, password VARCHAR) RETURNS void
+LANGUAGE plpgsql
+AS $$
+DECLARE
+BEGIN
+  INSERT INTO person (Email, First_name, Password, isOfGroup)
+  VALUES (email, name, password, 2);
+END $$;
+
 /* inserting two accounts into db */
-INSERT INTO person (Email, First_name, Password, isOfGroup)
-VALUES ('z0000000@ad.unsw.edu.au', 'adam', 'password', 1);
-INSERT INTO person(Email, First_name, Password, isOfGroup)
-VALUES ('john.smith@gmail.com', 'john', 'password', 2);
-INSERT INTO person(Email, First_name, Password, isOfGroup)
-VALUES ('jane.doe@gmail.com', 'jane', 'password', 2);
+SELECT create_normal_user('z0000000@ad.unsw.edu.au', 'adam', 'password');
+SELECT create_normal_user('john.smith@gmail.com', 'john', 'password');
+SELECT create_normal_user('jane.doe@gmail.com', 'jane', 'password');
   
 
 DROP TABLE IF EXISTS filesystem;
