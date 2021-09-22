@@ -1,46 +1,55 @@
 {
     "root": [
         {
+            "id": 0,
             "filename": "blogs",
-            "type": "folder"
+            "isDocument": false
         },
         {
+            "id": 1,
             "filename": "subcom",
-            "type": "folder"
+            "isDocument": false
         }
     ],
     "root/blogs": [
         {
+            "id": 2,
             "filename": "First Year Guide",
-            "type": "file"
+            "isDocument": true
         },
         {
+            "id": 3,
             "filename": "Pre-Enrolment Guides",
-            "type": "file"
+            "isDocument": true
         },
         {
+            "id": 4,
             "filename": "podcasts",
-            "type": "folder"
+            "isDocument": false
         }
     ],
     "root/blogs/podcasts": [
         {
+            "id": 5,
             "filename": "Echo DRAFT",
-            "type": "file"
+            "isDocument": true
         },
         {
+            "id": 6,
             "filename": "Echo FINAL",
-            "type": "file"
+            "isDocument": true
         }
     ],
     "root/subcom": [
         {
+            "id": 7,
             "filename": "COMP1511 Notes",
-            "type": "file"
+            "isDocument": true
         },
         {
+            "id": 8,
             "filename": "COMP2521 Notes",
-            "type": "file"
+            "isDocument": true
         }
     ]
 }

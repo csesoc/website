@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Dialog, DialogContent, IconButton } from "@material-ui/core";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
@@ -9,101 +9,170 @@ import NewDialogue from 'src/components/NewDialogue/NewDialogue';
 
 // Cast JSON format to HashMap
 import type { FileFormat } from "src/types/FileFormat";
-import Files from "src/data/DummyFiles";
 
 // Heading to display current directory, separated out to avoid inline styling
-const Directory = styled.h3`
+const DirectoryName = styled.h3`
   display: inline-block;
   margin-left: 20px;
   margin-right: 10px;
 `;
 
+// Helper array functions
+
+declare global {
+  interface Array<T> {
+    last(): T
+  }
+}
+
+Array.prototype.last = function<T>(this: T[]): T {
+  return this[this.length - 1];
+}
+
+// Implementation
 const Dashboard: React.FC = () => {
-  const [dir, setDir] = useState("root");
-  const [folder, setFolder] = useState(Files.get(dir) as FileFormat[]);
+  const [loading, setLoading] = useState(true);
+
+  const [dir, setDir] = useState<FileFormat[]>([]);
+  const [contents, setContents] = useState<FileFormat[]>([]);
 
   // Modal state handler
   const [modalOpen, setModalOpen] = React.useState(false);
 
+  const toFileFormat = (json: any): FileFormat => {
+    return {
+      id: json.EntityID,
+      filename: json.EntityName,
+      isDocument: json.IsDocument
+    };
+  }
+
+  const getFolder = async (id?: number) => {
+    const ending = (id === undefined) ? "/root" : `?EntityID=${id}`;
+    const folder_resp = await fetch(`http://localhost:8080/filesystem/info${ending}`);
+
+    if (!folder_resp.ok) {
+      const message = `An error has occured: ${folder_resp.status}`;
+      throw new Error(message);
+    }
+
+    const folder_json = await folder_resp.json();
+    return toFileFormat(folder_json.body.response);
+  }
+
+  const updateContents = async (id: number) => {
+    const children_resp = await fetch(`http://localhost:8080/filesystem/children?EntityID=${id}`);
+
+    if (!children_resp.ok) {
+      const message = `An error has occured: ${children_resp.status}`;
+      throw new Error(message);
+    }
+
+    const children_json = await children_resp.json();
+    const children = children_json.body.response.map((child: any) => toFileFormat(child));
+
+    setContents(children);
+  }
+
+  const initRoot = async () => {
+    const root = await getFolder();
+    setDir([root]);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    initRoot();
+  }, []);
+
+  useEffect(() => {
+    if (dir.length > 0) {
+      updateContents(dir.last().id);
+    }
+  }, [dir]);
+
   // Modal closer
-  const handleModalClose = () => {
+  const closeModal = () => {
     setModalOpen(false);
   }
 
-  // Gets the parent directory of our current directory, does not check
-  // if that directory exists
-  const getParent = () => {
-    return dir.split("/").slice(0, -1).join("/");
+  const getDirName = () => {
+    return dir.map(file => file.filename).join("/");
   }
 
   // Moves our current directory up (analogous to `cd ..`)
-  const toParent = () => {
-    const parent = getParent();
-    setDir(parent);
-    setFolder(Files.get(parent) as FileFormat[]);
+  const toParent = async () => {
+    setDir(dir.slice(0, -1));
   }
 
   // Checks if our current directory has a parent directory
   const hasParent = () => {
-    return dir === "root";
+    return dir.length > 1;
   }
 
   // Checks if a file/folder name already exists in our current directory
-  const containsFilename = (name: string, type: string) => {
-    for (const item of folder) {
-      if (item.type === type && name === item.filename) {
+  const containsFilename = (name: string, isDocument: boolean) => {
+    /*
+    for (const item of contents) {
+      if (item.isDocument === isDocument && name === item.filename) {
         return true;
       }
     }
 
     return false;
+    */
   }
 
   // Updates our current folder state, also emitting it to the backend
   // TODO: change to an API call once that's up
   const updateFolder = (updated: FileFormat[]) => {
-    setFolder(updated);
+    /*
+    setContents(updated);
     Files.set(dir, updated);
+    */
   }
 
   // Finds the next available folder name
   const newFolderName = () => {
+    /*
     let index = 0;
     let folder_name = "New Folder";
 
-    while (containsFilename(folder_name, "folder")) {
+    while (containsFilename(folder_name, true)) {
       index++;
       folder_name = `New Folder (${index})`;
     }
 
     return folder_name;
+    */
   }
 
   // Creates a new folder with a generic name, like "New Folder (1)"
   const newFolder = () => {
+    /*
     const name = newFolderName();
 
     Files.set(`${dir}/${name}`, []);
 
-    let updated = Files.get(dir) as FileFormat[];
+    let updated = Files.get(dir!.filename) as FileFormat[];
     updated = [...updated, {
+      id: -1,
       filename: name,
-      type: "folder"
+      is_folder: true
     }];
 
     updateFolder(updated);
+    */
   }
 
   // Listener when we click on a file in the current directory
-  const fileClick = (name: string) => {
+  const fileClick = (id: number) => {
     // TODO: fill with API call
   }
 
   // Listener when we click on a folder in the current directory
-  const folderClick = (name: string) => {
-    const childName = `${dir}/${name}`;
-    setDir(childName);
-    setFolder(Files.get(childName) as FileFormat[]);
+  const folderClick = async (id: number) => {
+    const child = await getFolder(id);
+    setDir([...dir, child]);
   }
 
   // Listener when we create a new file
@@ -112,51 +181,68 @@ const Dashboard: React.FC = () => {
     setModalOpen(true);
   }
 
-  // Listener when we rename a file/folder
-  // NOTE: doesn't recursively rename yet, hopefully backend
-  // handles this properly
-  const rename = (type: string, prev: string, curr: string) => {
-    let curr_folder = Files.get(dir) as FileFormat[];
+  const canRename = (updated: FileFormat) => {
     let rename_index = -1;
     let same_name_index = -1;
 
-    for (let i = 0; i < curr_folder.length; i++) {
-      const item = curr_folder[i];
+    for (let i = 0; i < contents.length; i++) {
+      const item = contents[i];
 
-      if (item.filename === prev && item.type === type) {
+      if (item.id === updated.id && item.isDocument === updated.isDocument) {
         rename_index = i;
+        continue;
       }
 
-      if (item.filename === curr) {
+      if (item.filename === updated.filename) {
         same_name_index = i;
       }
     }
 
     if (rename_index === -1) {
       // TODO: error, cannot rename file that doesn't exist
-      return;
+      return false;
+    } else if (contents[rename_index].filename === updated.filename) {
+      // We didn't change the name at all, no request needed
+      return false;
     } else if (same_name_index !== -1) {
-      const same_name = curr_folder[same_name_index];
+      const same_name = contents[same_name_index];
 
-      if (type === same_name.type) {
+      if (updated.isDocument === same_name.isDocument) {
         // Can't have two files/folders have the same name,
         // but we can have a file have the same name as a folder
-        return;
+        return false;
       }
     }
 
-    // We have to map over again, since if we directly do
-    // `curr_folder[rename_index].filename = curr` then we change
-    // state outside of the `setFolder` function, breaking reactivity
-    const updated = folder.map((item, index) => {
-      if (index === rename_index) {
-        return { ...item, filename: curr };
-      } else {
-        return item;
-      }
+    return true;
+  }
+
+  // Listener when we rename a file/folder
+  // NOTE: doesn't recursively rename yet, hopefully backend
+  // handles this properly
+  const rename = async (updated: FileFormat) => {
+    setLoading(true);
+
+    if (!canRename(updated)) {
+      setLoading(false);
+      return;
+    }
+
+    const rename_resp = await fetch("http://localhost:8080/filesystem/rename", {
+      method: "POST",
+      body: new URLSearchParams({
+        "EntityID": updated.id.toString(),
+        "NewName": updated.filename
+      })
     });
 
-    updateFolder(updated);
+    if (!rename_resp.ok) {
+      const message = `An error has occured: ${rename_resp.status}`;
+      throw new Error(message);
+    }
+
+    await updateContents(dir.last().id);
+    setLoading(false);
   }
 
   return (
@@ -164,29 +250,31 @@ const Dashboard: React.FC = () => {
       <SideBar
         onNewFile={newFile}
         onNewFolder={newFolder} />
-      <div style={{ flex: 1 }}>
-        <Dialog
-          open={modalOpen}
-          onClose={handleModalClose}
-          aria-labelledby="form-dialog-title">
-          <DialogContent>
-            <NewDialogue directory={dir} isCore={false} />
-          </DialogContent>
-        </Dialog>
-        <Directory>{dir}</Directory>
-        <IconButton
-          disabled={!hasParent()}
-          onClick={() => toParent()}
-          style={{ display: "inline-block", border: "1px solid grey" }}>
-          <ExpandLessIcon />
-        </IconButton>
-        <FileRenderer
-          files={folder}
-          onFileClick={fileClick}
-          onFolderClick={folderClick}
-          onRename={rename}
-          onNewFile={newFile} />
-      </div>
+      {!loading && (
+        <div style={{ flex: 1 }}>
+          <Dialog
+            open={modalOpen}
+            onClose={closeModal}
+            aria-labelledby="form-dialog-title">
+            <DialogContent>
+              <NewDialogue directory={getDirName()} isCore={false} />
+            </DialogContent>
+          </Dialog>
+          <DirectoryName>{getDirName()}</DirectoryName>
+          <IconButton
+            disabled={!hasParent()}
+            onClick={() => toParent()}
+            style={{ display: "inline-block", border: "1px solid grey" }}>
+            <ExpandLessIcon />
+          </IconButton>
+          <FileRenderer
+            files={contents}
+            onFileClick={fileClick}
+            onFolderClick={folderClick}
+            onRename={rename}
+            onNewFile={newFile} />
+        </div>
+      )}
     </div>
   );
 };

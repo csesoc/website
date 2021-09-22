@@ -12,7 +12,7 @@ import Renamable from "./Renamable";
 interface FolderProps {
   filename: string,
   onClick: () => void,
-  onRename: (prev: string, next: string) => void
+  onRename: (newName: string) => void
 }
 
 const IconContainer = styled.div`

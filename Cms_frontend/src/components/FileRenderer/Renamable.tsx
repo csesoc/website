@@ -7,7 +7,7 @@ import React, { useState } from "react";
 
 interface RenamableProps {
   name: string,
-  onRename: (prev: string, curr: string) => void
+  onRename: (newName: string) => void
 }
 
 const Renamable: React.FC<RenamableProps> = ({ name, onRename }) => {
@@ -29,7 +29,7 @@ const Renamable: React.FC<RenamableProps> = ({ name, onRename }) => {
           onKeyDown={event => {
             if (event.key === "Enter" || event.key === "Escape") {
               if (event.key === "Enter") {
-                onRename(name, inputName);
+                onRename(inputName);
               }
 
               setToggle(true);
