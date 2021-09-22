@@ -17,20 +17,9 @@ const DirectoryName = styled.h3`
   margin-right: 10px;
 `;
 
-// Helper array functions
-
-declare global {
-  interface Array<T> {
-    last(): T
-  }
-}
-
-Array.prototype.last = function<T>(this: T[]): T {
-  return this[this.length - 1];
-}
-
 // Implementation
 const Dashboard: React.FC = () => {
+  // TODO: implement loading screen
   const [loading, setLoading] = useState(true);
 
   const [dir, setDir] = useState<FileFormat[]>([]);
@@ -80,13 +69,17 @@ const Dashboard: React.FC = () => {
     setLoading(false);
   }
 
+  const getCurrentID = () => {
+    return dir[dir.length - 1].id;
+  }
+
   useEffect(() => {
     initRoot();
   }, []);
 
   useEffect(() => {
     if (dir.length > 0) {
-      updateContents(dir.last().id);
+      updateContents(getCurrentID());
     }
   }, [dir]);
 
@@ -111,7 +104,6 @@ const Dashboard: React.FC = () => {
 
   // Checks if a file/folder name already exists in our current directory
   const containsFilename = (name: string, isDocument: boolean) => {
-    /*
     for (const item of contents) {
       if (item.isDocument === isDocument && name === item.filename) {
         return true;
@@ -119,49 +111,42 @@ const Dashboard: React.FC = () => {
     }
 
     return false;
-    */
-  }
-
-  // Updates our current folder state, also emitting it to the backend
-  // TODO: change to an API call once that's up
-  const updateFolder = (updated: FileFormat[]) => {
-    /*
-    setContents(updated);
-    Files.set(dir, updated);
-    */
   }
 
   // Finds the next available folder name
   const newFolderName = () => {
-    /*
     let index = 0;
     let folder_name = "New Folder";
 
-    while (containsFilename(folder_name, true)) {
+    while (containsFilename(folder_name, false)) {
       index++;
       folder_name = `New Folder (${index})`;
     }
 
     return folder_name;
-    */
   }
 
   // Creates a new folder with a generic name, like "New Folder (1)"
-  const newFolder = () => {
-    /*
-    const name = newFolderName();
+  const newFolder = async () => {
+    setLoading(true);
+    const folder_name = newFolderName();
 
-    Files.set(`${dir}/${name}`, []);
+    const create_resp = await fetch("http://localhost:8080/filesystem/create", {
+      method: "POST",
+      body: new URLSearchParams({
+        "LogicalName": folder_name,
+        "OwnerGroup": getCurrentID().toString(),
+        "IsDocument": "false"
+      })
+    });
 
-    let updated = Files.get(dir!.filename) as FileFormat[];
-    updated = [...updated, {
-      id: -1,
-      filename: name,
-      is_folder: true
-    }];
+    if (!create_resp.ok) {
+      const message = `An error has occured: ${create_resp.status}`;
+      throw new Error(message);
+    }
 
-    updateFolder(updated);
-    */
+    await updateContents(getCurrentID());
+    setLoading(false);
   }
 
   // Listener when we click on a file in the current directory
@@ -218,8 +203,6 @@ const Dashboard: React.FC = () => {
   }
 
   // Listener when we rename a file/folder
-  // NOTE: doesn't recursively rename yet, hopefully backend
-  // handles this properly
   const rename = async (updated: FileFormat) => {
     setLoading(true);
 
@@ -241,7 +224,7 @@ const Dashboard: React.FC = () => {
       throw new Error(message);
     }
 
-    await updateContents(dir.last().id);
+    await updateContents(getCurrentID());
     setLoading(false);
   }
 
