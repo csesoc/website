@@ -5,14 +5,15 @@
 // functional component, with hovering capabilities
 
 import React from "react";
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 import Renamable from "./Renamable";
 
 interface FileProps {
   filename: string,
   image: string,
   onClick: () => void,
-  onRename?: (prev: string, next: string) => void
+  onRename?: (prev: string, next: string) => void,
+  active: boolean
 }
 
 // Carry over styled component from FileRenderer.tsx
@@ -23,24 +24,27 @@ const IconContainer = styled.div`
   text-align: center;
 `;
 
+interface HighlightProps {
+  active: boolean
+}
+
 // Styled component for file when it's hovered over
-const HoverImage = styled.img`
+const HoverImage = styled.img <HighlightProps>`
   border: 5px solid #999999;
   border-radius: 3px;
-  transition: 0.3s ease-out;
-
-  &:hover {
-    border-color: lightblue;
-    transition: 0.3s ease-out;
-  }
+  
+  ${props => props.active && css`
+  border-color: lightblue;
+  `}
 `
 
-const FileContainer: React.FC<FileProps> = ({ filename, image, onClick, onRename }) => {
+const FileContainer: React.FC<FileProps> = ({ filename, image, onClick, onRename, active }) => {
   return (
     <div>
       <IconContainer>
         <HoverImage
           src={image}
+          active={active}
           onClick={onClick} />
         {onRename === undefined ? (
           <p>{filename}</p>
