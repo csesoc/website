@@ -77,6 +77,7 @@ const Dashboard: React.FC = () => {
     initRoot();
   }, []);
 
+  // Not sure if this is good practice or stateful, but it works
   useEffect(() => {
     if (dir.length > 0) {
       updateContents(getCurrentID());
@@ -93,7 +94,7 @@ const Dashboard: React.FC = () => {
   }
 
   // Moves our current directory up (analogous to `cd ..`)
-  const toParent = async () => {
+  const toParent = () => {
     setDir(dir.slice(0, -1));
   }
 
