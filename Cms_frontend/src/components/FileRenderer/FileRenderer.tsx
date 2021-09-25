@@ -22,8 +22,8 @@ interface RenderProps {
   onFileClick: (id: number) => void,
   onFolderClick: (id: number) => void,
   onRename: (updated: FileFormat) => void,
-  onNewFile: () => void
-  activeFiles: string
+  onNewFile: () => void,
+  activeFiles: number
 }
 
 // Given a list of files specified in FileFormat, sorts them alphabetically,
@@ -55,7 +55,7 @@ const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick
             <FileContainer
               filename={file.filename}
               image={Default}
-              active={activeFiles===file.filename}
+              active={activeFiles===file.id}
               onClick={() => onFileClick(file.id)}
               onRename={(newName) => onRename({
                 id: file.id,
