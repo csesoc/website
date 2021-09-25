@@ -23,6 +23,7 @@ interface RenderProps {
   onFolderClick: (id: number) => void,
   onRename: (updated: FileFormat) => void,
   onNewFile: () => void
+  activeFiles: string
 }
 
 // Given a list of files specified in FileFormat, sorts them alphabetically,
@@ -41,7 +42,7 @@ const sortFiles = (files: FileFormat[]) => {
 // Typescript Declaration
 // uses the interface defined above
 // imports the icons from material UI
-const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick, onRename, onNewFile }) => {
+const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick, onRename, onNewFile, activeFiles }) => {
   const sorted = sortFiles(files);
 
   return (
@@ -54,6 +55,7 @@ const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick
             <FileContainer
               filename={file.filename}
               image={Default}
+              active={activeFiles===file.filename}
               onClick={() => onFileClick(file.id)}
               onRename={(newName) => onRename({
                 id: file.id,
@@ -76,7 +78,8 @@ const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick
         <FileContainer
           filename="New"
           image={NewPost}
-          onClick={onNewFile} />
+          onClick={onNewFile}
+          active={false} />
       </FileFlex>
     </div>
   )
