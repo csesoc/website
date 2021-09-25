@@ -28,6 +28,7 @@ const Dashboard: React.FC = () => {
   // Modal state handler
   const [modalOpen, setModalOpen] = React.useState(false);
 
+  // Converts a backend response to the local FileFormat interface
   const toFileFormat = (json: any): FileFormat => {
     return {
       id: json.EntityID,
@@ -36,6 +37,8 @@ const Dashboard: React.FC = () => {
     };
   }
 
+  // Given a file ID (if no ID is provided root is assumed), returns
+  // a FileFormat of that file from the backend
   const getFolder = async (id?: number) => {
     const ending = (id === undefined) ? "/root" : `?EntityID=${id}`;
     const folder_resp = await fetch(`http://localhost:8080/filesystem/info${ending}`);
@@ -49,6 +52,8 @@ const Dashboard: React.FC = () => {
     return toFileFormat(folder_json.body.response);
   }
 
+  // Given a file ID, sets the `contents` state variable to the children
+  // of that file
   const updateContents = async (id: number) => {
     const children_resp = await fetch(`http://localhost:8080/filesystem/children?EntityID=${id}`);
 
@@ -63,21 +68,27 @@ const Dashboard: React.FC = () => {
     setContents(children);
   }
 
+  // Initialise the root folder, in its separate function because useEffect
+  // won't allow async functions
   const initRoot = async () => {
     const root = await getFolder();
     setDir([root]);
     setLoading(false);
   }
 
+  // Get the file ID of the current directory
   const getCurrentID = () => {
     return dir[dir.length - 1].id;
   }
 
+  // Triggers when Dashboard first loads
   useEffect(() => {
+    // TODO: store cookie on where the user last visited
     initRoot();
   }, []);
 
-  // Not sure if this is good practice or stateful, but it works
+  // Update the `contents` state variable whenever we switch directories -
+  // not sure if this is completely stateful but it works
   useEffect(() => {
     if (dir.length > 0) {
       updateContents(getCurrentID());
@@ -89,6 +100,7 @@ const Dashboard: React.FC = () => {
     setModalOpen(false);
   }
 
+  // Gets the full directory name
   const getDirName = () => {
     return dir.map(file => file.filename).join("/");
   }
@@ -167,6 +179,7 @@ const Dashboard: React.FC = () => {
     setModalOpen(true);
   }
 
+  // Checks if a file can (or needs to) be renamed
   const canRename = (updated: FileFormat) => {
     let rename_index = -1;
     let same_name_index = -1;
