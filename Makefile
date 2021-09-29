@@ -1,10 +1,20 @@
 SERVICE := go-hotreload
 
 dev:
-	GO_MOD=go.mod docker compose up
+	docker-compose \
+	--env-file=./Config/.env.dev \
+	up
 
 dev-build:
-	GO_MOD=go.mod docker compose up --build
+	docker-compose \
+	--env-file=./Config/.env.dev \
+	up --build
 
 pg:
-	docker volume prune; GO_MOD=go.mod docker compose up --build
+	docker volume prune; \
+	docker-compose \
+	--env-file=./Config/.env.dev \
+	up --build
+
+clean:
+	docker-compose down

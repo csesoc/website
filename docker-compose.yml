@@ -11,6 +11,9 @@ services:
     stdin_open: true
     ports:
       - 3000:3000
+    environment:
+      - BACKEND_URI=${BACKEND_URI}
+
   backend:
     container_name: go_backend
     build: ./Backend
@@ -18,16 +21,19 @@ services:
       - db
     volumes:
       - './Backend:/go/src/DiffSync'
-      - './Backend/${GO_MOD}:/go/src/DiffSync/go.mod'
+      - './Backend/go.mod:/go/src/DiffSync/go.mod'
     ports:
       - 8080:8080
+    environment:
+      - FRONTEND_URI=${FRONTEND_URI}
+
   db:
     container_name: pg_container
     image: postgres
     restart: always
-    user: postgres
+    user: ${PG_USER}
     environment:
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_DB: test_db
     ports:
       - "5432:5432"
