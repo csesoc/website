@@ -56,7 +56,7 @@ const SideBar: React.FC<SideBarProps> = ({ onNewFile, onNewFolder }) => {
   return (
     <Container>
       <SidebarTitle>
-        Welcome "name"
+        Welcome \name\
       </SidebarTitle>
       <ButtonFlex>
         <ButtonGroup>
