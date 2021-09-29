@@ -1,6 +1,7 @@
 interface FileFormat {
+  id: number,
   filename: string,
-  type: string
+  isDocument: boolean
 }
 
 export type { FileFormat };

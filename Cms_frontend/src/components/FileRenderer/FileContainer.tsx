@@ -12,7 +12,7 @@ interface FileProps {
   filename: string,
   image: string,
   onClick: () => void,
-  onRename?: (prev: string, next: string) => void,
+  onRename?: (newName: string) => void
   active: boolean
 }
 

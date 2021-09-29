@@ -19,23 +19,19 @@ interface RenderProps {
   // Functions for user interactions - when they click on an
   // existing file, when they click on a folder, and when they make
   // a new file respectively
-  onFileClick: (name: string) => void,
-  onFolderClick: (name: string) => void,
-  onRename: (type: string, prev: string, next: string) => void,
+  onFileClick: (id: number) => void,
+  onFolderClick: (id: number) => void,
+  onRename: (updated: FileFormat) => void,
   onNewFile: () => void,
-  activeFiles: string
+  activeFiles: number
 }
 
 // Given a list of files specified in FileFormat, sorts them alphabetically,
 // with folders first, then followed by files
 const sortFiles = (files: FileFormat[]) => {
   return files.sort((first, second) => {
-    if (first.type !== second.type) {
-      if (first.type === "folder") {
-        return -1;
-      } else {
-        return 1;
-      }
+    if (first.isDocument !== second.isDocument) {
+      return first.isDocument ? 1 : -1;
     }
 
     // Alphabetically compare filenames if they have the same type
@@ -55,19 +51,26 @@ const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick
     <div style={{ display: "flex", flexWrap: "wrap" }}>
       {sorted.map((file, index) => (
         <FileFlex key={file.filename + index}>
-          {file.type === "folder" && (
-            <FolderContainer
-              filename={file.filename}
-              onClick={() => onFolderClick(file.filename)}
-              onRename={(prev, next) => onRename("folder", prev, next)} />
-          )}
-          {file.type === "file" && (
+          {file.isDocument ? (
             <FileContainer
               filename={file.filename}
               image={Default}
-              onClick={() => onFileClick(file.filename)}
-              active={activeFiles===file.filename}
-              onRename={(prev, next) => onRename("file", prev, next)} />
+              active={activeFiles===file.id}
+              onClick={() => onFileClick(file.id)}
+              onRename={(newName) => onRename({
+                id: file.id,
+                filename: newName,
+                isDocument: true
+              })} />
+          ) : (
+            <FolderContainer
+              filename={file.filename}
+              onClick={() => onFolderClick(file.id)}
+              onRename={(newName) => onRename({
+                id: file.id,
+                filename: newName,
+                isDocument: false
+              })} />
           )}
         </FileFlex>
       ))}
