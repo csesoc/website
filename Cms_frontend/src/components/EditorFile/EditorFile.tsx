@@ -42,7 +42,7 @@ const EditorContent = styled.div`
   margin-top: -100px;
   min-height: 700px;
   padding: 2rem;
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 0 0 1px 1px lightgrey;
 `
 
@@ -65,7 +65,6 @@ const EditorFile: React.FC = () => {
                 Content:
             </EditorContent>
         </Container>
-  
     );    
   };
   
