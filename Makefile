@@ -17,4 +17,6 @@ pg:
 	up --build
 
 clean:
-	docker-compose down
+	docker-compose \
+	--env-file=./Config/.env.dev \
+	down
