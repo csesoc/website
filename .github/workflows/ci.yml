@@ -1,0 +1,23 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ main, prototype ]
+  pull_request:
+    branches: [ main, prototype ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Building docker containers using docker-compose
+        run: GO_MOD=go.mod docker compose up --build
+      - name: Golang Tests
+        run: go test ./...
+        working-directory: ./Backend

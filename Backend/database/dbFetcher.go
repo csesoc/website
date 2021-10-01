@@ -72,7 +72,7 @@ func tryConnect(host string) (*pgxpool.Pool, error) {
 // the schema underlying the test database is read directly from the postgres create_tables.sql file
 // the testing database is spun up as a docker container with a 3 minute expiry due to inactivity
 func createNewTestDB() string {
-	pool, resource := createDockerDatabase()
+	pool, resource := createDatabaseContainer()
 
 	hostAndPort := resource.GetHostPort("5432/tcp")
 	databaseURL := fmt.Sprintf("postgres://%s:%s@%s/%s", TEST_USER, TEST_PASSWORD, hostAndPort, TESTING_DB_NAME)
@@ -83,15 +83,15 @@ func createNewTestDB() string {
 		panic(err)
 	}
 
-	_, err = db.Query(startupScript)
-	err = db.Close()
+	db.Query(startupScript)
+	db.Close()
 
 	return hostAndPort
 }
 
 // createDockerDatabase resource creates a docker container to host
 // the test database, prior to any othe work being done
-func createDockerDatabase() (*dockertest.Pool, *dockertest.Resource) {
+func createDatabaseContainer() (*dockertest.Pool, *dockertest.Resource) {
 	pool, err := dockertest.NewPool("")
 	if err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
