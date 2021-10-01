@@ -19,5 +19,5 @@ jobs:
       - name: Building docker containers using docker-compose
         run: GO_MOD=go.mod docker-compose up -d --build
       - name: Golang Tests
-        run: go test ./...
+        run: go test -v ./...
         working-directory: ./Backend
