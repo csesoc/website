@@ -3,6 +3,7 @@ package filesystem
 import (
 	"DiffSync/database"
 	"DiffSync/filesystem"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -154,15 +155,15 @@ func TestEntityChildren(t *testing.T) {
 
 		for x := 1; x < 10; x++ {
 			if x%3 == 0 {
-				filesystem.CreateFilesystemEntity(testContext, dir1, "cool_doc"+string(x), filesystem.ADMIN, true)
+				filesystem.CreateFilesystemEntity(testContext, dir1, "cool_doc"+fmt.Sprint(x), filesystem.ADMIN, true)
 			}
 			if x%5 == 0 {
-				filesystem.CreateFilesystemEntity(testContext, dir2, "cool_doc"+string(x), filesystem.ADMIN, true)
+				filesystem.CreateFilesystemEntity(testContext, dir2, "cool_doc"+fmt.Sprint(x), filesystem.ADMIN, true)
 			}
 			if x%2 == 0 {
-				filesystem.CreateFilesystemEntity(testContext, dir3, "cool_doc"+string(x), filesystem.ADMIN, true)
+				filesystem.CreateFilesystemEntity(testContext, dir3, "cool_doc"+fmt.Sprint(x), filesystem.ADMIN, true)
 			}
-			filesystem.CreateFilesystemEntity(testContext, dir4, "cool_doc"+string(x), filesystem.ADMIN, true)
+			filesystem.CreateFilesystemEntity(testContext, dir4, "cool_doc"+fmt.Sprint(x), filesystem.ADMIN, true)
 		}
 
 		assert.NotNil(filesystem.GetEntityChildren(testContext, dir1))
