@@ -96,8 +96,8 @@ func TestEntityDeletion(t *testing.T) {
 		newDir, _ := createFilesystemEntityAtRoot(testContext, "cool_dir", ADMIN, false)
 		newDoc, _ := createFilesystemEntity(testContext, newDir, "cool_doc", ADMIN, true)
 
-		assert.NotNil(deleteEntity(testContext, root.EntityID))
-		assert.NotNil(deleteEntity(testContext, newDir))
+		assert.True(testContext.WillFail(func() error { return deleteEntity(testContext, root.EntityID) }))
+		assert.True(testContext.WillFail(func() error { return deleteEntity(testContext, newDir) }))
 
 		assert.Nil(deleteEntity(testContext, newDoc))
 		info, _ := getFilesystemInfo(testContext, newDir)
@@ -111,7 +111,7 @@ func TestEntityDeletion(t *testing.T) {
 		nestedDirectory, _ := createFilesystemEntity(testContext, anotherDirectory, "cheeseBurger", ADMIN, false)
 		file, _ := createFilesystemEntity(testContext, nestedDirectory, "spinach", ADMIN, false)
 
-		assert.NotNil(deleteEntity(testContext, nestedDirectory))
+		assert.True(testContext.WillFail(func() error { return deleteEntity(testContext, nestedDirectory) }))
 		assert.Nil(deleteEntity(testContext, file))
 		assert.Nil(deleteEntity(testContext, nestedDirectory))
 		assert.Nil(deleteEntity(testContext, anotherDirectory))

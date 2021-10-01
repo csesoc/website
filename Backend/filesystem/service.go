@@ -85,34 +85,12 @@ func getRootInfo(ctx database.DatabaseContext) (EntityInfo, error) {
 
 // deleteEntity removes an entity from the filesystem
 func deleteEntity(ctx database.DatabaseContext, entityID int) error {
-	// Check that we're not deleting an entity with kids or root (this is already enforced in the DB but no exception is thrown)
-	// basically if u try and delete root, nothing will happen
-	if rootID, err := getRootID(ctx); err != nil || rootID == entityID {
-		return errors.New("cannot delete root")
-	}
-
-	if numKids, err := getNumChildren(ctx, entityID); err != nil || numKids != 0 {
-		return errors.New("cannot delete an entity with kids")
-	}
-
 	return ctx.Exec("SELECT delete_entity($1)", []interface{}{entityID})
 }
 
 // renameEntity changes the logical name of a given object in the filesystem
 func renameEntity(ctx database.DatabaseContext, entityID int, newName string) error {
 	return ctx.Exec("UPDATE filesystem SET logicalname = ($1) WHERE entityid = ($2)", []interface{}{newName, entityID})
-}
-
-// getNumChildren is a small method to determine how many kids an entity has
-func getNumChildren(ctx database.DatabaseContext, entityID int) (int, error) {
-	children := pgtype.Hstore{}
-
-	err := ctx.Query("SELECT children FROM filesystem WHERE entityid = $1", []interface{}{entityID}, &children)
-	if err != nil {
-		return 0, errors.New("failed to read from database")
-	}
-
-	return len(children.Map), nil
 }
 
 // getFilesystemChildren returns the list of children for a file system entity
