@@ -115,6 +115,31 @@ func (ctx *TestingContext) RunTest(testMethod func()) {
 	ctx.activeTransaction = nil
 }
 
+// WillFail wraps around a function that expects to fail,
+// if it does fail it returns true otherwise false, note that an active transaction
+// must be setup to use this method, that is it can only be called within a RunTest invocation
+func (ctx *TestingContext) WillFail(testMethod func() error) bool {
+	if !ctx.inTransactionMode {
+		panic("cannot call WillFail without an active transaction")
+	}
+
+	nestedTransaction, err := ctx.activeTransaction.Begin(context.Background())
+	if err != nil {
+		panic("WillFail invocation failed iNcOrReCtLy :P")
+	}
+	// swap out the transaction context being used
+	temp := ctx.activeTransaction
+	ctx.activeTransaction = nestedTransaction
+	err = testMethod()
+	ctx.activeTransaction = temp
+
+	if nestedTransaction.Rollback(context.Background()) != nil {
+		panic(err)
+	}
+
+	return err != nil
+}
+
 // spinTestDB creates a new instance of the testing database and returns the host details
 func spinTestDB() string {
 	var db *sql.DB

@@ -15,8 +15,19 @@ CREATE TABLE person (
   UID serial PRIMARY KEY,
   Email VARCHAR(50) UNIQUE NOT NULL,
   First_name VARCHAR(50) NOT NULL,
-  Password VARCHAR(50) NOT NULL
+  Password VARCHAR(50) NOT NULL,
+
+  /* non duplicate email and password constraints */
+  CONSTRAINT no_dupes UNIQUE (email, password)
 );
+
+/* inserting two accounts into db */
+INSERT INTO person (Email, First_name, Password)
+VALUES ('z0000000@ad.unsw.edu.au', 'adam', 'password');
+INSERT INTO person(Email, First_name, Password)
+VALUES ('john.smith@gmail.com', 'john', 'password');
+INSERT INTO person(Email, First_name, Password)
+VALUES ('jane.doe@gmail.com', 'jane', 'password');
 
 
 /* Stub for whenever jacky does it */
@@ -114,14 +125,35 @@ BEGIN
   /* If this is a directory and has kids raise an error */
   IF numKids > 0
   THEN
-    RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'entity has children (please dont orphan them O_O )';
+    /* entity has children (please dont orphan them O_O ) */
+    RETURN;
   END IF;
 
   IF isRoot THEN
-    RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'stop trying to delete root >:(';
+    /* stop trying to delete root >:( */
+    RETURN;
   END IF;
 
   DELETE FROM filesystem WHERE EntityID = entityIDP;
   UPDATE filesystem SET Children = Children - entityIDP::TEXT
   WHERE EntityID = parentP;
+END $$;
+
+/* Insert dummy data */
+DO $$
+DECLARE
+  rootID        filesystem.EntityID%type;
+  newEntity     filesystem.EntityID%type;
+  wasPopping    filesystem.EntityID%type;
+  oldEntity     filesystem.EntityID%type;
+BEGIN
+  SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE Parent IS NULL;
+  
+  newEntity := (SELECT new_entity(rootID::INT, 'downloads'::VARCHAR, 1, false));
+  oldEntity := (SELECT new_entity(rootID::INT, 'documents'::VARCHAR, 1, false));
+
+  wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document'::VARCHAR, 1, true));
+  wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document_round_2'::VARCHAR, 1, true));
+  PERFORM delete_entity(wasPopping::INT);
+  wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document_round_2'::VARCHAR, 1, true));
 END $$;`

@@ -131,9 +131,9 @@ func TestEntityRename(t *testing.T) {
 		newDoc1, _ := createFilesystemEntity(testContext, newDir, "cool_doc1", ADMIN, true)
 		newDoc2, _ := createFilesystemEntity(testContext, newDir, "cool_doc2", ADMIN, true)
 
-		assert.NotNil(renameEntity(testContext, newDoc, "cool_doc2"))
-		assert.NotNil(renameEntity(testContext, newDoc1, "cool_doc2"))
-		assert.NotNil(renameEntity(testContext, newDoc2, "cool_doc1"))
+		assert.True(testContext.WillFail(func() error { return renameEntity(testContext, newDoc, "cool_doc2") }))
+		assert.True(testContext.WillFail(func() error { return renameEntity(testContext, newDoc1, "cool_doc2") }))
+		assert.True(testContext.WillFail(func() error { return renameEntity(testContext, newDoc2, "cool_doc1") }))
 
 		assert.Nil(renameEntity(testContext, newDoc, "yabba dabba doo"))
 		assert.Nil(renameEntity(testContext, newDir, "zoinks"))
