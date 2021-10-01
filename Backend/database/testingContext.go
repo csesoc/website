@@ -183,6 +183,11 @@ func spinTestDB() string {
 		log.Fatalf("Could not connect to docker: %s", err)
 	}
 
+	startupScript, err := importSchema()
+	if err != nil {
+		panic(err)
+	}
+
 	_, err = db.Query(startupScript)
 	if err != nil {
 		panic(err)
