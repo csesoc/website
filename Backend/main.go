@@ -16,7 +16,6 @@ func main() {
 	mux.HandleFunc("/edit", service.EditEndpoint)
 	mux.HandleFunc("/preview", service.PreviewHTTPHandler)
 	mux.HandleFunc("/filesystem/info", filesystem.GetEntityInfo)
-	mux.HandleFunc("/filesystem/info/root", filesystem.GetEntityInfo)
 	mux.HandleFunc("/filesystem/create", filesystem.CreateNewEntity)
 	mux.HandleFunc("/filesystem/delete", filesystem.DeleteFilesystemEntity)
 	mux.HandleFunc("/filesystem/rename", filesystem.RenameFilesystemEntity)

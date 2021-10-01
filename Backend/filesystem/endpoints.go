@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 )
 
 var httpDBContext database.LiveContext
@@ -22,41 +21,35 @@ func init() {
 }
 
 type ValidInfoRequest struct {
-	EntityID int `schema:"EntityID,required"`
+	EntityID int `schema:"EntityID"`
 }
 
 // Defines endpoints consumable via the API
 func GetEntityInfo(w http.ResponseWriter, r *http.Request) {
-	routes := strings.Split(r.URL.RequestURI(), "/")
 
-	switch routes[len(routes)-1] {
-	case "root":
-		fileInfo, err := GetRootInfo(httpDBContext)
+	var input ValidInfoRequest
+	if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"GET"}, map[int]string{
+		400: "missing EntityID paramater",
+		405: "invalid method",
+	}, &input); validRequest {
+		var fileInfo EntityInfo
+		var err error
+
+		if input.EntityID == 0 {
+			fileInfo, err = GetRootInfo(httpDBContext)
+		} else {
+			fileInfo, err = GetFilesystemInfo(httpDBContext, input.EntityID)
+		}
+
 		if err != nil {
-			httpUtil.ThrowRequestError(w, 500, "something went wrong")
+			httpUtil.ThrowRequestError(w, 404, "unable to find entity with requested ID")
 			return
 		}
 
 		out, _ := json.Marshal(fileInfo)
 		httpUtil.SendResponse(w, string(out))
-
-	default:
-		var input ValidInfoRequest
-		if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"GET"}, map[int]string{
-			400: "missing EntityID paramater",
-			405: "invalid method",
-		}, &input); validRequest {
-
-			fileInfo, err := GetFilesystemInfo(httpDBContext, input.EntityID)
-			if err != nil {
-				httpUtil.ThrowRequestError(w, 404, "unable to find entity with requested ID")
-				return
-			}
-
-			out, _ := json.Marshal(fileInfo)
-			httpUtil.SendResponse(w, string(out))
-		}
 	}
+
 }
 
 // TODO: this needs to be wrapped around auth and permissions later
@@ -80,7 +73,6 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request) {
 		if input.Parent == 0 {
 			newID, err = CreateFilesystemEntityAtRoot(httpDBContext, input.LogicalName, input.OwnerGroup, input.IsDocument)
 		} else {
-			log.Print("hello there\n")
 			newID, err = CreateFilesystemEntity(httpDBContext, input.Parent, input.LogicalName, input.OwnerGroup, input.IsDocument)
 		}
 
