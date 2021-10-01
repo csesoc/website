@@ -1,8 +1,8 @@
 package main
 
 import (
+	auth "DiffSync/auth"
 	"DiffSync/filesystem"
-	auth "DiffSync/internal/auth"
 	service "DiffSync/internal/service"
 	"log"
 	"net/http"

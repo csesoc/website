@@ -30,3 +30,5 @@ const HOST_AND_PORT = "db:5432"
 const TEST_USER = "postgres"
 const TEST_PASSWORD = "test"
 const TESTING_DB_NAME = "cms_testing_db"
+
+const TEST_DB_EXPIRY_TIME = 180

@@ -29,21 +29,26 @@ func NewLiveContext() (LiveContext, error) {
 	}, nil
 }
 
+// Regular DatabaseContext methods
 func (ctx LiveContext) Query(query string, sqlArgs []interface{}, resultOutput ...interface{}) error {
-	if environment.IsTestingEnvironment() {
-		panic("do not query a live context db from a test!")
-	}
+	ctx.verifyEnvironment()
 	return ctx.conn.QueryRow(context.Background(), query, sqlArgs...).Scan(resultOutput...)
 }
 
 func (ctx LiveContext) Exec(query string, sqlArgs []interface{}) error {
-	if environment.IsTestingEnvironment() {
-		panic("do not query a live context db from a test!")
-	}
+	ctx.verifyEnvironment()
 	_, err := ctx.conn.Exec(context.Background(), query, sqlArgs...)
 	return err
 }
 
 func (context LiveContext) Close() {
 	context.conn.Close()
+}
+
+// verifyEnvironment just verifies that our current execution environment is fit for a live context
+// if not it panics
+func (ctx LiveContext) verifyEnvironment() {
+	if environment.IsTestingEnvironment() {
+		panic("do not query a LiveContext DB from a test")
+	}
 }
