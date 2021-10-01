@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Building docker containers using docker-compose
-        run: GO_MOD=go.mod docker compose up --build
+        run: GO_MOD=go.mod docker compose up
       - name: Golang Tests
         run: go test ./...
         working-directory: ./Backend
