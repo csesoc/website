@@ -10,18 +10,12 @@ import (
 	"strings"
 )
 
-var httpDbPool database.Pool
+var httpDBContext database.LiveContext
 
 // Todo: abstract out configuration logic elsewhere
 func init() {
 	var err error
-	httpDbPool, err = database.NewPool(database.Config{
-		HostAndPort: "db:5432",
-		User:        "postgres",
-		Password:    "postgres",
-		Database:    "test_db",
-	})
-
+	httpDBContext, err = database.NewLiveContext()
 	if err != nil {
 		log.Print(err.Error())
 	}
@@ -37,7 +31,7 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request) {
 
 	switch routes[len(routes)-1] {
 	case "root":
-		fileInfo, err := getRootInfo(httpDbPool)
+		fileInfo, err := getRootInfo(httpDBContext)
 		if err != nil {
 			httpUtil.ThrowRequestError(w, 500, "something went wrong")
 			return
@@ -53,7 +47,7 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request) {
 			405: "invalid method",
 		}, &input); validRequest {
 
-			fileInfo, err := getFilesystemInfo(httpDbPool, input.EntityID)
+			fileInfo, err := getFilesystemInfo(httpDBContext, input.EntityID)
 			if err != nil {
 				httpUtil.ThrowRequestError(w, 404, "unable to find entity with requested ID")
 				return
@@ -84,10 +78,10 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request) {
 		var err error
 
 		if input.Parent == 0 {
-			newID, err = createFilesystemEntityAtRoot(httpDbPool, input.LogicalName, input.OwnerGroup, input.IsDocument)
+			newID, err = createFilesystemEntityAtRoot(httpDBContext, input.LogicalName, input.OwnerGroup, input.IsDocument)
 		} else {
 			log.Print("hello there\n")
-			newID, err = createFilesystemEntity(httpDbPool, input.Parent, input.LogicalName, input.OwnerGroup, input.IsDocument)
+			newID, err = createFilesystemEntity(httpDBContext, input.Parent, input.LogicalName, input.OwnerGroup, input.IsDocument)
 		}
 
 		if err != nil {
@@ -106,7 +100,7 @@ func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request) {
 		400: "missing paramaters, must have: LogicalName, OwnerGroup, IsDocument",
 		405: "invalid method",
 	}, &input); validRequest {
-		err := deleteEntity(httpDbPool, input.EntityID)
+		err := deleteEntity(httpDBContext, input.EntityID)
 		if err != nil {
 			httpUtil.ThrowRequestError(w, 500, "unable to delete, the requested entity is either the root directory or has children")
 		} else {
@@ -123,7 +117,7 @@ func GetChildren(w http.ResponseWriter, r *http.Request) {
 		405: "invalid method",
 	}, &input); validRequest {
 
-		fileInfo, err := getEntityChildren(httpDbPool, input.EntityID)
+		fileInfo, err := getEntityChildren(httpDBContext, input.EntityID)
 		if err != nil {
 			httpUtil.ThrowRequestError(w, 404, "unable to find entity with requested ID")
 			return
@@ -146,7 +140,7 @@ func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request) {
 		400: "missing paramaters, must have: NewName, EntityID",
 		405: "invalid method",
 	}, &input); validRequest {
-		err := renameEntity(httpDbPool, input.EntityID, input.NewName)
+		err := renameEntity(httpDBContext, input.EntityID, input.NewName)
 		if err != nil {
 			httpUtil.ThrowRequestError(w, 500, "unable rename, the requested name is most likely taken")
 		} else {

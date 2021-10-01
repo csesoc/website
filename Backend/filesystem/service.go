@@ -2,7 +2,6 @@ package filesystem
 
 import (
 	"DiffSync/database"
-	"context"
 	"errors"
 	"strconv"
 
@@ -20,10 +19,10 @@ const ADMIN int = 1
 const USER int = 2
 
 // createFilesystemEntity creates a new file attached to a specific entity
-func createFilesystemEntity(pool database.Pool, parent int, logicalName string, ownerGroup int, isDocument bool) (int, error) {
+func createFilesystemEntity(ctx database.DatabaseContext, parent int, logicalName string, ownerGroup int, isDocument bool) (int, error) {
 	// pool is thread safe so its calm
 	var newID int
-	err := pool.GetConn().QueryRow(context.Background(), "SELECT new_entity($1, $2, $3, $4)", parent, logicalName, ownerGroup, isDocument).Scan(&newID)
+	err := ctx.Query("SELECT new_entity($1, $2, $3, $4)", []interface{}{parent, logicalName, ownerGroup, isDocument}, &newID)
 	if err != nil {
 		return 0, errors.New("failed to create a new DB entry")
 	}
@@ -32,23 +31,23 @@ func createFilesystemEntity(pool database.Pool, parent int, logicalName string, 
 }
 
 // createFilesystemEntityAtRoot creates a new entity with root as its parent
-func createFilesystemEntityAtRoot(pool database.Pool, logicalName string, ownerGroup int, isDocument bool) (int, error) {
+func createFilesystemEntityAtRoot(ctx database.DatabaseContext, logicalName string, ownerGroup int, isDocument bool) (int, error) {
 	// pool is thread safe so its calm
-	root, err := getRootID(pool)
+	root, err := getRootID(ctx)
 	if err != nil {
 		return 0, err
 	}
 
-	id, err := createFilesystemEntity(pool, root, logicalName, ownerGroup, isDocument)
+	id, err := createFilesystemEntity(ctx, root, logicalName, ownerGroup, isDocument)
 
 	return id, err
 }
 
 // getRootID returns the id of the root directory
-func getRootID(pool database.Pool) (int, error) {
+func getRootID(ctx database.DatabaseContext) (int, error) {
 	// pool is thread safe so its calm
 	var parentID int
-	err := pool.GetConn().QueryRow(context.Background(), "SELECT EntityID FROM filesystem WHERE parent IS NULL").Scan(&parentID)
+	err := ctx.Query("SELECT EntityID FROM filesystem WHERE parent IS NULL", []interface{}{}, &parentID)
 	if err != nil {
 		return 0, errors.New("failed to find root id")
 	}
@@ -57,12 +56,12 @@ func getRootID(pool database.Pool) (int, error) {
 }
 
 // getFilesystemInfo returns information regarding a specific file system entity
-func getFilesystemInfo(pool database.Pool, docID int) (EntityInfo, error) {
+func getFilesystemInfo(ctx database.DatabaseContext, docID int) (EntityInfo, error) {
 	entity := EntityInfo{}
 	children := pgtype.Hstore{}
 
-	err := pool.GetConn().QueryRow(context.Background(), "SELECT EntityID, LogicalName, IsDocument, Children FROM filesystem WHERE EntityID = $1",
-		docID).Scan(&entity.EntityID, &entity.EntityName, &entity.IsDocument, &children)
+	err := ctx.Query("SELECT EntityID, LogicalName, IsDocument, Children FROM filesystem WHERE EntityID = $1",
+		[]interface{}{docID}, &entity.EntityID, &entity.EntityName, &entity.IsDocument, &children)
 	if err != nil {
 		return EntityInfo{}, errors.New("failed to read from database")
 	}
@@ -75,35 +74,30 @@ func getFilesystemInfo(pool database.Pool, docID int) (EntityInfo, error) {
 }
 
 // getRootInfo gets the file information for the root
-func getRootInfo(pool database.Pool) (EntityInfo, error) {
-	rootID, err := getRootID(pool)
+func getRootInfo(ctx database.DatabaseContext) (EntityInfo, error) {
+	rootID, err := getRootID(ctx)
 	if err != nil {
 		return EntityInfo{}, err
 	}
-	info, err := getFilesystemInfo(pool, rootID)
+	info, err := getFilesystemInfo(ctx, rootID)
 	return info, err
 }
 
 // deleteEntity removes an entity from the filesystem
-func deleteEntity(pool database.Pool, entityID int) error {
-	_, err := pool.GetConn().Exec(context.Background(),
-		"SELECT delete_entity($1)", entityID)
-	return err
+func deleteEntity(ctx database.DatabaseContext, entityID int) error {
+	return ctx.Exec("SELECT delete_entity($1)", []interface{}{entityID})
 }
 
 // renameEntity changes the logical name of a given object in the filesystem
-func renameEntity(pool database.Pool, entityID int, newName string) error {
-	_, err := pool.GetConn().Exec(context.Background(),
-		"UPDATE filesystem SET logicalname = ($1) WHERE entityid = ($2)", newName, entityID)
-	return err
+func renameEntity(ctx database.DatabaseContext, entityID int, newName string) error {
+	return ctx.Exec("UPDATE filesystem SET logicalname = ($1) WHERE entityid = ($2)", []interface{}{newName, entityID})
 }
 
 // getFilesystemChildren returns the list of children for a file system entity
-func getEntityChildren(pool database.Pool, docID int) ([]EntityInfo, error) {
+func getEntityChildren(ctx database.DatabaseContext, docID int) ([]EntityInfo, error) {
 	children := pgtype.Hstore{}
 
-	err := pool.GetConn().QueryRow(context.Background(), "SELECT children FROM filesystem WHERE entityid = $1",
-		docID).Scan(&children)
+	err := ctx.Query("SELECT children FROM filesystem WHERE entityid = $1", []interface{}{docID}, &children)
 	if err != nil {
 		return nil, errors.New("failed to read from database")
 	}
@@ -112,7 +106,7 @@ func getEntityChildren(pool database.Pool, docID int) ([]EntityInfo, error) {
 
 	for k := range children.Map {
 		id, _ := strconv.Atoi(k)
-		info, _ := getFilesystemInfo(pool, id)
+		info, _ := getFilesystemInfo(ctx, id)
 		list = append(list, info)
 	}
 
