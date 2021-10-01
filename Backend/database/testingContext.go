@@ -16,16 +16,13 @@ import (
 	"github.com/ory/dockertest/docker"
 )
 
-const TEST_USER = "postgres"
-const TEST_PASSWORD = "test"
-const TESTING_DB_NAME = "cms_testing_db"
-
 // candidateHosts maintains a stack of potential testing databases to connect to
 var candidateHosts *lls.Stack
 
 func init() {
 	candidateHosts = lls.New()
-	candidateHosts.Push("db:1234")
+	candidateHosts.Push("staging_db:1234")
+	candidateHosts.Push("localhost:1234")
 }
 
 // @implements database context
@@ -141,6 +138,7 @@ func (ctx *TestingContext) WillFail(testMethod func() error) bool {
 }
 
 // spinTestDB creates a new instance of the testing database and returns the host details
+// the schema is dicated by the provided schema script :)
 func spinTestDB() string {
 	var db *sql.DB
 

@@ -19,3 +19,14 @@ type Config struct {
 	Password    string
 	Database    string
 }
+
+// Constants regarding database connections
+// TODO: eventually Jacky will abstract this out to docker environment variables
+const USER = "postgres"
+const PASSWORD = "postgres"
+const DATABASE = "test_db"
+const HOST_AND_PORT = "db:5432"
+
+const TEST_USER = "postgres"
+const TEST_PASSWORD = "test"
+const TESTING_DB_NAME = "cms_testing_db"
