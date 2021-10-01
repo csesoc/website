@@ -9,7 +9,6 @@ as well as some error handling
 package auth
 
 import (
-	"context"
 	"log"
 
 	_ "github.com/lib/pq"
@@ -18,7 +17,7 @@ import (
 func CredentialsMatch(email string, password string) int {
 	// not sure if this is safe
 	var result int
-	err := httpDbPool.GetConn().QueryRow(context.Background(), "SELECT count(*) from person where email = $1 and password = $2;", email, password).Scan(&result)
+	err := httpDBContext.Query("SELECT count(*) from person where email = $1 and password = $2;", []interface{}{email, password}, &result)
 	if err != nil {
 		log.Fatal(err)
 	}

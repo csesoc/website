@@ -1,18 +1,12 @@
 package database
 
 import (
-	"database/sql"
-	"fmt"
-	"log"
-	"time"
-
 	_ "github.com/lib/pq"
-	"github.com/ory/dockertest"
-	"github.com/ory/dockertest/docker"
 )
 
 // Extends functions and functionality fo spinning up mock databases while
 // unit and integration testing
+// TODO: make not a constant :sadge:
 const startupScript string = `CREATE EXTENSION hstore;
 SET timezone = 'Australia/Sydney';
 
@@ -131,54 +125,3 @@ BEGIN
   UPDATE filesystem SET Children = Children - entityIDP::TEXT
   WHERE EntityID = parentP;
 END $$;`
-
-// Please close your docker database spin ups, please and thank you
-func SpinTestDB() string {
-	var db *sql.DB
-
-	pool, err := dockertest.NewPool("")
-	if err != nil {
-		log.Fatalf("Could not connect to docker: %s", err)
-	}
-
-	// pulls an image, creates a container based on it and runs it
-	resource, err := pool.RunWithOptions(&dockertest.RunOptions{
-		Repository: "postgres",
-		Tag:        "11",
-		Env: []string{
-			"POSTGRES_PASSWORD=test",
-			"POSTGRES_USER=postgres",
-			"POSTGRES_DB=cms_testing_db",
-			"listen_addresses = '*'",
-		},
-	}, func(config *docker.HostConfig) {
-		// set AutoRemove to true so that stopped container goes away by itself
-		config.AutoRemove = true
-		config.RestartPolicy = docker.RestartPolicy{Name: "no"}
-	})
-	if err != nil {
-		log.Fatalf("Could not start resource: %s", err)
-	}
-
-	hostAndPort := resource.GetHostPort("5432/tcp")
-	databaseUrl := fmt.Sprintf("postgres://postgres:test@%s/cms_testing_db?sslmode=disable", hostAndPort)
-
-	resource.Expire(180)
-	pool.MaxWait = 120 * time.Second
-	if err = pool.Retry(func() error {
-		db, err = sql.Open("postgres", databaseUrl)
-		if err != nil {
-			return err
-		}
-		return db.Ping()
-	}); err != nil {
-		log.Fatalf("Could not connect to docker: %s", err)
-	}
-
-	_, err = db.Query(startupScript)
-	if err != nil {
-		panic(err)
-	}
-
-	return hostAndPort
-}
