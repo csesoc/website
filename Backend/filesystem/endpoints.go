@@ -7,62 +7,49 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 )
 
-var httpDbPool database.Pool
+var httpDBContext database.LiveContext
 
 // Todo: abstract out configuration logic elsewhere
 func init() {
 	var err error
-	httpDbPool, err = database.NewPool(database.Config{
-		HostAndPort: "db:5432",
-		User:        "postgres",
-		Password:    "postgres",
-		Database:    "test_db",
-	})
-
+	httpDBContext, err = database.NewLiveContext()
 	if err != nil {
 		log.Print(err.Error())
 	}
 }
 
 type ValidInfoRequest struct {
-	EntityID int `schema:"EntityID,required"`
+	EntityID int `schema:"EntityID"`
 }
 
 // Defines endpoints consumable via the API
 func GetEntityInfo(w http.ResponseWriter, r *http.Request) {
-	routes := strings.Split(r.URL.RequestURI(), "/")
 
-	switch routes[len(routes)-1] {
-	case "root":
-		fileInfo, err := getRootInfo(httpDbPool)
+	var input ValidInfoRequest
+	if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"GET"}, map[int]string{
+		400: "missing EntityID paramater",
+		405: "invalid method",
+	}, &input); validRequest {
+		var fileInfo EntityInfo
+		var err error
+
+		if input.EntityID == 0 {
+			fileInfo, err = GetRootInfo(httpDBContext)
+		} else {
+			fileInfo, err = GetFilesystemInfo(httpDBContext, input.EntityID)
+		}
+
 		if err != nil {
-			httpUtil.ThrowRequestError(w, 500, "something went wrong")
+			httpUtil.ThrowRequestError(w, 404, "unable to find entity with requested ID")
 			return
 		}
 
 		out, _ := json.Marshal(fileInfo)
 		httpUtil.SendResponse(w, string(out))
-
-	default:
-		var input ValidInfoRequest
-		if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"GET"}, map[int]string{
-			400: "missing EntityID paramater",
-			405: "invalid method",
-		}, &input); validRequest {
-
-			fileInfo, err := getFilesystemInfo(httpDbPool, input.EntityID)
-			if err != nil {
-				httpUtil.ThrowRequestError(w, 404, "unable to find entity with requested ID")
-				return
-			}
-
-			out, _ := json.Marshal(fileInfo)
-			httpUtil.SendResponse(w, string(out))
-		}
 	}
+
 }
 
 // TODO: this needs to be wrapped around auth and permissions later
@@ -84,10 +71,9 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request) {
 		var err error
 
 		if input.Parent == 0 {
-			newID, err = createFilesystemEntityAtRoot(httpDbPool, input.LogicalName, input.OwnerGroup, input.IsDocument)
+			newID, err = CreateFilesystemEntityAtRoot(httpDBContext, input.LogicalName, input.OwnerGroup, input.IsDocument)
 		} else {
-			log.Print("hello there\n")
-			newID, err = createFilesystemEntity(httpDbPool, input.Parent, input.LogicalName, input.OwnerGroup, input.IsDocument)
+			newID, err = CreateFilesystemEntity(httpDBContext, input.Parent, input.LogicalName, input.OwnerGroup, input.IsDocument)
 		}
 
 		if err != nil {
@@ -106,7 +92,7 @@ func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request) {
 		400: "missing paramaters, must have: LogicalName, OwnerGroup, IsDocument",
 		405: "invalid method",
 	}, &input); validRequest {
-		err := deleteEntity(httpDbPool, input.EntityID)
+		err := DeleteEntity(httpDBContext, input.EntityID)
 		if err != nil {
 			httpUtil.ThrowRequestError(w, 500, "unable to delete, the requested entity is either the root directory or has children")
 		} else {
@@ -123,7 +109,7 @@ func GetChildren(w http.ResponseWriter, r *http.Request) {
 		405: "invalid method",
 	}, &input); validRequest {
 
-		fileInfo, err := getEntityChildren(httpDbPool, input.EntityID)
+		fileInfo, err := GetEntityChildren(httpDBContext, input.EntityID)
 		if err != nil {
 			httpUtil.ThrowRequestError(w, 404, "unable to find entity with requested ID")
 			return
@@ -146,7 +132,7 @@ func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request) {
 		400: "missing paramaters, must have: NewName, EntityID",
 		405: "invalid method",
 	}, &input); validRequest {
-		err := renameEntity(httpDbPool, input.EntityID, input.NewName)
+		err := RenameEntity(httpDBContext, input.EntityID, input.NewName)
 		if err != nil {
 			httpUtil.ThrowRequestError(w, 500, "unable rename, the requested name is most likely taken")
 		} else {

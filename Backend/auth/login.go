@@ -20,17 +20,11 @@ import (
 	"regexp"
 )
 
-var httpDbPool database.Pool
+var httpDBContext database.LiveContext
 
 func init() {
 	var err error
-	httpDbPool, err = database.NewPool(database.Config{
-		HostAndPort: "db:5432",
-		User:        "postgres",
-		Password:    "postgres",
-		Database:    "test_db",
-	})
-
+	httpDBContext, err = database.NewLiveContext()
 	if err != nil {
 		log.Print(err.Error())
 	}
