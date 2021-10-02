@@ -6,7 +6,7 @@ const EditorTitle = styled.div`
   color: black;
   text-align: center;
 `
-const Heading_2 = styled.div`
+const Heading2 = styled.div`
   font-size: x-large;
   color: black;
   margin-bottom: 2rem;
@@ -59,9 +59,9 @@ const EditorFile: React.FC = () => {
             Insert link to media
             </EditorSubtitle>
             <EditorContent>
-                <Heading_2>
+                <Heading2>
                 "Heading 2"
-                </Heading_2>
+                </Heading2>
                 Content:
             </EditorContent>
         </Container>

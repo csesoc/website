@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import EditorHeader from 'src/components/EditorHeader/EditorHeader';
-import EditorFile from 'src/components/EditorFile/EditorFile';
+import EditorHeader from 'src/components/Editor/EditorHeader';
+import EditorFile from 'src/components/Editor/EditorFile';
 
 const Container = styled.div`
   display: flex;
