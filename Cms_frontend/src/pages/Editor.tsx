@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import EditorHeader from 'src/components/Editor/EditorHeader';
 import EditorFile from 'src/components/Editor/EditorFile';
+import EditorSidebar from 'src/components/Editor/EditorSidebar';
 
 const Container = styled.div`
   display: flex;
@@ -10,11 +11,16 @@ const Container = styled.div`
 `
 const Editor: React.FC = () => {
     return (
-        <div className="Editor">
+        <div style={{ height: '100%' }}>
             <EditorHeader/>
-            <Container>
-                <EditorFile/>
-            </Container>
+            <div className="Editor" style={{ display: 'flex'}}>
+                <EditorSidebar/>
+                <div style={{ flex: 1}}>
+                    <Container>
+                        <EditorFile/>
+                    </Container>
+                </div>
+            </div>
         </div>
     );    
 };
