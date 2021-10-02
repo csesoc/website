@@ -1,3 +1,10 @@
+// TITLE: Schema
+// Created by (Varun: Varun-Sethu) (09/21)
+// Last modified by (Varun: Varun-Sethu) (1/10/21)
+// # # #
+/*
+	File is just a small utility file for fetching the startup script for our databases.
+**/
 package database
 
 import (

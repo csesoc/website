@@ -1,6 +1,14 @@
+// TITLE: TestingContext
+// Created by (Varun: Varun-Sethu) (09/21)
+// Last modified by (Varun: Varun-Sethu) (1/10/21)
+// # # #
+/*
+	File defines the TestingContext, that is the context used to interact with the testing database(s)
+	also defines methods for carrying out and performing tests against a testing database such that
+	they can upgrades can easilly be rolled back without leaking to other unit tests. Also an implementation
+	of the DatabaseContext interface
+**/
 package database
-
-// File defines the TestingContext, that is the context used to interact with the testing database
 
 import (
 	"context"

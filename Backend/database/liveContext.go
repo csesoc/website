@@ -1,6 +1,12 @@
+// TITLE: LiveContext
+// Created by (Varun: Varun-Sethu) (09/21)
+// Last modified by (Varun: Varun-Sethu) (1/10/21)
+// # # #
+/*
+	File defines the LiveContext, that is the context used to interact with the live database, serves as an implementation of
+	the DatabaseContext interface
+**/
 package database
-
-// File defines the LiveContext, that is the context used to interact with the live database
 
 import (
 	"DiffSync/environment"

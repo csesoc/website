@@ -7,13 +7,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// We shouldnt be able to use a live DB from a test, function just tests that
 func TestCannotUseLiveContext(t *testing.T) {
 	assert := assert.New(t)
-	// we shouldnt be able to use a live DB from a test
 	liveContext, err := database.NewLiveContext()
 	if err != nil {
-		// We aren't running in the docker container so the connection failed
-		// just ignore this situation
+		// We aren't running in a docker container so the connection failed
+		// just ignore this situation and pass the test
 		return
 	}
 	defer liveContext.Close()
@@ -24,10 +24,11 @@ func TestCannotUseLiveContext(t *testing.T) {
 	}, "do not query a live context db from a test!")
 }
 
+// we should not be able to perform queries without using "RunTest", once again function
+// just tests that
 func TestCannotUseTestingContext(t *testing.T) {
 	assert := assert.New(t)
 
-	// we should not be able to perform queries without using "RunTest"
 	testContext := database.NewTestingContext()
 	defer testContext.Close()
 
@@ -43,6 +44,8 @@ func TestCannotUseTestingContext(t *testing.T) {
 	})
 }
 
+// all updates from tests should be isolated to an invocation of RunTest, function
+// just tests that behaviour.
 func TestUpdatesAreIsolated(t *testing.T) {
 	assert := assert.New(t)
 
@@ -63,6 +66,7 @@ func TestUpdatesAreIsolated(t *testing.T) {
 	})
 }
 
+// util function to querying the existence of a table
 func tableExists(tableName string, ctx database.TestingContext) bool {
 	var existence bool
 	if err := ctx.Query(`SELECT EXISTS (
