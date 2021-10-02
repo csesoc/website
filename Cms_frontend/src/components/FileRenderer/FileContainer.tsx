@@ -29,12 +29,12 @@ interface HighlightProps {
 }
 
 // Styled component for file when it's hovered over
-const HoverImage = styled.img <HighlightProps>`
+const HoverImage = styled.img<HighlightProps>`
   border: 5px solid #999999;
   border-radius: 3px;
   
   ${props => props.active && css`
-  border-color: lightblue;
+    border-color: lightblue;
   `}
 `
 

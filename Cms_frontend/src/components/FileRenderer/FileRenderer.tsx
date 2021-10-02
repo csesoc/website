@@ -21,6 +21,7 @@ interface RenderProps {
   // a new file respectively
   onFileClick: (id: number) => void,
   onFolderClick: (id: number) => void,
+  onFolderDoubleClick: (id: number) => void,
   onRename: (updated: FileFormat) => void,
   onNewFile: () => void,
   activeFiles: number
@@ -42,7 +43,7 @@ const sortFiles = (files: FileFormat[]) => {
 // Typescript Declaration
 // uses the interface defined above
 // imports the icons from material UI
-const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick, onRename, onNewFile, activeFiles }) => {
+const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick, onFolderDoubleClick, onRename, onNewFile, activeFiles }) => {
   const sorted = sortFiles(files);
 
   return (
@@ -55,7 +56,7 @@ const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick
             <FileContainer
               filename={file.filename}
               image={Default}
-              active={activeFiles===file.id}
+              active={activeFiles === file.id}
               onClick={() => onFileClick(file.id)}
               onRename={(newName) => onRename({
                 id: file.id,
@@ -65,7 +66,9 @@ const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick
           ) : (
             <FolderContainer
               filename={file.filename}
+              active={activeFiles === file.id}
               onClick={() => onFolderClick(file.id)}
+              onDoubleClick={() => onFolderDoubleClick(file.id)}
               onRename={(newName) => onRename({
                 id: file.id,
                 filename: newName,

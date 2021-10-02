@@ -52,9 +52,15 @@ const Dashboard: React.FC = () => {
 		return toFileFormat(folder_json.body.response);
 	}
 
+  // Get the file ID of the current directory
+	const getCurrentID = () => {
+		return dir[dir.length - 1].id;
+	}
+
 	// Given a file ID, sets the `contents` state variable to the children
 	// of that file
-	const updateContents = async (id: number) => {
+	const updateContents = async () => {
+    const id = getCurrentID();
 		const children_resp = await fetch(`http://localhost:8080/filesystem/children?EntityID=${id}`);
 
 		if (!children_resp.ok) {
@@ -77,11 +83,6 @@ const Dashboard: React.FC = () => {
 		setLoading(false);
 	}
 
-	// Get the file ID of the current directory
-	const getCurrentID = () => {
-		return dir[dir.length - 1].id;
-	}
-
 	// Triggers when Dashboard first loads
 	useEffect(() => {
 		// TODO: store cookie on where the user last visited
@@ -92,7 +93,7 @@ const Dashboard: React.FC = () => {
 	// not sure if this is completely stateful but it works
 	useEffect(() => {
 		if (dir.length > 0) {
-			updateContents(getCurrentID());
+			updateContents();
 		}
 	}, [dir]);
 
@@ -159,7 +160,7 @@ const Dashboard: React.FC = () => {
 			throw new Error(message);
 		}
 
-		await updateContents(getCurrentID());
+		await updateContents();
 		setLoading(false);
 	}
 
@@ -169,8 +170,12 @@ const Dashboard: React.FC = () => {
 		setActiveFiles(id);
 	}
 
+  const folderClick = async (id: number) => {
+    setActiveFiles(id);
+  }
+
 	// Listener when we click on a folder in the current directory
-	const folderClick = async (id: number) => {
+	const folderDoubleClick = async (id: number) => {
 		const child = await getFolder(id);
 		setDir([...dir, child]);
 	}
@@ -240,15 +245,35 @@ const Dashboard: React.FC = () => {
 			throw new Error(message);
 		}
 
-		await updateContents(getCurrentID());
+		await updateContents();
 		setLoading(false);
 	}
+
+  const recycle = async () => {
+    setLoading(true);
+
+    const recycle_resp = await fetch("http://localhost:8080/filesystem/delete", {
+      method: "POST",
+      body: new URLSearchParams({
+        "EntityID": activeFiles.toString()
+      })
+    });
+
+    if (!recycle_resp.ok) {
+			const message = `An error has occured: ${recycle_resp.status}`;
+			throw new Error(message);
+		}
+
+    await updateContents();
+    setLoading(false);
+  }
 
 	return (
 		<div style={{ display: 'flex' }}>
 			<SideBar
 				onNewFile={newFile}
-				onNewFolder={newFolder} />
+				onNewFolder={newFolder}
+        onRecycle={recycle} />
 			{!loading && (
 				<div style={{ flex: 1 }}>
 					<Dialog
@@ -270,6 +295,7 @@ const Dashboard: React.FC = () => {
 						files={contents}
 						onFileClick={fileClick}
 						onFolderClick={folderClick}
+            onFolderDoubleClick={folderDoubleClick}
 						onRename={rename}
 						onNewFile={newFile}
 						activeFiles={activeFiles} />
