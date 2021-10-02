@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   background: #eeeeee;
-  width: 15%;
+  width: 15vw;
   overflow-y: scroll;
 `
 
