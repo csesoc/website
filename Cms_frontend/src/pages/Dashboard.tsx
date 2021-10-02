@@ -146,11 +146,13 @@ const Dashboard: React.FC = () => {
 		setLoading(true);
 		const folder_name = newFolderName();
 
+		// This isn't attached to the parent folder yet,
+		// TODO: patch once auth is finished
 		const create_resp = await fetch("http://localhost:8080/filesystem/create", {
 			method: "POST",
 			body: new URLSearchParams({
 				"LogicalName": folder_name,
-				"OwnerGroup": getCurrentID().toString(),
+				"OwnerGroup": "1",
 				"IsDocument": "false"
 			})
 		});
