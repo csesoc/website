@@ -11,9 +11,9 @@ import Renamable from "./Renamable";
 interface FileProps {
   filename: string,
   image: string,
+  active: boolean,
   onClick: () => void,
   onRename?: (newName: string) => void
-  active: boolean
 }
 
 // Carry over styled component from FileRenderer.tsx
@@ -38,7 +38,7 @@ const HoverImage = styled.img<HighlightProps>`
   `}
 `
 
-const FileContainer: React.FC<FileProps> = ({ filename, image, onClick, onRename, active }) => {
+const FileContainer: React.FC<FileProps> = ({ filename, image, active, onClick, onRename }) => {
   return (
     <div>
       <IconContainer>

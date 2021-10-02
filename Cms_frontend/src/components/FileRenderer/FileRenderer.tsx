@@ -16,6 +16,7 @@ const FileFlex = styled.div`
 // type declaration for props
 interface RenderProps {
   files: FileFormat[],
+  activeFiles: number,
   // Functions for user interactions - when they click on an
   // existing file, when they click on a folder, and when they make
   // a new file respectively
@@ -23,8 +24,7 @@ interface RenderProps {
   onFolderClick: (id: number) => void,
   onFolderDoubleClick: (id: number) => void,
   onRename: (updated: FileFormat) => void,
-  onNewFile: () => void,
-  activeFiles: number
+  onNewFile: () => void
 }
 
 // Given a list of files specified in FileFormat, sorts them alphabetically,
@@ -43,7 +43,7 @@ const sortFiles = (files: FileFormat[]) => {
 // Typescript Declaration
 // uses the interface defined above
 // imports the icons from material UI
-const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick, onFolderDoubleClick, onRename, onNewFile, activeFiles }) => {
+const FileRenderer: React.FC<RenderProps> = ({ files,  activeFiles, onFileClick, onFolderClick, onFolderDoubleClick, onRename, onNewFile }) => {
   const sorted = sortFiles(files);
 
   return (
@@ -81,8 +81,8 @@ const FileRenderer: React.FC<RenderProps> = ({ files, onFileClick, onFolderClick
         <FileContainer
           filename="New"
           image={NewPost}
-          onClick={onNewFile}
-          active={false} />
+          active={false}
+          onClick={onNewFile} />
       </FileFlex>
     </div>
   )

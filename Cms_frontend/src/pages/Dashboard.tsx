@@ -303,12 +303,12 @@ const Dashboard: React.FC = () => {
 					</IconButton>
 					<FileRenderer
 						files={contents}
+						activeFiles={activeFiles}
 						onFileClick={fileClick}
 						onFolderClick={folderClick}
             onFolderDoubleClick={folderDoubleClick}
 						onRename={rename}
-						onNewFile={newFile}
-						activeFiles={activeFiles} />
+						onNewFile={newFile} />
 				</div>
 			)}
 		</div>
