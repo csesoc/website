@@ -17,6 +17,12 @@ const DirectoryName = styled.h3`
   margin-right: 10px;
 `;
 
+interface JSONFileFormat {
+	EntityID: number,
+	EntityName: string,
+	IsDocument: boolean
+}
+
 // Implementation
 const Dashboard: React.FC = () => {
 	// TODO: implement loading screen
@@ -29,7 +35,7 @@ const Dashboard: React.FC = () => {
 	const [modalOpen, setModalOpen] = React.useState(false);
 
 	// Converts a backend response to the local FileFormat interface
-	const toFileFormat = (json: any): FileFormat => {
+	const toFileFormat = (json: JSONFileFormat): FileFormat => {
 		return {
 			id: json.EntityID,
 			filename: json.EntityName,
@@ -69,7 +75,9 @@ const Dashboard: React.FC = () => {
 		}
 
 		const children_json = await children_resp.json();
-		const children = children_json.body.response.map((child: any) => toFileFormat(child));
+		const children = children_json.body.response.map((child: JSONFileFormat) => {
+			return toFileFormat(child);
+		});
 
 		setContents(children);
 	}
