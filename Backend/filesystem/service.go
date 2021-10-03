@@ -56,12 +56,12 @@ func GetRootID(ctx database.DatabaseContext) (int, error) {
 }
 
 // getFilesystemInfo returns information regarding a specific file system entity
-func GetFilesystemInfo(ctx database.DatabaseContext, docID int) (EntityInfo, error) {
+func GetFilesystemInfo(ctx database.DatabaseContext, info int) (EntityInfo, error) {
 	entity := EntityInfo{}
 	children := pgtype.Hstore{}
 
 	err := ctx.Query("SELECT EntityID, LogicalName, IsDocument, Children FROM filesystem WHERE EntityID = $1",
-		[]interface{}{docID}, &entity.EntityID, &entity.EntityName, &entity.IsDocument, &children)
+		[]interface{}{info}, &entity.EntityID, &entity.EntityName, &entity.IsDocument, &children)
 	if err != nil {
 		return EntityInfo{}, errors.New("failed to read from database")
 	}

@@ -2,141 +2,74 @@ package filesystem
 
 import (
 	"DiffSync/database"
-	"DiffSync/httpUtil"
-	"encoding/json"
-	"fmt"
+	"DiffSync/environment"
+	_http "DiffSync/http"
 	"log"
 	"net/http"
 )
 
-var httpDBContext database.LiveContext
+var httpDBContext database.DatabaseContext
+var f _http.FactoryConfig
 
-// Todo: abstract out configuration logic elsewhere
 func init() {
-	var err error
-	httpDBContext, err = database.NewLiveContext()
-	if err != nil {
-		log.Print(err.Error())
-	}
-}
-
-type ValidInfoRequest struct {
-	EntityID int `schema:"EntityID"`
-}
-
-// Defines endpoints consumable via the API
-func GetEntityInfo(w http.ResponseWriter, r *http.Request) {
-
-	var input ValidInfoRequest
-	if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"GET"}, map[int]string{
-		400: "missing EntityID paramater",
-		405: "invalid method",
-	}, &input); validRequest {
-		var fileInfo EntityInfo
+	if environment.IsTestingEnvironment() {
+		httpDBContext = database.NewTestingContext()
+	} else {
 		var err error
-
-		if input.EntityID == 0 {
-			fileInfo, err = GetRootInfo(httpDBContext)
-		} else {
-			fileInfo, err = GetFilesystemInfo(httpDBContext, input.EntityID)
-		}
-
+		httpDBContext, err = database.NewLiveContext()
 		if err != nil {
-			httpUtil.ThrowRequestError(w, 404, "unable to find entity with requested ID")
-			return
-		}
-
-		out, _ := json.Marshal(fileInfo)
-		httpUtil.SendResponse(w, string(out))
-	}
-
-}
-
-// TODO: this needs to be wrapped around auth and permissions later
-type ValidEntityCreationRequest struct {
-	Parent      int
-	LogicalName string `schema:"LogicalName,required"`
-	OwnerGroup  int    `schema:"OwnerGroup,required"`
-	IsDocument  bool   `schema:"IsDocument,required"`
-}
-
-func CreateNewEntity(w http.ResponseWriter, r *http.Request) {
-
-	var input ValidEntityCreationRequest
-	if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"POST"}, map[int]string{
-		400: "missing paramaters, must have: LogicalName, OwnerGroup, IsDocument",
-		405: "invalid method",
-	}, &input); validRequest {
-		var newID int
-		var err error
-
-		if input.Parent == 0 {
-			newID, err = CreateFilesystemEntityAtRoot(httpDBContext, input.LogicalName, input.OwnerGroup, input.IsDocument)
-		} else {
-			newID, err = CreateFilesystemEntity(httpDBContext, input.Parent, input.LogicalName, input.OwnerGroup, input.IsDocument)
-		}
-
-		if err != nil {
-			httpUtil.ThrowRequestError(w, 500, "unable to create entity (may be a duplicate)")
-		} else {
-			httpUtil.SendResponse(w, fmt.Sprintf(`{"success": true, "newID": %d}`, newID))
+			log.Print(err.Error())
 		}
 	}
 
-}
-
-// Handler for deleting filesystem entities
-func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request) {
-	var input ValidInfoRequest
-	if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"POST"}, map[int]string{
-		400: "missing paramaters, must have: LogicalName, OwnerGroup, IsDocument",
-		405: "invalid method",
-	}, &input); validRequest {
-		err := DeleteEntity(httpDBContext, input.EntityID)
-		if err != nil {
-			httpUtil.ThrowRequestError(w, 500, "unable to delete, the requested entity is either the root directory or has children")
-		} else {
-			httpUtil.SendResponse(w, fmt.Sprintf(`{"success": true, "deleted": %d}`, input.EntityID))
-		}
+	// setup endpoint factory
+	f = _http.FactoryConfig{
+		ErrorsMessages: map[int]string{
+			500: "internal server error",
+			400: "could not parse HTTP form",
+		},
+		DBContext: httpDBContext,
 	}
 }
 
-// Handler for retrieving children
-func GetChildren(w http.ResponseWriter, r *http.Request) {
-	var input ValidInfoRequest
-	if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"GET"}, map[int]string{
-		400: "missing EntityID paramater",
-		405: "invalid method",
-	}, &input); validRequest {
-
-		fileInfo, err := GetEntityChildren(httpDBContext, input.EntityID)
-		if err != nil {
-			httpUtil.ThrowRequestError(w, 404, "unable to find entity with requested ID")
-			return
-		}
-
-		out, _ := json.Marshal(fileInfo)
-		httpUtil.SendResponse(w, string(out))
-	}
+// RegisterHandlers registers all the filesystem handlers
+func RegisterHandlers(mux *http.ServeMux) {
+	// Register all the built handlers
+	mux.HandleFunc("/filesystem/info", fileInfoHandler)
+	mux.HandleFunc("/filesystem/create", entityCreateHandler)
+	mux.HandleFunc("/filesystem/delete", entityDeleteHandler)
+	mux.HandleFunc("/filesystem/children", getChildrenHandler)
+	mux.HandleFunc("/filesystem/rename", renameEntityHandler)
 }
 
-type ValidRenameRequest struct {
-	EntityID int    `schema:"EntityID,required"`
-	NewName  string `schema:"NewName,required"`
-}
+// Handler for a request of entity information
+var fileInfoHandler = f.BuildEndpointOn(func(ctx _http.DB, p _http.Inp) (_http.Inp, error) {
+	return GetFilesystemInfo(ctx, p.(InfoRequest).EntityID)
+}, infoRequest).FallsBackTo(func(ctx _http.DB, p _http.Inp) (_http.Inp, error) {
+	return GetRootInfo(ctx)
+}, rootInfoRequest, f).Accepts(_http.GET)
 
-// Handler for renaming filesystem entities
-func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request) {
-	var input ValidRenameRequest
-	if validRequest := httpUtil.ParseParamsToSchema(w, r, []string{"POST"}, map[int]string{
-		400: "missing paramaters, must have: NewName, EntityID",
-		405: "invalid method",
-	}, &input); validRequest {
-		err := RenameEntity(httpDBContext, input.EntityID, input.NewName)
-		if err != nil {
-			httpUtil.ThrowRequestError(w, 500, "unable rename, the requested name is most likely taken")
-		} else {
-			httpUtil.SendResponse(w, fmt.Sprintf(`{"success": true, "renamed": %d}`, input.EntityID))
-		}
-	}
-}
+// Handler for a request to create a new entity
+var entityCreateHandler = f.BuildEndpointOn(func(ctx _http.DB, p _http.Inp) (_http.Inp, error) {
+	var input = p.(ValidEntityCreationRequest)
+	return CreateFilesystemEntity(ctx, input.Parent, input.LogicalName, input.OwnerGroup, input.IsDocument)
+}, creationRequest).FallsBackTo(func(ctx _http.DB, p _http.Inp) (_http.Inp, error) {
+	var input = p.(ValidEntityCreationRequest)
+	return CreateFilesystemEntityAtRoot(ctx, input.LogicalName, input.OwnerGroup, input.IsDocument)
+}, creationRequestRoot, f).Accepts(_http.POST)
+
+// Handler to delete an entity
+var entityDeleteHandler = f.BuildEndpointOn(func(ctx _http.DB, p _http.Inp) (_http.Inp, error) {
+	return p.(InfoRequest).EntityID, DeleteEntity(httpDBContext, p.(InfoRequest).EntityID)
+}, infoRequest).OnErrorThrows("failed to delete entity", 500).Accepts(_http.POST)
+
+// Handler to get the children of an etity
+var getChildrenHandler = f.BuildEndpointOn(func(ctx _http.DB, p _http.Inp) (_http.Inp, error) {
+	return GetEntityChildren(httpDBContext, p.(InfoRequest).EntityID)
+}, infoRequest).OnErrorThrows("could not find entity", 404).Accepts(_http.GET)
+
+// Handler to rename an entity
+var renameEntityHandler = f.BuildEndpointOn(func(ctx _http.DB, p _http.Inp) (_http.Inp, error) {
+	input := p.(ValidRenameRequest)
+	return input.EntityID, RenameEntity(httpDBContext, input.EntityID, input.NewName)
+}, renameRequest).OnErrorThrows("could not rename entity", 500).Accepts(_http.POST)
