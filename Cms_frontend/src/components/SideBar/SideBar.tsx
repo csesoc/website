@@ -30,7 +30,8 @@ const ButtonGroup = styled.div`
 
 interface SideBarProps {
   onNewFile: () => void,
-  onNewFolder: () => void
+  onNewFolder: () => void,
+  onRecycle: () => void
 }
 
 interface SideBarButtonProps {
@@ -52,7 +53,7 @@ interface SideBarProps {
 }
 
 // Wrapper component ${props => props.color}
-const SideBar: React.FC<SideBarProps> = ({ onNewFile, onNewFolder }) => {
+const SideBar: React.FC<SideBarProps> = ({ onNewFile, onNewFolder, onRecycle }) => {
   return (
     <Container>
       <SidebarTitle>
@@ -82,7 +83,7 @@ const SideBar: React.FC<SideBarProps> = ({ onNewFile, onNewFolder }) => {
           <SidebarButton bgColor="#B8E8E8">
             Feature
           </SidebarButton>
-          <SidebarButton bgColor="#B8E8E8">
+          <SidebarButton bgColor="#B8E8E8" onClick={onRecycle}>
             Recycle
           </SidebarButton>
         </ButtonGroup>

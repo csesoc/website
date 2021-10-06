@@ -5,13 +5,15 @@
 // functional component, can be clicked on to access subdirectories
 
 import React from "react";
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import FolderIcon from '@material-ui/icons/Folder';
 import Renamable from "./Renamable";
 
 interface FolderProps {
   filename: string,
+  active: boolean,
   onClick: () => void,
+  onDoubleClick: () => void,
   onRename: (newName: string) => void
 }
 
@@ -22,14 +24,28 @@ const IconContainer = styled.div`
   text-align: center;
 `;
 
-const FolderContainer: React.FC<FolderProps> = ({ filename, onClick, onRename }) => {
+interface HighlightProps {
+  active: boolean
+}
+
+const Folder = styled(FolderIcon)<HighlightProps>`
+  color: #999999;
+
+  ${props => props.active && css`
+    border: 5px solid lightblue;
+    border-radius: 3px;
+  `}
+`
+
+const FolderContainer: React.FC<FolderProps> = ({ filename, active, onClick, onDoubleClick, onRename }) => {
   return (
     <div>
       <IconContainer>
-        <FolderIcon
+        <Folder
           onClick={onClick}
+          onDoubleClick={onDoubleClick}
+          active={active}
           style={{
-            color: "#999999",
             height: "100%",
             width: "100%"
           }} />
