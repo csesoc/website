@@ -28,15 +28,18 @@ services:
       - 8080:8080
     environment:
       - FRONTEND_URI=${FRONTEND_URI}
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_DB=${PG_DB}
 
   db:
     container_name: pg_container
     image: postgres
     restart: always
-    user: ${PG_USER}
     environment:
+      POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASSWORD}
-      POSTGRES_DB: test_db
+      POSTGRES_DB: ${PG_DB}
     ports:
       - "5432:5432"
     volumes:

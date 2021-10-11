@@ -67,11 +67,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		// will change to FRONTEND_URI soon
 		//_httpUtil.SendResponse(w, "success")
 
-		http.Redirect(w, r, FRONTEND_URI, http.StatusMovedPermanently)
+		http.Redirect(w, r, FRONTEND_URI+"/dashboard", http.StatusMovedPermanently)
 		break
 	case "DEFAULT":
 		// only post requests are allowed
-		http.Redirect(w, r, FRONTEND_URI, http.StatusMovedPermanently)
+		http.Redirect(w, r, FRONTEND_URI+"/login", http.StatusMovedPermanently)
 		break
 	}
 

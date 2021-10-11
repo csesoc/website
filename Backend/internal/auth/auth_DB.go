@@ -9,31 +9,19 @@ as well as some error handling
 package auth
 
 import (
-	"DiffSync/database"
 	"context"
 	"log"
 
 	_ "github.com/lib/pq"
 )
 
-var httpDbPool database.Pool
-
-func init() {
-	var err error
-	httpDbPool, err = database.NewPool(database.Config{
-		HostAndPort: "db:5432",
-		User:        "postgres",
-		Password:    "postgres",
-		Database:    "test_db",
-	})
-
-	if err != nil {
-		log.Println(err.Error())
-	}
-}
-
+/*
+ * queries the database for user
+ * @params email
+ * @params password
+ */
 func CredentialsMatch(email string, password string) int {
-	// not sure if this is safe
+	// not sure if this is safe yet
 	var result int
 	err := httpDbPool.GetConn().QueryRow(context.Background(), "SELECT count(*) from person where email = $1 and password = $2;", email, password).Scan(&result)
 	if err != nil {
@@ -43,6 +31,10 @@ func CredentialsMatch(email string, password string) int {
 	return result
 }
 
+/*
+ * returns the permissions from database
+ * @returns
+ */
 func getPermissions(groupname string) int {
 	var result int
 	err := httpDbPool.GetConn().QueryRow(context.Background(), "SELECT permission from groups where name = $1;", groupname).Scan(&result)
