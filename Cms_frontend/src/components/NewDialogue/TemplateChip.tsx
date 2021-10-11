@@ -14,7 +14,7 @@ interface TemplateProps {
     description : string,
     img: string, // todo - find some way to link this image to a thumbnail contained by backend
     isSelected: boolean,
-    click: Function,
+    click: (name : string) => void
 }
 
 /**

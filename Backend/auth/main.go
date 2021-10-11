@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-var httpDbPool database.Pool
+var httpDbContext database.LiveContext
 
 // declaring frontend uri to use throughout the package
 var FRONTEND_URI = _config.GetFrontendURI()
@@ -21,12 +21,7 @@ var PG_DB = _config.GetDB()
 func init() {
 	var err error
 
-	httpDbPool, err = database.NewPool(database.Config{
-		HostAndPort: "db:5432",
-		User:        PG_USER,
-		Password:    PG_PASSWORD,
-		Database:    PG_DB,
-	})
+	httpDbContext, err = database.NewLiveContext()
 
 	if err != nil {
 		log.Println(err.Error())
