@@ -9,7 +9,6 @@ as well as some error handling
 package auth
 
 import (
-	"context"
 	"log"
 
 	_ "github.com/lib/pq"
@@ -23,7 +22,7 @@ import (
 func CredentialsMatch(email string, password string) int {
 	// not sure if this is safe yet
 	var result int
-	err := httpDbPool.GetConn().QueryRow(context.Background(), "SELECT count(*) from person where email = $1 and password = $2;", email, password).Scan(&result)
+	err := httpDbContext.Query("SELECT count(*) from person where email = $1 and password = $2;", []interface{}{email, password}, &result)
 	if err != nil {
 		log.Println("credentials match err", err.Error())
 	}
@@ -37,7 +36,7 @@ func CredentialsMatch(email string, password string) int {
  */
 func getPermissions(groupname string) string {
 	var result string
-	err := httpDbPool.GetConn().QueryRow(context.Background(), "SELECT permission from groups where name = $1;", groupname).Scan(&result)
+	err := httpDbContext.Query("SELECT permission from groups where name = $1;", []interface{}{groupname}, &result)
 	if err != nil {
 		log.Print("get permissions error", err.Error())
 	}

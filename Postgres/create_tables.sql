@@ -133,10 +133,12 @@ BEGIN
   /* If this is a directory and has kids raise an error */
   IF numKids > 0
   THEN
+    /* entity has children (please dont orphan them O_O ) */
     RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'entity has children (please dont orphan them O_O )';
   END IF;
 
   IF isRoot THEN
+    /* stop trying to delete root >:( */
     RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'stop trying to delete root >:(';
   END IF;
 

@@ -5,19 +5,22 @@ import Button from '@material-ui/core/Button';
 const Container = styled.div`
   width: 250px;
   background: lightgrey;
-  height: 100vh;
+  height: 100%;
 `
+
 const SidebarTitle = styled.div`
   font-size: xx-large;
   margin: 2rem;
   font-weight: bold;
 `
+
 const ButtonFlex = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   grid-gap: 80px;
 `
+
 const ButtonGroup = styled.div`
   display: flex;
   flex-direction: column;
@@ -25,8 +28,10 @@ const ButtonGroup = styled.div`
   grid-gap: 30px;
 `
 
-interface SidebarProps {
-  newFileModalOpener: () => void;
+interface SideBarProps {
+  onNewFile: () => void,
+  onNewFolder: () => void,
+  onRecycle: () => void
 }
 
 interface SideBarButtonProps {
@@ -43,12 +48,16 @@ const SidebarButton = styled(Button) <SideBarButtonProps>`
   }
 `
 
+interface SideBarProps {
+  onNewFolder: () => void;
+}
+
 // Wrapper component ${props => props.color}
-const SideBar: React.FC<SidebarProps> = ({ newFileModalOpener }) => {
+const SideBar: React.FC<SideBarProps> = ({ onNewFile, onNewFolder, onRecycle }) => {
   return (
     <Container>
       <SidebarTitle>
-        Welcome "name"
+        Welcome \name\
       </SidebarTitle>
       <ButtonFlex>
         <ButtonGroup>
@@ -60,10 +69,10 @@ const SideBar: React.FC<SidebarProps> = ({ newFileModalOpener }) => {
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
-          <SidebarButton bgColor="#82A3F8" onClick={newFileModalOpener}>
+          <SidebarButton bgColor="#82A3F8" onClick={onNewFile}>
             New page
           </SidebarButton>
-          <SidebarButton bgColor="#82A3F8">
+          <SidebarButton bgColor="#82A3F8" onClick={onNewFolder}>
             New folder
           </SidebarButton>
         </ButtonGroup>
@@ -74,7 +83,7 @@ const SideBar: React.FC<SidebarProps> = ({ newFileModalOpener }) => {
           <SidebarButton bgColor="#B8E8E8">
             Feature
           </SidebarButton>
-          <SidebarButton bgColor="#B8E8E8">
+          <SidebarButton bgColor="#B8E8E8" onClick={onRecycle}>
             Recycle
           </SidebarButton>
         </ButtonGroup>
@@ -83,4 +92,4 @@ const SideBar: React.FC<SidebarProps> = ({ newFileModalOpener }) => {
   )
 }
 
-export default SideBar
+export default SideBar;

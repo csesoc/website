@@ -1,11 +1,12 @@
 package main
 
 import (
+	auth "DiffSync/auth"
 	config "DiffSync/config"
 	"DiffSync/database"
 	"DiffSync/filesystem"
-	auth "DiffSync/internal/auth"
 	service "DiffSync/internal/service"
+
 	"log"
 	"net/http"
 
@@ -15,12 +16,7 @@ import (
 func init() {
 	// config validator
 	var err error
-	_, err = database.NewPool(database.Config{
-		HostAndPort: "db:5432",
-		User:        config.GetDBUser(),
-		Password:    config.GetDBPassword(),
-		Database:    config.GetDB(),
-	})
+	_, err = database.NewLiveContext()
 
 	if err != nil {
 		log.Fatal("Configurations are invalid check ENV variables", err.Error())
@@ -33,9 +29,10 @@ func main() {
 	mux.HandleFunc("/edit", service.EditEndpoint)
 	mux.HandleFunc("/preview", service.PreviewHTTPHandler)
 	mux.HandleFunc("/filesystem/info", filesystem.GetEntityInfo)
-	mux.HandleFunc("/filesystem/info/root", filesystem.GetEntityInfo)
 	mux.HandleFunc("/filesystem/create", filesystem.CreateNewEntity)
 	mux.HandleFunc("/filesystem/delete", filesystem.DeleteFilesystemEntity)
+	mux.HandleFunc("/filesystem/rename", filesystem.RenameFilesystemEntity)
+	mux.HandleFunc("/filesystem/children", filesystem.GetChildren)
 	mux.HandleFunc("/login", auth.LoginHandler)
 	mux.HandleFunc("/logout", auth.LogoutHandler)
 	mux.Handle("/", http.FileServer(http.Dir("./html")))
