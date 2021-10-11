@@ -2,6 +2,7 @@ package filesystem
 
 import (
 	"DiffSync/database"
+	"DiffSync/environment"
 	"DiffSync/httpUtil"
 	"encoding/json"
 	"fmt"
@@ -11,12 +12,13 @@ import (
 
 var httpDBContext database.LiveContext
 
-// Todo: abstract out configuration logic elsewhere
 func init() {
-	var err error
-	httpDBContext, err = database.NewLiveContext()
-	if err != nil {
-		log.Print(err.Error())
+	if !environment.IsTestingEnvironment() {
+		var err error
+		httpDBContext, err = database.NewLiveContext()
+		if err != nil {
+			log.Print(err.Error())
+		}
 	}
 }
 
