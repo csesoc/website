@@ -1,16 +1,18 @@
 CREATE EXTENSION hstore;
 SET timezone = 'Australia/Sydney';
 
+CREATE TYPE permissions_enum as ENUM ('read', 'write', 'delete');
+
 CREATE TABLE groups (
   UID   SERIAL PRIMARY KEY,
   Name  VARCHAR(50) NOT NULL,
-  Permission int UNIQUE NOT NULL
+  Permission permissions_enum UNIQUE NOT NULL
   /* permission checks will check whether the permission level of user's group is higher than the clearance check */
 );
 INSERT INTO groups (Name, Permission)
-  VALUES ('admin', 900);
+  VALUES ('admin', 'delete');
 INSERT INTO groups (name, Permission)
-  VALUES ('user', 500);
+  VALUES ('user', 'write');
 
 
 DROP TABLE IF EXISTS person;
@@ -36,7 +38,7 @@ AS $$
 DECLARE
 BEGIN
   INSERT INTO person (Email, First_name, Password, isOfGroup)
-  VALUES (email, name, password, 2);
+  VALUES (email, name, password, 'write');
 END $$;
 
 /* inserting two accounts into db */

@@ -35,11 +35,13 @@ func CredentialsMatch(email string, password string) int {
  * returns the permissions from database
  * @returns
  */
-func getPermissions(groupname string) int {
-	var result int
+func getPermissions(groupname string) string {
+	var result string
 	err := httpDbPool.GetConn().QueryRow(context.Background(), "SELECT permission from groups where name = $1;", groupname).Scan(&result)
 	if err != nil {
 		log.Print("get permissions error", err.Error())
 	}
 	return result
 }
+
+// TODO implement function in which checks whether or not the user's group is above the permission level of the task
