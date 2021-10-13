@@ -3,6 +3,7 @@ package auth
 import (
 	_config "DiffSync/config"
 	"DiffSync/database"
+	"DiffSync/environment"
 	"log"
 )
 
@@ -19,11 +20,13 @@ var PG_DB = _config.GetDB()
 // but might not be worth it since the port is manually mapped
 // at this point in time anyways
 func init() {
-	var err error
+	if !environment.IsTestingEnvironment() {
+		var err error
 
-	httpDbContext, err = database.NewLiveContext()
+		httpDbContext, err = database.NewLiveContext()
 
-	if err != nil {
-		log.Println(err.Error())
+		if err != nil {
+			log.Println(err.Error())
+		}
 	}
 }

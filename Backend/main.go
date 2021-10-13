@@ -4,6 +4,7 @@ import (
 	auth "DiffSync/auth"
 	config "DiffSync/config"
 	"DiffSync/database"
+	"DiffSync/environment"
 	"DiffSync/filesystem"
 	service "DiffSync/internal/service"
 
@@ -15,11 +16,13 @@ import (
 
 func init() {
 	// config validator
-	var err error
-	_, err = database.NewLiveContext()
+	if !environment.IsTestingEnvironment() {
+		var err error
+		_, err = database.NewLiveContext()
 
-	if err != nil {
-		log.Fatal("Configurations are invalid check ENV variables", err.Error())
+		if err != nil {
+			log.Fatal("Configurations are invalid check ENV variables", err.Error())
+		}
 	}
 }
 
