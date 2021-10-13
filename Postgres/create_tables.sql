@@ -38,7 +38,7 @@ AS $$
 DECLARE
 BEGIN
   INSERT INTO person (Email, First_name, Password, isOfGroup)
-  VALUES (email, name, password, 'write');
+  VALUES (email, name, password, 2);
 END $$;
 
 /* inserting two accounts into db */
