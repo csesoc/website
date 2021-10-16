@@ -1,4 +1,4 @@
-* {
+/* * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -25,22 +25,10 @@ form {
   position: relative;
 }
 
-form:after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
-  z-index: 1;
-  /* background-color: #3A3E40; */
-}
 
 form .form-inner {
   position: relative;
   display: block;
-  /* background-color: #232526; */
   padding: 30px;
   z-index: 2;
 }
@@ -115,4 +103,4 @@ img {
   margin-left: auto;
   margin-right: auto;
   margin-top: 100px;
-}
+} */
