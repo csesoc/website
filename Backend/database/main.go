@@ -9,6 +9,8 @@
 **/
 package database
 
+import config "DiffSync/config"
+
 // DatabaseContext exposes 3 methods to the user, by using an interface
 // it allows us to easilly swap what context (and consequently database) a method is actually using.
 // Any connection to the database implements the database context interface
@@ -29,9 +31,10 @@ type Config struct {
 
 // Constants regarding database connections
 // TODO: eventually Jacky will abstract this out to docker environment variables
-const USER = "postgres"
-const PASSWORD = "postgres"
-const DATABASE = "test_db"
+var USER = config.GetDBUser()
+var PASSWORD = config.GetDBPassword()
+var DATABASE = config.GetDB()
+
 const HOST_AND_PORT = "db:5432"
 
 const TEST_USER = "postgres"

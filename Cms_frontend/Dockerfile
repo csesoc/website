@@ -13,5 +13,9 @@ COPY . .
 # exposing ports
 EXPOSE 3000
 
+# setting environment variables
+ARG BACKEND_URI
+ENV REACT_APP_BACKEND_URI $BACKEND_URI
+
 # npm start
 CMD ["npm", "start"]

@@ -2,13 +2,29 @@ package main
 
 import (
 	auth "DiffSync/auth"
+	config "DiffSync/config"
+	"DiffSync/database"
+	"DiffSync/environment"
 	"DiffSync/filesystem"
 	service "DiffSync/internal/service"
+
 	"log"
 	"net/http"
 
 	"github.com/rs/cors"
 )
+
+func init() {
+	// config validator
+	if !environment.IsTestingEnvironment() {
+		var err error
+		_, err = database.NewLiveContext()
+
+		if err != nil {
+			log.Fatal("Configurations are invalid check ENV variables", err.Error())
+		}
+	}
+}
 
 func main() {
 	mux := http.NewServeMux()
@@ -24,10 +40,13 @@ func main() {
 	mux.HandleFunc("/logout", auth.LogoutHandler)
 	mux.Handle("/", http.FileServer(http.Dir("./html")))
 
+	// whitelisted URLs
+	var frontend_URI = config.GetFrontendURI()
+
 	// CORS middleware added
 	c := cors.New(cors.Options{
 		// for testing purposes
-		AllowedOrigins:   []string{"localhost:3000"},
+		AllowedOrigins:   []string{frontend_URI},
 		AllowedMethods:   []string{http.MethodGet, http.MethodPost},
 		AllowCredentials: true,
 	})

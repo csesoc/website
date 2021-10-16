@@ -1,33 +1,50 @@
 CREATE EXTENSION hstore;
 SET timezone = 'Australia/Sydney';
 
+CREATE TYPE permissions_enum as ENUM ('read', 'write', 'delete');
+
+CREATE TABLE groups (
+  UID   SERIAL PRIMARY KEY,
+  Name  VARCHAR(50) NOT NULL,
+  Permission permissions_enum UNIQUE NOT NULL
+  /* permission checks will check whether the permission level of user's group is higher than the clearance check */
+);
+INSERT INTO groups (Name, Permission)
+  VALUES ('admin', 'delete');
+INSERT INTO groups (name, Permission)
+  VALUES ('user', 'write');
+
+
 DROP TABLE IF EXISTS person;
 CREATE TABLE person (
   UID serial PRIMARY KEY,
   Email VARCHAR(50) UNIQUE NOT NULL,
   First_name VARCHAR(50) NOT NULL,
   Password VARCHAR(50) NOT NULL,
+  isOfGroup int,
+
+  CONSTRAINT fk_AccessLevel FOREIGN KEY (isOfGroup)
+    REFERENCES groups(UID),
 
   /* non duplicate email and password constraints */
-  CONSTRAINT no_dupes UNIQUE (email, password)
+  CONSTRAINT no_dupes UNIQUE (Email, Password)
 );
+
+/* create user function plpgsql */
+DROP FUNCTION IF EXISTS create_normal_user;
+CREATE OR REPLACE FUNCTION create_normal_user (email VARCHAR, name VARCHAR, password VARCHAR) RETURNS void
+LANGUAGE plpgsql
+AS $$
+DECLARE
+BEGIN
+  INSERT INTO person (Email, First_name, Password, isOfGroup)
+  VALUES (email, name, password, 2);
+END $$;
 
 /* inserting two accounts into db */
-INSERT INTO person (Email, First_name, Password)
-VALUES ('z0000000@ad.unsw.edu.au', 'adam', 'password');
-INSERT INTO person(Email, First_name, Password)
-VALUES ('john.smith@gmail.com', 'john', 'password');
-INSERT INTO person(Email, First_name, Password)
-VALUES ('jane.doe@gmail.com', 'jane', 'password');
-
-
-/* Stub for whenever jacky does it */
-CREATE TABLE groups (
-  UID   SERIAL PRIMARY KEY,
-  Name  VARCHAR(50) NOT NULL
-);
-INSERT INTO groups (Name)
-  VALUES ('admin');
+SELECT create_normal_user('z0000000@ad.unsw.edu.au', 'adam', 'password');
+SELECT create_normal_user('john.smith@gmail.com', 'john', 'password');
+SELECT create_normal_user('jane.doe@gmail.com', 'jane', 'password');
   
 
 DROP TABLE IF EXISTS filesystem;

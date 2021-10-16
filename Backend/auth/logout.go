@@ -15,8 +15,6 @@ import (
 	"net/http"
 )
 
-var FRONTEND_URI = "http://localhost:3000"
-
 // expecting a post request with body of form data
 // expecting header to contain session-token
 // will perform the redirection in frontend

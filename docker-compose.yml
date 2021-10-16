@@ -3,7 +3,10 @@ version: "3.8"
 services:
   cms_frontend:
     container_name: cms_frontend
-    build: ./Cms_frontend
+    build: 
+      context: ./Cms_frontend
+      args: 
+        BACKEND_URI: ${BACKEND_URI}
     volumes:
       # Note must include node_modules as a seperate volume
       - '/app/node_modules'
@@ -11,6 +14,8 @@ services:
     stdin_open: true
     ports:
       - 3000:3000
+
+
   backend:
     container_name: go_backend
     build: ./Backend
@@ -18,17 +23,23 @@ services:
       - db
     volumes:
       - './Backend:/go/src/DiffSync'
-      - './Backend/${GO_MOD}:/go/src/DiffSync/go.mod'
+      - './Backend/go.mod:/go/src/DiffSync/go.mod'
     ports:
       - 8080:8080
+    environment:
+      - FRONTEND_URI=${FRONTEND_URI}
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_DB=${PG_DB}
+
   db:
     container_name: pg_container
     image: postgres
     restart: always
-    user: postgres
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: test_db
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DB}
     ports:
       - "5432:5432"
     volumes:

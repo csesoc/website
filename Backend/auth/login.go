@@ -10,7 +10,6 @@ user exists
 package auth
 
 import (
-	"DiffSync/database"
 	_httpUtil "DiffSync/httpUtil"
 	_session "DiffSync/internal/session"
 	"log"
@@ -20,26 +19,9 @@ import (
 	"regexp"
 )
 
-var httpDBContext database.LiveContext
-
-func init() {
-	var err error
-	httpDBContext, err = database.NewLiveContext()
-	if err != nil {
-		log.Print(err.Error())
-	}
-}
-
 type User struct {
 	Email    string
 	Password string
-}
-
-// data is in string because it could be
-// stringified json object
-// e.g. {"data":"email format invalid"}
-type response struct {
-	Data string `json:"data"`
 }
 
 // EXPECT it to be from a form (handle non form requests)
@@ -85,11 +67,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		// will change to FRONTEND_URI soon
 		//_httpUtil.SendResponse(w, "success")
 
-		http.Redirect(w, r, "http://localhost:3000/dashboard", http.StatusMovedPermanently)
+		http.Redirect(w, r, FRONTEND_URI+"/dashboard", http.StatusMovedPermanently)
 		break
 	case "DEFAULT":
 		// only post requests are allowed
-		http.Redirect(w, r, "http://localhost:3000/login", http.StatusMovedPermanently)
+		http.Redirect(w, r, FRONTEND_URI+"/login", http.StatusMovedPermanently)
 		break
 	}
 

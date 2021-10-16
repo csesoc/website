@@ -30,3 +30,7 @@ package-lock.json
 
 # ignore compiled main go file
 Backend/main
+
+
+# ignore .env files
+Config/.env.dev
