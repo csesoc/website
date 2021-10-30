@@ -1,15 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Editor, EditorState, RichUtils } from "draft-js";
 
 const EditorTitle = styled.div`
   font-size: xx-large;
   color: black;
   text-align: center;
-`
-const Heading2 = styled.div`
-  font-size: x-large;
-  color: black;
-  margin-bottom: 2rem;
 `
 
 const Container = styled.div`
@@ -19,53 +15,77 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
 `
+
 const EditorDate = styled.div`
   font-size: medium;
   color: #47AEE8;
   text-align: center;
 `
+
 const EditorSubtitle = styled.div`
   font-size: large;
   color: black;
   background: #F5F5F5;
-  width: 350%; 
+  width: 60vw; 
   height: 150px;
   text-align: center;
   padding: 2rem;
   border-radius: 10px;
 `
+
 const EditorContent = styled.div`
   font-size: medium;
   color: black;
-  width: 300%;
+  width: 50vw;
   background: white;
   margin-top: -100px;
   min-height: 700px;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 0 1px 1px lightgrey;
+
+  // Making sure the DraftJS window focuses when we click anywhere
+  // on the window
+  & .public-DraftEditor-content {
+    min-height: 700px;
+  }
 `
 
 const EditorFile: React.FC = () => {
-    return (
-        <Container>
-            <EditorDate>
-            27 AUGUST 2021 / ARTICLES
-            </EditorDate>
-            <EditorTitle>
-            "Heading 1"
-            </EditorTitle>
-            <EditorSubtitle>
-            Insert link to media
-            </EditorSubtitle>
-            <EditorContent>
-                <Heading2>
-                "Heading 2"
-                </Heading2>
-                Content:
-            </EditorContent>
-        </Container>
-    );    
-  };
-  
-  export default EditorFile;
+  const [editorState, setEditorState] = useState(() => {
+    return EditorState.createEmpty()
+  });
+
+  const handleKeyCommand = (command: string, editorState: EditorState) => {
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+
+    if (newState) {
+      setEditorState(newState);
+      return 'handled';
+    }
+
+    return 'not-handled';
+  }
+
+  return (
+    <Container>
+      <EditorDate>
+        27 AUGUST 2021 / ARTICLES
+      </EditorDate>
+      <EditorTitle>
+        &quot;Heading 1&quot;
+      </EditorTitle>
+      <EditorSubtitle>
+        Insert link to media
+      </EditorSubtitle>
+      <EditorContent>
+        <Editor
+          editorState={editorState}
+          handleKeyCommand={handleKeyCommand}
+          onChange={setEditorState} />
+      </EditorContent>
+    </Container>
+  );
+};
+
+export default EditorFile;

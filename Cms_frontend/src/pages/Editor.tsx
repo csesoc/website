@@ -10,19 +10,19 @@ const Container = styled.div`
   align-items: center;
 `
 const Editor: React.FC = () => {
-    return (
-        <div style={{ height: '100%' }}>
-            <EditorHeader/>
-            <div className="Editor" style={{ display: 'flex'}}>
-                <EditorSidebar/>
-                <div style={{ flex: 1}}>
-                    <Container>
-                        <EditorFile/>
-                    </Container>
-                </div>
-            </div>
+  return (
+    <div style={{ height: '100%' }}>
+      <EditorHeader />
+      <div className="Editor" style={{ display: 'flex' }}>
+        <EditorSidebar />
+        <div style={{ flex: 1 }}>
+          <Container>
+            <EditorFile />
+          </Container>
         </div>
-    );    
+      </div>
+    </div>
+  );
 };
 
 export default Editor;
