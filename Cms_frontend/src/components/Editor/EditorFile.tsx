@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Editor, EditorState, RichUtils } from "draft-js";
 
@@ -51,13 +51,14 @@ const EditorContent = styled.div`
   }
 `
 
-const EditorFile: React.FC = () => {
-  const [editorState, setEditorState] = useState(() => {
-    return EditorState.createEmpty()
-  });
+interface EditorProps {
+  editorState: EditorState,
+  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>
+}
 
-  const handleKeyCommand = (command: string, editorState: EditorState) => {
-    const newState = RichUtils.handleKeyCommand(editorState, command);
+const EditorFile: React.FC<EditorProps> = ({ editorState, setEditorState }) => {
+  const handleKeyCommand = (command: string, state: EditorState) => {
+    const newState = RichUtils.handleKeyCommand(state, command);
 
     if (newState) {
       setEditorState(newState);
