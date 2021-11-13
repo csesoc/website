@@ -65,7 +65,7 @@ const FormError = styled.div`
   color: #b62e2e;
   padding: 0px 0px 15px;
 `
-const FormGroupInput = styled.input`
+const FormGroupInput = styled(Input)`
 	display: block;
   width: 100%;
   padding: 10px 15px;
@@ -103,9 +103,9 @@ const LoginScreen: React.FC = () => {
 
 	// const [details, setDetails] = useState({email: "", password: ""});
 
-	const [email, setEmail] = useState({email: ""});
-	const [password, setPassword] = useState({password: ""});
-	const [auth, setAuth] = useState({auth: false})
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [auth, setAuth] = useState(false)
 
 	
 
@@ -140,39 +140,33 @@ const LoginScreen: React.FC = () => {
 
 	}
 
-	const Logout = () => {
-		setEmail({ email: "" })
-	}
-
 	return (
         // <LoginForm Login={Login} error={error}/>
 		<Container>
-			<Form method="POST" action="http://localhost:8080/login">
+			<Form>
 				<FormInner>
 					<H2>Team Login</H2>
 						<FormGroup>
 							<FormLabel htmlFor="email">Email: </FormLabel>
-							<FormGroupInput type="text" name="email" id="email" value = {email.email}/>
-							{/* onChange={ e => setEmail({email: e.target.value})} */}
+							<FormGroupInput type="text" name="email" id="email" onChange={ 
+								e => setEmail(e.target.value)} value = {email}/>
 						</FormGroup>
 						<FormGroup>
 							<FormLabel htmlFor="password">Password:</FormLabel>
-							<FormGroupInput type="text" name="password" id="password" value = {password.password}/>
-							{/* onChange={ e => setPassword({password: e.target.value})} */}
+							<FormGroupInput type="text" name="password" id="password" onChange={ 
+								e => setPassword(e.target.value)} value = {password}/>
 						</FormGroup>
 						{(error !== "" ? (<FormError>{error}</FormError>) : <FormError>ㅤ</FormError>)}
 						{/* <input type="submit" value="LOGIN" /> */}
 						<Typography align='center'>
-							<input 
+							<Button 
+								style={{minWidth: '60px'}}
+								size="small"
 								type="submit"
-								value="submit"
-								// style={{minWidth: '60px'}}
-								// size="small"
-								// variant="contained" 
-								// color="default"
-								>
+								variant="contained" 
+								color="default">
 							Login
-							</input>
+							</Button>
 						</Typography>
 				</FormInner>
 				<Img src="/images/csesocwhite-logo.png" alt="csesoc-logo" />
