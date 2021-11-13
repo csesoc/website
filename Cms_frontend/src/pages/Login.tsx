@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 const Container = styled.div`
 	margin: 0;
-  	padding: 0;
+	padding: 0;
  	box-sizing: border-box;
  	font-family: montserrat, sans-serif;
 	height: 100vh;
@@ -19,7 +19,6 @@ const Input = styled.input`
 	appearance: none;
 	background: none;
 	border: none;
-	/* outline:none; */
 `
 const InputSubmit = styled.input.attrs({
 	type: 'submit',
@@ -66,7 +65,7 @@ const FormError = styled.div`
   color: #b62e2e;
   padding: 0px 0px 15px;
 `
-const FormGroupInput = styled(Input)`
+const FormGroupInput = styled.input`
 	display: block;
   width: 100%;
   padding: 10px 15px;
@@ -97,31 +96,47 @@ const H2 = styled.h2`
 `
 
 const LoginScreen: React.FC = () => {
-	const adminUser = {
-		email: "admin@admin.com",
-		password: "admin123"
-	}
+	// const adminUser = {
+	// 	email: "admin@admin.com",
+	// 	password: "admin123"
+	// }
 
-    const [details, setDetails] = useState({email: "", password: ""});
+	// const [details, setDetails] = useState({email: "", password: ""});
+
 	const [email, setEmail] = useState({email: ""});
 	const [password, setPassword] = useState({password: ""});
+	const [auth, setAuth] = useState({auth: false})
+
+	
+
 	const [error, setError] = useState("");
 
 	const Login = () => {
-		console.log(details);
+		// method="POST" action="http://localhost:8080/login"
+		// const requestOptions = {
+		// 	method: 'POST',
+		// 	headers: { 'Content-Type': 'application/json'},
+		// 	body: JSON.stringify({ email, password })
+		// };
+		// fetch('http://localhost:8080/login', requestOptions)
+		// 	.then(response => response.json())
+		// 	.then(data => setAuth)
 
-		if (details.email === adminUser.email && details.password === adminUser.password) {
-			console.log("Logged in");
-			setEmail({
-				email: details.email
-			})
-            setPassword({
-                password: details.password
-            })
-		} else {
-			console.log("Incorrect login details")
-			setError("Incorrect login details")
-		}
+
+		// console.log(email, password);
+
+		// if (details.email === adminUser.email && details.password === adminUser.password) {
+		// 	console.log("Logged in");
+		// 	setEmail({
+		// 		email: details.email
+		// 	})
+        //     setPassword({
+        //         password: details.password
+        //     })
+		// } else {
+		// 	console.log("Incorrect login details")
+		// 	setError("Incorrect login details")
+		// }
 
 	}
 
@@ -132,32 +147,33 @@ const LoginScreen: React.FC = () => {
 	return (
         // <LoginForm Login={Login} error={error}/>
 		<Container>
-			<Form onSubmit={Login}>
+			<Form method="POST" action="http://localhost:8080/login">
 				<FormInner>
 					<H2>Team Login</H2>
 						<FormGroup>
 							<FormLabel htmlFor="email">Email: </FormLabel>
-							<FormGroupInput type="email" name="email" id="email" onChange={
-								e => setDetails({...details, email: e.target.value})}  value = {details.email}/>
+							<FormGroupInput type="text" name="email" id="email" value = {email.email}/>
+							{/* onChange={ e => setEmail({email: e.target.value})} */}
 						</FormGroup>
 						<FormGroup>
 							<FormLabel htmlFor="password">Password:</FormLabel>
-							<FormGroupInput type="password" name="password" id="password" onChange={
-								e => setDetails({...details, password: e.target.value})}  value = {details.password}/>
+							<FormGroupInput type="text" name="password" id="password" value = {password.password}/>
+							{/* onChange={ e => setPassword({password: e.target.value})} */}
 						</FormGroup>
 						{(error !== "" ? (<FormError>{error}</FormError>) : <FormError>ㅤ</FormError>)}
 						{/* <input type="submit" value="LOGIN" /> */}
 						<Typography align='center'>
-							<Button 
-								style={{minWidth: '60px'}}
-								size="small"
-								onClick={Login} 
-								variant="contained" 
-								color="default">
+							<input 
+								type="submit"
+								value="submit"
+								// style={{minWidth: '60px'}}
+								// size="small"
+								// variant="contained" 
+								// color="default"
+								>
 							Login
-							</Button>
+							</input>
 						</Typography>
-						
 				</FormInner>
 				<Img src="/images/csesocwhite-logo.png" alt="csesoc-logo" />
 			</Form>
