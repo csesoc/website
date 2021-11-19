@@ -28,7 +28,10 @@ const EditorSidebar: React.FC<EditorProps> = ({ editorState, setEditorState }) =
     <Container>
       This is the sidebar
       <Button
-        onClick={() => toggle("BOLD")}
+        onMouseDown={event => {
+          event.preventDefault();
+          toggle("BOLD");
+        }}
         color={hasStyle("BOLD") ? "primary" : "secondary"}>Bold</Button>
     </Container>
   );    
