@@ -46,7 +46,7 @@ const Dashboard: React.FC = () => {
 	// Given a file ID (if no ID is provided root is assumed), returns
 	// a FileFormat of that file from the backend
 	const getFolder = async (id?: number) => {
-		const ending = (id === undefined) ? "/root" : `?EntityID=${id}`;
+		const ending = (id === undefined) ? "" : `?EntityID=${id}`;
 		const folder_resp = await fetch(`http://localhost:8080/filesystem/info${ending}`);
 
 		if (!folder_resp.ok) {
