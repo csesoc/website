@@ -1,5 +1,7 @@
 make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/varun/dev/go/src/cms.csesoc.unsw.edu.au'
-GO_MOD=go.mod docker compose up
+docker-compose \
+--env-file=./Config/.env.dev \
+up
 make: Leaving directory '/home/varun/dev/go/src/cms.csesoc.unsw.edu.au'
  

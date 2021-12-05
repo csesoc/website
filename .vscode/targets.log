@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Nov 17 20:29:30 2021
+# Make data base, printed on Sun Dec  5 13:26:31 2021
 
 # Variables
 
@@ -17,7 +17,7 @@ make: *** No rule to make target 'all'.  Stop.
 # automatic
 ?F = $(notdir $?)
 # environment
-WSLENV = VSCODE_WSL_EXT_LOCATION/up:VSCODE_SERVER_TAR/up
+WSLENV = VSCODE_WSL_EXT_LOCATION/up
 # default
 .SHELLFLAGS := -c
 # environment
@@ -37,7 +37,7 @@ SHELL = /bin/sh
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en","availableLanguages":{}}
 # environment
-_ = /home/varun/.vscode-server/bin/3a6960b964327f0e3882ce18fcebd07ed191b316/node
+_ = /home/varun/.vscode-server/bin/ccbaa2d27e38e5afa3e5c21c1c7bef4657064247/node
 # makefile (from 'Makefile', line 1)
 MAKEFILE_LIST :=  Makefile
 # environment
@@ -55,7 +55,7 @@ GOPROXY = https://proxy.golang.org,direct
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /home/varun/.vscode-server/bin/3a6960b964327f0e3882ce18fcebd07ed191b316/bin:/home/varun/.zinit/plugins/tj---git-extras:/home/varun/.zinit/plugins/vim---vim:/home/varun/.zinit/plugins/docker---compose:/home/varun/.zinit/polaris/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/Common Files/Oracle/Java/javapath:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/ProgramData/DockerDesktop/version-bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/varun/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/varun/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/varun/AppData/Local/GitHubDesktop/bin:/usr/bin/go
+PATH = /home/varun/.vscode-server/bin/ccbaa2d27e38e5afa3e5c21c1c7bef4657064247/bin:/home/varun/.zinit/plugins/tj---git-extras:/home/varun/.zinit/plugins/vim---vim:/home/varun/.zinit/plugins/docker---compose:/home/varun/.zinit/polaris/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/Common Files/Oracle/Java/javapath:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/ProgramData/DockerDesktop/version-bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/varun/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/varun/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/varun/AppData/Local/GitHubDesktop/bin:/usr/bin/go
 # environment
 LSCOLORS = Gxfxcxdxbxegedabagacad
 # environment
@@ -65,9 +65,7 @@ GOPATH = /home/varun/go:/home/varun/dev/go
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-cce71ed5-a66c-499a-8724-e298b35ebe4c.sock
-# environment
-VSCODE_SERVER_TAR = /mnt/c/Users/varun/AppData/Local/Temp/vscode-remote-wsl/3a6960b964327f0e3882ce18fcebd07ed191b316/vscode-server-stable-linux-x64.tar.gz
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-c68113e3-bd37-4070-961c-f50c71aad539.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -77,7 +75,7 @@ LS_COLORS = ow=01;36;40
 # environment
 GOBIN = /usr/bin/go
 # environment
-DISPLAY = 172.19.224.1:0
+DISPLAY = 172.29.192.1:0
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
@@ -85,7 +83,7 @@ PWD = /home/varun/dev/go/src/cms.csesoc.unsw.edu.au
 # default
 .LOADED := 
 # environment
-WSL_INTEROP = /run/WSL/12_interop
+WSL_INTEROP = /run/WSL/11_interop
 # environment
 GOMODCACHE = /home/varun/go/pkg/mod
 # environment
@@ -167,7 +165,7 @@ SUFFIXES :=
 # default
 .INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
 # environment
-VSCODE_INJECT_NODE_MODULE_LOOKUP_PATH = /home/varun/.vscode-server/bin/3a6960b964327f0e3882ce18fcebd07ed191b316/remote/node_modules
+VSCODE_INJECT_NODE_MODULE_LOOKUP_PATH = /home/varun/.vscode-server/bin/ccbaa2d27e38e5afa3e5c21c1c7bef4657064247/remote/node_modules
 # default
 .RECIPEPREFIX := 
 # environment
@@ -179,7 +177,7 @@ VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 # environment
 WSL_DISTRO_NAME = Ubuntu-20.04
 # variable set hash-table stats:
-# Load=83/1024=8%, Rehash=0, Collisions=6/108=6%
+# Load=82/1024=8%, Rehash=0, Collisions=6/107=6%
 
 # Pattern-specific Variable Values
 
@@ -187,15 +185,25 @@ WSL_DISTRO_NAME = Ubuntu-20.04
 
 # Directories
 
-# . (device 2064, inode 422301): 16 files, no impossibilities.
+# . (device 2064, inode 422301): 14 files, no impossibilities.
 
-# 16 files, no impossibilities in 1 directories.
+# 14 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
 # No implicit rules.
 
 # Files
+
+pg:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 14):
+	docker volume prune; \
+	docker-compose \
+	--env-file=./Config/.env.dev \
+	up --build
 
 # Not a target:
 all:
@@ -207,7 +215,7 @@ all:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-10-16 17:11:06.1
+#  Last modified 2021-12-05 13:24:23.38
 #  File has been updated.
 #  Successfully updated.
 
@@ -216,7 +224,9 @@ dev:
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 4):
-	GO_MOD=go.mod docker compose up
+	docker-compose \
+	--env-file=./Config/.env.dev \
+	up
 
 # Not a target:
 .DEFAULT:
@@ -224,27 +234,38 @@ dev:
 #  Modification time never checked.
 #  File has not been updated.
 
+clean:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 20):
+	docker-compose \
+	--env-file=./Config/.env.dev \
+	down
+
 dev-build:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 7):
-	GO_MOD=go.mod docker compose up --build
+#  recipe to execute (from 'Makefile', line 9):
+	docker-compose \
+	--env-file=./Config/.env.dev \
+	up --build
 
 # files hash-table stats:
-# Load=6/1024=1%, Rehash=0, Collisions=0/16=0%
+# Load=8/1024=1%, Rehash=0, Collisions=0/18=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 23 / storage = 211 B / avg = 9 B
-# current buf: size = 8162 B / used = 211 B / count = 23 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 23 / storage = 201 B / avg = 8 B
+# current buf: size = 8162 B / used = 201 B / count = 23 / avg = 8 B
 
-# strcache performance: lookups = 29 / hit rate = 20%
+# strcache performance: lookups = 31 / hit rate = 25%
 # hash-table stats:
-# Load=23/8192=0%, Rehash=0, Collisions=3/29=10%
-# Finished Make data base on Wed Nov 17 20:29:30 2021
+# Load=23/8192=0%, Rehash=0, Collisions=1/31=3%
+# Finished Make data base on Sun Dec  5 13:26:31 2021
 
  
