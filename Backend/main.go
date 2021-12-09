@@ -4,6 +4,7 @@ import (
 	auth "cms.csesoc.unsw.edu.au/auth"
 	config "cms.csesoc.unsw.edu.au/config"
 	"cms.csesoc.unsw.edu.au/database"
+	"cms.csesoc.unsw.edu.au/editor"
 	"cms.csesoc.unsw.edu.au/environment"
 	"cms.csesoc.unsw.edu.au/filesystem"
 
@@ -35,7 +36,10 @@ func main() {
 	mux.HandleFunc("/filesystem/children", filesystem.GetChildren)
 	mux.HandleFunc("/login", auth.LoginHandler)
 	mux.HandleFunc("/logout", auth.LogoutHandler)
-	mux.Handle("/", http.FileServer(http.Dir("./html")))
+	mux.Handle("/", http.FileServer(http.Dir("./editor/html")))
+
+	// editor handler
+	mux.HandleFunc("/edit", editor.EditEndpoint)
 
 	// whitelisted URLs
 	var frontend_URI = config.GetFrontendURI()

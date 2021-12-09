@@ -9,9 +9,11 @@ import (
 // a few of the methods defined for extensions propogate to their underlying
 // embedded interface
 type Extension struct {
-	ID              uuid.UUID
-	attachedChannel chan syncPayload
-	isSpinning      bool
+	ID                       uuid.UUID
+	attachedChannel          chan syncPayload
+	attachedTerminateChannel chan terminatePayload
+
+	isSpinning bool
 
 	ExtensionHead
 }
@@ -37,7 +39,7 @@ func (ext *Extension) IsSpinning() bool {
 func (ext *Extension) Spin() {
 	if ext.IsService() {
 		ext.isSpinning = true
-		// The function should ideally block
+		// The function should ideally run concurrently
 		ext.ExtensionHead.Spin()
 	}
 }
@@ -51,9 +53,10 @@ func (ext *Extension) Stop() {
 	ext.ExtensionHead.Stop()
 }
 
-func (ext *Extension) Init(commChannel chan syncPayload, documentState *string) {
+func (ext *Extension) Init(commChannel chan syncPayload, terminateChannel chan terminatePayload, documentState *string) {
 	ext.attachedChannel = commChannel
-	ext.ExtensionHead.Init(ext.PropogatePatches, documentState)
+	ext.attachedTerminateChannel = terminateChannel
+	ext.ExtensionHead.Init(ext.PropogatePatches, ext.Terminate, documentState)
 }
 
 func (ext *Extension) Destroy(docState *string) {
@@ -69,22 +72,10 @@ func (ext *Extension) PropogatePatches(patches []diffmatchpatch.Patch) {
 	}
 }
 
-// Defines an exteion interface, all extensions must satisfy this set of required
-// functions to be useable and considered an interface
-type ExtensionHead interface {
-	// Synchronisation mechanisms
-	Synchronise([]diffmatchpatch.Patch)
-
-	// LifeCycle operations
-	// Just note that init is passed a method that it can use
-	// to try and synchronise with the document
-	// the idea is that the ExtensionHead has no idea wat it is attached to
-	// it only knows how to communicate with it
-	Init(func([]diffmatchpatch.Patch), *string)
-	Destroy(*string) // destroy is given the current state of the document
-
-	// Special functions regarding the service
-	IsService() bool
-	Spin()
-	Stop()
+// Terminate allows the extension to signal to the document
+// that it is read to die and be cleaned up
+func (ext *Extension) Terminate() {
+	ext.attachedTerminateChannel <- terminatePayload{
+		signature: ext.ID,
+	}
 }

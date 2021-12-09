@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	newDoc  = []string{CLIENT_EXTENSION_NAME, AUTOSAVE_EXTENSION_NAME}
+	newDoc  = []string{CLIENT_EXTENSION_NAME}
 	newConn = []string{CLIENT_EXTENSION_NAME}
 )
 
@@ -20,7 +20,7 @@ type Broker struct {
 
 func NewBroker() *Broker {
 	return &Broker{
-		manager: document.NewManager(),
+		manager: document.GetManagerInstance(),
 	}
 }
 
@@ -28,7 +28,7 @@ func NewBroker() *Broker {
 // then it creates a new connection to the document and triggers the newConn event
 // loading in the required extensions, otherwise if the documnet is not open it
 // triggers the newDoc event, creating the document and loading in the newDoc extensions
-func (b *Broker) ConnectOrOpenDocument(documentID string, conn *websocket.Conn) {
+func (b *Broker) ConnectOrOpenDocument(documentID string, conn *websocket.Conn) error {
 	var requiredExtensions []string = newDoc
 
 	if b.manager.IsDocOpen(documentID) {
@@ -36,7 +36,11 @@ func (b *Broker) ConnectOrOpenDocument(documentID string, conn *websocket.Conn) 
 		requiredExtensions = newConn
 	} else {
 		// otherwise open the doc and trigger a new doc event
-		b.manager.OpenDocument(documentID)
+		err := b.manager.OpenDocument(documentID)
+		if err != nil {
+			return err
+		}
+
 		requiredExtensions = newDoc
 	}
 
@@ -45,6 +49,7 @@ func (b *Broker) ConnectOrOpenDocument(documentID string, conn *websocket.Conn) 
 			extName, conn,
 		))
 	}
+	return nil
 }
 
 // small factory for generating extensions based on a name :)

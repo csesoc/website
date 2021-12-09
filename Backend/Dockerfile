@@ -14,9 +14,9 @@ RUN go mod download
 RUN apk add --update npm
 RUN go get github.com/githubnemo/CompileDaemon
 
-WORKDIR html
+WORKDIR editor/html
 RUN npm install
-WORKDIR ..
+WORKDIR ../../
 
 
 EXPOSE 8080

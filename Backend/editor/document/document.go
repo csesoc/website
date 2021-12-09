@@ -9,7 +9,8 @@ import (
 )
 
 type Document struct {
-	id uuid.UUID
+	id           uuid.UUID
+	documentName string
 	documentState
 
 	// these are the extensions loaded into the document
@@ -17,24 +18,18 @@ type Document struct {
 	isSpinning bool
 
 	// events to react to
-	syncEvent    chan syncPayload
-	stopSpinning chan bool
+	syncEvent               chan syncPayload
+	terminateExtensionEvent chan terminatePayload
+	stopSpinningEvent       chan bool
 
 	dmp *diffmatchpatch.DiffMatchPatch
 }
 
-// syncPayload defines the arguments for a sync operation against
-// a document, the signature refers to the ID of the extension sending
-// this payload
-type syncPayload struct {
-	patches   []diffmatchpatch.Patch
-	signature uuid.UUID
-}
-
 // NewDocument returns a new instance of a document allocated on the heap
-func newDocument(baseText string) *Document {
+func newDocument(documentName string, baseText string) *Document {
 	return &Document{
-		id: uuid.New(),
+		id:           uuid.New(),
+		documentName: documentName,
 		documentState: documentState{
 			baseText:            baseText,
 			shadows:             make(map[uuid.UUID]*string),
@@ -42,10 +37,10 @@ func newDocument(baseText string) *Document {
 			readingExtensions:   sync.RWMutex{},
 		},
 
-		isSpinning:   false,
-		syncEvent:    make(chan syncPayload),
-		stopSpinning: make(chan bool),
-		dmp:          diffmatchpatch.New(),
+		isSpinning:        false,
+		syncEvent:         make(chan syncPayload),
+		stopSpinningEvent: make(chan bool),
+		dmp:               diffmatchpatch.New(),
 	}
 }
 
@@ -62,7 +57,7 @@ func (doc *Document) addExtension(ext *Extension) error {
 
 	// initialise the extension and pass
 	// it the the channel that it can use to send updates
-	ext.Init(doc.syncEvent, &doc.baseText)
+	ext.Init(doc.syncEvent, doc.terminateExtensionEvent, &doc.baseText)
 	if ext.IsService() {
 		go ext.Spin()
 	}
@@ -78,7 +73,8 @@ func (doc *Document) spin() {
 
 	for {
 		select {
-		case _ = <-doc.stopSpinning:
+		// something has just told us to die D:
+		case _ = <-doc.stopSpinningEvent:
 			doc.isSpinning = false
 			// Stop extensions
 			for _, ext := range doc.connectedExtensions {
@@ -86,6 +82,7 @@ func (doc *Document) spin() {
 			}
 			return
 
+		// an extension is trying to synrhconise the document state
 		case payload := <-doc.syncEvent:
 			// parse the patches into the diffmatchpatch library
 			if len(payload.patches) == 0 {
@@ -114,10 +111,20 @@ func (doc *Document) spin() {
 					ext.Synchronise(patches)
 				}
 			}
-
 			break
+
+		// an extension is trying to terminate itself
+		case payload := <-doc.terminateExtensionEvent:
+			delete(doc.shadows, payload.signature)
+			delete(doc.connectedExtensions, payload.signature)
+
+			// if there are no more connected extensions just die off
+			if len(doc.connectedExtensions) == 0 {
+				doc.stop()
+			}
+
 		default:
-			continue
+			break
 		}
 	}
 }
@@ -129,13 +136,13 @@ func (doc *Document) stop() error {
 		return errors.New("document is not spinning, nothing to stop")
 	}
 
-	doc.stopSpinning <- true
-
 	for _, ext := range doc.connectedExtensions {
 		if ext.IsSpinning() {
 			ext.Stop()
 		}
 	}
 
-	return nil
+	// finally tell the singleton manager to
+	// delete us for goooood :)
+	return GetManagerInstance().CloseDocument(doc.documentName)
 }

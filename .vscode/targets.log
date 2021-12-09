@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Dec  5 13:26:31 2021
+# Make data base, printed on Thu Dec  9 18:32:22 2021
 
 # Variables
 
@@ -65,7 +65,7 @@ GOPATH = /home/varun/go:/home/varun/dev/go
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-c68113e3-bd37-4070-961c-f50c71aad539.sock
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-0b7cef64-03a7-4e47-a983-98e9cad87086.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -260,12 +260,12 @@ dev-build:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 23 / storage = 201 B / avg = 8 B
-# current buf: size = 8162 B / used = 201 B / count = 23 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 23 / storage = 198 B / avg = 8 B
+# current buf: size = 8162 B / used = 198 B / count = 23 / avg = 8 B
 
 # strcache performance: lookups = 31 / hit rate = 25%
 # hash-table stats:
 # Load=23/8192=0%, Rehash=0, Collisions=1/31=3%
-# Finished Make data base on Sun Dec  5 13:26:31 2021
+# Finished Make data base on Thu Dec  9 18:32:22 2021
 
  

@@ -25,7 +25,7 @@ func NewAutosaveHead() *AutosaveHead {
 
 // Methods for the new ClientHead to implement the ExtensionHead interface
 // we just need to tell the connected socket that they're now attached to a document :)
-func (c *AutosaveHead) Init(commMethod func([]diffmatchpatch.Patch), documentState *string) {
+func (c *AutosaveHead) Init(commMethod func([]diffmatchpatch.Patch), terminate func(), documentState *string) {
 	c.sendToDoc = commMethod
 	c.ExtensionStub.baseText = *documentState
 	*c.ExtensionStub.serverShadow = *documentState
@@ -50,7 +50,7 @@ func (c *AutosaveHead) Spin() {
 			return
 		default:
 			// TODO: write to file system every n seconds
-
+			// @Jacky
 			break
 		}
 	}

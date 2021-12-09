@@ -1,29 +1,28 @@
 version: "3.8"
 
 services:
-  cms_frontend:
-    container_name: cms_frontend
-    build: 
-      context: ./Cms_frontend
-      args: 
-        BACKEND_URI: ${BACKEND_URI}
-    volumes:
-      # Note must include node_modules as a seperate volume
-      - '/app/node_modules'
-      - './Cms_frontend:/app'
-    stdin_open: true
-    ports:
-      - 3000:3000
-
-
+  # un comment these when the CMS can be ported to main
+  # cms_frontend:
+  #   container_name: cms_frontend
+  #   build: 
+  #     context: ./Cms_frontend
+  #     args: 
+  #       BACKEND_URI: ${BACKEND_URI}
+  #   volumes:
+  #     # Note must include node_modules as a seperate volume
+  #     - '/app/node_modules'
+  #     - './Cms_frontend:/app'
+  #   stdin_open: true
+  #   ports:
+  #     - 3000:3000
   backend:
     container_name: go_backend
     build: ./Backend
     depends_on:
       - db
     volumes:
-      - './Backend:/go/src/DiffSync'
-      - './Backend/go.mod:/go/src/DiffSync/go.mod'
+      - './Backend:/go/src/cms.csesoc.unsw.edu.au'
+      - './Backend/go.mod:/go/src/cms.csesoc.unsw.edu.au/go.mod'
     ports:
       - 8080:8080
     environment:

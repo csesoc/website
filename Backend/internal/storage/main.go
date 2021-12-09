@@ -3,12 +3,14 @@ package storage
 import (
 	"bytes"
 	"fmt"
+	"go/build"
 	"os"
 )
 
 func Read(id, dir string) string {
 	// super insecure but who cares? issa prototype
-	file, err := os.Open(fmt.Sprintf("storage/%s", id))
+	gopath := build.Default.GOPATH
+	file, err := os.Open(fmt.Sprintf("%s/src/cms.csesoc.unsw.edu.au/%s/%s", gopath, dir, id))
 	defer file.Close()
 
 	if err != nil {

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head></head>
+<body>
+    <div class="text_input" style="height: 100vh;">
+        <div contenteditable="true" id="document" style="height: 100vh;"></div>
+    </div>
+
+    <link rel="stylesheet" href="node_modules/codemirror/lib/codemirror.css">
+    <script src="js/diffmatchpatch/index.js" lang="javascript"></script>
+    <script src="node_modules/codemirror/lib/codemirror.js"></script>
+    <script src="node_modules/codemirror/mode/xml/xml.js"></script>
+
+    <style>
+        .CodeMirror {
+            height: 100vh;
+        }
+    </style>
+
+    <script>
+        var ce = document.getElementById("document");
+        var text = ce.textContent || ce.innerText;
+        var editor = CodeMirror(function(node){ce.parentNode.replaceChild(node, ce);}, {
+            value: "",
+            lineNumbers: true,
+            mode: "xml",
+        });
+        
+        var stateNew = true
+        var shadow = ""
+        
+        // the client shadow
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        let socket = new WebSocket("ws://localhost:8080/edit?document=" + urlParams.get("document"))
+
+        var dmp = new diff_match_patch();
+
+        socket.onopen = () => {
+            console.log("opened connection")
+        }
+        socket.onclose = () => {
+            console.log("disconnected")
+        }
+
+
+        let syncIncoming = (patches) => {
+            // parse the patches
+            var clientText = editor.getValue()
+
+            var newClient = dmp.patch_apply(patches, clientText)[0];
+            var newShadow = dmp.patch_apply(patches, shadow)[0];
+            editor.setValue(newClient);
+            shadow = newShadow;
+        }
+
+        let computeDiff = () => {
+            var clientText = editor.getValue()
+            var diff = dmp.patch_make(shadow, clientText)
+            shadow = clientText
+            return dmp.patch_toText(diff)
+        }
+
+
+        socket.onmessage = (message) => {
+            var payload = JSON.parse(message.data)["payload"]["patches"]
+            var patches = dmp.patch_fromText(payload)
+            if (patches.length === 0) {
+                return;
+            }
+            syncIncoming(patches)
+
+            if (!stateNew) {
+                diff = computeDiff()
+                socket.send(JSON.stringify({
+                    status: "connected",
+                    errors: [],
+                    payload: {
+                        patches: diff
+                    }
+                }))
+            } else {
+                stateNew = false
+            }
+        }
+
+        // react to spaces in the document
+        document.addEventListener('keyup', event => {
+            var diffs = computeDiff()
+            socket.send(JSON.stringify({
+                status: "connected",
+                errors: [],
+                payload: {
+                    patches: diffs
+                }
+            }))
+        });
+    </script>
+
+</body>
+
+</html>
