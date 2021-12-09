@@ -13,7 +13,7 @@ type Extension struct {
 	attachedChannel          chan syncPayload
 	attachedTerminateChannel chan terminatePayload
 
-	isSpinning bool
+	spinning bool
 
 	ExtensionHead
 }
@@ -28,53 +28,53 @@ func NewExtensionWithHead(head ExtensionHead) *Extension {
 }
 
 // Extension methods
-func (ext *Extension) GetID() uuid.UUID {
+func (ext *Extension) getID() uuid.UUID {
 	return ext.ID
 }
 
-func (ext *Extension) IsSpinning() bool {
-	return ext.isSpinning
+func (ext *Extension) isSpinning() bool {
+	return ext.spinning
 }
 
-func (ext *Extension) Spin() {
-	if ext.IsService() {
-		ext.isSpinning = true
+func (ext *Extension) spin() {
+	if ext.isService() {
+		ext.spinning = true
 		// The function should ideally run concurrently
 		ext.ExtensionHead.Spin()
 	}
 }
 
-func (ext *Extension) IsService() bool {
+func (ext *Extension) isService() bool {
 	return ext.ExtensionHead.IsService()
 }
 
-func (ext *Extension) Stop() {
-	ext.isSpinning = false
+func (ext *Extension) stop() {
+	ext.spinning = false
 	ext.ExtensionHead.Stop()
 }
 
-func (ext *Extension) Init(commChannel chan syncPayload, terminateChannel chan terminatePayload, documentState *string) {
+func (ext *Extension) init(commChannel chan syncPayload, terminateChannel chan terminatePayload, documentState *string) {
 	ext.attachedChannel = commChannel
 	ext.attachedTerminateChannel = terminateChannel
-	ext.ExtensionHead.Init(ext.PropogatePatches, ext.Terminate, documentState)
+	ext.ExtensionHead.Init(ext.propogatePatches, ext.terminate, documentState)
 }
 
-func (ext *Extension) Destroy(docState *string) {
+func (ext *Extension) destroy(docState *string) {
 	ext.ExtensionHead.Destroy(docState)
 }
 
-// PropogatePatches allows the extension to send information to the document
+// propogatePatches allows the extension to send information to the document
 // that it is attached to
-func (ext *Extension) PropogatePatches(patches []diffmatchpatch.Patch) {
+func (ext *Extension) propogatePatches(patches []diffmatchpatch.Patch) {
 	ext.attachedChannel <- syncPayload{
 		patches:   patches,
 		signature: ext.ID,
 	}
 }
 
-// Terminate allows the extension to signal to the document
+// terminate allows the extension to signal to the document
 // that it is read to die and be cleaned up
-func (ext *Extension) Terminate() {
+func (ext *Extension) terminate() {
 	ext.attachedTerminateChannel <- terminatePayload{
 		signature: ext.ID,
 	}

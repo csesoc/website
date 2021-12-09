@@ -54,15 +54,15 @@ func (doc *Document) addExtension(ext *Extension) error {
 	doc.readingExtensions.Lock()
 	defer doc.readingExtensions.Unlock()
 
-	doc.connectedExtensions[ext.GetID()] = ext
-	doc.shadows[ext.GetID()] = new(string)
-	*doc.shadows[ext.GetID()] = doc.baseText
+	doc.connectedExtensions[ext.getID()] = ext
+	doc.shadows[ext.getID()] = new(string)
+	*doc.shadows[ext.getID()] = doc.baseText
 
 	// initialise the extension and pass
 	// it the the channel that it can use to send updates
-	ext.Init(doc.syncEvent, doc.terminateExtensionEvent, &doc.baseText)
-	if ext.IsService() {
-		go ext.Spin()
+	ext.init(doc.syncEvent, doc.terminateExtensionEvent, &doc.baseText)
+	if ext.isService() {
+		go ext.spin()
 	}
 
 	return nil
@@ -81,7 +81,7 @@ func (doc *Document) spin() {
 			doc.isSpinning = false
 			// Stop extensions
 			for _, ext := range doc.connectedExtensions {
-				ext.Destroy(&doc.baseText)
+				ext.destroy(&doc.baseText)
 			}
 			return
 
@@ -142,8 +142,8 @@ func (doc *Document) stop() error {
 	}
 
 	for _, ext := range doc.connectedExtensions {
-		if ext.IsSpinning() {
-			ext.Stop()
+		if ext.isSpinning() {
+			ext.stop()
 		}
 	}
 
