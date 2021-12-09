@@ -37,10 +37,13 @@ func newDocument(documentName string, baseText string) *Document {
 			readingExtensions:   sync.RWMutex{},
 		},
 
-		isSpinning:        false,
-		syncEvent:         make(chan syncPayload),
-		stopSpinningEvent: make(chan bool),
-		dmp:               diffmatchpatch.New(),
+		isSpinning: false,
+
+		syncEvent:               make(chan syncPayload),
+		terminateExtensionEvent: make(chan terminatePayload),
+		stopSpinningEvent:       make(chan bool),
+
+		dmp: diffmatchpatch.New(),
 	}
 }
 
@@ -82,6 +85,19 @@ func (doc *Document) spin() {
 			}
 			return
 
+		// an extension is trying to terminate itself
+		case payload := <-doc.terminateExtensionEvent:
+			delete(doc.shadows, payload.signature)
+			delete(doc.connectedExtensions, payload.signature)
+
+			// if there are no more connected extensions just die off
+			if len(doc.connectedExtensions) == 0 {
+				doc.stop()
+				return
+			}
+
+			break
+
 		// an extension is trying to synrhconise the document state
 		case payload := <-doc.syncEvent:
 			// parse the patches into the diffmatchpatch library
@@ -112,17 +128,6 @@ func (doc *Document) spin() {
 				}
 			}
 			break
-
-		// an extension is trying to terminate itself
-		case payload := <-doc.terminateExtensionEvent:
-			delete(doc.shadows, payload.signature)
-			delete(doc.connectedExtensions, payload.signature)
-
-			// if there are no more connected extensions just die off
-			if len(doc.connectedExtensions) == 0 {
-				doc.stop()
-			}
-
 		default:
 			break
 		}
@@ -144,5 +149,6 @@ func (doc *Document) stop() error {
 
 	// finally tell the singleton manager to
 	// delete us for goooood :)
-	return GetManagerInstance().CloseDocument(doc.documentName)
+	GetManagerInstance().closeDocument(doc.documentName)
+	return nil
 }

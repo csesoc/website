@@ -97,26 +97,23 @@ func (c *ClientHead) Spin() {
 			var req response
 			err := c.Socket.ReadJSON(&req)
 			if err != nil {
-				log.Printf("something went horribly wrong, terminating connection: %v\n", err)
-				goto cleanup
+				if !websocket.IsCloseError(err, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
+					log.Printf("something went horribly wrong, terminating connection: %v\n", err)
+				}
+
+				c.Stop()
 			}
 
-			// golang error checking :(((((
 			parsedPatches, err := c.dmp.PatchFromText(req.Payload["patches"])
 			if err != nil {
 				log.Printf("something went horribly wrong when parsing diff: %v\n", err)
-				goto cleanup
+				c.Stop()
 			}
 
 			c.sendToDoc(parsedPatches)
 			break
 		}
 	}
-
-	// it must be done
-cleanup:
-	c.Stop()
-	c.terminate()
 }
 
 func (c *ClientHead) Stop() {

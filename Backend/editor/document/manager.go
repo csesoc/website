@@ -53,16 +53,27 @@ func (docManager *Manager) OpenDocument(documentName string) error {
 	return nil
 }
 
-// closeDocument closes a document with a specific ID
-func (docManager *Manager) CloseDocument(documentName string) error {
+// CloseAndStopDocument closes a document with a specific ID and
+// sends it a shutdown signal
+func (docManager *Manager) CloseAndStopDocument(documentName string) error {
+	if doc := docManager.closeDocument(documentName); doc != nil {
+		return doc.stop()
+	}
+	return errors.New("no such document exists within the manager")
+}
+
+// closeDocument just closes a document and stops
+// the manager from maintaining it (should only be called internally)
+// and within the context of the document event loop to prevent deadlocks
+func (docManager *Manager) closeDocument(documentName string) *Document {
 	docManager.readingDocuments.Lock()
 	defer docManager.readingDocuments.Unlock()
 
 	if doc, ok := docManager.openDocuments[documentName]; ok {
 		delete(docManager.openDocuments, documentName)
-		return doc.stop()
+		return doc
 	}
-	return errors.New("no such document exists within the manager")
+	return nil
 }
 
 // LoadExtension adds an extension to a document with the specified ID
