@@ -14,6 +14,7 @@ run:
 or
 `docker compose up -d`
 
+Please note that you have to add /Config/.env.dev and include the env secrets. Please contact @omeh-a (Matt_#4292 on discord or matthewrossouw@outlook.com) for these if you don't have them :)
 
 ## Postgres Instructions
 access interactive terminal by running `docker exec -it pg_container bash`
