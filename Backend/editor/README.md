@@ -84,7 +84,7 @@ func (c *ExampleHead) Stop() {
 }
  ```
 
-### `document`
+### `document/`
  - Document contains basically all the implementation logic for the editor (its surprisingly small so give it a read :P). The document sub-package consists to 3 critical components: some type definitions for interfaces, a singleton document manager "class" and a document type.
 
  - #### `manager.go`
