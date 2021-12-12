@@ -1,7 +1,7 @@
 # CMS Editor
 
 ## Payload
-Unfortunately using the CMS editor as a client is rather tricky and requires a symmetrical implementation of the differential synchronisation algorithm (TBH this is not too hard :stuck_out_tounge:).
+Unfortunately using the CMS editor as a client is rather tricky and requires a symmetrical implementation of the differential synchronisation algorithm (TBH this is not too hard 😛).
 
 The client extension in the editor expects incoming synchronisation data to follow the following format:
 ```json
@@ -85,7 +85,7 @@ func (c *ExampleHead) Stop() {
  ```
 
 ### `document/`
- - Document contains basically all the implementation logic for the editor (its surprisingly small so give it a read :P). The document sub-package consists to 3 critical components: some type definitions for interfaces, a singleton document manager "class" and a document type.
+ - Document contains basically all the implementation logic for the editor (its surprisingly small so give it a read 😛). The document sub-package consists to 3 critical components: some type definitions for interfaces, a singleton document manager "class" and a document type.
 
  - #### `manager.go`
     - This file maintains a singleton manager instance, this manager instance keeps a global record of all documents we have currently open (basically documents that are currently being edited). The manager singleton is responsible for the initialisation and creation of documents, all external interations with a document outside of the editor package happens via the manager.
@@ -93,4 +93,4 @@ func (c *ExampleHead) Stop() {
     - This is the main implementation logic for the editor, the document type consists of a single big event loop and a set of channels, the type spins in its loop waiting for messages to be published to its respective channels, when it recieves a message it acts on it. There are only currently 3 implemented events.
         - **Synchronisation**: This event is when an extension wants to update the current textual state of the document with some extra information
         - **Extension Termination**: This is a small message an extension sends to a document to tell it that its terminated, this message allows the document to update its internal count of connected extensions and terminate itself if that count reaches 0
-        - **Forced Termination**: This is a request from the document manager for the document to just stop doing its thing (how tragic :( )
+        - **Forced Termination**: This is a request from the document manager for the document to just stop doing its thing (how tragic 🙁 )
