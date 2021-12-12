@@ -6,10 +6,10 @@ Unfortunately using the CMS editor as a client is rather tricky and requires a s
 The client extension in the editor expects incoming synchronisation data to follow the following format:
 ```json
 {
-    status: "connected",
-    errors: [],
-    payload: {
-        patches: "GNU Diff String"
+    "status": "connected",
+    "errors": [],
+    "payload": {
+        "patches": "GNU Diff String"
     }
 }
 ```
