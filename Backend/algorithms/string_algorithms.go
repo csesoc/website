@@ -1,7 +1,9 @@
 // This file just defines a series of string algorithms
 package algorithms
 
-import "sync"
+import (
+	"sync"
+)
 
 type EditType int
 
@@ -61,37 +63,52 @@ func CommonPrefix(a, b []string) int {
 // CommonPrefixConcurrent is a faster version of the concurrent prefix algorithm
 // for multi-core environments (abuse go routines :P ), its a linear time divide and
 // conquer algorithm (when run sequentially)
+
+// limiterSem is a semaphore for limiting the amount of go routines that we spawn
+var limiterSem = make(chan struct{}, concurrentSpawnLimit/2)
+
 func CommonPrefixConcurrent(a, b []string) int {
 	n := min(len(a), len(b))
 	if n <= concurrentBatchSize {
 		return CommonPrefix(a, b)
 	}
 
-	// function run without our go-routine :)
-	var concurrentRecurse = func(a, b []string, result chan int) {
-		index := CommonPrefixConcurrent(a, b)
-		result <- index
-	}
-
 	// recurse on subarrays
 	var mid = n / 2
-	var upperResult = make(chan int)
-	var lowerResult = make(chan int)
+	var higherIndex int = 0
+	var lowerIndex int = 0
 
-	go concurrentRecurse(a[:mid], b[:mid], lowerResult)
-	go concurrentRecurse(a[mid:], b[mid:], upperResult)
+	// if there are any more go routines that could
+	// consume 2 more jobs start them up
+	select {
+	case limiterSem <- struct{}{}:
+		// run subproblems concurrently
+		var wg = sync.WaitGroup{}
+		wg.Add(2)
 
-	lowerIndex := <-lowerResult
-	higherIndex := <-upperResult
+		go func() {
+			higherIndex = CommonPrefixConcurrent(a[mid:], b[mid:])
+			wg.Done()
+		}()
+
+		go func() {
+			lowerIndex = CommonPrefixConcurrent(a[:mid], b[:mid])
+			wg.Done()
+		}()
+
+		wg.Wait()
+		<-limiterSem
+	default:
+		// run subproblems sequentially
+		lowerIndex = CommonPrefix(a[:mid], b[:mid])
+		higherIndex = CommonPrefix(a[mid:], b[mid:])
+	}
 
 	// determine what index to actually return
-	if lowerIndex == -1 {
-		return -1
-	} else {
-		if lowerIndex < mid-1 {
-			return lowerIndex
-		}
+	if lowerIndex == -1 || lowerIndex < mid-1 {
+		return lowerIndex
 	}
+
 	return lowerIndex + higherIndex + 1
 }
 

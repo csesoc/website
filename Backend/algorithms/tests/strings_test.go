@@ -35,7 +35,9 @@ func reverse(input []string) []string {
 	return output
 }
 
-const testSize = 100000
+// Realistically: no one is ever going to type a line
+// this long :P
+const testSize = 64000
 
 func setupPrefixBenchmark() ([]string, []string) {
 	// setup benchmark
