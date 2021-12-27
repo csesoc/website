@@ -87,9 +87,9 @@ func TestStringDifference(t *testing.T) {
 		b        string
 		expected []algorithms.Edit
 	}{
-		//{"hello world", "hello world", []algorithms.Edit{}},
-		{"Hey Don't Borgir Write yourself off", "Hey dont Borgir Write yourself off", []algorithms.Edit{{1, "Don't", algorithms.Remove}, {1, "dont", algorithms.Add}}},
-		//{"Hello there Jacob", "Hello there", []algorithms.Edit{{2, "Jacob", algorithms.Remove}}},
+		{"hello world", "hello world", []algorithms.Edit{}},
+		{"Hey Don't Borgir Write yourself off", "Hey dont Borgir Write yourself off", []algorithms.Edit{{1, "dont", algorithms.Add}, {1, "Don't", algorithms.Remove}}},
+		{"Hello there Jacob", "Hello there", []algorithms.Edit{{2, "Jacob", algorithms.Remove}}},
 	}
 	assert := assert.New(t)
 

@@ -102,93 +102,100 @@ func CommonSuffix(a, b []string) int {
 }
 
 // ComputeDiff returns an edit-script of the difference
-// between two word arrays, implementation is just directly
-// based on the paper for the Myer's String difference algorithm
+// between two word arrays, implementation is just a BFS
+// variant of the greedy strategy presented in the paper
+type coord struct {
+	x, y int
+}
+
 func ComputeDiff(a, b []string) []Edit {
-	n := len(a)
-	m := len(b)
-	o := n + m
 
-	predMatrix := [][]int{}
-	v := make([]int, 2*(n+m)+1)
-	v[1+o] = 0
+	// utility function for cleanly extending a path
+	var extendPath = func(v coord) coord {
+		for v.x < len(a) && v.y < len(b) && a[v.x] == b[v.y] {
+			v.x++
+			v.y++
+		}
+		return v
+	}
 
-	for d := 0; d < n+m; d++ {
-		for k := -d; k <= d; k += 2 {
-			// update the furthest reaching values
-			x := 0
-			if k == -d || (k != d && v[k+o-1] < v[k+o+1]) {
-				x = v[o+k+1]
-			} else {
-				x = v[o+k-1] + 1
-			}
+	max := len(a) + len(b)
+	initCoord := extendPath(coord{0, 0})
 
-			y := x - k
+	predMatrix := make(map[coord]coord)
+	predMatrix[initCoord] = coord{0, 0}
+	frontier := []coord{initCoord}
 
-			// now extend the path
-			for x < n && y < m && a[x] == b[y] {
-				x += 1
-				y += 1
-			}
-
-			v[o+k] = x
-			if x >= n && y >= m {
-				return predToEditScript(predMatrix, a, b)
-			}
-
-			// push into the pred matrix
-			// perhaps this isnt the most effiicient method
-			// TODO: make more efficient :D
-			out := make([]int, 2*(m+n)+1)
-			copy(out, v)
-			predMatrix = append(predMatrix, out)
+	// another utility function for marking a vertex
+	// as visited
+	var markAsVisited = func(v, pred coord) {
+		if _, ok := predMatrix[v]; !ok {
+			predMatrix[v] = pred
 		}
 	}
+
+	// iterate over all possible distances
+	for d := 0; d < max; d++ {
+		nextFrontier := []coord{}
+
+		for _, v := range frontier {
+			if v.x >= len(a) && v.y >= len(b) {
+				return computeEditScript(coord{0, 0}, coord{len(a), len(b)}, predMatrix, a, b)
+			}
+
+			addFromB := extendPath(coord{v.x, v.y + 1})
+			delFromA := extendPath(coord{v.x + 1, v.y})
+
+			markAsVisited(addFromB, v)
+			markAsVisited(delFromA, v)
+
+			nextFrontier = append(nextFrontier, addFromB, delFromA)
+		}
+
+		frontier = nextFrontier
+	}
+
 	return []Edit{}
 }
 
-// trace computes the trace script from a given
-// pred matrix
-func predToEditScript(matrix [][]int, a, b []string) []Edit {
-	// finally turn the edit list into a sequence of edits
-	depth := len(matrix)
+// computeEditScript takes a predecessor matrix
+// and computes a final edit script from the matrix
+func computeEditScript(s, t coord, predMatrix map[coord]coord, a, b []string) []Edit {
+	// computes a path from s -> t based on the pred matrix
+	type pair struct {
+		to, from coord
+	}
+
+	var computePath func(coord, coord) []pair
+	computePath = func(s, t coord) []pair {
+		if s == t {
+			return []pair{}
+		}
+
+		return append(computePath(s, predMatrix[t]), pair{t, predMatrix[t]})
+	}
+
 	editScript := []Edit{}
+	for _, p := range computePath(s, t) {
+		v := p.to
+		n := p.from
 
-	x := len(a)
-	y := len(b)
-	o := len(a) + len(b)
-	k := x - y
+		// modify to so that it moves off a 0 cost edge
+		// and rewinds to start
+		for v.x > n.x && v.y > n.y {
+			v.x--
+			v.y--
+		}
 
-	for d := depth - 1; d >= 0; d-- {
-		v := matrix[d]
+		if v.x-v.y == n.x-n.y {
+			continue
+		}
 
-		prevK := k
-		// find the previous diagonal component we landed on
-		if k == -d || (k != d && v[k+o-1] < v[k+o+1]) {
-			prevK += 1
+		if n.y < v.y {
+			editScript = append(editScript, Edit{n.x, b[n.y], Add})
 		} else {
-			prevK -= 1
+			editScript = append(editScript, Edit{n.x, a[n.x], Remove})
 		}
-
-		prevX := v[prevK+o]
-		prevY := prevX - prevK
-
-		// move back up along diagonals
-		for x > prevX && y > prevY {
-			x -= 1
-			y -= 1
-		}
-
-		// finally create edit script elements :)
-		if x == prevX && d > 0 {
-			editScript = append(editScript, Edit{x, b[prevY], Add})
-		} else if y == prevY && d > 0 {
-			editScript = append(editScript, Edit{x, a[prevX], Remove})
-		}
-
-		x = prevX
-		y = prevY
-		k = prevK
 	}
 
 	return editScript
