@@ -9,19 +9,11 @@ const (
 	Add EditType = iota
 	Remove
 )
-const concurrentBatchSize int = 20
 
 type Edit struct {
 	Index int
 	Val   string
 	Type  EditType
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
 }
 
 // small utility function that efficiently reverses
@@ -75,10 +67,22 @@ func CommonPrefixConcurrent(a, b []string) int {
 		return CommonPrefix(a, b)
 	}
 
+	// function run without our go-routine :)
+	var concurrentRecurse = func(a, b []string, result chan int) {
+		index := CommonPrefixConcurrent(a, b)
+		result <- index
+	}
+
 	// recurse on subarrays
 	var mid = n / 2
-	lowerIndex := CommonPrefixConcurrent(a[:mid], b[:mid])
-	higherIndex := CommonPrefixConcurrent(a[mid:], b[mid:])
+	var upperResult = make(chan int)
+	var lowerResult = make(chan int)
+
+	go concurrentRecurse(a[:mid], b[:mid], lowerResult)
+	go concurrentRecurse(a[mid:], b[mid:], upperResult)
+
+	lowerIndex := <-lowerResult
+	higherIndex := <-upperResult
 
 	// determine what index to actually return
 	if lowerIndex == -1 {
@@ -109,7 +113,6 @@ type coord struct {
 }
 
 func ComputeDiff(a, b []string) []Edit {
-
 	// utility function for cleanly extending a path
 	var extendPath = func(v coord) coord {
 		for v.x < len(a) && v.y < len(b) && a[v.x] == b[v.y] {
@@ -161,41 +164,28 @@ func ComputeDiff(a, b []string) []Edit {
 // computeEditScript takes a predecessor matrix
 // and computes a final edit script from the matrix
 func computeEditScript(s, t coord, predMatrix map[coord]coord, a, b []string) []Edit {
-	// computes a path from s -> t based on the pred matrix
-	type pair struct {
-		to, from coord
+	if s == t {
+		return []Edit{}
 	}
 
-	var computePath func(coord, coord) []pair
-	computePath = func(s, t coord) []pair {
-		if s == t {
-			return []pair{}
-		}
+	v := t
+	n := predMatrix[t]
+	editScript := computeEditScript(s, n, predMatrix, a, b)
 
-		return append(computePath(s, predMatrix[t]), pair{t, predMatrix[t]})
+	// modify to so that it moves off a 0 cost edge
+	// and rewinds to start
+	for v.x > n.x && v.y > n.y {
+		v.x--
+		v.y--
 	}
 
-	editScript := []Edit{}
-	for _, p := range computePath(s, t) {
-		v := p.to
-		n := p.from
-
-		// modify to so that it moves off a 0 cost edge
-		// and rewinds to start
-		for v.x > n.x && v.y > n.y {
-			v.x--
-			v.y--
-		}
-
-		if v.x-v.y == n.x-n.y {
-			continue
-		}
-
-		if n.y < v.y {
-			editScript = append(editScript, Edit{n.x, b[n.y], Add})
-		} else {
-			editScript = append(editScript, Edit{n.x, a[n.x], Remove})
-		}
+	// actually compute the edit now
+	if v.x-v.y == n.x-n.y {
+		return editScript
+	} else if n.y < v.y {
+		editScript = append(editScript, Edit{n.x, b[n.y], Add})
+	} else {
+		editScript = append(editScript, Edit{n.x, a[n.x], Remove})
 	}
 
 	return editScript

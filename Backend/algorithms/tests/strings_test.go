@@ -1,7 +1,6 @@
 package algorithms
 
 import (
-	"fmt"
 	"log"
 	"strings"
 	"testing"
@@ -34,6 +33,49 @@ func reverse(input []string) []string {
 	}
 
 	return output
+}
+
+const testSize = 100000
+
+func setupPrefixBenchmark() ([]string, []string) {
+	// setup benchmark
+	sentence := make([]string, testSize)
+	sentenceCop := make([]string, testSize)
+	for i := 0; i < testSize; i++ {
+		sentence[i] = randomWord(5)
+	}
+
+	copy(sentenceCop, sentence)
+
+	return sentence, sentenceCop
+}
+
+func BenchmarkConcurrentPrefix(b *testing.B) {
+	// setup benchmark
+	sentence, sentenceCop := setupPrefixBenchmark()
+
+	b.ResetTimer()
+	b.StartTimer()
+	result := algorithms.CommonPrefixConcurrent(sentence, sentenceCop)
+	b.StopTimer()
+
+	if result != len(sentence)-1 {
+		b.Fail()
+	}
+}
+
+func BenchmarkPrefix(b *testing.B) {
+	// setup benchmark
+	sentence, sentenceCop := setupPrefixBenchmark()
+
+	b.ResetTimer()
+	b.StartTimer()
+	result := algorithms.CommonPrefix(sentence, sentenceCop)
+	b.StopTimer()
+
+	if result != len(sentence)-1 {
+		b.Fail()
+	}
 }
 
 func TestCommonPrefix(t *testing.T) {
@@ -95,7 +137,6 @@ func TestStringDifference(t *testing.T) {
 
 	for _, tetestCase := range testCases {
 		computedDiff := algorithms.ComputeDiff(strings.Fields(tetestCase.a), strings.Fields(tetestCase.b))
-		fmt.Println(computedDiff)
 		assert.Equal(tetestCase.expected, computedDiff)
 	}
 }
