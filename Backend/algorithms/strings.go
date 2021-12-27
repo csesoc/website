@@ -75,6 +75,7 @@ func runConcurrentJob(a, b []string, wg *sync.WaitGroup, result *int) {
 	}()
 }
 
+// CommonPrefixConcurrent implementation
 func CommonPrefixConcurrent(a, b []string) int {
 	n := min(len(a), len(b))
 	if n <= concurrentBatchSize {
