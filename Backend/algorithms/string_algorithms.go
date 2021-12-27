@@ -67,6 +67,14 @@ func CommonPrefix(a, b []string) int {
 // limiterSem is a semaphore for limiting the amount of go routines that we spawn
 var limiterSem = make(chan struct{}, concurrentSpawnLimit/2)
 
+// starts a concurrent job
+func runConcurrentJob(a, b []string, wg *sync.WaitGroup, result *int) {
+	go func() {
+		*result = CommonPrefixConcurrent(a, b)
+		wg.Done()
+	}()
+}
+
 func CommonPrefixConcurrent(a, b []string) int {
 	n := min(len(a), len(b))
 	if n <= concurrentBatchSize {
@@ -86,15 +94,8 @@ func CommonPrefixConcurrent(a, b []string) int {
 		var wg = sync.WaitGroup{}
 		wg.Add(2)
 
-		go func() {
-			higherIndex = CommonPrefixConcurrent(a[mid:], b[mid:])
-			wg.Done()
-		}()
-
-		go func() {
-			lowerIndex = CommonPrefixConcurrent(a[:mid], b[:mid])
-			wg.Done()
-		}()
+		runConcurrentJob(a[mid:], b[mid:], &wg, &higherIndex)
+		runConcurrentJob(a[:mid], b[:mid], &wg, &lowerIndex)
 
 		wg.Wait()
 		<-limiterSem
