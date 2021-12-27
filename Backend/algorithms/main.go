@@ -6,6 +6,10 @@ package algorithms
 // computed concurrently
 const concurrentBatchSize int = 2000
 
+// threshold before which the concurrent implementation
+// of an algorithm starts running
+const concurrencyThreshold int = 2000
+
 // limits the amount of go routines that can be
 // spawned for a concurrent computation, the limit
 // prevents excessive context switching :)
