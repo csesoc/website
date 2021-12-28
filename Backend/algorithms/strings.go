@@ -62,7 +62,9 @@ func CommonPrefix(a, b []string) int {
 
 // CommonPrefixConcurrent is a faster version of the concurrent prefix algorithm
 // for multi-core environments (abuse go routines :P ), its a linear time divide and
-// conquer algorithm (when run sequentially)
+// conquer algorithm (when run sequentially), the idea is that given two subproblems
+// a and b, the solution to the common prefix between a and b is given by:
+// prefix(a) + prefix(b) + 1 or just prefix(a) if prefix(a) < len(a)
 
 // limiterSem is a semaphore for limiting the amount of go routines that we spawn
 var limiterSem = make(chan struct{}, concurrentSpawnLimit/2)
@@ -127,6 +129,24 @@ func CommonSuffix(a, b []string) int {
 // ComputeDiff returns an edit-script of the difference
 // between two word arrays, implementation is just a BFS
 // variant of the greedy strategy presented in the paper
+// to sumarise the paper here the general idea is that the differences
+// between two strings can be modelled as a graph, for example consider
+// the strings abc and adc; if the original string abc is aligned vertically
+// and the new string adc horizontally then the graph looks like:
+// where a dot represents a vertex
+// [x] a    b    c
+// a   . -> . -> .
+//	   |    |    |
+// d   . -> . -> .
+//     |    |   |
+// c   . -> . -> .
+//
+// movement along a hoizontal edge represents deleting a charachter from the origional
+// string and movment along the vertical edge represents inserting a char from the new string
+// there are also zero cost edges (not pictured) that represent match points (where the two strings)
+// match, since these are zero cost edges we can construct an auxillary unweighted graph from this representation
+// and traverse it using BFS, we are guaranteed that our BFS traversal will result in a shortest path :)
+
 type coord struct {
 	x, y int
 }

@@ -13,4 +13,4 @@ const concurrencyThreshold int = 2000
 // limits the amount of go routines that can be
 // spawned for a concurrent computation, the limit
 // prevents excessive context switching :)
-const concurrentSpawnLimit int = 30
+const concurrentSpawnLimit int = 8
