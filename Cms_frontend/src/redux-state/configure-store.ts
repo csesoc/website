@@ -5,22 +5,23 @@ import createSagaMiddleware from '@redux-saga/core';
 import { all, call } from 'redux-saga/effects';
 
 // import sagas
-import { rootFoldersSaga } from '../folders/sagas';
+import { rootFoldersSaga } from 'src/packages/dashboard/state/folders/sagas';
 
 /**
- * saga middleware
+ * saga
  */
 
 const sagaMiddleware = createSagaMiddleware();
 
-// combines all root saga watchers into 1 
+/**
+ * combines all rootSaga watchers into 1 
+ */
 function* getSagas() {
   yield all([
     call(rootFoldersSaga),
     // add more rootSagas here
   ])
 }
-
 
 /**
  * global store

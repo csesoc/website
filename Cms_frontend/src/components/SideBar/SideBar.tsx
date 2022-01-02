@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 const Container = styled.div`
   width: 250px;
   background: lightgrey;
-  height: 100%;
+  height: 100vh;
 `
 
 const SidebarTitle = styled.div`

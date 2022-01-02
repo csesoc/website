@@ -8,6 +8,7 @@ import * as foldersSagas from './sagas';
 const reducer = createReducer(initialState, (builder) => {
   // addCase(action, reducer);
   builder.addCase(foldersActions.addFolderItemAction, reducerFns.addFolderItems);
+  builder.addCase(foldersActions.initItemsAction, reducerFns.setItems);
 })
 
 export { 

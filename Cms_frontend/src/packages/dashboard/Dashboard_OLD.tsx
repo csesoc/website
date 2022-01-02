@@ -4,7 +4,7 @@ import { Dialog, DialogContent, IconButton } from "@material-ui/core";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 
 import SideBar from 'src/components/SideBar/SideBar';
-import FileRenderer from 'src/components/FileRenderer/FileRenderer';
+import FileRenderer from 'src/components/FileRenderer_OLD/FileRenderer';
 import NewDialogue from 'src/components/NewDialogue/NewDialogue';
 
 // Cast JSON format to HashMap

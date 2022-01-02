@@ -1,3 +1,4 @@
+// deprecated
 interface FileFormat {
   id: number,
   filename: string,
