@@ -17,6 +17,7 @@ const DirectoryName = styled.h3`
   margin-right: 10px;
 `;
 
+// TODO extract to external file
 interface JSONFileFormat {
 	EntityID: number,
 	EntityName: string,
@@ -30,7 +31,6 @@ const Dashboard: React.FC = () => {
 	const [dir, setDir] = useState<FileFormat[]>([]);
 	const [contents, setContents] = useState<FileFormat[]>([]);
 	const [activeFiles, setActiveFiles] = useState(-1);
-
 	// Modal state handler
 	const [modalOpen, setModalOpen] = React.useState(false);
 
@@ -280,10 +280,10 @@ const Dashboard: React.FC = () => {
 
 	return (
 		<div style={{ display: 'flex' }}>
-			<SideBar
+			{/* <SideBar
 				onNewFile={newFile}
 				onNewFolder={newFolder}
-        onRecycle={recycle} />
+        onRecycle={recycle} /> */}
 			{!loading && (
 				<div style={{ flex: 1 }}>
 					<Dialog

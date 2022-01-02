@@ -48,12 +48,36 @@ const SidebarButton = styled(Button) <SideBarButtonProps>`
   }
 `
 
-interface SideBarProps {
-  onNewFolder: () => void;
-}
+
 
 // Wrapper component ${props => props.color}
-const SideBar: React.FC<SideBarProps> = ({ onNewFile, onNewFolder, onRecycle }) => {
+const SideBar = () => {
+
+  // TODO
+  const handleNewFile = async () => {
+    return
+  }
+
+
+  const handleNewFolder = async () => {
+    const resp = await fetch("http://localhost:8080/filesystem/create", {
+			method: "POST",
+			body: new URLSearchParams({
+				"LogicalName": "HI",
+				"OwnerGroup": "1",
+				"IsDocument": "false"
+			})
+		});
+
+    // dispatch update folders to include current folder
+
+  }
+
+  // TODO
+  const handleRecycle = async () => {
+    return
+  }
+
   return (
     <Container>
       <SidebarTitle>
@@ -69,10 +93,10 @@ const SideBar: React.FC<SideBarProps> = ({ onNewFile, onNewFolder, onRecycle }) 
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
-          <SidebarButton bgColor="#82A3F8" onClick={onNewFile}>
+          <SidebarButton bgColor="#82A3F8" onClick={handleNewFile}>
             New page
           </SidebarButton>
-          <SidebarButton bgColor="#82A3F8" onClick={onNewFolder}>
+          <SidebarButton bgColor="#82A3F8" onClick={handleNewFolder}>
             New folder
           </SidebarButton>
         </ButtonGroup>
@@ -83,7 +107,7 @@ const SideBar: React.FC<SideBarProps> = ({ onNewFile, onNewFolder, onRecycle }) 
           <SidebarButton bgColor="#B8E8E8">
             Feature
           </SidebarButton>
-          <SidebarButton bgColor="#B8E8E8" onClick={onRecycle}>
+          <SidebarButton bgColor="#B8E8E8" onClick={handleRecycle}>
             Recycle
           </SidebarButton>
         </ButtonGroup>
