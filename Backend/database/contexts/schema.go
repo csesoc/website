@@ -5,7 +5,7 @@
 /*
 	File is just a small utility file for fetching the startup script for our databases.
 **/
-package database
+package contexts
 
 import (
 	"io/ioutil"

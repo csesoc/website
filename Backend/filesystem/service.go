@@ -1,9 +1,10 @@
 package filesystem
 
 import (
-	"cms.csesoc.unsw.edu.au/database"
 	"errors"
 	"strconv"
+
+	"cms.csesoc.unsw.edu.au/database"
 
 	"github.com/jackc/pgtype"
 )

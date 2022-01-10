@@ -8,7 +8,7 @@
 	they can upgrades can easilly be rolled back without leaking to other unit tests. Also an implementation
 	of the DatabaseContext interface
 **/
-package database
+package contexts
 
 import (
 	"context"
@@ -25,8 +25,8 @@ type TestingContext struct {
 	activeTransaction pgx.Tx
 }
 
-// NewTestingContext initialises a new database for testing
-func NewTestingContext() TestingContext {
+// newTestingContext initialises a new database for testing
+func newTestingContext() TestingContext {
 	backingConnection := getTestDatabase()
 	return TestingContext{
 		conn:              backingConnection,
