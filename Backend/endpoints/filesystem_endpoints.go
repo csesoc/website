@@ -3,24 +3,17 @@ package endpoints
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
-	"cms.csesoc.unsw.edu.au/database"
-	"cms.csesoc.unsw.edu.au/environment"
+	"cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/internal/httpUtil"
 )
 
-var httpDBContext database.LiveContext
-
-func init() {
-	if !environment.IsTestingEnvironment() {
-		var err error
-		httpDBContext, err = database.NewLiveContext()
-		if err != nil {
-			log.Print(err.Error())
-		}
-	}
+type EntityInfo struct {
+	EntityID   int
+	EntityName string
+	IsDocument bool
+	Children   []int
 }
 
 type ValidInfoRequest struct {
@@ -35,13 +28,15 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request) {
 		400: "missing EntityID paramater",
 		405: "invalid method",
 	}, &input); validRequest {
-		var fileInfo EntityInfo
+
+		var fileInfo repositories.FilesystemEntry
 		var err error
+		repository := repositories.GetRepository(repositories.FILESYSTEM).(repositories.FilesystemRepository)
 
 		if input.EntityID == 0 {
-			fileInfo, err = GetRootInfo(httpDBContext)
+			fileInfo, err = repository.GetRoot()
 		} else {
-			fileInfo, err = GetFilesystemInfo(httpDBContext, input.EntityID)
+			fileInfo, err = repository.GetEntryWithID(input.EntityID)
 		}
 
 		if err != nil {
@@ -49,7 +44,12 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		out, _ := json.Marshal(fileInfo)
+		out, _ := json.Marshal(EntityInfo{
+			EntityID:   fileInfo.EntityID,
+			EntityName: fileInfo.LogicalName,
+			IsDocument: fileInfo.IsDocument,
+			Children:   fileInfo.ChildrenIDs,
+		})
 		httpUtil.SendResponse(w, string(out))
 	}
 
@@ -70,19 +70,24 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request) {
 		400: "missing paramaters, must have: LogicalName, OwnerGroup, IsDocument",
 		405: "invalid method",
 	}, &input); validRequest {
-		var newID int
-		var err error
 
-		if input.Parent == 0 {
-			newID, err = CreateFilesystemEntityAtRoot(httpDBContext, input.LogicalName, input.OwnerGroup, input.IsDocument)
-		} else {
-			newID, err = CreateFilesystemEntity(httpDBContext, input.Parent, input.LogicalName, input.OwnerGroup, input.IsDocument)
+		repository := repositories.GetRepository(repositories.FILESYSTEM).(repositories.FilesystemRepository)
+		entityToCreate := repositories.FilesystemEntry{
+			LogicalName:  input.LogicalName,
+			ParentFileID: input.Parent,
+			IsDocument:   input.IsDocument,
+			OwnerUserId:  input.OwnerGroup,
 		}
 
-		if err != nil {
+		// If not parent is specified set it to root
+		if input.Parent == 0 {
+			entityToCreate.ParentFileID = repositories.FILESYSTEM_ROOT_ID
+		}
+
+		if e, err := repository.CreateEntry(entityToCreate); err != nil {
 			httpUtil.ThrowRequestError(w, 500, "unable to create entity (may be a duplicate)")
 		} else {
-			httpUtil.SendResponse(w, fmt.Sprintf(`{"success": true, "newID": %d}`, newID))
+			httpUtil.SendResponse(w, fmt.Sprintf(`{"success": true, "newID": %d}`, e.EntityID))
 		}
 	}
 
@@ -95,8 +100,8 @@ func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request) {
 		400: "missing paramaters, must have: LogicalName, OwnerGroup, IsDocument",
 		405: "invalid method",
 	}, &input); validRequest {
-		err := DeleteEntity(httpDBContext, input.EntityID)
-		if err != nil {
+		repository := repositories.GetRepository(repositories.FILESYSTEM).(repositories.FilesystemRepository)
+		if repository.DeleteEntryWithID(input.EntityID) != nil {
 			httpUtil.ThrowRequestError(w, 500, "unable to delete, the requested entity is either the root directory or has children")
 		} else {
 			httpUtil.SendResponse(w, fmt.Sprintf(`{"success": true, "deleted": %d}`, input.EntityID))
@@ -111,15 +116,14 @@ func GetChildren(w http.ResponseWriter, r *http.Request) {
 		400: "missing EntityID paramater",
 		405: "invalid method",
 	}, &input); validRequest {
+		repository := repositories.GetRepository(repositories.FILESYSTEM).(repositories.FilesystemRepository)
 
-		fileInfo, err := GetEntityChildren(httpDBContext, input.EntityID)
-		if err != nil {
+		if fileInfo, err := repository.GetEntryWithID(input.EntityID); err != nil {
 			httpUtil.ThrowRequestError(w, 404, "unable to find entity with requested ID")
-			return
+		} else {
+			out, _ := json.Marshal(fileInfo.ChildrenIDs)
+			httpUtil.SendResponse(w, string(out))
 		}
-
-		out, _ := json.Marshal(fileInfo)
-		httpUtil.SendResponse(w, string(out))
 	}
 }
 
@@ -135,8 +139,8 @@ func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request) {
 		400: "missing paramaters, must have: NewName, EntityID",
 		405: "invalid method",
 	}, &input); validRequest {
-		err := RenameEntity(httpDBContext, input.EntityID, input.NewName)
-		if err != nil {
+		repository := repositories.GetRepository(repositories.FILESYSTEM).(repositories.FilesystemRepository)
+		if repository.RenameEntity(input.EntityID, input.NewName) != nil {
 			httpUtil.ThrowRequestError(w, 500, "unable rename, the requested name is most likely taken")
 		} else {
 			httpUtil.SendResponse(w, fmt.Sprintf(`{"success": true, "renamed": %d}`, input.EntityID))

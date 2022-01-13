@@ -1,10 +1,7 @@
-// TITLE: Database
-// Created by (Varun: Varun-Sethu) (09/21)
-// Last modified by (Varun: Varun-Sethu) (1/10/21)
-// # # #
-/*
-	This package defines utilities and helper functions for dealing with the database(s)
-	it defines testing and live contexts to perform operations against a database and
-	run datbase bound unit tests.
-**/
 package database
+
+// This is just a small file containing some documentaiton
+// repositories/
+// 	contains all our repositories to interface with the database, can be mocked
+// contexts/
+//	containins structures relating to an underlying connection to a database

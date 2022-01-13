@@ -44,7 +44,7 @@ type FilesystemRepository struct {
 }
 
 // The ID for root, set this as the ID in a specified request
-const ROOT_ID = -1
+const FILESYSTEM_ROOT_ID = -1
 
 // We really should use an ORM jesus this is ugly
 func (rep FilesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
@@ -81,7 +81,7 @@ func (rep FilesystemRepository) GetEntryWithParentID(ID int) (FilesystemEntry, e
 
 // Returns: entry struct containing the entity that was just created
 func (rep FilesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEntry, error) {
-	if file.ParentFileID == ROOT_ID {
+	if file.ParentFileID == FILESYSTEM_ROOT_ID {
 		// determine root ID
 		root, err := rep.GetRoot()
 		if err != nil {
