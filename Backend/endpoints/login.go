@@ -7,7 +7,7 @@ This module handles the Login logic, with some input validation, as well
 as querying from `database` module and comparing the user's hash if the
 user exists
 **/
-package auth
+package endpoints
 
 import (
 	"log"

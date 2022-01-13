@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"cms.csesoc.unsw.edu.au/database/contexts"
+	"cms.csesoc.unsw.edu.au/environment"
 	"github.com/jackc/pgtype"
 )
 
@@ -105,4 +106,13 @@ func (rep FilesystemRepository) DeleteEntryWithID(ID int) error {
 
 func (rep FilesystemRepository) RenameEntity(ID int, name string) error {
 	return rep.ctx.Exec("UPDATE filesystem SET logicalname = ($1) WHERE entityid = ($2)", []interface{}{name, ID})
+}
+
+// utility function for testing
+func (rep FilesystemRepository) GetTestContext() contexts.TestingContext {
+	if !environment.IsTestingEnvironment() {
+		panic("not in a testing environment")
+	}
+
+	return rep.ctx.(contexts.TestingContext)
 }

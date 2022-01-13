@@ -5,12 +5,13 @@
 /*
 Logout functionalities
 **/
-package auth
+package endpoints
 
 import (
+	"log"
+
 	_httpUtil "cms.csesoc.unsw.edu.au/internal/httpUtil"
 	_session "cms.csesoc.unsw.edu.au/internal/session"
-	"log"
 
 	"net/http"
 )

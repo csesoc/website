@@ -1,9 +1,7 @@
-package database
+package contexts
 
 import (
 	"testing"
-
-	contexts "cms.csesoc.unsw.edu.au/database"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -11,7 +9,7 @@ import (
 // We shouldnt be able to use a live DB from a test, function just tests that
 func TestCannotUseLiveContext(t *testing.T) {
 	assert := assert.New(t)
-	liveContext, err := contexts.NewLiveContext()
+	liveContext, err := newLiveContext()
 	if err != nil {
 		// We aren't running in a docker container so the connection failed
 		// just ignore this situation and pass the test
@@ -30,7 +28,7 @@ func TestCannotUseLiveContext(t *testing.T) {
 func TestCannotUseTestingContext(t *testing.T) {
 	assert := assert.New(t)
 
-	testContext := contexts.NewTestingContext()
+	testContext := newTestingContext()
 	defer testContext.Close()
 
 	assert.Panics(func() {
@@ -50,7 +48,7 @@ func TestCannotUseTestingContext(t *testing.T) {
 func TestUpdatesAreIsolated(t *testing.T) {
 	assert := assert.New(t)
 
-	testContext := contexts.NewTestingContext()
+	testContext := newTestingContext()
 	defer testContext.Close()
 
 	// create a table in a test env
@@ -68,7 +66,7 @@ func TestUpdatesAreIsolated(t *testing.T) {
 }
 
 // util function to querying the existence of a table
-func tableExists(tableName string, ctx contexts.TestingContext) bool {
+func tableExists(tableName string, ctx TestingContext) bool {
 	var existence bool
 	if err := ctx.Query(`SELECT EXISTS (
 			SELECT * FROM information_schema.tables

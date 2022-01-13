@@ -3,14 +3,13 @@ package contexts
 import (
 	"log"
 
-	"cms.csesoc.unsw.edu.au/config"
 	"cms.csesoc.unsw.edu.au/environment"
 )
 
 // Constants regarding database connections
-var USER = config.GetDBUser()
-var PASSWORD = config.GetDBPassword()
-var DATABASE = config.GetDB()
+var USER = environment.GetDBUser()
+var PASSWORD = environment.GetDBPassword()
+var DATABASE = environment.GetDB()
 
 const HOST_AND_PORT = "db:5432"
 
