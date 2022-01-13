@@ -33,10 +33,10 @@ func (rep GroupsRepository) GetGroupInfo(g Groups) Groups {
 	return result
 }
 
-func (rep GroupsRepository) GetTestContext() contexts.TestingContext {
+func (rep GroupsRepository) GetTestContext() *contexts.TestingContext {
 	if !environment.IsTestingEnvironment() {
 		panic("not in a testing environment")
 	}
 
-	return rep.ctx.(contexts.TestingContext)
+	return rep.ctx.(*contexts.TestingContext)
 }

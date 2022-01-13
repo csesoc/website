@@ -24,37 +24,37 @@ type liveContext struct {
 }
 
 // NewPool returns a new pool from a given configuration
-func newLiveContext() (liveContext, error) {
+func newLiveContext() (*liveContext, error) {
 	conn, err := pgxpool.Connect(context.Background(),
 		fmt.Sprintf("postgres://%s:%s@%s/%s", USER, PASSWORD, HOST_AND_PORT, DATABASE))
 	if err != nil {
-		return liveContext{}, errors.New("unable to connect to the database")
+		return nil, errors.New("unable to connect to the database")
 	}
 
-	return liveContext{
+	return &liveContext{
 		conn,
 	}, nil
 }
 
 // Regular DatabaseContext methods
-func (ctx liveContext) Query(query string, sqlArgs []interface{}, resultOutput ...interface{}) error {
+func (ctx *liveContext) Query(query string, sqlArgs []interface{}, resultOutput ...interface{}) error {
 	ctx.verifyEnvironment()
 	return ctx.conn.QueryRow(context.Background(), query, sqlArgs...).Scan(resultOutput...)
 }
 
-func (ctx liveContext) Exec(query string, sqlArgs []interface{}) error {
+func (ctx *liveContext) Exec(query string, sqlArgs []interface{}) error {
 	ctx.verifyEnvironment()
 	_, err := ctx.conn.Exec(context.Background(), query, sqlArgs...)
 	return err
 }
 
-func (context liveContext) Close() {
+func (context *liveContext) Close() {
 	context.conn.Close()
 }
 
 // verifyEnvironment just verifies that our current execution environment is fit for a live context
 // if not it panics
-func (ctx liveContext) verifyEnvironment() {
+func (ctx *liveContext) verifyEnvironment() {
 	if environment.IsTestingEnvironment() {
 		panic("do not query a LiveContext DB from a test")
 	}

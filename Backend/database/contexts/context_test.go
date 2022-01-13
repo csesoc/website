@@ -66,7 +66,7 @@ func TestUpdatesAreIsolated(t *testing.T) {
 }
 
 // util function to querying the existence of a table
-func tableExists(tableName string, ctx TestingContext) bool {
+func tableExists(tableName string, ctx *TestingContext) bool {
 	var existence bool
 	if err := ctx.Query(`SELECT EXISTS (
 			SELECT * FROM information_schema.tables

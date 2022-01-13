@@ -26,9 +26,9 @@ type TestingContext struct {
 }
 
 // newTestingContext initialises a new database for testing
-func newTestingContext() TestingContext {
+func newTestingContext() *TestingContext {
 	backingConnection := getTestDatabase()
-	return TestingContext{
+	return &TestingContext{
 		conn:              backingConnection,
 		inTransactionMode: false,
 		activeTransaction: nil,
@@ -36,18 +36,18 @@ func newTestingContext() TestingContext {
 }
 
 // Implementation of regular DatabaseContext methods
-func (ctx TestingContext) Query(query string, sqlArgs []interface{}, resultOutput ...interface{}) error {
+func (ctx *TestingContext) Query(query string, sqlArgs []interface{}, resultOutput ...interface{}) error {
 	ctx.verifyEnvironment()
 	return ctx.activeTransaction.QueryRow(context.Background(), query, sqlArgs...).Scan(resultOutput...)
 }
 
-func (ctx TestingContext) Exec(query string, sqlArgs []interface{}) error {
+func (ctx *TestingContext) Exec(query string, sqlArgs []interface{}) error {
 	ctx.verifyEnvironment()
 	_, err := ctx.activeTransaction.Exec(context.Background(), query, sqlArgs...)
 	return err
 }
 
-func (context TestingContext) Close() {
+func (context *TestingContext) Close() {
 	context.conn.Close()
 }
 
@@ -102,7 +102,7 @@ func (ctx *TestingContext) WillFail(testMethod func() error) bool {
 
 // verifyEnvironment just checks that the current testing context
 // can actually touch the DB, if not it panics :(
-func (ctx TestingContext) verifyEnvironment() {
+func (ctx *TestingContext) verifyEnvironment() {
 	if !ctx.inTransactionMode || ctx.activeTransaction == nil {
 		panic("cannot perform queries outside of 'RunTest'")
 	}

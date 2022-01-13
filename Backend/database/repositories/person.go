@@ -51,10 +51,10 @@ func (rep PersonRepository) GetPersonWithDetails(p Person) Person {
 	return result
 }
 
-func (rep PersonRepository) GetTestContext() contexts.TestingContext {
+func (rep PersonRepository) GetTestContext() *contexts.TestingContext {
 	if !environment.IsTestingEnvironment() {
 		panic("not in a testing environment")
 	}
 
-	return rep.ctx.(contexts.TestingContext)
+	return rep.ctx.(*contexts.TestingContext)
 }

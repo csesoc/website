@@ -109,10 +109,10 @@ func (rep FilesystemRepository) RenameEntity(ID int, name string) error {
 }
 
 // utility function for testing
-func (rep FilesystemRepository) GetTestContext() contexts.TestingContext {
+func (rep FilesystemRepository) GetTestContext() *contexts.TestingContext {
 	if !environment.IsTestingEnvironment() {
 		panic("not in a testing environment")
 	}
 
-	return rep.ctx.(contexts.TestingContext)
+	return rep.ctx.(*contexts.TestingContext)
 }
