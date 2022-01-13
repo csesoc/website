@@ -4,47 +4,42 @@ package repositories
 import (
 	"errors"
 	"strconv"
-	"time"
 
 	"cms.csesoc.unsw.edu.au/database/contexts"
 	"cms.csesoc.unsw.edu.au/environment"
 	"github.com/jackc/pgtype"
 )
 
-// filesystem model (model stored within database)
-type FilesystemEntry struct {
-	EntityID    int
-	LogicalName string
-
-	IsDocument  bool
-	IsPublished bool
-	CreatedAt   time.Time
-
-	OwnerUserId  int
-	ParentFileID int
-	ChildrenIDs  []int
-}
-
-// Repository interface that all valid filesystem repositories
-// mocked/real should implement
-type IFilesystemRepository interface {
-	GetEntryWithID(ID int) (FilesystemEntry, error)
-	GetRoot() (FilesystemEntry, error)
-	GetEntryWithParentID(ID int) FilesystemEntry
-
-	CreateEntry(file FilesystemEntry) (FilesystemEntry, error)
-	DeleteEntryWithID(ID int) error
-
-	RenameEntity(ID int, name string) error
-}
-
-// Implements: IFilesystemRepository
+// Implements IRepositoryInterface
 type FilesystemRepository struct {
 	ctx contexts.DatabaseContext
 }
 
 // The ID for root, set this as the ID in a specified request
 const FILESYSTEM_ROOT_ID = -1
+
+// internal ID for holding potentially null
+// foreign keys
+// implements scannable interface
+type NullableID struct {
+	ID *int
+}
+
+// Implementation of the scan interface
+func (ni NullableID) Scan(src interface{}) error {
+	switch v := src.(type) {
+	case int:
+		*ni.ID = v
+		break
+	case nil:
+		*ni.ID = -1
+		break
+	default:
+		break
+	}
+
+	return nil
+}
 
 // We really should use an ORM jesus this is ugly
 func (rep FilesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
@@ -53,8 +48,8 @@ func (rep FilesystemRepository) query(query string, input ...interface{}) (Files
 
 	err := rep.ctx.Query(query,
 		input,
-		&entity.EntityID, &entity.LogicalName, &entity.IsDocument, &entity.IsDocument, &entity.IsPublished,
-		&entity.CreatedAt, &entity.OwnerUserId, &entity.ParentFileID, &children)
+		&entity.EntityID, &entity.LogicalName, &entity.IsDocument, &entity.IsPublished,
+		&entity.CreatedAt, &entity.OwnerUserId, NullableID{&entity.ParentFileID}, &children)
 	if err != nil {
 		return FilesystemEntry{}, errors.New("failed to read from database")
 	}

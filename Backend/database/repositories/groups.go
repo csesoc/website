@@ -7,18 +7,7 @@ import (
 	"cms.csesoc.unsw.edu.au/environment"
 )
 
-// repository interface for the groups table within the database
-type Groups struct {
-	UID        int
-	Name       string
-	Permission string
-}
-
-type IGroupsRepository interface {
-	// Only requires Groups.Name
-	GetGroupInfo(Groups) Groups
-}
-
+// Implements IGroupRepository
 type GroupsRepository struct {
 	ctx contexts.DatabaseContext
 }

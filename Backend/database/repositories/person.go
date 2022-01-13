@@ -11,22 +11,7 @@ import (
 	"cms.csesoc.unsw.edu.au/environment"
 )
 
-// Model for a user within the database
-type Person struct {
-	UID       int
-	Email     string
-	FirstName string
-	// Hashed >:D
-	Password string
-	GroupID  int
-}
-
-// Note: only exists Email and Password
-type IPersonRepository interface {
-	PersonExists(Person) bool
-	GetPersonWithDetails(Person) Person
-}
-
+// Implements IPersonRepository
 type PersonRepository struct {
 	ctx contexts.DatabaseContext
 }

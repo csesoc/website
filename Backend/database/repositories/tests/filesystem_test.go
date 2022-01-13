@@ -20,7 +20,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestRootRetrieval_Integration(t *testing.T) {
+func TestRootRetrieval(t *testing.T) {
 	assert := assert.New(t)
 	testContext.RunTest(func() {
 		root, err := repo.GetRoot()
@@ -33,7 +33,7 @@ func TestRootRetrieval_Integration(t *testing.T) {
 	})
 }
 
-func TestRootInsert_Integration(t *testing.T) {
+func TestRootInsert(t *testing.T) {
 	assert := assert.New(t)
 
 	testContext.RunTest(func() {
@@ -50,31 +50,31 @@ func TestRootInsert_Integration(t *testing.T) {
 		var docCount int
 		var dirCount int
 
-		if assert.Nil(testContext.Query("SELECT COUNT(*) FROM filesystem WHERE EntityID = $1", []interface{}{newDir}, &dirCount)) {
+		if assert.Nil(testContext.Query("SELECT COUNT(*) FROM filesystem WHERE EntityID = $1", []interface{}{newDir.EntityID}, &dirCount)) {
 			assert.Equal(dirCount, 1)
 		}
 
-		if assert.Nil(testContext.Query("SELECT COUNT(*) FROM filesystem WHERE EntityID = $1", []interface{}{newDoc}, &docCount)) {
+		if assert.Nil(testContext.Query("SELECT COUNT(*) FROM filesystem WHERE EntityID = $1", []interface{}{newDoc.EntityID}, &docCount)) {
 			assert.Equal(docCount, 1)
 		}
 
 		expectedChildren := pgtype.Hstore{}
 		if assert.Nil(testContext.Query("SELECT Children FROM filesystem WHERE parent IS NULL", []interface{}{}, &expectedChildren)) {
-			if _, exists := expectedChildren.Map[strconv.Itoa(newDir.EntityID)]; !exists {
+			if _, exists := expectedChildren.Map[strconv.Itoa(int(newDir.EntityID))]; !exists {
 				assert.True(false)
 			}
 		}
 
 		expectedChildren = pgtype.Hstore{}
-		if assert.Nil(testContext.Query("SELECT Children FROM filesystem WHERE EntityID = $1", []interface{}{newDir}, &expectedChildren)) {
-			if _, exists := expectedChildren.Map[strconv.Itoa(newDir.EntityID)]; !exists {
-				assert.True(false)
+		if assert.Nil(testContext.Query("SELECT Children FROM filesystem WHERE EntityID = $1", []interface{}{newDir.EntityID}, &expectedChildren)) {
+			if _, exists := expectedChildren.Map[strconv.Itoa(newDoc.EntityID)]; !exists {
+				assert.Fail("failed!")
 			}
 		}
 	})
 }
 
-func TestDocumentInfoRetrieval_Integration(t *testing.T) {
+func TestDocumentInfoRetrieval(t *testing.T) {
 	assert := assert.New(t)
 
 	testContext.RunTest(func() {
@@ -120,11 +120,11 @@ func TestEntityDeletion(t *testing.T) {
 
 		assert.Nil(repo.DeleteEntryWithID(newDoc.EntityID))
 		info, _ := repo.GetEntryWithID(newDir.EntityID)
-		assert.NotContains(newDoc.EntityID, info.ChildrenIDs)
+		assert.NotContains(info.ChildrenIDs, newDoc.EntityID)
 		assert.Nil(repo.DeleteEntryWithID(newDir.EntityID))
 
 		root, _ = repo.GetRoot()
-		assert.NotContains(newDir.EntityID, root.ChildrenIDs)
+		assert.NotContains(root.ChildrenIDs, newDir.EntityID)
 
 		// ======= Secondary setup ==========
 		anotherDirectory, _ := repo.CreateEntry(repositories.FilesystemEntry{
@@ -149,7 +149,7 @@ func TestEntityDeletion(t *testing.T) {
 		assert.Nil(repo.DeleteEntryWithID(anotherDirectory.EntityID))
 
 		root, _ = repo.GetRoot()
-		assert.NotContains(anotherDirectory.EntityID, root.ChildrenIDs)
+		assert.NotContains(root.ChildrenIDs, anotherDirectory.EntityID)
 	})
 }
 
