@@ -15,9 +15,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	endpoints.RegisterFilesystemEndpoints(mux)
-
-	mux.HandleFunc("/login", endpoints.LoginHandler)
-	mux.HandleFunc("/logout", endpoints.LogoutHandler)
+	endpoints.RegisterAuthenticationEndpoints(mux)
 	mux.Handle("/", http.FileServer(http.Dir("./editor/html")))
 
 	// editor handler
