@@ -24,8 +24,12 @@ type authenticatedHandler func(http.ResponseWriter, *http.Request) (int, interfa
 
 // impl of http Handler interface so that it can serve http requests
 func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if status, resp, err := fn(w, r); err != nil {
-		w.WriteHeader(status)
+	w.Header().Set("Content-Type", "application/json")
+
+	if status, resp, err := fn(w, r); err == nil {
+		if status != http.StatusMovedPermanently {
+			w.WriteHeader(status)
+		}
 		out := Response{
 			Status:  status,
 			Reponse: resp,
@@ -56,7 +60,6 @@ func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			out.Message = "..."
 			break
 		}
-
 		re, _ := json.Marshal(out)
 		w.Write(re)
 	} else {
@@ -73,6 +76,7 @@ func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (fn authenticatedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// check authentication
 	if ok, err := session.IsAuthenticated(w, r); !ok || err != nil {
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusUnauthorized)
 		out, _ := json.Marshal(Response{
 			Status:  http.StatusInternalServerError,
@@ -80,6 +84,7 @@ func (fn authenticatedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		})
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write(out)
+		return
 	}
 
 	// parse request over to main handler

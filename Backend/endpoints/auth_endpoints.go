@@ -36,9 +36,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) (int, interface{}, err
 	var user User
 	if !ParseParamsToSchema(r, "POST", &user) {
 		http.Redirect(w, r, environment.GetFrontendURI()+"/login", http.StatusMovedPermanently)
-		return http.StatusOK, nil, nil
+		return http.StatusMovedPermanently, nil, nil
 	}
-
 	if user.IsValidEmail() != nil && user.checkPassword() != nil {
 		return http.StatusUnauthorized, nil, nil
 	}
@@ -46,7 +45,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) (int, interface{}, err
 	// else create a session if user's session isnt already created
 	session.CreateSession(w, r, user.Email)
 	http.Redirect(w, r, environment.GetFrontendURI()+"/dashboard", http.StatusMovedPermanently)
-	return http.StatusOK, nil, nil
+	return http.StatusMovedPermanently, nil, nil
 }
 
 // check username is valid
