@@ -1,4 +1,4 @@
-package httpUtil
+package endpoints
 
 import (
 	"fmt"
@@ -31,21 +31,13 @@ func SendResponse(w http.ResponseWriter, marshaledJson string) {
 }
 
 // ParseParamsToSchema expects the target to be a pointer
-func ParseParamsToSchema(r *http.Request, acceptingMethods []string, target interface{}) bool {
+func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interface{}) bool {
 	err := r.ParseForm()
 	if err != nil {
 		return false
 	}
 
-	isValidMethod := false
-	for _, method := range acceptingMethods {
-		if method == r.Method {
-			isValidMethod = true
-			break
-		}
-	}
-
-	if !isValidMethod {
+	if acceptingMethod != r.Method {
 		return false
 	}
 

@@ -3,6 +3,8 @@ package endpoints
 import (
 	"encoding/json"
 	"net/http"
+
+	"cms.csesoc.unsw.edu.au/internal/session"
 )
 
 // Basic organisation of a response we will receieve from the API
@@ -16,16 +18,21 @@ type Response struct {
 // a bit easier and less messy
 type handler func(http.ResponseWriter, *http.Request) (int, interface{}, error)
 
+// authenticated handler is basically a regular http handler the only difference is that
+// they can only be accessed by an authenticated client
+type authenticatedHandler func(http.ResponseWriter, *http.Request) (int, interface{}, error)
+
 // impl of http Handler interface so that it can serve http requests
 func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if status, resp, err := fn(w, r); err != nil {
-		// Write the response with an optional error message
 		w.WriteHeader(status)
 		out := Response{
 			Status:  status,
 			Reponse: resp,
 		}
 
+		// advanced machine learning model that predicts a http response
+		// message given a request code :O
 		switch status {
 		case http.StatusBadRequest:
 			out.Message = "missing parameters (check documentation)"
@@ -39,6 +46,9 @@ func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		case http.StatusNotAcceptable:
 			out.Message = "unable to preform requested operation"
 			break
+		case http.StatusInternalServerError:
+			out.Message = "somethings wrong I can feel it"
+			break
 		case http.StatusOK:
 			out.Message = "ok"
 			break
@@ -49,7 +59,6 @@ func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		re, _ := json.Marshal(out)
 		w.Write(re)
-
 	} else {
 		out, _ := json.Marshal(Response{
 			Status:  http.StatusInternalServerError,
@@ -58,4 +67,21 @@ func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write(out)
 	}
+}
+
+// authentiacated handler impl
+func (fn authenticatedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// check authentication
+	if ok, err := session.IsAuthenticated(w, r); !ok || err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		out, _ := json.Marshal(Response{
+			Status:  http.StatusInternalServerError,
+			Message: "unauthorised",
+		})
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(out)
+	}
+
+	// parse request over to main handler
+	handler(fn).ServeHTTP(w, r)
 }

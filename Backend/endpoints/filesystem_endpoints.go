@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
-	"cms.csesoc.unsw.edu.au/internal/httpUtil"
 )
 
 type EntityInfo struct {
@@ -21,8 +20,7 @@ type ValidInfoRequest struct {
 // Defines endpoints consumable via the API
 func GetEntityInfo(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
 	var input ValidInfoRequest
-	ok := httpUtil.ParseParamsToSchema(r, []string{"GET"}, &input)
-	if !ok {
+	if !ParseParamsToSchema(r, "GET", &input) {
 		return http.StatusBadRequest, nil, nil
 	}
 
@@ -49,8 +47,7 @@ type ValidEntityCreationRequest struct {
 
 func CreateNewEntity(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
 	var input ValidEntityCreationRequest
-	validRequest := httpUtil.ParseParamsToSchema(r, []string{"POST"}, &input)
-	if !validRequest {
+	if !ParseParamsToSchema(r, "POST", &input) {
 		return http.StatusBadRequest, nil, nil
 	}
 
@@ -77,8 +74,7 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request) (int, interface{}, 
 // Handler for deleting filesystem entities
 func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
 	var input ValidInfoRequest
-	validRequest := httpUtil.ParseParamsToSchema(r, []string{"POST"}, &input)
-	if !validRequest {
+	if !ParseParamsToSchema(r, "POST", &input) {
 		return http.StatusBadRequest, nil, nil
 	}
 
@@ -93,8 +89,7 @@ func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request) (int, interf
 // Handler for retrieving children
 func GetChildren(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
 	var input ValidInfoRequest
-	validRequest := httpUtil.ParseParamsToSchema(r, []string{"GET"}, &input)
-	if !validRequest {
+	if !ParseParamsToSchema(r, "GET", &input) {
 		return http.StatusBadRequest, nil, nil
 	}
 
@@ -118,8 +113,7 @@ type ValidRenameRequest struct {
 // Handler for renaming filesystem entities
 func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
 	var input ValidRenameRequest
-	validRequest := httpUtil.ParseParamsToSchema(r, []string{"POST"}, &input)
-	if !validRequest {
+	if !ParseParamsToSchema(r, "POST", &input) {
 		return http.StatusBadRequest, nil, nil
 	}
 
