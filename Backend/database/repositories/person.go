@@ -6,14 +6,11 @@ package repositories
 
 import (
 	"log"
-
-	"cms.csesoc.unsw.edu.au/database/contexts"
-	"cms.csesoc.unsw.edu.au/environment"
 )
 
 // Implements IPersonRepository
 type PersonRepository struct {
-	ctx contexts.DatabaseContext
+	embeddedContext
 }
 
 func (rep PersonRepository) PersonExists(p Person) bool {
@@ -34,12 +31,4 @@ func (rep PersonRepository) GetPersonWithDetails(p Person) Person {
 		log.Print("get permissions error", err.Error())
 	}
 	return result
-}
-
-func (rep PersonRepository) GetTestContext() *contexts.TestingContext {
-	if !environment.IsTestingEnvironment() {
-		panic("not in a testing environment")
-	}
-
-	return rep.ctx.(*contexts.TestingContext)
 }

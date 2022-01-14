@@ -2,14 +2,11 @@ package repositories
 
 import (
 	"log"
-
-	"cms.csesoc.unsw.edu.au/database/contexts"
-	"cms.csesoc.unsw.edu.au/environment"
 )
 
 // Implements IGroupRepository
 type GroupsRepository struct {
-	ctx contexts.DatabaseContext
+	embeddedContext
 }
 
 func (rep GroupsRepository) GetGroupInfo(g Groups) Groups {
@@ -20,12 +17,4 @@ func (rep GroupsRepository) GetGroupInfo(g Groups) Groups {
 		log.Print("get permissions error", err.Error())
 	}
 	return result
-}
-
-func (rep GroupsRepository) GetTestContext() *contexts.TestingContext {
-	if !environment.IsTestingEnvironment() {
-		panic("not in a testing environment")
-	}
-
-	return rep.ctx.(*contexts.TestingContext)
 }

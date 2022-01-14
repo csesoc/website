@@ -5,41 +5,16 @@ import (
 	"errors"
 	"strconv"
 
-	"cms.csesoc.unsw.edu.au/database/contexts"
-	"cms.csesoc.unsw.edu.au/environment"
 	"github.com/jackc/pgtype"
 )
 
 // Implements IRepositoryInterface
 type FilesystemRepository struct {
-	ctx contexts.DatabaseContext
+	embeddedContext
 }
 
 // The ID for root, set this as the ID in a specified request
 const FILESYSTEM_ROOT_ID = -1
-
-// internal ID for holding potentially null
-// foreign keys
-// implements scannable interface
-type NullableID struct {
-	ID *int
-}
-
-// Implementation of the scan interface
-func (ni NullableID) Scan(src interface{}) error {
-	switch v := src.(type) {
-	case int:
-		*ni.ID = v
-		break
-	case nil:
-		*ni.ID = -1
-		break
-	default:
-		break
-	}
-
-	return nil
-}
 
 // We really should use an ORM jesus this is ugly
 func (rep FilesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
@@ -49,7 +24,7 @@ func (rep FilesystemRepository) query(query string, input ...interface{}) (Files
 	err := rep.ctx.Query(query,
 		input,
 		&entity.EntityID, &entity.LogicalName, &entity.IsDocument, &entity.IsPublished,
-		&entity.CreatedAt, &entity.OwnerUserId, NullableID{&entity.ParentFileID}, &children)
+		&entity.CreatedAt, &entity.OwnerUserId, nullableID{&entity.ParentFileID}, &children)
 	if err != nil {
 		return FilesystemEntry{}, errors.New("failed to read from database")
 	}
@@ -101,13 +76,4 @@ func (rep FilesystemRepository) DeleteEntryWithID(ID int) error {
 
 func (rep FilesystemRepository) RenameEntity(ID int, name string) error {
 	return rep.ctx.Exec("UPDATE filesystem SET logicalname = ($1) WHERE entityid = ($2)", []interface{}{name, ID})
-}
-
-// utility function for testing
-func (rep FilesystemRepository) GetTestContext() *contexts.TestingContext {
-	if !environment.IsTestingEnvironment() {
-		panic("not in a testing environment")
-	}
-
-	return rep.ctx.(*contexts.TestingContext)
 }

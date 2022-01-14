@@ -27,15 +27,15 @@ func GetRepository(repo int) interface{} {
 	switch repo {
 	case FILESYSTEM:
 		return FilesystemRepository{
-			context,
+			embeddedContext{context},
 		}
 	case PERSON:
 		return PersonRepository{
-			context,
+			embeddedContext{context},
 		}
 	case GROUPS:
 		return GroupsRepository{
-			context,
+			embeddedContext{context},
 		}
 	default:
 		return nil
