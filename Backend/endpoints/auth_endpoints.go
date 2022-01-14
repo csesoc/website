@@ -1,17 +1,19 @@
 // TITLE: Login functions
 // Created by (Jacky: FafnirZ) (09/21)
-// Last modified by (Jacky: FafnirZ)(04/09/21)
+// Last modified by (Jacky: FafnirZ) (04/09/21)
 // # # #
 /*
 This module handles the Login logic, with some input validation, as well
 as querying from `database` module and comparing the user's hash if the
 user exists
 **/
-package auth
+package endpoints
 
 import (
 	"log"
 
+	"cms.csesoc.unsw.edu.au/database/repositories"
+	"cms.csesoc.unsw.edu.au/environment"
 	_httpUtil "cms.csesoc.unsw.edu.au/internal/httpUtil"
 	_session "cms.csesoc.unsw.edu.au/internal/session"
 
@@ -50,7 +52,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		var user *User = &User{Email: email, Password: password}
 
 		// input validation
-		err = user.isValidEmail()
+		err = user.IsValidEmail()
 		if err != nil {
 			_httpUtil.ThrowRequestError(w, 500, err.Error())
 			return
@@ -68,11 +70,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		// will change to FRONTEND_URI soon
 		//_httpUtil.SendResponse(w, "success")
 
-		http.Redirect(w, r, FRONTEND_URI+"/dashboard", http.StatusMovedPermanently)
+		http.Redirect(w, r, environment.GetFrontendURI()+"/dashboard", http.StatusMovedPermanently)
 		break
 	case "DEFAULT":
 		// only post requests are allowed
-		http.Redirect(w, r, FRONTEND_URI+"/login", http.StatusMovedPermanently)
+		http.Redirect(w, r, environment.GetFrontendURI()+"/login", http.StatusMovedPermanently)
 		break
 	}
 
@@ -80,7 +82,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 // check username is valid
 // uses a relatively strict regular expression
-func (u *User) isValidEmail() error {
+func (u *User) IsValidEmail() error {
 	// email must be > 2 characters before the domain
 	// white lists a few domains which are allowed
 	// match alphanumeric greater than 2 letters
@@ -98,31 +100,57 @@ func (u *User) isValidEmail() error {
 
 // inports getCredentials from internal database package
 func (u *User) checkPassword() error {
-
-	// hash the user's password first
 	hashedPassword := u.hashPassword()
+	repository := repositories.GetRepository(repositories.PERSON).(repositories.IPersonRepository)
 
-	// do not need input validation for password, since the password
-	// gets hashed before being placed into sql query
-	// the user does not have direct control over the sql query
-	// i.e. even if the user puts ' or 1= '1
-	// the hashed value will not be an injection command
-
-	matches := CredentialsMatch(u.Email, hashedPassword)
-	if matches == 0 {
+	if repository.PersonExists(repositories.Person{
+		Email:    u.Email,
+		Password: hashedPassword,
+	}) {
 		return errors.New("invalid credentials")
-	} else if matches > 1 { // if more than 1 result is returned
-		log.Print("!!alert!! duplicate results found")
-		// will handle this differently later
-		return errors.New("internal server error")
+	} else {
+		return nil
 	}
+}
 
-	return nil
+// expecting a post request with body of form data
+// expecting header to contain session-token
+// will perform the redirection in frontend
+// backend's job for logout is only to remove the HTTPONLY cookie
+
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+
+	switch r.Method {
+	case "POST":
+		authenticated, _ := _session.IsAuthenticated(w, r)
+		log.Print(authenticated)
+		if authenticated {
+			// CORS headers
+			w.Header().Set("Access-Control-Allow-Origin", environment.GetFrontendURI())
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			_session.RemoveSession(w, r)
+			break
+		} else {
+			// if session-token is not valid, it will still remove the current cookie the frontend
+			// is storing by returning a
+			// Set-Cookie: session-token="" header
+			w.Header().Set("Access-Control-Allow-Origin", environment.GetFrontendURI())
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			_session.RemoveSession(w, r)
+			_httpUtil.ThrowRequestError(w, http.StatusUnauthorized, "unauthorized")
+			break
+		}
+
+	default:
+		// only GET requests are allowed
+		_httpUtil.ThrowRequestError(w, http.StatusMethodNotAllowed, "Method Not allowed")
+		break
+	}
 
 }
 
-// todo hash function
+// TODO: hash function
 func (u *User) hashPassword() string {
-	// todo currently does not hash the password
+	// TODO: currently does not hash the password
 	return u.Password
 }

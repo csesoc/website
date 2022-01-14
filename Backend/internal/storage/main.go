@@ -10,7 +10,7 @@ import (
 func Read(id, dir string) string {
 	// super insecure but who cares? issa prototype
 	gopath := build.Default.GOPATH
-	file, err := os.Open(fmt.Sprintf("%s/src/cms.csesoc.unsw.edu.au/%s/%s", gopath, dir, id))
+	file, err := os.Open(fmt.Sprintf("%s/src/cms.csesoc.unsw.edu.au/internal/%s/%s", gopath, dir, id))
 	defer file.Close()
 
 	if err != nil {

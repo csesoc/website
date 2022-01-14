@@ -146,7 +146,6 @@ func CommonSuffix(a, b []string) int {
 // there are also zero cost edges (not pictured) that represent match points (where the two strings)
 // match, since these are zero cost edges we can construct an auxillary unweighted graph from this representation
 // and traverse it using BFS, we are guaranteed that our BFS traversal will result in a shortest path :)
-
 type coord struct {
 	x, y int
 }

@@ -5,7 +5,7 @@
 /*
 	File is just a small utility file for fetching the startup script for our databases.
 **/
-package database
+package contexts
 
 import (
 	"io/ioutil"
@@ -16,7 +16,8 @@ import (
 
 // importSchema just loads the startup script stored in Postgres/create_tables.sql
 func importSchema() (string, error) {
-	absPath, _ := filepath.Abs("../../Postgres/create_tables.sql")
+	// TODO: no.... just no....
+	absPath, _ := filepath.Abs("../../../Postgres/create_tables.sql")
 
 	contents, err := ioutil.ReadFile(absPath)
 	if err != nil {

@@ -6,7 +6,7 @@
 	This file is involved with fetching/spinning up databases to host unit tests
 	on our docker test instance
 **/
-package database
+package contexts
 
 import (
 	"context"
