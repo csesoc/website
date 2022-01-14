@@ -5,6 +5,12 @@ import (
 	"cms.csesoc.unsw.edu.au/environment"
 )
 
+// User groups configurations
+const (
+	GROUPS_ADMIN int = 1
+	GROUPS_USER  int = 2
+)
+
 // internal ID for holding potentially null
 // foreign keys
 // implements scannable interface

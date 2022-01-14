@@ -14,8 +14,8 @@ import (
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/environment"
-	_httpUtil "cms.csesoc.unsw.edu.au/internal/httpUtil"
-	_session "cms.csesoc.unsw.edu.au/internal/session"
+	"cms.csesoc.unsw.edu.au/internal/httpUtil"
+	"cms.csesoc.unsw.edu.au/internal/session"
 
 	"errors"
 	"net/http"
@@ -54,18 +54,18 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		// input validation
 		err = user.IsValidEmail()
 		if err != nil {
-			_httpUtil.ThrowRequestError(w, 500, err.Error())
+			httpUtil.ThrowRequestError(w, 500, err.Error())
 			return
 		}
 
 		err = user.checkPassword()
 		if err != nil {
-			_httpUtil.ThrowRequestError(w, 500, err.Error())
+			httpUtil.ThrowRequestError(w, 500, err.Error())
 			return
 		}
 
 		// else create a session if user's session isnt already created
-		_session.CreateSession(w, r, user.Email)
+		session.CreateSession(w, r, user.Email)
 
 		// will change to FRONTEND_URI soon
 		//_httpUtil.SendResponse(w, "success")
@@ -122,13 +122,13 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "POST":
-		authenticated, _ := _session.IsAuthenticated(w, r)
+		authenticated, _ := session.IsAuthenticated(w, r)
 		log.Print(authenticated)
 		if authenticated {
 			// CORS headers
 			w.Header().Set("Access-Control-Allow-Origin", environment.GetFrontendURI())
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
-			_session.RemoveSession(w, r)
+			session.RemoveSession(w, r)
 			break
 		} else {
 			// if session-token is not valid, it will still remove the current cookie the frontend
@@ -136,14 +136,14 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 			// Set-Cookie: session-token="" header
 			w.Header().Set("Access-Control-Allow-Origin", environment.GetFrontendURI())
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
-			_session.RemoveSession(w, r)
-			_httpUtil.ThrowRequestError(w, http.StatusUnauthorized, "unauthorized")
+			session.RemoveSession(w, r)
+			httpUtil.ThrowRequestError(w, http.StatusUnauthorized, "unauthorized")
 			break
 		}
 
 	default:
 		// only GET requests are allowed
-		_httpUtil.ThrowRequestError(w, http.StatusMethodNotAllowed, "Method Not allowed")
+		httpUtil.ThrowRequestError(w, http.StatusMethodNotAllowed, "Method Not allowed")
 		break
 	}
 

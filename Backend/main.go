@@ -14,11 +14,8 @@ import (
 func main() {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/filesystem/info", endpoints.GetEntityInfo)
-	mux.HandleFunc("/filesystem/create", endpoints.CreateNewEntity)
-	mux.HandleFunc("/filesystem/delete", endpoints.DeleteFilesystemEntity)
-	mux.HandleFunc("/filesystem/rename", endpoints.RenameFilesystemEntity)
-	mux.HandleFunc("/filesystem/children", endpoints.GetChildren)
+	endpoints.RegisterFilesystemEndpoints(mux)
+
 	mux.HandleFunc("/login", endpoints.LoginHandler)
 	mux.HandleFunc("/logout", endpoints.LogoutHandler)
 	mux.Handle("/", http.FileServer(http.Dir("./editor/html")))
