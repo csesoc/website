@@ -10,8 +10,6 @@ user exists
 package endpoints
 
 import (
-	"log"
-
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/environment"
 	"cms.csesoc.unsw.edu.au/internal/session"
@@ -88,36 +86,17 @@ func (u *User) checkPassword() error {
 // expecting header to contain session-token
 // will perform the redirection in frontend
 // backend's job for logout is only to remove the HTTPONLY cookie
-
-func LogoutHandler(w http.ResponseWriter, r *http.Request) {
-
+func LogoutHandler(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
 	switch r.Method {
 	case "POST":
-		authenticated, _ := session.IsAuthenticated(w, r)
-		log.Print(authenticated)
-		if authenticated {
-			// CORS headers
-			w.Header().Set("Access-Control-Allow-Origin", environment.GetFrontendURI())
-			w.Header().Set("Access-Control-Allow-Credentials", "true")
-			session.RemoveSession(w, r)
-			break
-		} else {
-			// if session-token is not valid, it will still remove the current cookie the frontend
-			// is storing by returning a
-			// Set-Cookie: session-token="" header
-			w.Header().Set("Access-Control-Allow-Origin", environment.GetFrontendURI())
-			w.Header().Set("Access-Control-Allow-Credentials", "true")
-			session.RemoveSession(w, r)
-			ThrowRequestError(w, http.StatusUnauthorized, "unauthorized")
-			break
-		}
-
+		// CORS headers
+		w.Header().Set("Access-Control-Allow-Origin", environment.GetFrontendURI())
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		session.RemoveSession(w, r)
+		return http.StatusOK, nil, nil
 	default:
-		// only GET requests are allowed
-		ThrowRequestError(w, http.StatusMethodNotAllowed, "Method Not allowed")
-		break
+		return http.StatusBadRequest, nil, nil
 	}
-
 }
 
 // TODO: hash function
