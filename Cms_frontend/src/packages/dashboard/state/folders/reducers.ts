@@ -2,7 +2,8 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { 
   sliceState,
   FileEntity,
-  Folder
+  Folder,
+  File
 } from './types';
 
 /**
@@ -25,6 +26,17 @@ export function addFolderItems(state: sliceState,action: PayloadAction<Folder>){
     items: [
       ...state.items, 
       newFolder,
+    ]
+  }
+}
+
+export function addFileItems(state: sliceState,action: PayloadAction<File>){
+  const newFile: File = action.payload;
+  return {
+    ...state, 
+    items: [
+      ...state.items, 
+      newFile,
     ]
   }
 }

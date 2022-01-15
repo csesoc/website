@@ -1,6 +1,12 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
+import {
+  addFolderItemAction,
+  addFileItemAction 
+} from 'src/packages/dashboard/state/folders/actions';
+import { Folder, File } from 'src/packages/dashboard/state/folders/types';
 
 const Container = styled.div`
   width: 250px;
@@ -28,12 +34,6 @@ const ButtonGroup = styled.div`
   grid-gap: 30px;
 `
 
-interface SideBarProps {
-  onNewFile: () => void,
-  onNewFolder: () => void,
-  onRecycle: () => void
-}
-
 interface SideBarButtonProps {
   bgColor: string;
 }
@@ -47,34 +47,33 @@ const SidebarButton = styled(Button) <SideBarButtonProps>`
     text-transform: none;
   }
 `
+const newFile: File = {
+  id: 1,
+  name: "hi",
+  type: "File",
+}
 
+const newFolder: Folder = {
+  id: 999,
+  name: "hi",
+  type: "Folder",
+}
 
 
 // Wrapper component ${props => props.color}
-const SideBar = () => {
-
+export default function SideBar () {
+  const dispatch = useDispatch();
   // TODO
-  const handleNewFile = async () => {
-    return
+  const handleNewFile = () => {
+    dispatch(addFileItemAction(newFile))
   }
 
-
-  const handleNewFolder = async () => {
-    const resp = await fetch("http://localhost:8080/filesystem/create", {
-			method: "POST",
-			body: new URLSearchParams({
-				"LogicalName": "HI",
-				"OwnerGroup": "1",
-				"IsDocument": "false"
-			})
-		});
-
-    // dispatch update folders to include current folder
-
+  const handleNewFolder = () => {
+    dispatch(addFolderItemAction(newFolder))
   }
 
   // TODO
-  const handleRecycle = async () => {
+  const handleRecycle = () => {
     return
   }
 
@@ -116,4 +115,3 @@ const SideBar = () => {
   )
 }
 
-export default SideBar;

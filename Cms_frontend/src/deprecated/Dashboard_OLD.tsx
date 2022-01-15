@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Dialog, DialogContent, IconButton } from "@material-ui/core";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 
-import SideBar from 'src/deprecated/components/SideBar/SideBar';
+import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
 import FileRenderer from 'src/deprecated/components/FileRenderer_OLD/FileRenderer';
 import NewDialogue from 'src/deprecated/components/NewDialogue/NewDialogue';
 

@@ -6,7 +6,7 @@ export type baseEntity = {
 
 export type Folder = baseEntity
 export type File = {
-  image: string,
+  image?: string,
 } & baseEntity;
 
 // FileEntity is the type which contains both

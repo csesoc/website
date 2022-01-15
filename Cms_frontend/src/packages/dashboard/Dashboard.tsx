@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 // local imports
-import SideBar from 'src/deprecated/components/SideBar/SideBar';
+import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
 import Renderer from './components/FileRenderer/Renderer';
 import { initAction } from './state/folders/actions';
 import { BACKEND_URI } from 'src/config';

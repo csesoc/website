@@ -1,5 +1,5 @@
 import { createAction } from "@reduxjs/toolkit";
-import { FileEntity, Folder, sliceState } from './types';
+import { FileEntity, Folder, File, sliceState } from './types';
 
 export const initAction = createAction("folders/init");
 export const initItemsAction = createAction<FileEntity[]>("folders/initItems");
@@ -15,3 +15,4 @@ export const setDirectory = createAction<sliceState>("folders/setDirectory")
  */
 export const addFolderItemAction = createAction<Folder>("folders/addFolderItem");
 // TODO removeFolderItemAction
+export const addFileItemAction = createAction<File>("folders/addFileItem");
