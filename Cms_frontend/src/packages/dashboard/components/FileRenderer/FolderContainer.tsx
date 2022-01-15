@@ -1,10 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import FolderIcon from '@material-ui/icons/Folder';
+import { useDispatch } from 'react-redux';
+import { traverseIntoFolder } from "src/packages/dashboard/state/folders/actions";
+// import FolderIcon from '@material-ui/icons/Folder';
 
 
 interface Props {
-  name: string
+  name: string;
+  id: number;
 }
 
 const IconContainer = styled.div`
@@ -18,8 +21,10 @@ interface HighlightProps {
   active: boolean
 }
 
-const Folder = styled(FolderIcon)<HighlightProps>`
-  color: #999999;
+const Folder = styled.div<HighlightProps>`
+  width: 100px;
+  height: 100px;
+  background: #999999;
 
   ${props => props.active && `
     border: 5px solid lightblue;
@@ -28,11 +33,18 @@ const Folder = styled(FolderIcon)<HighlightProps>`
 `
 
 
-export default function FolderContainer({ name }: Props) {
+export default function FolderContainer({ name, id }: Props) {
+  const dispatch = useDispatch();
+  const handleClick = () => {
+    dispatch(traverseIntoFolder(id))
+  }
+
   return (
-    <IconContainer>
-      <Folder active={false} />
-      {name}
-    </IconContainer>
+    <div onClick={handleClick}>
+      <IconContainer >
+        <Folder active={false} />
+        {name}
+      </IconContainer>
+    </div>
   )
 }

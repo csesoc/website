@@ -1,7 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { 
   sliceState,
-  File,
+  FileEntity,
   Folder
 } from './types';
 
@@ -9,8 +9,8 @@ import {
  * payload takes in:
  * array of type Folder || File
  */
-export function setItems(state: sliceState, action: PayloadAction<(Folder|File)[]>) {
-  const newEntityList: (Folder|File)[] = action.payload;
+export function setItems(state: sliceState, action: PayloadAction<FileEntity[]>) {
+  const newEntityList: FileEntity[] = action.payload;
   return {
     ...state,
     items: newEntityList

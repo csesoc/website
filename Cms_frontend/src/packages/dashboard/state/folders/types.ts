@@ -1,15 +1,20 @@
-type baseEntity = {
+export type baseEntity = {
   id: number,
   name: string,
+  type: string,
 }
 
-export type Folder = {} & baseEntity;
-
+export type Folder = baseEntity
 export type File = {
-  isDocument: boolean
-} &baseEntity;
+  image: string,
+} & baseEntity;
+
+// FileEntity is the type which contains both
+// folders and files
+export type FileEntity = Folder | File;
 
 export type sliceState = {
-  items: (Folder | File)[];
+  path: string
+  items: (FileEntity)[];
 }
 

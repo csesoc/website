@@ -7,7 +7,7 @@ import FileContainer from "./FileContainer";
 import Default from "src/images/default.png";
 import NewPost from "src/images/new_post.png";
 
-import type { FileFormat } from "src/types/FileFormat";
+import type { FileFormat } from "src/deprecated/types/FileFormat";
 
 const FileFlex = styled.div`
   width: 24%;

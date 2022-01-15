@@ -5,11 +5,7 @@ import { folderSelectors } from '../../state/folders/index';
 import FileContainer from './FileContainer';
 import FolderContainer from './FolderContainer';
 
-type Props = {
-  
-};
-
-export default function Renderer({}: Props){
+export default function Renderer(){
   const folders = useSelector((state: RootState) => (
     folderSelectors.getFolderState(state)
   ));
@@ -17,11 +13,27 @@ export default function Renderer({}: Props){
   const folderItems = folders.items;
   
   const renderItems = () => (
-    folderItems.map((item) => {
-      console.log('hi')
-      return (
-        <FolderContainer name={item.name}/>
-      )
+    folderItems.map((item, index) => {
+      switch(item.type) {
+        case "Folder":
+          return (
+            <FolderContainer 
+              key={index}
+              id={item.id}
+              name={item.name}
+            />
+          )
+        case "File":
+          return (
+            <FileContainer
+              key={index}
+              id={item.id}
+              name={item.name}
+            />
+          )
+        default:
+          return;
+      }
       // else filecontainer
     })
   )

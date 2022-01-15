@@ -3,14 +3,14 @@ import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 // local
 import * as API from '../../api/index';
 import * as actions from './actions';
-import { File, Folder } from './types';
+import { FileEntity } from './types';
 
 
 function* initSaga() {
   try {
-    const root: Folder = yield call(API.getFolder);
+    const root: FileEntity = yield call(API.getFolder);
     const rootId: number = root.id;
-    const children:(File|Folder)[] = yield call(API.updateContents, rootId);
+    const children:FileEntity[] = yield call(API.updateContents, rootId);
     
     // set items to be children
     yield put(actions.initItemsAction(children));
@@ -19,16 +19,26 @@ function* initSaga() {
   }
 }
 
-
-function* addFolderItemSaga({ payload: folder } : { payload: Folder}) {
+function* addFolderItemSaga({ payload: folder } : { payload: FileEntity }) {
   yield call(console.log, 'hi');
   yield put(actions.addFolderItemAction);
 }
+
+function* traverseIntoFolderSaga({ payload: id }: { payload: number }) {
+  const children: FileEntity[] = yield call(API.updateContents, id);
+  
+  // change path
+
+  // set children
+  yield put(actions.initItemsAction(children))
+}
+
+
 
 // root watchers
 export function* rootFoldersSaga() {
   // runs in parallel
   yield takeEvery(actions.initAction, initSaga);
   yield takeEvery(actions.addFolderItemAction, addFolderItemSaga);
-
+  yield takeEvery(actions.traverseIntoFolder, traverseIntoFolderSaga);
 }

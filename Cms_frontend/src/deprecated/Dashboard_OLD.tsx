@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { Dialog, DialogContent, IconButton } from "@material-ui/core";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 
-import SideBar from 'src/components/SideBar/SideBar';
-import FileRenderer from 'src/components/FileRenderer_OLD/FileRenderer';
-import NewDialogue from 'src/components/NewDialogue/NewDialogue';
+import SideBar from 'src/deprecated/components/SideBar/SideBar';
+import FileRenderer from 'src/deprecated/components/FileRenderer_OLD/FileRenderer';
+import NewDialogue from 'src/deprecated/components/NewDialogue/NewDialogue';
 
 // Cast JSON format to HashMap
-import type { FileFormat } from "src/types/FileFormat";
+import type { FileFormat } from "src/deprecated/types/FileFormat";
 
 // Heading to display current directory, separated out to avoid inline styling
 const DirectoryName = styled.h3`

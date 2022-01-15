@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import EditorHeader from 'src/components/Editor/EditorHeader';
-import EditorFile from 'src/components/Editor/EditorFile';
-import EditorSidebar from 'src/components/Editor/EditorSidebar';
+import EditorHeader from 'src/deprecated/components/Editor/EditorHeader';
+import EditorFile from 'src/deprecated/components/Editor/EditorFile';
+import EditorSidebar from 'src/deprecated/components/Editor/EditorSidebar';
 
 import { EditorState } from "draft-js";
 
