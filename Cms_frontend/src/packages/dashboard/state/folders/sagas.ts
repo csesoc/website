@@ -5,7 +5,6 @@ import * as API from '../../api/index';
 import * as actions from './actions';
 import { Folder, File, FileEntity } from './types';
 
-
 function* initSaga() {
   try {
     const root: FileEntity = yield call(API.getFolder);
@@ -30,6 +29,11 @@ function* addFileItemSaga({ payload: file }: { payload: File }) {
   yield call(console.log, file);
 }
 
+function* renameFileEntitySaga({ payload: renamePayload }: { payload: actions.RenamePayloadType }) {
+  // todo call backend rename filename/foldername API call
+  yield call(console.log, "saga rename fired");
+}
+
 /**
  * Directory Sagas
  */
@@ -46,7 +50,8 @@ function* traverseIntoFolderSaga({ payload: id }: { payload: number }) {
 export function* rootFoldersSaga() {
   // runs in parallel
   yield takeEvery(actions.initAction, initSaga);
-  yield takeLatest(actions.addFolderItemAction, addFolderItemSaga);
-  yield takeLatest(actions.addFileItemAction, addFileItemSaga);
+  yield takeEvery(actions.addFolderItemAction, addFolderItemSaga);
+  yield takeEvery(actions.addFileItemAction, addFileItemSaga);
+  yield takeEvery(actions.renameFileEntityAction, renameFileEntitySaga);
   yield takeEvery(actions.traverseIntoFolder, traverseIntoFolderSaga);
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { traverseIntoFolder } from "src/packages/dashboard/state/folders/actions";
+import Renamable from './Renamable';
 // import FolderIcon from '@material-ui/icons/Folder';
 
 
@@ -40,11 +41,9 @@ export default function FolderContainer({ name, id }: Props) {
   }
 
   return (
-    <div onClick={handleClick}>
-      <IconContainer >
-        <Folder active={false} />
-        {name}
-      </IconContainer>
-    </div>
+    <IconContainer >
+      <Folder active={false} onClick={handleClick} />
+      <Renamable name={name} id={id} />
+    </IconContainer>
   )
 }

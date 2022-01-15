@@ -43,18 +43,8 @@ function FileContainer({name, id}: Props) {
   return (
     <>
       <IconContainer>
-        {/* <HoverImage
-          src={image}
-          active={active} />
-        {onRename === undefined ? (
-          <p>{filename}</p>
-        ) : (
-          <Renamable
-            name={filename}
-            onRename={onRename} />
-        )} */}
       </IconContainer>
-      {name}
+      <Renamable name={name} id={id} />
     </>
   )
 }

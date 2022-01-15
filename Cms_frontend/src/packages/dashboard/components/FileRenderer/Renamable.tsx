@@ -4,15 +4,24 @@
 // A component that can be double-clicked and edited
 
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { RenamePayloadType, renameFileEntityAction } from "src/packages/dashboard/state/folders/actions";
 
 interface Props {
   name: string,
-  onRename: (newName: string) => void
+  id: number,
 }
 
-export default function Renamable ({ name, onRename }: Props) {
+export default function Renamable ({ name, id }: Props) {
   const [toggle, setToggle] = useState(true);
   const [inputName, setInputName] = useState(name);
+
+  const dispatch = useDispatch();
+
+  const handleRename = (newName: string) => {
+    const newPayload: RenamePayloadType = { id, newName }
+    dispatch(renameFileEntityAction(newPayload))
+  }
 
   return (
     <>
@@ -29,7 +38,7 @@ export default function Renamable ({ name, onRename }: Props) {
           onKeyDown={event => {
             if (event.key === "Enter" || event.key === "Escape") {
               if (event.key === "Enter") {
-                onRename(inputName);
+                handleRename(inputName);
               }
               setToggle(true);
               event.preventDefault();
@@ -38,5 +47,5 @@ export default function Renamable ({ name, onRename }: Props) {
           }} />
       )}
     </>
-  );
-};
+  )
+}

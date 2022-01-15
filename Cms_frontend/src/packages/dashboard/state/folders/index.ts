@@ -9,7 +9,7 @@ const reducer = createReducer(initialState, (builder) => {
   // addCase(action, reducer);
   builder.addCase(foldersActions.addFolderItemAction, reducerFns.addFolderItems);
   builder.addCase(foldersActions.addFileItemAction, reducerFns.addFileItems);
-
+  builder.addCase(foldersActions.renameFileEntityAction, reducerFns.renameFileEntity);
   // init reducers
   builder.addCase(foldersActions.initItemsAction, reducerFns.setItems);
 })
