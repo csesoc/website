@@ -10,12 +10,9 @@ user exists
 package endpoints
 
 import (
-	"log"
-
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/environment"
-	_httpUtil "cms.csesoc.unsw.edu.au/internal/httpUtil"
-	_session "cms.csesoc.unsw.edu.au/internal/session"
+	"cms.csesoc.unsw.edu.au/internal/session"
 
 	"errors"
 	"net/http"
@@ -23,8 +20,8 @@ import (
 )
 
 type User struct {
-	Email    string
-	Password string
+	Email    string `schema:"Email"`
+	Password string `schema:"Password"`
 }
 
 // EXPECT it to be from a form (handle non form requests)
@@ -35,49 +32,20 @@ type User struct {
 	-d password=password \
 	localhost:8080/login
 */
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
-
-	switch r.Method {
-	case "POST":
-		err := r.ParseForm()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		// get fields from form
-		email := r.FormValue("email")
-		password := r.FormValue("password")
-
-		// initialise user class
-		var user *User = &User{Email: email, Password: password}
-
-		// input validation
-		err = user.IsValidEmail()
-		if err != nil {
-			_httpUtil.ThrowRequestError(w, 500, err.Error())
-			return
-		}
-
-		err = user.checkPassword()
-		if err != nil {
-			_httpUtil.ThrowRequestError(w, 500, err.Error())
-			return
-		}
-
-		// else create a session if user's session isnt already created
-		_session.CreateSession(w, r, user.Email)
-
-		// will change to FRONTEND_URI soon
-		//_httpUtil.SendResponse(w, "success")
-
-		http.Redirect(w, r, environment.GetFrontendURI()+"/dashboard", http.StatusMovedPermanently)
-		break
-	case "DEFAULT":
-		// only post requests are allowed
+func LoginHandler(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
+	var user User
+	if !ParseParamsToSchema(r, "POST", &user) {
 		http.Redirect(w, r, environment.GetFrontendURI()+"/login", http.StatusMovedPermanently)
-		break
+		return http.StatusMovedPermanently, nil, nil
+	}
+	if user.IsValidEmail() != nil && user.checkPassword() != nil {
+		return http.StatusUnauthorized, nil, nil
 	}
 
+	// else create a session if user's session isnt already created
+	session.CreateSession(w, r, user.Email)
+	http.Redirect(w, r, environment.GetFrontendURI()+"/dashboard", http.StatusMovedPermanently)
+	return http.StatusMovedPermanently, nil, nil
 }
 
 // check username is valid
@@ -117,36 +85,17 @@ func (u *User) checkPassword() error {
 // expecting header to contain session-token
 // will perform the redirection in frontend
 // backend's job for logout is only to remove the HTTPONLY cookie
-
-func LogoutHandler(w http.ResponseWriter, r *http.Request) {
-
+func LogoutHandler(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
 	switch r.Method {
 	case "POST":
-		authenticated, _ := _session.IsAuthenticated(w, r)
-		log.Print(authenticated)
-		if authenticated {
-			// CORS headers
-			w.Header().Set("Access-Control-Allow-Origin", environment.GetFrontendURI())
-			w.Header().Set("Access-Control-Allow-Credentials", "true")
-			_session.RemoveSession(w, r)
-			break
-		} else {
-			// if session-token is not valid, it will still remove the current cookie the frontend
-			// is storing by returning a
-			// Set-Cookie: session-token="" header
-			w.Header().Set("Access-Control-Allow-Origin", environment.GetFrontendURI())
-			w.Header().Set("Access-Control-Allow-Credentials", "true")
-			_session.RemoveSession(w, r)
-			_httpUtil.ThrowRequestError(w, http.StatusUnauthorized, "unauthorized")
-			break
-		}
-
+		// CORS headers
+		w.Header().Set("Access-Control-Allow-Origin", environment.GetFrontendURI())
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		session.RemoveSession(w, r)
+		return http.StatusOK, nil, nil
 	default:
-		// only GET requests are allowed
-		_httpUtil.ThrowRequestError(w, http.StatusMethodNotAllowed, "Method Not allowed")
-		break
+		return http.StatusBadRequest, nil, nil
 	}
-
 }
 
 // TODO: hash function

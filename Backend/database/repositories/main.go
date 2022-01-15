@@ -9,18 +9,15 @@ func init() {
 	context = contexts.GetDatabaseContext()
 }
 
-// User groups configurations
-const (
-	GROUPS_ADMIN int = 1
-	GROUPS_USER  int = 2
-)
-
 // enum of repositories
 const (
 	FILESYSTEM = iota
 	PERSON
 	GROUPS
 )
+
+// The ID for root, set this as the ID in a specified request
+const FILESYSTEM_ROOT_ID = -1
 
 // small factory for setting up and returning a repository
 func GetRepository(repo int) interface{} {

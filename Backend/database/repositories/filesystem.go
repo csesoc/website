@@ -13,9 +13,6 @@ type FilesystemRepository struct {
 	embeddedContext
 }
 
-// The ID for root, set this as the ID in a specified request
-const FILESYSTEM_ROOT_ID = -1
-
 // We really should use an ORM jesus this is ugly
 func (rep FilesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
 	entity := FilesystemEntry{}
@@ -37,18 +34,6 @@ func (rep FilesystemRepository) query(query string, input ...interface{}) (Files
 	return entity, nil
 }
 
-func (rep FilesystemRepository) GetEntryWithID(ID int) (FilesystemEntry, error) {
-	return rep.query("SELECT * FROM filesystem WHERE EntityID = $1", ID)
-}
-
-func (rep FilesystemRepository) GetRoot() (FilesystemEntry, error) {
-	return rep.query("SELECT * FROM filesystem WHERE Parent IS NULL")
-}
-
-func (rep FilesystemRepository) GetEntryWithParentID(ID int) (FilesystemEntry, error) {
-	return rep.query("SELECT * FROM filesystem WHERE Parent = $1", ID)
-}
-
 // Returns: entry struct containing the entity that was just created
 func (rep FilesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEntry, error) {
 	if file.ParentFileID == FILESYSTEM_ROOT_ID {
@@ -68,6 +53,22 @@ func (rep FilesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEnt
 	}
 
 	return rep.GetEntryWithID(newID)
+}
+
+func (rep FilesystemRepository) GetEntryWithID(ID int) (FilesystemEntry, error) {
+	if ID == FILESYSTEM_ROOT_ID {
+		return rep.GetRoot()
+	}
+
+	return rep.query("SELECT * FROM filesystem WHERE EntityID = $1", ID)
+}
+
+func (rep FilesystemRepository) GetRoot() (FilesystemEntry, error) {
+	return rep.query("SELECT * FROM filesystem WHERE Parent IS NULL")
+}
+
+func (rep FilesystemRepository) GetEntryWithParentID(ID int) (FilesystemEntry, error) {
+	return rep.query("SELECT * FROM filesystem WHERE Parent = $1", ID)
 }
 
 func (rep FilesystemRepository) DeleteEntryWithID(ID int) error {

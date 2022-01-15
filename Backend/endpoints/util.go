@@ -1,4 +1,4 @@
-package httpUtil
+package endpoints
 
 import (
 	"fmt"
@@ -30,27 +30,14 @@ func SendResponse(w http.ResponseWriter, marshaledJson string) {
 		}`, marshaledJson)))
 }
 
-// ErrorMessages maps HTTP errors to specific messages
-type ErrorMessages map[int]string
-
 // ParseParamsToSchema expects the target to be a pointer
-func ParseParamsToSchema(w http.ResponseWriter, r *http.Request, acceptingMethods []string, errorMessages ErrorMessages, target interface{}) bool {
+func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interface{}) bool {
 	err := r.ParseForm()
 	if err != nil {
-		ThrowRequestError(w, 400, errorMessages[400])
 		return false
 	}
 
-	isValidMethod := false
-	for _, method := range acceptingMethods {
-		if method == r.Method {
-			isValidMethod = true
-			break
-		}
-	}
-
-	if !isValidMethod {
-		ThrowRequestError(w, 405, errorMessages[405])
+	if acceptingMethod != r.Method {
 		return false
 	}
 
@@ -61,7 +48,6 @@ func ParseParamsToSchema(w http.ResponseWriter, r *http.Request, acceptingMethod
 		err = decoder.Decode(target, r.PostForm)
 	}
 	if err != nil {
-		ThrowRequestError(w, 400, errorMessages[400])
 		return false
 	}
 
