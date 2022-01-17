@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { traverseIntoFolder } from "src/packages/dashboard/state/folders/actions";
 import Renamable from './Renamable';
-// import FolderIcon from '@material-ui/icons/Folder';
+// import FolderIcon from '@mui/icons-material/Folder';
 
 
 interface Props {

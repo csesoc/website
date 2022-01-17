@@ -6,7 +6,7 @@
 
 import React from "react";
 import styled, { css } from 'styled-components';
-import FolderIcon from '@material-ui/icons/Folder';
+import FolderIcon from '@mui/icons-material/Folder';
 import Renamable from "./Renamable";
 
 interface FolderProps {
