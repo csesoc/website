@@ -21,7 +21,7 @@ type FilesystemEntry struct {
 type IFilesystemRepository interface {
 	GetEntryWithID(ID int) (FilesystemEntry, error)
 	GetRoot() (FilesystemEntry, error)
-	GetEntryWithParentID(ID int) FilesystemEntry
+	GetEntryWithParentID(ID int) (FilesystemEntry, error)
 
 	CreateEntry(file FilesystemEntry) (FilesystemEntry, error)
 	DeleteEntryWithID(ID int) error

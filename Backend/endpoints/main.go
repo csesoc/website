@@ -16,17 +16,17 @@ type Response struct {
 
 // This file contains a series of types defined to make writing http handlers
 // a bit easier and less messy
-type handler func(http.ResponseWriter, *http.Request) (int, interface{}, error)
+type handler func(http.ResponseWriter, *http.Request, DependencyFactory) (int, interface{}, error)
 
 // authenticated handler is basically a regular http handler the only difference is that
 // they can only be accessed by an authenticated client
-type authenticatedHandler func(http.ResponseWriter, *http.Request) (int, interface{}, error)
+type authenticatedHandler func(http.ResponseWriter, *http.Request, DependencyFactory) (int, interface{}, error)
 
 // impl of http Handler interface so that it can serve http requests
 func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	if status, resp, err := fn(w, r); err == nil {
+	if status, resp, err := fn(w, r, DependencyProvider{}); err == nil {
 		if status != http.StatusMovedPermanently {
 			w.WriteHeader(status)
 		}

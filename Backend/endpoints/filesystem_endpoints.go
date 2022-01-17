@@ -2,6 +2,7 @@ package endpoints
 
 import (
 	"net/http"
+	"reflect"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
 )
@@ -18,13 +19,15 @@ type ValidInfoRequest struct {
 }
 
 // Defines endpoints consumable via the API
-func GetEntityInfo(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
+func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
 	var input ValidInfoRequest
 	if !ParseParamsToSchema(r, "GET", &input) {
 		return http.StatusBadRequest, nil, nil
 	}
 
-	repository := repositories.GetRepository(repositories.FILESYSTEM).(repositories.FilesystemRepository)
+	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
+	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+
 	if entity, err := repository.GetEntryWithID(input.EntityID); err == nil {
 		return http.StatusOK, EntityInfo{
 			EntityID:   entity.EntityID,
@@ -45,13 +48,14 @@ type ValidEntityCreationRequest struct {
 	IsDocument  bool   `schema:"IsDocument,required"`
 }
 
-func CreateNewEntity(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
+func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
 	var input ValidEntityCreationRequest
 	if !ParseParamsToSchema(r, "POST", &input) {
 		return http.StatusBadRequest, nil, nil
 	}
 
-	repository := repositories.GetRepository(repositories.FILESYSTEM).(repositories.FilesystemRepository)
+	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
+	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
 	entityToCreate := repositories.FilesystemEntry{
 		LogicalName:  input.LogicalName,
 		ParentFileID: input.Parent,
@@ -72,13 +76,14 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request) (int, interface{}, 
 }
 
 // Handler for deleting filesystem entities
-func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
+func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
 	var input ValidInfoRequest
 	if !ParseParamsToSchema(r, "POST", &input) {
 		return http.StatusBadRequest, nil, nil
 	}
 
-	repository := repositories.GetRepository(repositories.FILESYSTEM).(repositories.FilesystemRepository)
+	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
+	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
 	if repository.DeleteEntryWithID(input.EntityID) != nil {
 		return http.StatusNotAcceptable, nil, nil
 	} else {
@@ -87,13 +92,14 @@ func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request) (int, interf
 }
 
 // Handler for retrieving children
-func GetChildren(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
+func GetChildren(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
 	var input ValidInfoRequest
 	if !ParseParamsToSchema(r, "GET", &input) {
 		return http.StatusBadRequest, nil, nil
 	}
 
-	repository := repositories.GetRepository(repositories.FILESYSTEM).(repositories.FilesystemRepository)
+	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
+	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
 	if fileInfo, err := repository.GetEntryWithID(input.EntityID); err != nil {
 		return http.StatusNotFound, nil, nil
 	} else {
@@ -111,13 +117,14 @@ type ValidRenameRequest struct {
 }
 
 // Handler for renaming filesystem entities
-func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
+func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
 	var input ValidRenameRequest
 	if !ParseParamsToSchema(r, "POST", &input) {
 		return http.StatusBadRequest, nil, nil
 	}
 
-	repository := repositories.GetRepository(repositories.FILESYSTEM).(repositories.FilesystemRepository)
+	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
+	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
 	if repository.RenameEntity(input.EntityID, input.NewName) != nil {
 		return http.StatusNotAcceptable, nil, nil
 	} else {

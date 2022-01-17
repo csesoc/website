@@ -1,0 +1,47 @@
+package tests
+
+import (
+	"net/http"
+	"reflect"
+	"testing"
+
+	"cms.csesoc.unsw.edu.au/database/repositories"
+	"cms.csesoc.unsw.edu.au/endpoints"
+	"cms.csesoc.unsw.edu.au/endpoints/tests/mocks"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestEntityInfo(t *testing.T) {
+	controller := gomock.NewController(t)
+	assert := assert.New(t)
+	defer controller.Finish()
+
+	// ==== test setup =====
+	mockFileRepo := mocks.NewMockIFilesystemRepository(controller)
+	mockFileRepo.EXPECT().GetEntryWithID(1).Return(repositories.FilesystemEntry{
+		EntityID:    1,
+		LogicalName: "random name",
+		IsDocument:  false,
+		ChildrenIDs: []int{},
+	}, nil).Times(1)
+
+	mockDepFactory := mocks.NewMockDependencyFactory(controller)
+	mockDepFactory.EXPECT().GetDependency(reflect.TypeOf((*repositories.IFilesystemRepository)(nil))).Return(mockFileRepo)
+
+	req, _ := http.NewRequest("GET", "/filesystem/info", nil)
+	q := req.URL.Query()
+	q.Add("EntityID", "1")
+	req.URL.RawQuery = q.Encode()
+
+	// ==== test execution =====
+	status, result, err := endpoints.GetEntityInfo(nil, req, mockDepFactory)
+	assert.Nil(err)
+	assert.Equal(status, http.StatusOK)
+	assert.Equal(result, endpoints.EntityInfo{
+		EntityID:   1,
+		EntityName: "random name",
+		IsDocument: false,
+		Children:   []int{},
+	})
+}
