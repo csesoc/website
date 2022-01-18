@@ -18,6 +18,9 @@ the difference string is assumed to be in GNU diff format. The responses you get
 ## Architectural Guide
 Theres a lot of files in this packagege :sobbing:, below is a rough outline of how some of them fit into the bigger picture.
 
+### Issues
+Theres a few issues with the current layout and they will be ironed out later. The biggest issue is how easy it is to introduce a deadlock... If you call function serviced by the event loop within an event loop you are going to deadlock that goroutine; please dont do that 🥲.
+
 ### `service/`
  - The service folder contains the broker file and our extension definitions, the broker file is responsible for loading the correct extensions into a spun up document, it generally expects an establised websocket connection for it to work.
  - The service folder as stated before contains all our extensions, the editor is designed to be super easy to extend, the goal is for contributors to be able to extend the editor with a minimal understanding of its internals. To extend the editor all you need to do is implement the `ExtensionHead` interface and register your extension in the `broker.go` file. Additionally a full Go client side implementation of the differential synchronisation algorithm is provided in `extension_stub.go`, embedding this struct in your implementation will provide you with a consistent document state to operate on. An example `ExtensionHead` is as follows (more documentation can be found on confluence)
