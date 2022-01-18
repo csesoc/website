@@ -1,5 +1,7 @@
 package repositories
 
+//go:generate mockgen -source=models.go -destination=mocks/models_mock.go -package=mocks
+
 import "time"
 
 // filesystem model (model stored within database)
@@ -21,7 +23,7 @@ type FilesystemEntry struct {
 type IFilesystemRepository interface {
 	GetEntryWithID(ID int) (FilesystemEntry, error)
 	GetRoot() (FilesystemEntry, error)
-	GetEntryWithParentID(ID int) FilesystemEntry
+	GetEntryWithParentID(ID int) (FilesystemEntry, error)
 
 	CreateEntry(file FilesystemEntry) (FilesystemEntry, error)
 	DeleteEntryWithID(ID int) error
