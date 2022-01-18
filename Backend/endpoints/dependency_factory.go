@@ -1,5 +1,7 @@
 package endpoints
 
+//go:generate mockgen -source=dependency_factory.go -destination=mocks/dependency_factory_mock.go -package=mocks
+
 import (
 	"reflect"
 

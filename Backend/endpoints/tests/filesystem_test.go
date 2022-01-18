@@ -6,8 +6,9 @@ import (
 	"testing"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
+	repMocks "cms.csesoc.unsw.edu.au/database/repositories/mocks"
 	"cms.csesoc.unsw.edu.au/endpoints"
-	"cms.csesoc.unsw.edu.au/endpoints/tests/mocks"
+	"cms.csesoc.unsw.edu.au/endpoints/mocks"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -18,7 +19,7 @@ func TestEntityInfo(t *testing.T) {
 	defer controller.Finish()
 
 	// ==== test setup =====
-	mockFileRepo := mocks.NewMockIFilesystemRepository(controller)
+	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
 	mockFileRepo.EXPECT().GetEntryWithID(1).Return(repositories.FilesystemEntry{
 		EntityID:    1,
 		LogicalName: "random name",

@@ -1,5 +1,7 @@
 package repositories
 
+//go:generate mockgen -source=models.go -destination=mocks/models_mock.go -package=mocks
+
 import "time"
 
 // filesystem model (model stored within database)
