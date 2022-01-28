@@ -6,15 +6,38 @@ Welcome to the CSESoc CMS Git Repo!! :D
 ## Build Instructions
 Building the app fresh after installation
 run:
-`docker compose up --build`
+`make dev-build`
 
-For all subsequent running of apps
+all subsequent running of the app you can 
 run:
-`docker compose up`
-or
-`docker compose up -d`
+`make`
 
-Please note that you have to add /Config/.env.dev and include the env secrets. Please contact @omeh-a (Matt_#4292 on discord or matthewrossouw@outlook.com) for these if you don't have them :)
+what to do after you are done programming?
+run: 
+`make clean`
+
+when dependencies have changed i.e. you installed a new package, updated version of a package
+run:
+`make dev-build`
+
+FAQs:
+- Q: something is broken what to do?
+- A: run `make clean` then run `make dev-build` again, should fix it
+
+- Q: something is horibbly broken
+- A: manually remove all images in docker desktop GUI app and re-run `make dev-build` again
+
+- Q: it says I don't have docker installed, but I have already installed docker before
+- A: open your docker desktop app then re-run it
+
+- Q: it still doesnt work
+- A: google docker desktop WSL2 not detecting docker
+
+- Q: Docker is taking up alot of space how to remove?
+- A: docker is a ram/storage drainer but, you can remove useless volumes, run `docker volumes prune`
+
+
+Please note that you have to add /Config/.env.dev and include the env secrets. Please contact `@Jaaaa#9606` or `@Flying McCartney Monster#1172` on discord for these if you don't have them :)
 
 ## Postgres Instructions
 access interactive terminal by running `docker exec -it pg_container bash`
