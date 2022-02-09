@@ -10,7 +10,7 @@ type EntityInfo struct {
 	EntityID   int
 	EntityName string
 	IsDocument bool
-	Children   []int
+	Children   []EntityInfo
 }
 
 type ValidInfoRequest struct {
@@ -26,11 +26,22 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request) (int, interface{}, er
 
 	repository := repositories.GetRepository(repositories.FILESYSTEM).(repositories.FilesystemRepository)
 	if entity, err := repository.GetEntryWithID(input.EntityID); err == nil {
+		childrenArr := []EntityInfo{}
+		for _, id := range entity.ChildrenIDs {
+			x, _ := repository.GetEntryWithID(id)
+			childrenArr = append(childrenArr, EntityInfo{
+				EntityID:   id,
+				EntityName: x.LogicalName,
+				IsDocument: x.IsDocument,
+				Children:   nil,
+			})
+		}
+
 		return http.StatusOK, EntityInfo{
 			EntityID:   entity.EntityID,
 			EntityName: entity.LogicalName,
 			IsDocument: entity.IsDocument,
-			Children:   entity.ChildrenIDs,
+			Children:   childrenArr,
 		}, nil
 	} else {
 		return http.StatusNotFound, nil, nil
