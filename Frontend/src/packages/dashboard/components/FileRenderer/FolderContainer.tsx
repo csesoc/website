@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { traverseIntoFolder } from "src/packages/dashboard/state/folders/actions";
 import Renamable from './Renamable';
-// import FolderIcon from '@mui/icons-material/Folder';
+import FolderIcon from '@mui/icons-material/Folder';
 
 
 interface Props {
@@ -22,16 +22,17 @@ interface HighlightProps {
   active: boolean
 }
 
-const Folder = styled.div<HighlightProps>`
-  width: 100px;
-  height: 100px;
-  background: #999999;
+// const Folder = styled.div<HighlightProps>`
+//   width: 100px;
+//   height: 100px;
+//   background: #999999;
 
-  ${props => props.active && `
-    border: 5px solid lightblue;
-    border-radius: 3px;
-  `}
-`
+//   ${props => props.active && `
+//     border: 5px solid lightblue;
+//     border-radius: 3px;
+//   `}
+// `
+
 
 
 export default function FolderContainer({ name, id }: Props) {
@@ -42,7 +43,13 @@ export default function FolderContainer({ name, id }: Props) {
 
   return (
     <IconContainer >
-      <Folder active={false} onClick={handleClick} />
+      <FolderIcon
+        onClick={handleClick}
+        sx={{
+          color: "#e4e4e4",
+          fontSize: "100px",
+        }}
+      />
       <Renamable name={name} id={id} />
     </IconContainer>
   )

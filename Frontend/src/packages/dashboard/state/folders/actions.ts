@@ -10,6 +10,11 @@ export type RenamePayloadType = {
   newName: string;
 }
 
+export type AddPayloadType = {
+  name: string;
+  type: string;
+}
+
 
 /**
  * Init Actions
@@ -27,8 +32,10 @@ export const setDirectory = createAction<sliceState>("folders/setDirectory")
 /**
  * CRUD actions
  */
+export const addItemAction = createAction<AddPayloadType>("folders/addItem");
 export const addFolderItemAction = createAction<Folder>("folders/addFolderItem");
 export const addFileItemAction = createAction<File>("folders/addFileItem");
+
 
 // FileEntity = Folder | File
 export const renameFileEntityAction = createAction<RenamePayloadType>("folders/renameFileEntity");

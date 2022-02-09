@@ -37,3 +37,48 @@ export async function updateContents(id: number) {
   return children;
 
 }
+
+
+export const newFile = async (name: string): Promise<Response> => {
+
+  // This isn't attached to the parent folder yet,
+  // TODO: patch once auth is finished
+  const create_resp = await fetch("http://localhost:8080/filesystem/create", {
+    method: "POST",
+    body: new URLSearchParams({
+      "LogicalName": name,
+      "OwnerGroup": "1",
+      "IsDocument": "true"
+    })
+  });
+
+  if (!create_resp.ok) {
+    const message = `An error has occured: ${create_resp.status}`;
+    throw new Error(message);
+  }
+
+  return create_resp;
+}
+
+export const newFolder = async (name: string): Promise<string> => {
+
+  // This isn't attached to the parent folder yet,
+  // TODO: patch once auth is finished
+  const create_resp = await fetch("http://localhost:8080/filesystem/create", {
+    method: "POST",
+    body: new URLSearchParams({
+      "LogicalName": name,
+      "OwnerGroup": "1",
+      "IsDocument": "false"
+    })
+  });
+
+  if (!create_resp.ok) {
+    const message = `An error has occured: ${create_resp.status}`;
+    throw new Error(message);
+  }
+
+  console.log(create_resp.body)
+  return ""
+}
+
