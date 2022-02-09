@@ -12,9 +12,8 @@ export async function getFolder (id?: number) {
     const message = `An error has occured: ${folder_resp.status}`;
     throw new Error(message);
   }
-
   const folder_json = await folder_resp.json();
-  return toFileOrFolder(folder_json.body.response);
+  return toFileOrFolder(folder_json.Response);
 }
 
 
@@ -22,7 +21,7 @@ export async function getFolder (id?: number) {
 // of that file
 export async function updateContents(id: number) {
   // const id = getCurrentID();
-  const children_resp = await fetch(`${BACKEND_URI}/filesystem/children?EntityID=${id}`);
+  const children_resp = await fetch(`${BACKEND_URI}/filesystem/info?EntityID=${id}`);
 
   if (!children_resp.ok) {
     const message = `An error has occured: ${children_resp.status}`;
@@ -30,7 +29,8 @@ export async function updateContents(id: number) {
   }
 
   const children_json = await children_resp.json();
-  const children = children_json.body.response.map((child: JSONFileFormat) => {
+  console.log(children_json)
+  const children = children_json.Response.Children.map((child: JSONFileFormat) => {
     return toFileOrFolder(child);
   });
 
@@ -48,7 +48,7 @@ export const newFile = async (name: string): Promise<Response> => {
     body: new URLSearchParams({
       "LogicalName": name,
       "OwnerGroup": "1",
-      "IsDocument": "true"
+      "IsDocument": "true",
     })
   });
 
@@ -62,6 +62,7 @@ export const newFile = async (name: string): Promise<Response> => {
 
 export const newFolder = async (name: string): Promise<string> => {
 
+  console.log(name)
   // This isn't attached to the parent folder yet,
   // TODO: patch once auth is finished
   const create_resp = await fetch("http://localhost:8080/filesystem/create", {
@@ -69,7 +70,7 @@ export const newFolder = async (name: string): Promise<string> => {
     body: new URLSearchParams({
       "LogicalName": name,
       "OwnerGroup": "1",
-      "IsDocument": "false"
+      "IsDocument": "false",
     })
   });
 
@@ -77,8 +78,7 @@ export const newFolder = async (name: string): Promise<string> => {
     const message = `An error has occured: ${create_resp.status}`;
     throw new Error(message);
   }
-
-  console.log(create_resp.body)
-  return ""
+  const response = await create_resp.json();
+  return response.Response.NewID;
 }
 

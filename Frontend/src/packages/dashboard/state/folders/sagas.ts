@@ -20,10 +20,17 @@ function* initSaga() {
 function* addItemSaga({ payload }: { payload: actions.AddPayloadType }) {
   switch(payload.type) {
     case "Folder": {
-      const result: string = yield call(API.newFolder, payload.name);
+      const newId: string = yield call(API.newFolder, payload.name);
       // now put results to redux store
+      const folderPayload: Folder = {
+        id: parseInt(newId),
+        name: payload.name,
+        type: payload.type,
+      }
+      yield put(actions.addFolderItemAction(folderPayload))
       break;
     }
+
     // case "File": {
     //   const result = yield call(API.newFile, [payload.name]);
     //   call(console.log, result)

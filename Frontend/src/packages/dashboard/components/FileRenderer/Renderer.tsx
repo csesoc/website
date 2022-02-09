@@ -10,6 +10,8 @@ export default function Renderer(){
     folderSelectors.getFolderState(state)
   ));
 
+  console.log(folders)
+
   const folderItems = folders.items;
   
   const renderItems = () => (
