@@ -15,8 +15,6 @@ export default function Renderer({ selectedFile, setSelectedFile }: Props){
     folderSelectors.getFolderState(state)
   ));
 
-  console.log(folders)
-
   const folderItems = folders.items;
   
   const renderItems = () => (

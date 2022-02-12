@@ -21,9 +21,7 @@ export default function Dashboard() {
     type: "",
   });
   const [selectedFile, setSelectedFile] = useState<number|null>(null);
-  
   const dispatch = useDispatch();
-
   useEffect(() => {
     // fetches all folders and files from backend and displays it
     dispatch(initAction());
@@ -32,6 +30,9 @@ export default function Dashboard() {
   return (
     <Container>
       <SideBar setModalState={setModalState}/>
+      <div>
+        <button>go back</button>
+      </div>
       <Renderer 
         selectedFile={selectedFile}
         setSelectedFile={setSelectedFile}
