@@ -43,14 +43,14 @@ export default function FolderContainer({ name, id }: Props) {
 
   return (
     <IconContainer >
-      {/* <FolderIcon
+      <FolderIcon
         onClick={handleClick}
         sx={{
-          color: "black",
+          color: "#e3e3e3",
           fontSize: "100px",
         }}
-      /> */}
-      <Folder active={false}/>
+      />
+      {/* <Folder active={false}/> */}
       <Renamable name={name} id={id} />
     </IconContainer>
   )

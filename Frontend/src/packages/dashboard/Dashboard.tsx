@@ -20,6 +20,7 @@ export default function Dashboard() {
     open: false,
     type: "",
   });
+  const [selectedFile, setSelectedFile] = useState<number|null>(null);
   
   const dispatch = useDispatch();
 
@@ -31,7 +32,10 @@ export default function Dashboard() {
   return (
     <Container>
       <SideBar setModalState={setModalState}/>
-      <Renderer />
+      <Renderer 
+        selectedFile={selectedFile}
+        setSelectedFile={setSelectedFile}
+      />
       <ConfirmationWindow 
         open={modalState.open}
         modalState={modalState}

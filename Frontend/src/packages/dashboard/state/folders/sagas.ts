@@ -30,12 +30,17 @@ function* addItemSaga({ payload }: { payload: actions.AddPayloadType }) {
       yield put(actions.addFolderItemAction(folderPayload))
       break;
     }
-
-    // case "File": {
-    //   const result = yield call(API.newFile, [payload.name]);
-    //   call(console.log, result)
-    //   break;
-    // }
+    case "File": {
+      const newId: string = yield call(API.newFile, payload.name);
+      // now put results to redux store
+      const filePayload: File = {
+        id: parseInt(newId),
+        name: payload.name,
+        type: payload.type,
+      }
+      yield put(actions.addFolderItemAction(filePayload))
+      break;
+    }
   }
 }
 

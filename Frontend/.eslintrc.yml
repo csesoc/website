@@ -14,5 +14,6 @@ parserOptions:
 plugins:
   - react
   - '@typescript-eslint'
-# rules:
+rules:
+  no-explicit-any: off
   

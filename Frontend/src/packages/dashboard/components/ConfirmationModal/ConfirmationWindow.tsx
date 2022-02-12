@@ -46,7 +46,6 @@ export default function ConfirmationWindow({open, modalState, setModalState}: Pr
           name: inputValue,
           type: "Folder",
         }
-        console.log("HERE")
         dispatch(addItemAction(folderPayload));
         break;
       }

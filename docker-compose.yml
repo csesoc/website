@@ -1,7 +1,6 @@
 version: "3.8"
 
 services:
-  # un comment these when the CMS can be ported to main
   frontend:
     container_name: Frontend
     build: 
