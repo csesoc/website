@@ -9,9 +9,9 @@ import (
 
 // Basic organisation of a response we will receieve from the API
 type Response struct {
-	Status  int
-	Message string
-	Reponse interface{}
+	Status   int
+	Message  string
+	Response interface{}
 }
 
 // This file contains a series of types defined to make writing http handlers
@@ -31,8 +31,8 @@ func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(status)
 		}
 		out := Response{
-			Status:  status,
-			Reponse: resp,
+			Status:   status,
+			Response: resp,
 		}
 
 		// advanced machine learning model that predicts a http response
@@ -40,25 +40,18 @@ func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		switch status {
 		case http.StatusBadRequest:
 			out.Message = "missing parameters (check documentation)"
-			break
 		case http.StatusMethodNotAllowed:
 			out.Message = "invalid method"
-			break
 		case http.StatusNotFound:
 			out.Message = "unable to find requested object"
-			break
 		case http.StatusNotAcceptable:
 			out.Message = "unable to preform requested operation"
-			break
 		case http.StatusInternalServerError:
 			out.Message = "somethings wrong I can feel it"
-			break
 		case http.StatusOK:
 			out.Message = "ok"
-			break
 		default:
 			out.Message = "..."
-			break
 		}
 		re, _ := json.Marshal(out)
 		w.Write(re)

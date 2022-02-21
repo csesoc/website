@@ -4,7 +4,7 @@
 // This window is rendered modally - i.e. it does not require a new viewport.
 // It contains a template selector + preview, as well as a title field.
 
-import { Button, TextField } from '@material-ui/core';
+import { Button, TextField } from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
 import TemplateSelector from './TemplateSelector';

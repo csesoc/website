@@ -4,48 +4,55 @@
 // Wraps the contents of a file stored on the CMS into its own
 // functional component, with hovering capabilities
 
-import React from "react";
+import React, { useState } from "react";
 import styled, {css} from 'styled-components';
 import Renamable from "./Renamable";
 
-interface Props {
+type Props = {
   name: string;
   id: number;
+  selectedFile: number | null;
+  setSelectedFile: (id: number) => void;
+}
+
+type styledProps = {
+  active: boolean;
 }
 
 // Carry over styled component from FileRenderer.tsx
-const IconContainer = styled.div`
-  width: 50px;
-  height: 100px;
-  background: grey;
+const IconContainer = styled.div<styledProps>`
+  --background-color: grey;
+  width: 55px;
+  height: 75px;
+  background: var(--background-color);
   
   display: flex;
   flex-direction: column;
-  margin: 20px;
   text-align: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+
+  border: ${props => props.active ? '3px solid red': '3px solid var(--background-color)'}
 `;
 
-interface HighlightProps {
-  active: boolean
-}
 
-// Styled component for file when it's hovered over
-const HoverImage = styled.img<HighlightProps>`
-  border: 5px solid #999999;
-  border-radius: 3px;
-  
-  ${props => props.active && css`
-    border-color: lightblue;
-  `}
-`
+function FileContainer({ name, id, selectedFile, setSelectedFile }: Props) {
+  const handleClick = () => {
+    setSelectedFile(id);
+  }
 
-function FileContainer({name, id}: Props) {
   return (
-    <>
-      <IconContainer>
-      </IconContainer>
+    <div style={{
+      display:"flex",
+      flexDirection:"column",
+      padding: "35px",
+    }}>
+      <IconContainer
+        onClick={handleClick}
+        active={selectedFile == id}
+      />
       <Renamable name={name} id={id} />
-    </>
+    </div>
   )
 }
 

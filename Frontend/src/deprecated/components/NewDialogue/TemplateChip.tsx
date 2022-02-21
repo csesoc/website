@@ -5,7 +5,7 @@
 // the description for the template.
 
 
-import { Avatar, Chip, Tooltip } from '@material-ui/core';
+import { Avatar, Chip, Tooltip } from '@mui/material';
 import React from 'react';
 
 

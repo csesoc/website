@@ -53,6 +53,7 @@ export function renameFileEntity(state: sliceState, action: PayloadAction<Rename
           name: newName,
         })
       }
+      // else
       return item;
     })
   }

@@ -1,5 +1,4 @@
 import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
-
 // local
 import * as API from '../../api/index';
 import * as actions from './actions';
@@ -18,15 +17,31 @@ function* initSaga() {
   }
 }
 
-function* addFolderItemSaga({ payload: folder } : { payload: Folder }) {
-  // todo call backend API
-  yield call(console.log, folder);
-}
-
-
-function* addFileItemSaga({ payload: file }: { payload: File }) {
-  // todo call backend API
-  yield call(console.log, file);
+function* addItemSaga({ payload }: { payload: actions.AddPayloadType }) {
+  switch(payload.type) {
+    case "Folder": {
+      const newId: string = yield call(API.newFolder, payload.name);
+      // now put results to redux store
+      const folderPayload: Folder = {
+        id: parseInt(newId),
+        name: payload.name,
+        type: payload.type,
+      }
+      yield put(actions.addFolderItemAction(folderPayload))
+      break;
+    }
+    case "File": {
+      const newId: string = yield call(API.newFile, payload.name);
+      // now put results to redux store
+      const filePayload: File = {
+        id: parseInt(newId),
+        name: payload.name,
+        type: payload.type,
+      }
+      yield put(actions.addFolderItemAction(filePayload))
+      break;
+    }
+  }
 }
 
 function* renameFileEntitySaga({ payload: renamePayload }: { payload: actions.RenamePayloadType }) {
@@ -50,8 +65,7 @@ function* traverseIntoFolderSaga({ payload: id }: { payload: number }) {
 export function* rootFoldersSaga() {
   // runs in parallel
   yield takeEvery(actions.initAction, initSaga);
-  yield takeEvery(actions.addFolderItemAction, addFolderItemSaga);
-  yield takeEvery(actions.addFileItemAction, addFileItemSaga);
+  yield takeEvery(actions.addItemAction, addItemSaga);
   yield takeEvery(actions.renameFileEntityAction, renameFileEntitySaga);
   yield takeEvery(actions.traverseIntoFolder, traverseIntoFolderSaga);
 }

@@ -3,6 +3,7 @@ import { JSONFileFormat } from "./types";
 
 // Converts a backend response to the File or Folder type
 export function toFileOrFolder(json: JSONFileFormat): FileEntity {
+  console.log(json)
   const {EntityID, EntityName, IsDocument} = json;
 
   return {

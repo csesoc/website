@@ -5,7 +5,12 @@ import { folderSelectors } from '../../state/folders/index';
 import FileContainer from './FileContainer';
 import FolderContainer from './FolderContainer';
 
-export default function Renderer(){
+type Props = {
+  selectedFile: number | null;
+  setSelectedFile: (id: number) => void;
+}
+
+export default function Renderer({ selectedFile, setSelectedFile }: Props){
   const folders = useSelector((state: RootState) => (
     folderSelectors.getFolderState(state)
   ));
@@ -29,16 +34,19 @@ export default function Renderer(){
               key={index}
               id={item.id}
               name={item.name}
+              selectedFile={selectedFile}
+              setSelectedFile={setSelectedFile}
             />
           )
         default:
           return;
       }
-      // else filecontainer
     })
   )
   return (
-    <div>
+    <div style={{
+      display: "flex",
+    }}>
       {renderItems()}
     </div>
   )

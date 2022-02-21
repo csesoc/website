@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Dialog, DialogContent, IconButton } from "@material-ui/core";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
+import { Dialog, DialogContent, IconButton } from "@mui/material";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
 import FileRenderer from 'src/deprecated/components/FileRenderer_OLD/FileRenderer';
@@ -279,7 +279,7 @@ const Dashboard: React.FC = () => {
   }
 
 	return (
-		<div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex' }}>
 			{/* <SideBar
 				onNewFile={newFile}
 				onNewFolder={newFolder}
@@ -296,9 +296,10 @@ const Dashboard: React.FC = () => {
 					</Dialog>
 					<DirectoryName>{getDirName()}</DirectoryName>
 					<IconButton
-						disabled={!hasParent()}
-						onClick={() => toParent()}
-						style={{ display: "inline-block", border: "1px solid grey" }}>
+                        disabled={!hasParent()}
+                        onClick={() => toParent()}
+                        style={{ display: "inline-block", border: "1px solid grey" }}
+                        size="large">
 						<ExpandLessIcon />
 					</IconButton>
 					<FileRenderer
@@ -312,7 +313,7 @@ const Dashboard: React.FC = () => {
 				</div>
 			)}
 		</div>
-	);
+    );
 };
 
 export default Dashboard;

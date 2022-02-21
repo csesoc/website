@@ -1,12 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import Button from '@material-ui/core/Button';
-import {
-  addFolderItemAction,
-  addFileItemAction 
-} from 'src/packages/dashboard/state/folders/actions';
-import { Folder, File } from 'src/packages/dashboard/state/folders/types';
+import Button from '@mui/material/Button';
 
 const Container = styled.div`
   width: 250px;
@@ -47,29 +42,26 @@ const SidebarButton = styled(Button) <SideBarButtonProps>`
     text-transform: none;
   }
 `
-const newFile: File = {
-  id: 1,
-  name: "hi",
-  type: "File",
-}
 
-const newFolder: Folder = {
-  id: 999,
-  name: "hi",
-  type: "Folder",
+type Props = {
+  setModalState: (state: {open: boolean, type: string}) => void;
 }
-
 
 // Wrapper component ${props => props.color}
-export default function SideBar () {
-  const dispatch = useDispatch();
-  // TODO
+export default function SideBar ({ setModalState }: Props) {
+
   const handleNewFile = () => {
-    dispatch(addFileItemAction(newFile))
+    setModalState({
+      open: true,
+      type: "file"
+    }); // sets modal to be open
   }
 
   const handleNewFolder = () => {
-    dispatch(addFolderItemAction(newFolder))
+    setModalState({
+      open: true,
+      type: "folder",
+    });
   }
 
   // TODO

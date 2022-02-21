@@ -1,20 +1,19 @@
 version: "3.8"
 
 services:
-  # un comment these when the CMS can be ported to main
-  # cms_frontend:
-  #   container_name: cms_frontend
-  #   build: 
-  #     context: ./Cms_frontend
-  #     args: 
-  #       BACKEND_URI: ${BACKEND_URI}
-  #   volumes:
-  #     # Note must include node_modules as a seperate volume
-  #     - '/app/node_modules'
-  #     - './Cms_frontend:/app'
-  #   stdin_open: true
-  #   ports:
-  #     - 3000:3000
+  frontend:
+    container_name: Frontend
+    build: 
+      context: ./Frontend
+      args: 
+        BACKEND_URI: ${BACKEND_URI}
+    volumes:
+      # Note must include node_modules as a seperate volume
+      - '/app/node_modules'
+      - './Frontend:/app'
+    stdin_open: true
+    ports:
+      - 3000:3000
   backend:
     container_name: go_backend
     build: ./Backend
