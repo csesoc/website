@@ -22,7 +22,6 @@
     "baseUrl": "."
   },
   "include": [
-    "src",
-    "src/**/*.ts"
+    "src"
   ]
 }

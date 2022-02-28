@@ -1,21 +1,20 @@
-import React from "react";
-// import { generateStories } from 'src/cse-ui-kit/helpers/Storybook';
+import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
+
 import Button from './Button';
 
-// const stories = generateStories("Buttons");
-
-// stories.add("Buttons", () => {
-//   return (
-//     <div>
-//       <h1>this is a button</h1>
-//       <Button/>
-//     </div>
-//   )
-// })
-
+// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: "button story",
+  title: 'CSE-UIKIT/Button',
   component: Button,
-}
+  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
+  argTypes: {
+    backgroundColor: { control: 'color' },
+  },
+} as ComponentMeta<typeof Button>;
 
-const Template = (args: any) => <Button {...args}/>
+// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
+const Template: ComponentStory<typeof Button> = (args) => <Button {...args}>hello</Button>;
+
+export const Primary = Template.bind({});
+// More on args: https://storybook.js.org/docs/react/writing-stories/args
