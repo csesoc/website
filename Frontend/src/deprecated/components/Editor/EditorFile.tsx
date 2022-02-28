@@ -60,7 +60,7 @@ const EditorFile: React.FC<EditorProps> = ({ editorState, setEditorState }) => {
   const handleKeyCommand = (command: string, state: EditorState) => {
     const newState = RichUtils.handleKeyCommand(state, command);
 
-    if (newState) {
+    if (newState != null) {
       setEditorState(newState);
       return 'handled';
     }

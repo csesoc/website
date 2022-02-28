@@ -20,7 +20,7 @@ type DependencyProvider struct{}
 // method not reflection hell
 func (DependencyProvider) GetDependency(t reflect.Type) interface{} {
 	switch t {
-	case reflect.TypeOf((*repositories.FilesystemRepository)(nil)):
+	case reflect.TypeOf((*repositories.IFilesystemRepository)(nil)):
 		return repositories.GetRepository(repositories.FILESYSTEM)
 	case reflect.TypeOf((*repositories.IGroupsRepository)(nil)):
 		return repositories.GetRepository(repositories.GROUPS)
