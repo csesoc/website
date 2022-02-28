@@ -43,6 +43,6 @@ func TestEntityInfo(t *testing.T) {
 		EntityID:   1,
 		EntityName: "random name",
 		IsDocument: false,
-		Children:   []endpoints.EntityInfo,
+		Children:   []endpoints.EntityInfo{},
 	})
 }
