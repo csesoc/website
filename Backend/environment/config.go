@@ -22,3 +22,7 @@ func GetDBPassword() string {
 func GetDB() string {
 	return os.Getenv("POSTGRES_DB")
 }
+
+func GetDBPort() string {
+	return os.Getenv("PG_PORT")
+}

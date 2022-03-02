@@ -10,6 +10,9 @@ on:
   pull_request:
     branches: [ main, prototype ]
 
+env:
+  PG_PORT: 5432
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   testing:
