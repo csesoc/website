@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"testing"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
 
-	"github.com/jackc/pgtype"
+	"github.com/jackc/pgx/v4"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,6 +37,8 @@ func TestRootInsert(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ==== Test setup ====
+		root, _ := repo.GetRoot()
+
 		newDir, _ := repo.CreateEntry(repositories.FilesystemEntry{
 			LogicalName: "test_directory", ParentFileID: repositories.FILESYSTEM_ROOT_ID,
 			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: false})
@@ -58,18 +59,14 @@ func TestRootInsert(t *testing.T) {
 			assert.Equal(docCount, 1)
 		}
 
-		expectedChildren := pgtype.Hstore{}
-		if assert.Nil(testContext.Query("SELECT Children FROM filesystem WHERE parent IS NULL", []interface{}{}, &expectedChildren)) {
-			if _, exists := expectedChildren.Map[strconv.Itoa(int(newDir.EntityID))]; !exists {
-				assert.True(false)
-			}
+		if rows, err := testContext.QueryRow("SELECT EntityID FROM filesystem WHERE Parent = $1", []interface{}{root.EntityID}); assert.Nil(err) {
+			childrenArr := scanIntArray(rows)
+			assert.Contains(childrenArr, newDir.EntityID)
 		}
 
-		expectedChildren = pgtype.Hstore{}
-		if assert.Nil(testContext.Query("SELECT Children FROM filesystem WHERE EntityID = $1", []interface{}{newDir.EntityID}, &expectedChildren)) {
-			if _, exists := expectedChildren.Map[strconv.Itoa(newDoc.EntityID)]; !exists {
-				assert.Fail("failed!")
-			}
+		if rows, err := testContext.QueryRow("SELECT EntityID FROM filesystem WHERE Parent = $1", []interface{}{newDir.EntityID}); assert.Nil(err) {
+			childrenArr := scanIntArray(rows)
+			assert.Contains(childrenArr, newDoc.EntityID)
 		}
 	})
 }
@@ -226,4 +223,15 @@ func TestEntityChildren(t *testing.T) {
 		assert.True(len(d4_kids.ChildrenIDs) == 9)
 		assert.True(len(de_kids.ChildrenIDs) == 0)
 	})
+}
+
+func scanIntArray(rows pgx.Rows) []int {
+	arr := []int{}
+	for rows.Next() {
+		var x int
+		rows.Scan(&x)
+		arr = append(arr, x)
+	}
+
+	return arr
 }

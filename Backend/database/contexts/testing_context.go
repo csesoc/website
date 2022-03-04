@@ -41,6 +41,12 @@ func (ctx *TestingContext) Query(query string, sqlArgs []interface{}, resultOutp
 	return ctx.activeTransaction.QueryRow(context.Background(), query, sqlArgs...).Scan(resultOutput...)
 }
 
+func (ctx *TestingContext) QueryRow(query string, sqlArgs []interface{}) (pgx.Rows, error) {
+	ctx.verifyEnvironment()
+	return ctx.activeTransaction.Query(context.Background(), query, sqlArgs...)
+
+}
+
 func (ctx *TestingContext) Exec(query string, sqlArgs []interface{}) error {
 	ctx.verifyEnvironment()
 	_, err := ctx.activeTransaction.Exec(context.Background(), query, sqlArgs...)

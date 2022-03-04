@@ -3,9 +3,6 @@ package repositories
 
 import (
 	"errors"
-	"strconv"
-
-	"github.com/jackc/pgtype"
 )
 
 // Implements IRepositoryInterface
@@ -16,21 +13,33 @@ type FilesystemRepository struct {
 // We really should use an ORM jesus this is ugly
 func (rep FilesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
 	entity := FilesystemEntry{}
-	children := pgtype.Hstore{}
+	children := []int{}
 
 	err := rep.ctx.Query(query,
 		input,
 		&entity.EntityID, &entity.LogicalName, &entity.IsDocument, &entity.IsPublished,
-		&entity.CreatedAt, &entity.OwnerUserId, nullableID{&entity.ParentFileID}, &children)
+		&entity.CreatedAt, &entity.OwnerUserId, nullableID{&entity.ParentFileID})
 	if err != nil {
-		return FilesystemEntry{}, errors.New("failed to read from database")
+		return FilesystemEntry{}, err
 	}
 
-	for k := range children.Map {
-		a, _ := strconv.Atoi(k)
-		entity.ChildrenIDs = append(entity.ChildrenIDs, a)
+	rows, err := rep.ctx.QueryRow("SELECT EntityID FROM filesystem WHERE Parent = $1", []interface{}{entity.EntityID})
+	if err != nil {
+		return FilesystemEntry{}, err
 	}
 
+	// finally scan in the rows
+	for rows.Next() {
+		var x int
+		err := rows.Scan(&x)
+		if err != nil {
+			return FilesystemEntry{}, err
+		}
+
+		children = append(children, x)
+	}
+
+	entity.ChildrenIDs = children
 	return entity, nil
 }
 
