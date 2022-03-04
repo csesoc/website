@@ -29,4 +29,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: type check
-        run: cd Frontend && npm run types
+        run: cd Frontend && npm install && npm run types
