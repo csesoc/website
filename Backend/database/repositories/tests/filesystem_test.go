@@ -239,10 +239,12 @@ func TestGetIDWithPath(t *testing.T) {
 	testContext.RunTest(func() {
 		// Test setup
 		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, repositories.FILESYSTEM_ROOT_ID))
-
+		currentDirID := dir1.EntityID
 		for x := 1; x < 3; x++ {
-			repo.CreateEntry(getEntity("cool_doc"+fmt.Sprint(x), repositories.GROUPS_ADMIN, false, dir1.EntityID))
+			newDir, _ := repo.CreateEntry(getEntity("cool_doc"+fmt.Sprint(x), repositories.GROUPS_ADMIN, false, currentDirID))
+			currentDirID = newDir.EntityID
 		}
+
 		child2id, _ := repo.GetIDWithPath("/d1/cool_doc1/cool_doc2")
 		child1id, _ := repo.GetIDWithPath("/d1/cool_doc1")
 		child2, _ := repo.GetEntryWithID(child2id)
