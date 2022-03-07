@@ -134,14 +134,6 @@ BEGIN
   DELETE FROM filesystem WHERE EntityID = entityIDP;
 END $$;
 
-/* Another utility procedure */
-DROP FUNCTION IF EXISTS search_entity;
-CREATE OR REPLACE FUNCTION search_entity (searchTermP VARCHAR) RETURNS filesystem.EntityID
-LANGUAGE plpgsql
-AS $$
-DECLARE
-  searchResults filesystem.EntityID%type;
-
 
 /* Insert dummy data */
 DO $$
