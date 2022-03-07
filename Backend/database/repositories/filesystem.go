@@ -86,7 +86,7 @@ func (rep FilesystemRepository) GetIDWithPath(path string) (int, error) {
 	parentNames := strings.Split(path, "/")
 
 	// Determine main parent
-	parent, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = %1", parentNames[0])
+	parent, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = $1", parentNames[0])
 	if err == nil {
 		return -1, err
 	}
