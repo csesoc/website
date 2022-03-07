@@ -225,6 +225,39 @@ func TestEntityChildren(t *testing.T) {
 	})
 }
 
+func TestGetIDWithPath(t *testing.T) {
+	assert := assert.New(t)
+	getEntity := func(name string, permissions int, isDocument bool, parent int) repositories.FilesystemEntry {
+		return repositories.FilesystemEntry{
+			LogicalName:  name,
+			OwnerUserId:  permissions,
+			ParentFileID: parent,
+			IsDocument:   isDocument,
+		}
+	}
+
+	testContext.RunTest(func() {
+		// Test setup
+		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, repositories.FILESYSTEM_ROOT_ID))
+
+		for x := 1; x < 3; x++ {
+			repo.CreateEntry(getEntity("cool_doc"+fmt.Sprint(x), repositories.GROUPS_ADMIN, false, dir1.EntityID))
+		}
+		child2id, _ := repo.GetIDWithPath("/d1/cool_doc1/cool_doc2")
+		child1id, _ := repo.GetIDWithPath("/d1/cool_doc1")
+		child2, _ := repo.GetEntryWithID(child2id)
+		child1, _ := repo.GetEntryWithID(child1id)
+		_, error1 := repo.GetIDWithPath("/d1/cool_doc2/cool_doc1")
+		_, error2 := repo.GetIDWithPath("/d1/cool_doc1/cool_doc2/cool_doc1")
+
+		assert.True(error1 != nil)
+		assert.True(error2 != nil)
+		assert.True(child2.ParentFileID == child1.EntityID)
+		assert.True(child1.ParentFileID == dir1.EntityID)
+	})
+
+}
+
 func scanIntArray(rows pgx.Rows) []int {
 	arr := []int{}
 	for rows.Next() {

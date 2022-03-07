@@ -3,6 +3,7 @@ package repositories
 
 import (
 	"errors"
+	"strings"
 )
 
 // Implements IRepositoryInterface
@@ -78,6 +79,29 @@ func (rep FilesystemRepository) GetRoot() (FilesystemEntry, error) {
 
 func (rep FilesystemRepository) GetEntryWithParentID(ID int) (FilesystemEntry, error) {
 	return rep.query("SELECT * FROM filesystem WHERE Parent = $1", ID)
+}
+
+func (rep FilesystemRepository) GetIDWithPath(path string) (int, error) {
+	// I could do this with one query, where I query the repository for all files in parentNames and process that here
+	parentNames := strings.Split(path, "/")
+
+	// Determine main parent
+	parent, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = %1", parentNames[0])
+	if err == nil {
+		return -1, err
+	}
+
+	// Loop through children
+	for i := 1; i < len(parentNames); i++ {
+		child, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = $1 AND Parent = $2", parentNames[i], parent.EntityID)
+		if err == nil {
+			return -1, err
+		}
+
+		parent = child
+	}
+
+	return parent.EntityID, err
 }
 
 func (rep FilesystemRepository) DeleteEntryWithID(ID int) error {
