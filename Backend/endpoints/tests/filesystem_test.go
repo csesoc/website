@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"log"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -66,10 +65,11 @@ func TestCreateNewEntity(t *testing.T) {
 
 	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
 	mockFileRepo.EXPECT().CreateEntry(entityToCreate).Return(repositories.FilesystemEntry{
-		EntityID:    2,
-		LogicalName: "random name",
-		IsDocument:  false,
-		ChildrenIDs: []int{},
+		EntityID:     2,
+		LogicalName:  "random name",
+		IsDocument:   false,
+		ChildrenIDs:  []int{},
+		ParentFileID: 1,
 	}, nil).Times(1)
 
 	mockDepFactory := mocks.NewMockDependencyFactory(controller)
@@ -83,7 +83,7 @@ func TestCreateNewEntity(t *testing.T) {
 
 	req, err := http.NewRequest("POST", "/filesystem/info", strings.NewReader(data.Encode())) // URL-encoded payload
 	if err != nil {
-		log.Fatal(err)
+		t.Fail()
 	}
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -117,7 +117,7 @@ func TestDeleteFilesystemEntity(t *testing.T) {
 
 	req, err := http.NewRequest("POST", "/filesystem/info", strings.NewReader(data.Encode())) // URL-encoded payload
 	if err != nil {
-		log.Fatal(err)
+		t.Fail()
 	}
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
