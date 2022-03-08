@@ -58,7 +58,6 @@ CREATE TABLE filesystem (
 
   OwnedBy       INT,
   Parent        INT REFERENCES filesystem(EntityID) DEFAULT NULL,
-  Children      hstore DEFAULT NULL,
 
   /* FK Constraint */
   CONSTRAINT fk_owner FOREIGN KEY (OwnedBy) 
@@ -77,18 +76,13 @@ BEGIN
   SELECT groups.UID INTO randomGroup FROM groups WHERE Name = 'admin'::VARCHAR;
 
   /* Insert the root directory */
-  INSERT INTO filesystem (LogicalName, OwnedBy, Children)
-    VALUES ('root', randomGroup, ''::hstore);
+  INSERT INTO filesystem (LogicalName, OwnedBy)
+    VALUES ('root', randomGroup);
   SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE LogicalName = 'root'::VARCHAR;
 
   /* insert "has parent" constraint*/
   EXECUTE 'ALTER TABLE filesystem 
     ADD CONSTRAINT has_parent CHECK (Parent IS NOT NULL OR EntityID = '||rootID||')';
-  /* Assert that the entity isnt a document with directory properties
-    or vice-versa*/                    
-  EXECUTE 'ALTER TABLE filesystem
-      ADD CONSTRAINT valid_entity CHECK ((IsDocument AND Children IS NULL) 
-                                  OR (NOT IsDocument AND Children IS NOT NULL AND NOT IsPublished) OR EntityID = '||rootID||')';
 END $$;
 
 
@@ -99,24 +93,20 @@ LANGUAGE plpgsql
 AS $$
 DECLARE
   newEntityID filesystem.EntityID%type;
-  childSet hstore := NULL;
+  parentIsDocument BOOLEAN := (SELECT IsDocument FROM filesystem WHERE EntityID = parentP LIMIT 1);
 BEGIN
-  /* If we are inserting a new directory just update the childset to an empty hstore instead */
-  IF NOT isDocumentP THEN
-    childSet := ''::hstore;
-  END IF;
+  IF parentIsDocument THEN
+    /* We shouldnt be delcaring that a document is our parent */
+    RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'cannot make parent a document';
+  END If;
 
   WITH newEntity AS (
-    INSERT INTO filesystem (LogicalName, IsDocument, OwnedBy, Parent, Children)
-      VALUES (logicalNameP, isDocumentP, ownedByP, parentP, childSet)
+    INSERT INTO filesystem (LogicalName, IsDocument, OwnedBy, Parent)
+      VALUES (logicalNameP, isDocumentP, ownedByP, parentP)
       RETURNING EntityID
   )
+
   SELECT newEntity.EntityID INTO newEntityID FROM newEntity;
-
-  UPDATE filesystem
-    SET Children = Children || (newEntityID::TEXT || '=>"."')::hstore
-  WHERE EntityID = parentP;
-
   RETURN newEntityID;
 END $$;
 
@@ -126,9 +116,8 @@ CREATE OR REPLACE FUNCTION delete_entity (entityIDP INT) RETURNS void
 LANGUAGE plpgsql
 AS $$
 DECLARE
-  numKids INT := array_length(akeys((SELECT Children FROM filesystem WHERE EntityID = entityIDP)), 1);
-  parentP INT := (SELECT Parent FROM filesystem WHERE EntityID = entityIDP);
-  isRoot  BOOLEAN := (SELECT Parent FROM filesystem WHERE EntityID = entityIDP) IS NULL;
+  numKids INT := (SELECT COUNT(EntityID) FROM filesystem WHERE Parent = entityIDP);
+  isRoot  BOOLEAN := ((SELECT Parent FROM filesystem WHERE EntityID = entityIDP) IS NULL);
 BEGIN
   /* If this is a directory and has kids raise an error */
   IF numKids > 0
@@ -143,8 +132,6 @@ BEGIN
   END IF;
 
   DELETE FROM filesystem WHERE EntityID = entityIDP;
-  UPDATE filesystem SET Children = Children - entityIDP::TEXT
-  WHERE EntityID = parentP;
 END $$;
 
 /* Insert dummy data */

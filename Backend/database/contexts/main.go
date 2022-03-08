@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"cms.csesoc.unsw.edu.au/environment"
+	"github.com/jackc/pgx/v4"
 )
 
 // Constants regarding database connections
@@ -24,6 +25,7 @@ const TEST_DB_EXPIRY_TIME = 180
 // Any connection to the database implements the database context interface
 type DatabaseContext interface {
 	Query(query string, sqlArgs []interface{}, resultOutput ...interface{}) error
+	QueryRow(query string, sqlArgs []interface{}) (pgx.Rows, error)
 	Exec(query string, sqlArgs []interface{}) error
 	Close()
 }
