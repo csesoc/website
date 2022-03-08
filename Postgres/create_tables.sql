@@ -20,7 +20,7 @@ CREATE TABLE person (
   UID serial PRIMARY KEY,
   Email VARCHAR(50) UNIQUE NOT NULL,
   First_name VARCHAR(50) NOT NULL,
-  Password VARCHAR(50) NOT NULL,
+  Password bytea NOT NULL,
   isOfGroup int,
 
   CONSTRAINT fk_AccessLevel FOREIGN KEY (isOfGroup)
