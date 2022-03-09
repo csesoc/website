@@ -20,8 +20,8 @@ CREATE TABLE person (
   UID serial PRIMARY KEY,
   Email VARCHAR(50) UNIQUE NOT NULL,
   First_name VARCHAR(50) NOT NULL,
-  Password text NOT NULL,
-  isOfGroup int,
+  Password CHAR(64) NOT NULL,
+  isOfGroup INT,
 
   CONSTRAINT fk_AccessLevel FOREIGN KEY (isOfGroup)
     REFERENCES groups(UID),
@@ -38,7 +38,7 @@ AS $$
 DECLARE
 BEGIN
   INSERT INTO person (Email, First_name, Password, isOfGroup)
-  VALUES (email, name, password, 2);
+  VALUES (email, name, encode(sha256(password::BYTEA), 'hex'), 2);
 END $$;
 
 /* inserting two accounts into db */
