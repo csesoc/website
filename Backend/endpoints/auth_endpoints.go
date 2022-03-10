@@ -10,6 +10,8 @@ user exists
 package endpoints
 
 import (
+	"crypto/sha256"
+
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/environment"
 	"cms.csesoc.unsw.edu.au/internal/session"
@@ -98,8 +100,7 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request, df DependencyFactory)
 	}
 }
 
-// TODO: hash function
 func (u *User) hashPassword() string {
-	// TODO: currently does not hash the password
-	return u.Password
+	hashedBytes := sha256.Sum256([]byte(u.Password))
+	return string(hashedBytes[:])
 }

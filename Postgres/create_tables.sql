@@ -20,8 +20,8 @@ CREATE TABLE person (
   UID serial PRIMARY KEY,
   Email VARCHAR(50) UNIQUE NOT NULL,
   First_name VARCHAR(50) NOT NULL,
-  Password VARCHAR(50) NOT NULL,
-  isOfGroup int,
+  Password CHAR(64) NOT NULL,
+  isOfGroup INT,
 
   CONSTRAINT fk_AccessLevel FOREIGN KEY (isOfGroup)
     REFERENCES groups(UID),
@@ -38,14 +38,14 @@ AS $$
 DECLARE
 BEGIN
   INSERT INTO person (Email, First_name, Password, isOfGroup)
-  VALUES (email, name, password, 2);
+  VALUES (email, name, encode(sha256(password::BYTEA), 'hex'), 2);
 END $$;
 
 /* inserting two accounts into db */
 SELECT create_normal_user('z0000000@ad.unsw.edu.au', 'adam', 'password');
 SELECT create_normal_user('john.smith@gmail.com', 'john', 'password');
 SELECT create_normal_user('jane.doe@gmail.com', 'jane', 'password');
-  
+
 
 DROP TABLE IF EXISTS filesystem;
 CREATE TABLE filesystem (
