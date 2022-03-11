@@ -4,7 +4,7 @@ import { Modal, Typography, TextField, Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
 
 // local imports
-import Button from 'src/cse-ui-kit/Buttons/Button';
+import Button from '../../../../cse-ui-kit/Buttons/Button';
 import {
   addItemAction,
   AddPayloadType
