@@ -3,6 +3,7 @@ package repositories
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -19,16 +20,16 @@ func (rep FilesystemRepository) query(query string, input ...interface{}) (Files
 	err := rep.ctx.Query(query,
 		input,
 		&entity.EntityID, &entity.LogicalName, &entity.IsDocument, &entity.IsPublished,
-		&entity.CreatedAt, &entity.OwnerUserId, nullableID{&entity.ParentFileID})
+		&entity.CreatedAt, &entity.OwnerUserId, &entity.ParentFileID)
 	if err != nil {
 		return FilesystemEntry{}, err
 	}
+	fmt.Println("query: ", entity)
 
 	rows, err := rep.ctx.QueryRow("SELECT EntityID FROM filesystem WHERE Parent = $1", []interface{}{entity.EntityID})
 	if err != nil {
 		return FilesystemEntry{}, err
 	}
-
 	// finally scan in the rows
 	for rows.Next() {
 		var x int
@@ -57,11 +58,11 @@ func (rep FilesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEnt
 	}
 
 	var newID int
+	fmt.Println("Input: ", file)
 	err := rep.ctx.Query("SELECT new_entity($1, $2, $3, $4)", []interface{}{file.ParentFileID, file.LogicalName, file.OwnerUserId, file.IsDocument}, &newID)
 	if err != nil {
 		return FilesystemEntry{}, err
 	}
-
 	return rep.GetEntryWithID(newID)
 }
 
@@ -70,11 +71,13 @@ func (rep FilesystemRepository) GetEntryWithID(ID int) (FilesystemEntry, error) 
 		return rep.GetRoot()
 	}
 
-	return rep.query("SELECT * FROM filesystem WHERE EntityID = $1", ID)
+	result, err := rep.query("SELECT * FROM filesystem WHERE EntityID = $1", ID)
+	fmt.Println("Output:", result)
+	return result, err
 }
 
 func (rep FilesystemRepository) GetRoot() (FilesystemEntry, error) {
-	return rep.query("SELECT * FROM filesystem WHERE Parent IS NULL")
+	return rep.query("SELECT * FROM filesystem WHERE Parent = 0")
 }
 
 func (rep FilesystemRepository) GetEntryWithParentID(ID int) (FilesystemEntry, error) {
@@ -84,17 +87,20 @@ func (rep FilesystemRepository) GetEntryWithParentID(ID int) (FilesystemEntry, e
 func (rep FilesystemRepository) GetIDWithPath(path string) (int, error) {
 	// I could do this with one query, where I query the repository for all files in parentNames and process that here
 	parentNames := strings.Split(path, "/")
-
-	// Determine main parent
-	parent, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = $1", parentNames[0])
-	if err == nil {
-		return -1, err
+	if parentNames[0] != "" {
+		return -1, errors.New("path must start with /")
 	}
 
+	// Determine main parent
+	parent, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = $1", parentNames[1])
+	if err != nil {
+		return -1, err
+	}
 	// Loop through children
-	for i := 1; i < len(parentNames); i++ {
+	for i := 2; i < len(parentNames); i++ {
+		fmt.Println(parentNames[i])
 		child, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = $1 AND Parent = $2", parentNames[i], parent.EntityID)
-		if err == nil {
+		if err != nil {
 			return -1, err
 		}
 

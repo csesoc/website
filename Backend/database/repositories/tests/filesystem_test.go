@@ -23,7 +23,7 @@ func TestRootRetrieval(t *testing.T) {
 	assert := assert.New(t)
 	testContext.RunTest(func() {
 		root, err := repo.GetRoot()
-
+		t.Log(root, err)
 		if assert.Nil(err) {
 			assert.Equal("root", root.LogicalName)
 			assert.False(root.IsDocument)
@@ -228,6 +228,7 @@ func TestEntityChildren(t *testing.T) {
 func TestGetIDWithPath(t *testing.T) {
 	assert := assert.New(t)
 	getEntity := func(name string, permissions int, isDocument bool, parent int) repositories.FilesystemEntry {
+		fmt.Println("created file with parent", parent)
 		return repositories.FilesystemEntry{
 			LogicalName:  name,
 			OwnerUserId:  permissions,
@@ -239,10 +240,11 @@ func TestGetIDWithPath(t *testing.T) {
 	testContext.RunTest(func() {
 		// Test setup
 		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, repositories.FILESYSTEM_ROOT_ID))
-		currentDirID := dir1.EntityID
+		currentDir := dir1
 		for x := 1; x < 3; x++ {
-			newDir, _ := repo.CreateEntry(getEntity("cool_doc"+fmt.Sprint(x), repositories.GROUPS_ADMIN, false, currentDirID))
-			currentDirID = newDir.EntityID
+			newDir, _ := repo.CreateEntry(getEntity("cool_doc"+fmt.Sprint(x), repositories.GROUPS_ADMIN, false, currentDir.EntityID))
+			t.Log(newDir)
+			currentDir = newDir
 		}
 
 		child2id, _ := repo.GetIDWithPath("/d1/cool_doc1/cool_doc2")
@@ -254,10 +256,21 @@ func TestGetIDWithPath(t *testing.T) {
 
 		assert.True(error1 != nil)
 		assert.True(error2 != nil)
-		assert.True(child2.ParentFileID == child1.EntityID)
-		assert.True(child1.ParentFileID == dir1.EntityID)
+		t.Log(child1.ChildrenIDs, child2.EntityID, dir1.ChildrenIDs, child1.EntityID)
+		t.Log(dir1)
+		assert.True(contains(child1.ChildrenIDs, child2.EntityID))
+		assert.True(contains(dir1.ChildrenIDs, child1.EntityID))
 	})
 
+}
+
+func contains(s []int, e int) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
 
 func scanIntArray(rows pgx.Rows) []int {
