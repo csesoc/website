@@ -17,8 +17,8 @@ const App: React.FC = () => {
       <Provider store={GlobalStore}>
         <Router>
           <Switch>
-            <Route exact path="/" component={Dashboard}/>
-            <Route exact path="/editor" component={Editor}/>
+            <Route path="/" element={<Dashboard/>}/>
+            <Route path="/editor" element={<Editor/>}/>
           </Switch>
         </Router>
       </Provider>
