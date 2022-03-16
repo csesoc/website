@@ -78,7 +78,7 @@
     "@storybook/builder-webpack5": "^6.4.18",
     "@storybook/manager-webpack5": "^6.4.18",
     "@storybook/node-logger": "^6.4.18",
-    "@storybook/preset-create-react-app": "^4.0.0",
+    "@storybook/preset-create-react-app": "^4.0.2",
     "@storybook/react": "^6.4.18",
     "@types/react-router-dom": "^5.1.8",
     "@types/styled-components": "^5.1.13",
