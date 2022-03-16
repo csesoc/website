@@ -26,7 +26,6 @@
 # End of https://www.toptal.com/developers/gitignore/api/go
 
 node_modules
-package-lock.json
 
 # ignore compiled main go file
 Backend/main
