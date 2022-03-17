@@ -3,7 +3,6 @@ package repositories
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 )
 
@@ -24,7 +23,6 @@ func (rep FilesystemRepository) query(query string, input ...interface{}) (Files
 	if err != nil {
 		return FilesystemEntry{}, err
 	}
-	fmt.Println("query: ", entity)
 
 	rows, err := rep.ctx.QueryRow("SELECT EntityID FROM filesystem WHERE Parent = $1", []interface{}{entity.EntityID})
 	if err != nil {
@@ -58,7 +56,6 @@ func (rep FilesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEnt
 	}
 
 	var newID int
-	fmt.Println("Input: ", file)
 	err := rep.ctx.Query("SELECT new_entity($1, $2, $3, $4)", []interface{}{file.ParentFileID, file.LogicalName, file.OwnerUserId, file.IsDocument}, &newID)
 	if err != nil {
 		return FilesystemEntry{}, err
@@ -72,12 +69,12 @@ func (rep FilesystemRepository) GetEntryWithID(ID int) (FilesystemEntry, error) 
 	}
 
 	result, err := rep.query("SELECT * FROM filesystem WHERE EntityID = $1", ID)
-	fmt.Println("Output:", result)
 	return result, err
 }
 
 func (rep FilesystemRepository) GetRoot() (FilesystemEntry, error) {
-	return rep.query("SELECT * FROM filesystem WHERE Parent = 0")
+	// Root is currently set to ID 1
+	return rep.query("SELECT * FROM filesystem WHERE Parent = 1")
 }
 
 func (rep FilesystemRepository) GetEntryWithParentID(ID int) (FilesystemEntry, error) {
@@ -98,7 +95,6 @@ func (rep FilesystemRepository) GetIDWithPath(path string) (int, error) {
 	}
 	// Loop through children
 	for i := 2; i < len(parentNames); i++ {
-		fmt.Println(parentNames[i])
 		child, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = $1 AND Parent = $2", parentNames[i], parent.EntityID)
 		if err != nil {
 			return -1, err
