@@ -9,7 +9,7 @@ require (
 	github.com/gorilla/schema v1.2.0
 	github.com/gorilla/sessions v1.2.1
 	github.com/gorilla/websocket v1.5.0
-	github.com/jackc/pgx/v4 v4.13.0
+	github.com/jackc/pgx/v4 v4.15.0
 	github.com/lib/pq v1.10.4
 	github.com/ory/dockertest v3.3.5+incompatible
 	github.com/rs/cors v1.8.2
@@ -29,13 +29,13 @@ require (
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/gotestyourself/gotestyourself v2.2.0+incompatible // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
-	github.com/jackc/pgconn v1.10.0 // indirect
+	github.com/jackc/pgconn v1.11.0 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
-	github.com/jackc/pgproto3/v2 v2.1.1 // indirect
+	github.com/jackc/pgproto3/v2 v2.2.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
 	github.com/jackc/pgtype v1.10.0 // indirect
-	github.com/jackc/puddle v1.1.3 // indirect
+	github.com/jackc/puddle v1.2.1 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/opencontainers/runc v1.0.2 // indirect
