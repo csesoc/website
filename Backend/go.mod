@@ -14,7 +14,7 @@ require (
 	github.com/ory/dockertest v3.3.5+incompatible
 	github.com/rs/cors v1.7.0
 	github.com/sergi/go-diff v1.2.0
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.1
 )
 
 require (
