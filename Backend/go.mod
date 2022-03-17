@@ -12,7 +12,7 @@ require (
 	github.com/jackc/pgx/v4 v4.13.0
 	github.com/lib/pq v1.10.3
 	github.com/ory/dockertest v3.3.5+incompatible
-	github.com/rs/cors v1.7.0
+	github.com/rs/cors v1.8.2
 	github.com/sergi/go-diff v1.2.0
 	github.com/stretchr/testify v1.7.1
 )
