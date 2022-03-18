@@ -38,6 +38,5 @@ const Template: ComponentStory<typeof BoldButton> = (args) =>
 export const Primary = Template.bind({});
 Primary.args = {
   background: "#E2E1E7",
-  size: "45px",
-  corner: "3px"
+  size: "45px"
 }

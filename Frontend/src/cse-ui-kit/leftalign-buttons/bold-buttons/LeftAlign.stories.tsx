@@ -38,6 +38,5 @@ const Template: ComponentStory<typeof LeftAlignButton> = (args) =>
 export const Primary = Template.bind({});
 Primary.args = {
   background: "#FFFFFF",
-  size: "45px",
-  corner: "3px"
+  size: "45px"
 }

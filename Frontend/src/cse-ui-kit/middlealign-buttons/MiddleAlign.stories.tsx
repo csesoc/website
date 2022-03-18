@@ -38,6 +38,5 @@ const Template: ComponentStory<typeof MiddleAlignButton> = (args) =>
 export const Primary = Template.bind({});
 Primary.args = {
   background: "#2B3648",
-  size: "45px",
-  corner: "3px"
+  size: "45px"
 }
