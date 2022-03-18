@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Provider } from 'react-redux';
 import { GlobalStore } from 'src/redux-state/index';
 
@@ -16,10 +16,10 @@ const App: React.FC = () => {
     <div className="App">
       <Provider store={GlobalStore}>
         <Router>
-          <Switch>
+          <Routes>
             <Route path="/" element={<Dashboard/>}/>
             <Route path="/editor" element={<Editor/>}/>
-          </Switch>
+          </Routes>
         </Router>
       </Provider>
     </div>
