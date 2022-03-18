@@ -31,12 +31,13 @@ const Template: ComponentStory<typeof BoldButton> = (args) =>
     }}
   >
     Bold Button
-    <BoldButton {...args}><Bold height={parseInt(args.size)*0.55} width={parseInt(args.size)*0.55}/></BoldButton>
+    <BoldButton {...args}><Bold height={parseInt(args.size)*0.8} width={parseInt(args.size)*0.8}/></BoldButton>
   </div>
 )
 
 export const Primary = Template.bind({});
 Primary.args = {
   background: "#E2E1E7",
-  size: "45px"
+  size: "45px",
+  corner: "3px"
 }

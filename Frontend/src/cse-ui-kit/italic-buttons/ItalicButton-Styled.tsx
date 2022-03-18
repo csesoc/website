@@ -17,9 +17,11 @@ export const StyledButton = styled.div<buttonProps>`
 
   &:hover {
     background: #EFEEF3;
+    transform: scale(1.04);
   }
   &:active {
     background: #B7C3FF;
+    transform: scale(0.96);
   }
 
   cursor: pointer;
