@@ -31,12 +31,13 @@ const Template: ComponentStory<typeof ItalicButton> = (args) =>
     }}
   >
     Italic Button
-    <ItalicButton {...args}><Italic height={parseInt(args.size)*0.55} width={parseInt(args.size)*0.55}/></ItalicButton>
+    <ItalicButton {...args}><Italic height={parseInt(args.size)*0.8} width={parseInt(args.size)*0.8}/></ItalicButton>
   </div>
 )
 
 export const Primary = Template.bind({});
 Primary.args = {
   background: "#E2E1E7",
-  size: "45px"
+  size: "45px",
+  corner: "3px"
 }

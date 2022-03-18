@@ -3,6 +3,7 @@ import styled from "styled-components";
 export type buttonProps = {
   background?: string;
   size: string;
+  corner?: string;
 }
 export const StyledButton = styled.div<buttonProps>`
   height: ${props => props.size };
@@ -13,7 +14,7 @@ export const StyledButton = styled.div<buttonProps>`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 3px;
+  border-radius: ${props => props.corner };
 
   &:hover {
     background: #EFEEF3;
@@ -21,6 +22,7 @@ export const StyledButton = styled.div<buttonProps>`
   }
   &:active {
     background: #B7C3FF;
+    color: #7482CB;
     transform: scale(0.96);
   }
 

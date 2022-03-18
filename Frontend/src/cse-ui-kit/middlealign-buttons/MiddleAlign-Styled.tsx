@@ -9,7 +9,7 @@ export const StyledButton = styled.div<buttonProps>`
   height: ${props => props.size };
   width: ${props => props.size };
   background: ${props => props.background };
-  color: #000000;
+  color: #FFFFFF;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   display: flex;
   justify-content: center;
@@ -17,7 +17,8 @@ export const StyledButton = styled.div<buttonProps>`
   border-radius: ${props => props.corner };
 
   &:hover {
-    background: #EFEEF3;
+    background: #5B687D;
+    color: #FFFFFF;
     transform: scale(1.04);
   }
   &:active {

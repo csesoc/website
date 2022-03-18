@@ -1,8 +1,8 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import { ReactComponent as Underline } from '../../assets/underline-button.svg';
-import UnderlineButton from './UnderlineButton';
+import { ReactComponent as LeftAlign } from '../../../assets/leftalign-button.svg';
+import LeftAlignButton from './LeftAlign';
 
 // const stories = generateStories("Buttons");
 
@@ -16,28 +16,28 @@ import UnderlineButton from './UnderlineButton';
 // })
 
 export default {
-  title: 'CSE-UIKIT/Underline-Button',
-  component: UnderlineButton,
+  title: 'CSE-UIKIT/LeftAlign-Button',
+  component: LeftAlignButton,
   argTypes: {
     backgroundColor: { control: 'color' },
   },
-} as ComponentMeta<typeof UnderlineButton>;
+} as ComponentMeta<typeof LeftAlignButton>;
 
-const Template: ComponentStory<typeof UnderlineButton> = (args) =>
+const Template: ComponentStory<typeof LeftAlignButton> = (args) =>
 (
   <div
     style={{
       margin: "30px"
     }}
   >
-    Underline Button
-    <UnderlineButton {...args}><Underline height={parseInt(args.size)*0.6} width={parseInt(args.size)*0.6}/></UnderlineButton>
+    LeftAlign Button
+    <LeftAlignButton {...args}><LeftAlign height={parseInt(args.size)*0.65} width={parseInt(args.size)*0.65}/></LeftAlignButton>
   </div>
 )
 
 export const Primary = Template.bind({});
 Primary.args = {
-  background: "#E2E1E7",
+  background: "#FFFFFF",
   size: "45px",
   corner: "3px"
 }
