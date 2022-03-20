@@ -24,6 +24,7 @@ type IFilesystemRepository interface {
 	GetEntryWithID(ID int) (FilesystemEntry, error)
 	GetRoot() (FilesystemEntry, error)
 	GetEntryWithParentID(ID int) (FilesystemEntry, error)
+	GetIDWithPath(path string) (int, error)
 
 	CreateEntry(file FilesystemEntry) (FilesystemEntry, error)
 	DeleteEntryWithID(ID int) error
