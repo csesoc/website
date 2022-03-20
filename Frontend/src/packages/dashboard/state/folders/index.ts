@@ -12,6 +12,8 @@ const reducer = createReducer(initialState, (builder) => {
   builder.addCase(foldersActions.renameFileEntityAction, reducerFns.renameFileEntity);
   // init reducers
   builder.addCase(foldersActions.initItemsAction, reducerFns.setItems);
+
+  builder.addCase(foldersActions.setDirectory, reducerFns.setDirectory);
 })
 
 export { 

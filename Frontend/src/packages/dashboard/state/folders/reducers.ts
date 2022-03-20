@@ -59,4 +59,11 @@ export function renameFileEntity(state: sliceState, action: PayloadAction<Rename
   }
 }
 
+export function setDirectory(state: sliceState, action: PayloadAction<sliceState>) {
+  return {
+    ...state,
+    ...action.payload
+  }
+}
+
 

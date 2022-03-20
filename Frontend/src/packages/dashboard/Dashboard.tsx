@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { Breadcrumbs, Link } from "@mui/material";
 
 // local imports
 import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
 import Renderer from './components/FileRenderer/Renderer';
-import { initAction } from './state/folders/actions';
+import {initAction, setDirectory} from './state/folders/actions';
 import ConfirmationWindow from './components/ConfirmationModal/ConfirmationWindow';
 import { Folder, File } from './state/folders/types';
 
@@ -25,6 +26,12 @@ export default function Dashboard() {
   useEffect(() => {
     // fetches all folders and files from backend and displays it
     dispatch(initAction());
+    dispatch(setDirectory(
+      {
+        path: 'hello/hi',
+        items: [],
+      }
+    ));
   },[])
 
   return (
@@ -32,8 +39,14 @@ export default function Dashboard() {
       <SideBar setModalState={setModalState}/>
       <div>
         <button>go back</button>
+        <button>forward</button>
       </div>
-      <Renderer 
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link underline="hover" color="inherit" href="/">
+            MUI
+          </Link>
+        </Breadcrumbs>
+      <Renderer
         selectedFile={selectedFile}
         setSelectedFile={setSelectedFile}
       />
