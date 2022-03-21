@@ -1,6 +1,18 @@
 version: "3.8"
 
 services:
+  next:
+    container_name: Next
+    build:
+      context: ./Next
+      args:
+        BACKEND_URI: ${BACKEND_URI}
+    volumes:
+      - '/next/node_modules'
+      - './Next:/next'
+    stdin_open: true
+    ports:
+      - 3001:3001
   frontend:
     container_name: Frontend
     build: 
