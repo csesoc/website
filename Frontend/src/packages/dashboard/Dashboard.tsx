@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import { call } from 'redux-saga/effects';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { Breadcrumbs, Link } from "@mui/material";
 
@@ -9,10 +8,7 @@ import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
 import Renderer from './components/FileRenderer/Renderer';
 import {initAction, setDirectory} from './state/folders/actions';
 import ConfirmationWindow from './components/ConfirmationModal/ConfirmationWindow';
-import {Folder, File, FileEntity} from './state/folders/types';
-import * as API from './api/index';
-import {RootState} from "../../redux-state/reducers";
-import {folderSelectors} from "./state/folders";
+import {getFolderState} from "./api/helpers";
 
 
 const Container = styled.div`
@@ -26,21 +22,13 @@ export default function Dashboard(this: any) {
     type: "",
   });
 
-  // const [dir, setDir] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<number|null>(null);
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   const folders = useSelector((state: RootState) => (
-  //     folderSelectors.getFolderState(state)
-  //   ));
-  //   setDir(folders.path);
-  // });
 
   useEffect(() => {
     // fetches all folders and files from backend and displays it
     dispatch(initAction());
-    dispatch(setDirectory('/Home'));
+    dispatch(setDirectory({ parentFolder: 0, folderName: 'Home' }));
   },[]);
 
   return (
@@ -50,9 +38,7 @@ export default function Dashboard(this: any) {
         <button>go back</button>
         <Breadcrumbs aria-label="breadcrumb">
           {
-            useSelector((state: RootState) => (
-              folderSelectors.getFolderState(state)
-            )).path.split("/").map((folder, i) => {
+            getFolderState().path.split("/").map((folder, i) => {
               return (
                 <Link underline="hover" color="inherit" key={i}>
                   {folder}
