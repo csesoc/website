@@ -1,5 +1,5 @@
 import { createAction } from "@reduxjs/toolkit";
-import { FileEntity, Folder, File, sliceState } from './types';
+import { FileEntity, Folder, File } from './types';
 
 /**
  * Payload Types
@@ -13,6 +13,12 @@ export type RenamePayloadType = {
 export type AddPayloadType = {
   name: string;
   type: string;
+  parentId: number;
+}
+
+export type SetDirPayloadType = {
+  parentFolder: number;
+  folderName: string;
 }
 
 
@@ -27,7 +33,7 @@ export const initItemsAction = createAction<FileEntity[]>("folders/initItems");
  * Directory Traversal actions
  */
 export const traverseIntoFolder = createAction<number>("folders/traverseIntoFolder");
-export const setDirectory = createAction<string>("folders/setDirectory")
+export const setDirectory = createAction<SetDirPayloadType>("folders/setDirectory")
 
 /**
  * CRUD actions

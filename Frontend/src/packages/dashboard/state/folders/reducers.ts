@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { RenamePayloadType } from './actions';
+import { RenamePayloadType, SetDirPayloadType } from './actions';
 import { 
   sliceState,
   FileEntity,
@@ -23,7 +23,7 @@ export function setItems(state: sliceState, action: PayloadAction<FileEntity[]>)
 export function addFolderItems(state: sliceState, action: PayloadAction<Folder>) {
   const newFolder: Folder = action.payload;
   return {
-    ...state, 
+    ...state,
     items: [
       ...state.items, 
       newFolder,
@@ -59,10 +59,11 @@ export function renameFileEntity(state: sliceState, action: PayloadAction<Rename
   }
 }
 
-export function setDirectory(state: sliceState, action: PayloadAction<string>) {
+export function setDirectory(state: sliceState, action: PayloadAction<SetDirPayloadType>) {
   return {
     ...state,
-    path: state.path + '/' + action.payload
+    parentFolder: action.payload.parentFolder,
+    path: state.path + '/' + action.payload.folderName
   }
 }
 

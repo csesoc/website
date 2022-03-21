@@ -3,6 +3,7 @@ import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import * as API from '../../api/index';
 import * as actions from './actions';
 import { Folder, File, FileEntity } from './types';
+import {getFolderState} from "../../api/helpers";
 
 function* initSaga() {
   try {
@@ -20,22 +21,24 @@ function* initSaga() {
 function* addItemSaga({ payload }: { payload: actions.AddPayloadType }) {
   switch(payload.type) {
     case "Folder": {
-      const newId: string = yield call(API.newFolder, payload.name);
+      const newID: string = yield call(API.newFolder, payload.name);
       // now put results to redux store
       const folderPayload: Folder = {
-        id: parseInt(newId),
+        id: parseInt(newID),
         name: payload.name,
+        parentId: getFolderState().parentFolder,
         type: payload.type,
       }
       yield put(actions.addFolderItemAction(folderPayload))
       break;
     }
     case "File": {
-      const newId: string = yield call(API.newFile, payload.name);
+      const newID: string = yield call(API.newFile, payload.name);
       // now put results to redux store
       const filePayload: File = {
-        id: parseInt(newId),
+        id: parseInt(newID),
         name: payload.name,
+        parentId: getFolderState().parentFolder,
         type: payload.type,
       }
       yield put(actions.addFolderItemAction(filePayload))
@@ -55,8 +58,12 @@ function* renameFileEntitySaga({ payload: renamePayload }: { payload: actions.Re
 function* traverseIntoFolderSaga({ payload: id }: { payload: number }) {
   const folder: FileEntity = yield call(API.getFolder, id);
   const children: FileEntity[] = yield call(API.updateContents, id);
+  const dirPayload: actions.SetDirPayloadType = {
+    parentFolder: id,
+    folderName: folder.name
+  };
   // change path
-  yield put(actions.setDirectory(folder.name));
+  yield put(actions.setDirectory(dirPayload));
   // set children
   yield put(actions.initItemsAction(children));
 }

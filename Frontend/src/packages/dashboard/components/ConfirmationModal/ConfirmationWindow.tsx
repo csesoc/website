@@ -45,6 +45,7 @@ export default function ConfirmationWindow({open, modalState, setModalState}: Pr
         const folderPayload: AddPayloadType = {
           name: inputValue,
           type: "Folder",
+          parentId: 0,
         }
         dispatch(addItemAction(folderPayload));
         break;
@@ -53,6 +54,7 @@ export default function ConfirmationWindow({open, modalState, setModalState}: Pr
         const filePayload: AddPayloadType = {
           name: inputValue,
           type: "File",
+          parentId: 0
         }
         dispatch(addItemAction(filePayload));
         break;
