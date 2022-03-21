@@ -53,12 +53,13 @@ function* renameFileEntitySaga({ payload: renamePayload }: { payload: actions.Re
  * Directory Sagas
  */
 function* traverseIntoFolderSaga({ payload: id }: { payload: number }) {
+  const folder: FileEntity = yield call(API.getFolder, id);
   const children: FileEntity[] = yield call(API.updateContents, id);
-  // todo change path
+  // change path
+  yield put(actions.setDirectory(folder.name));
   // set children
-  yield put(actions.initItemsAction(children))
+  yield put(actions.initItemsAction(children));
 }
-
 
 
 // root watchers

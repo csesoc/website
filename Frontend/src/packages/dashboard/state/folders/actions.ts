@@ -27,7 +27,7 @@ export const initItemsAction = createAction<FileEntity[]>("folders/initItems");
  * Directory Traversal actions
  */
 export const traverseIntoFolder = createAction<number>("folders/traverseIntoFolder");
-export const setDirectory = createAction<sliceState>("folders/setDirectory")
+export const setDirectory = createAction<string>("folders/setDirectory")
 
 /**
  * CRUD actions

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import { call } from 'redux-saga/effects';
 import styled from 'styled-components';
 import { Breadcrumbs, Link } from "@mui/material";
@@ -11,6 +11,8 @@ import {initAction, setDirectory} from './state/folders/actions';
 import ConfirmationWindow from './components/ConfirmationModal/ConfirmationWindow';
 import {Folder, File, FileEntity} from './state/folders/types';
 import * as API from './api/index';
+import {RootState} from "../../redux-state/reducers";
+import {folderSelectors} from "./state/folders";
 
 
 const Container = styled.div`
@@ -24,52 +26,33 @@ export default function Dashboard(this: any) {
     type: "",
   });
 
-  const [directory, setDirectory] = useState<Array<string>>(["hello", "hi"]);
+  // const [dir, setDir] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<number|null>(null);
   const dispatch = useDispatch();
 
-  const updateDirectory = (action: string) => {
-    if (action == 'forward') {
-      setDirectory([...directory, "hi"]);
-    } else{
-      setDirectory(directory.slice(0, -1));
-    }
-  };
+  // useEffect(() => {
+  //   const folders = useSelector((state: RootState) => (
+  //     folderSelectors.getFolderState(state)
+  //   ));
+  //   setDir(folders.path);
+  // });
 
   useEffect(() => {
     // fetches all folders and files from backend and displays it
     dispatch(initAction());
-    // dispatch(setDirectory(
-    //   {
-    //     path: '',
-    //     items: [],
-    //   }
-    // ));
-  },[])
-
-  // update the directory whenever a folder is being clicked
-  useEffect(() => {
-    const updateDir = async () => {
-      try {
-        const fileInfo: FileEntity = await API.getFolder((selectedFile != null) ? selectedFile : undefined);
-        if (fileInfo.type == 'Folder') {
-          setDirectory([...directory, "hi"]);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    updateDir();
-  }, [selectedFile])
+    dispatch(setDirectory('/Home'));
+  },[]);
 
   return (
     <Container>
       <SideBar setModalState={setModalState}/>
       <div>
-        <button onClick={() => updateDirectory('backward')}>go back</button>
+        <button>go back</button>
         <Breadcrumbs aria-label="breadcrumb">
           {
-            directory.map((folder, i) => {
+            useSelector((state: RootState) => (
+              folderSelectors.getFolderState(state)
+            )).path.split("/").map((folder, i) => {
               return (
                 <Link underline="hover" color="inherit" key={i}>
                   {folder}
@@ -78,7 +61,6 @@ export default function Dashboard(this: any) {
             })
           }
         </Breadcrumbs>
-        <button onClick={() => updateDirectory('forward')}>forward</button>
       </div>
       <Renderer
         selectedFile={selectedFile}
