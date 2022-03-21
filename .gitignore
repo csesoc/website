@@ -28,6 +28,9 @@
 node_modules
 package-lock.json
 
+# nextjs bundled files
+.next
+
 # ignore compiled main go file
 Backend/main
 
