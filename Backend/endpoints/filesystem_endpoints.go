@@ -122,6 +122,25 @@ func GetChildren(w http.ResponseWriter, r *http.Request, df DependencyFactory) (
 	}
 }
 
+type ValidPathRequest struct {
+	Path string `schema:"Path,required"`
+}
+
+func GetIDWithPath(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
+	var input ValidPathRequest
+	if !ParseParamsToSchema(r, "GET", &input) {
+		return http.StatusBadRequest, nil, nil
+	}
+
+	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
+	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+	if entityID, err := repository.GetIDWithPath(input.Path); err != nil {
+		return http.StatusNotFound, nil, nil
+	} else {
+		return http.StatusOK, entityID, nil
+	}
+}
+
 type ValidRenameRequest struct {
 	EntityID int    `schema:"EntityID,required"`
 	NewName  string `schema:"NewName,required"`
