@@ -93,6 +93,21 @@ func (mr *MockIFilesystemRepositoryMockRecorder) GetEntryWithParentID(ID interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEntryWithParentID", reflect.TypeOf((*MockIFilesystemRepository)(nil).GetEntryWithParentID), ID)
 }
 
+// GetIDWithPath mocks base method.
+func (m *MockIFilesystemRepository) GetIDWithPath(path string) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetIDWithPath", path)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetIDWithPath indicates an expected call of GetIDWithPath.
+func (mr *MockIFilesystemRepositoryMockRecorder) GetIDWithPath(path interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetIDWithPath", reflect.TypeOf((*MockIFilesystemRepository)(nil).GetIDWithPath), path)
+}
+
 // GetRoot mocks base method.
 func (m *MockIFilesystemRepository) GetRoot() (repositories.FilesystemEntry, error) {
 	m.ctrl.T.Helper()

@@ -3,9 +3,7 @@ package repositories
 
 import (
 	"errors"
-	"strconv"
-
-	"github.com/jackc/pgtype"
+	"strings"
 )
 
 // Implements IRepositoryInterface
@@ -16,21 +14,32 @@ type FilesystemRepository struct {
 // We really should use an ORM jesus this is ugly
 func (rep FilesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
 	entity := FilesystemEntry{}
-	children := pgtype.Hstore{}
+	children := []int{}
 
 	err := rep.ctx.Query(query,
 		input,
 		&entity.EntityID, &entity.LogicalName, &entity.IsDocument, &entity.IsPublished,
-		&entity.CreatedAt, &entity.OwnerUserId, nullableID{&entity.ParentFileID}, &children)
+		&entity.CreatedAt, &entity.OwnerUserId, &entity.ParentFileID)
 	if err != nil {
-		return FilesystemEntry{}, errors.New("failed to read from database")
+		return FilesystemEntry{}, err
 	}
 
-	for k := range children.Map {
-		a, _ := strconv.Atoi(k)
-		entity.ChildrenIDs = append(entity.ChildrenIDs, a)
+	rows, err := rep.ctx.QueryRow("SELECT EntityID FROM filesystem WHERE Parent = $1", []interface{}{entity.EntityID})
+	if err != nil {
+		return FilesystemEntry{}, err
+	}
+	// finally scan in the rows
+	for rows.Next() {
+		var x int
+		err := rows.Scan(&x)
+		if err != nil {
+			return FilesystemEntry{}, err
+		}
+
+		children = append(children, x)
 	}
 
+	entity.ChildrenIDs = children
 	return entity, nil
 }
 
@@ -51,7 +60,6 @@ func (rep FilesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEnt
 	if err != nil {
 		return FilesystemEntry{}, err
 	}
-
 	return rep.GetEntryWithID(newID)
 }
 
@@ -60,15 +68,42 @@ func (rep FilesystemRepository) GetEntryWithID(ID int) (FilesystemEntry, error) 
 		return rep.GetRoot()
 	}
 
-	return rep.query("SELECT * FROM filesystem WHERE EntityID = $1", ID)
+	result, err := rep.query("SELECT * FROM filesystem WHERE EntityID = $1", ID)
+	return result, err
 }
 
 func (rep FilesystemRepository) GetRoot() (FilesystemEntry, error) {
-	return rep.query("SELECT * FROM filesystem WHERE Parent IS NULL")
+	// Root is currently set to ID 1
+	return rep.query("SELECT * FROM filesystem WHERE Parent = 1")
 }
 
 func (rep FilesystemRepository) GetEntryWithParentID(ID int) (FilesystemEntry, error) {
 	return rep.query("SELECT * FROM filesystem WHERE Parent = $1", ID)
+}
+
+func (rep FilesystemRepository) GetIDWithPath(path string) (int, error) {
+	// I could do this with one query, where I query the repository for all files in parentNames and process that here
+	parentNames := strings.Split(path, "/")
+	if parentNames[0] != "" {
+		return -1, errors.New("path must start with /")
+	}
+
+	// Determine main parent
+	parent, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = $1", parentNames[1])
+	if err != nil {
+		return -1, err
+	}
+	// Loop through children
+	for i := 2; i < len(parentNames); i++ {
+		child, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = $1 AND Parent = $2", parentNames[i], parent.EntityID)
+		if err != nil {
+			return -1, err
+		}
+
+		parent = child
+	}
+
+	return parent.EntityID, err
 }
 
 func (rep FilesystemRepository) DeleteEntryWithID(ID int) error {

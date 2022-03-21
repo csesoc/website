@@ -10,9 +10,12 @@ on:
   pull_request:
     branches: [ main, prototype ]
 
+env:
+  PG_PORT: 5432
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  testing:
+  backend_testing:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,3 +24,9 @@ jobs:
       - name: Golang Tests
         run: go test -v ./...
         working-directory: ./Backend
+  frontend_testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: type check
+        run: cd Frontend && npm install && npm run types

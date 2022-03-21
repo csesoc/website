@@ -39,7 +39,7 @@ export async function updateContents(id: number) {
 }
 
 
-export const newFile = async (name: string): Promise<Response> => {
+export const newFile = async (name: string): Promise<string> => {
 
   // This isn't attached to the parent folder yet,
   // TODO: patch once auth is finished
@@ -56,8 +56,8 @@ export const newFile = async (name: string): Promise<Response> => {
     const message = `An error has occured: ${create_resp.status}`;
     throw new Error(message);
   }
-
-  return create_resp;
+  const response = await create_resp.json();
+  return response.Response.NewID;
 }
 
 export const newFolder = async (name: string): Promise<string> => {

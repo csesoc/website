@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"testing"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
 
-	"github.com/jackc/pgtype"
+	"github.com/jackc/pgx/v4"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -24,7 +23,6 @@ func TestRootRetrieval(t *testing.T) {
 	assert := assert.New(t)
 	testContext.RunTest(func() {
 		root, err := repo.GetRoot()
-
 		if assert.Nil(err) {
 			assert.Equal("root", root.LogicalName)
 			assert.False(root.IsDocument)
@@ -38,6 +36,8 @@ func TestRootInsert(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ==== Test setup ====
+		root, _ := repo.GetRoot()
+
 		newDir, _ := repo.CreateEntry(repositories.FilesystemEntry{
 			LogicalName: "test_directory", ParentFileID: repositories.FILESYSTEM_ROOT_ID,
 			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: false})
@@ -58,18 +58,14 @@ func TestRootInsert(t *testing.T) {
 			assert.Equal(docCount, 1)
 		}
 
-		expectedChildren := pgtype.Hstore{}
-		if assert.Nil(testContext.Query("SELECT Children FROM filesystem WHERE parent IS NULL", []interface{}{}, &expectedChildren)) {
-			if _, exists := expectedChildren.Map[strconv.Itoa(int(newDir.EntityID))]; !exists {
-				assert.True(false)
-			}
+		if rows, err := testContext.QueryRow("SELECT EntityID FROM filesystem WHERE Parent = $1", []interface{}{root.EntityID}); assert.Nil(err) {
+			childrenArr := scanIntArray(rows)
+			assert.Contains(childrenArr, newDir.EntityID)
 		}
 
-		expectedChildren = pgtype.Hstore{}
-		if assert.Nil(testContext.Query("SELECT Children FROM filesystem WHERE EntityID = $1", []interface{}{newDir.EntityID}, &expectedChildren)) {
-			if _, exists := expectedChildren.Map[strconv.Itoa(newDoc.EntityID)]; !exists {
-				assert.Fail("failed!")
-			}
+		if rows, err := testContext.QueryRow("SELECT EntityID FROM filesystem WHERE Parent = $1", []interface{}{newDir.EntityID}); assert.Nil(err) {
+			childrenArr := scanIntArray(rows)
+			assert.Contains(childrenArr, newDoc.EntityID)
 		}
 	})
 }
@@ -226,4 +222,59 @@ func TestEntityChildren(t *testing.T) {
 		assert.True(len(d4_kids.ChildrenIDs) == 9)
 		assert.True(len(de_kids.ChildrenIDs) == 0)
 	})
+}
+
+func TestGetIDWithPath(t *testing.T) {
+	assert := assert.New(t)
+	getEntity := func(name string, permissions int, isDocument bool, parent int) repositories.FilesystemEntry {
+		return repositories.FilesystemEntry{
+			LogicalName:  name,
+			OwnerUserId:  permissions,
+			ParentFileID: parent,
+			IsDocument:   isDocument,
+		}
+	}
+
+	testContext.RunTest(func() {
+		// Test setup
+		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, repositories.FILESYSTEM_ROOT_ID))
+		currentDir := dir1
+		for x := 1; x < 3; x++ {
+			newDir, _ := repo.CreateEntry(getEntity("cool_doc"+fmt.Sprint(x), repositories.GROUPS_ADMIN, false, currentDir.EntityID))
+			currentDir = newDir
+		}
+
+		child2id, _ := repo.GetIDWithPath("/d1/cool_doc1/cool_doc2")
+		child1id, _ := repo.GetIDWithPath("/d1/cool_doc1")
+		child2, _ := repo.GetEntryWithID(child2id)
+		child1, _ := repo.GetEntryWithID(child1id)
+		_, error1 := repo.GetIDWithPath("/d1/cool_doc2/cool_doc1")
+		_, error2 := repo.GetIDWithPath("/d1/cool_doc1/cool_doc2/cool_doc1")
+
+		assert.True(error1 != nil)
+		assert.True(error2 != nil)
+		assert.True(child1.EntityID == child2.ParentFileID)
+		assert.True(dir1.EntityID == child1.ParentFileID)
+	})
+
+}
+
+func contains(s []int, e int) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
+func scanIntArray(rows pgx.Rows) []int {
+	arr := []int{}
+	for rows.Next() {
+		var x int
+		rows.Scan(&x)
+		arr = append(arr, x)
+	}
+
+	return arr
 }

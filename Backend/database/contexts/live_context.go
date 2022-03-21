@@ -15,6 +15,7 @@ import (
 
 	"cms.csesoc.unsw.edu.au/environment"
 
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -40,6 +41,11 @@ func newLiveContext() (*liveContext, error) {
 func (ctx *liveContext) Query(query string, sqlArgs []interface{}, resultOutput ...interface{}) error {
 	ctx.verifyEnvironment()
 	return ctx.conn.QueryRow(context.Background(), query, sqlArgs...).Scan(resultOutput...)
+}
+
+func (ctx *liveContext) QueryRow(query string, sqlArgs []interface{}) (pgx.Rows, error) {
+	ctx.verifyEnvironment()
+	return ctx.conn.Query(context.Background(), query, sqlArgs...)
 }
 
 func (ctx *liveContext) Exec(query string, sqlArgs []interface{}) error {
