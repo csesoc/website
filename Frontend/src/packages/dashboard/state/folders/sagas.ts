@@ -1,9 +1,9 @@
-import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
+import { call, put, takeEvery, takeLatest, select } from 'redux-saga/effects';
 // local
 import * as API from '../../api/index';
 import * as actions from './actions';
-import { Folder, File, FileEntity } from './types';
-import {getFolderState} from "../../api/helpers";
+import {Folder, File, FileEntity, sliceState} from './types';
+import { getFolderState } from "./selectors";
 
 function* initSaga() {
   try {
@@ -18,27 +18,28 @@ function* initSaga() {
   }
 }
 
-function* addItemSaga({ payload }: { payload: actions.AddPayloadType }) {
+function*  addItemSaga({ payload }: { payload: actions.AddPayloadType }) {
+  const folderState: sliceState = yield select(getFolderState);
   switch(payload.type) {
     case "Folder": {
-      const newID: string = yield call(API.newFolder, payload.name);
+      const newID: string = yield call(API.newFolder, payload.name, folderState.parentFolder);
       // now put results to redux store
       const folderPayload: Folder = {
         id: parseInt(newID),
         name: payload.name,
-        parentId: getFolderState().parentFolder,
+        parentId: folderState.parentFolder,
         type: payload.type,
       }
       yield put(actions.addFolderItemAction(folderPayload))
       break;
     }
     case "File": {
-      const newID: string = yield call(API.newFile, payload.name);
+      const newID: string = yield call(API.newFile, payload.name, folderState.parentFolder);
       // now put results to redux store
       const filePayload: File = {
         id: parseInt(newID),
         name: payload.name,
-        parentId: getFolderState().parentFolder,
+        parentId: folderState.parentFolder,
         type: payload.type,
       }
       yield put(actions.addFolderItemAction(filePayload))
@@ -68,6 +69,23 @@ function* traverseIntoFolderSaga({ payload: id }: { payload: number }) {
   yield put(actions.initItemsAction(children));
 }
 
+function* traverseBackFolderSaga({ payload: id }: { payload: number }) {
+  if (id != 0) {
+    const parentFolder: FileEntity = yield call(API.getFolder, id);
+    const targetFolder: FileEntity = yield call(API.getFolder, parentFolder.parentId);
+    const children: FileEntity[] = yield call(API.updateContents, targetFolder.id);
+    const dirPayload: actions.SetDirPayloadType = {
+      parentFolder: targetFolder.id,
+      folderName: ''
+    };
+
+    // change path
+    yield put(actions.setDirectory(dirPayload));
+    // set children
+    yield put(actions.initItemsAction(children));
+  }
+}
+
 
 // root watchers
 export function* rootFoldersSaga() {
@@ -76,4 +94,5 @@ export function* rootFoldersSaga() {
   yield takeEvery(actions.addItemAction, addItemSaga);
   yield takeEvery(actions.renameFileEntityAction, renameFileEntitySaga);
   yield takeEvery(actions.traverseIntoFolder, traverseIntoFolderSaga);
+  yield takeEvery(actions.traverseBackFolder, traverseBackFolderSaga);
 }

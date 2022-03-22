@@ -1,4 +1,4 @@
-import {getFolderState, toFileOrFolder} from './helpers';
+import { toFileOrFolder} from './helpers';
 import { BACKEND_URI } from 'src/config';
 import { JSONFileFormat } from './types';
 
@@ -39,7 +39,7 @@ export async function updateContents(id: number) {
 }
 
 
-export const newFile = async (name: string): Promise<string> => {
+export const newFile = async (name: string, parentID: number): Promise<string> => {
 
   // This isn't attached to the parent folder yet,
   // TODO: patch once auth is finished
@@ -47,7 +47,7 @@ export const newFile = async (name: string): Promise<string> => {
     method: "POST",
     body: new URLSearchParams({
       "LogicalName": name,
-      "ParentFileID": getFolderState().parentFolder.toString(),
+      "Parent": parentID.toString(),
       "OwnerGroup": "1",
       "IsDocument": "true",
     })
@@ -61,7 +61,7 @@ export const newFile = async (name: string): Promise<string> => {
   return response.Response.NewID;
 }
 
-export const newFolder = async (name: string): Promise<string> => {
+export const newFolder = async (name: string, parentID: number): Promise<string> => {
 
   console.log(name)
   // This isn't attached to the parent folder yet,
@@ -70,7 +70,7 @@ export const newFolder = async (name: string): Promise<string> => {
     method: "POST",
     body: new URLSearchParams({
       "LogicalName": name,
-      "ParentFileID": getFolderState().parentFolder.toString(),
+      "Parent": parentID.toString(),
       "OwnerGroup": "1",
       "IsDocument": "false",
     })

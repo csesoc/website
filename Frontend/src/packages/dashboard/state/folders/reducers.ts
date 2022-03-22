@@ -60,10 +60,19 @@ export function renameFileEntity(state: sliceState, action: PayloadAction<Rename
 }
 
 export function setDirectory(state: sliceState, action: PayloadAction<SetDirPayloadType>) {
+  let pathDir = state.path;
+
+  // traverse back to the previous folder
+  if (action.payload.folderName == '') {
+    pathDir = (pathDir.split("/")).slice(0, -1).join("/");
+  } else { // traverse into a folder
+    pathDir = pathDir + '/' + action.payload.folderName;
+  }
+
   return {
     ...state,
     parentFolder: action.payload.parentFolder,
-    path: state.path + '/' + action.payload.folderName
+    path: pathDir
   }
 }
 

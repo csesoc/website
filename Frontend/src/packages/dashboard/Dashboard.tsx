@@ -6,7 +6,7 @@ import { Breadcrumbs, Link } from "@mui/material";
 // local imports
 import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
 import Renderer from './components/FileRenderer/Renderer';
-import {initAction, setDirectory} from './state/folders/actions';
+import {initAction, setDirectory, traverseBackFolder} from './state/folders/actions';
 import ConfirmationWindow from './components/ConfirmationModal/ConfirmationWindow';
 import {getFolderState} from "./api/helpers";
 
@@ -23,19 +23,24 @@ export default function Dashboard(this: any) {
   });
 
   const [selectedFile, setSelectedFile] = useState<number|null>(null);
+  const parentFolder = getFolderState().parentFolder;
   const dispatch = useDispatch();
 
   useEffect(() => {
     // fetches all folders and files from backend and displays it
     dispatch(initAction());
-    dispatch(setDirectory({ parentFolder: 0, folderName: 'Home' }));
+    // dispatch(setDirectory({ parentFolder: 0, folderName: 'root' }));
   },[]);
+
+  const handleClick = () => {
+    dispatch(traverseBackFolder(parentFolder));
+  };
 
   return (
     <Container>
       <SideBar setModalState={setModalState}/>
       <div>
-        <button>go back</button>
+        <button onClick={ () => handleClick()}>go back</button>
         <Breadcrumbs aria-label="breadcrumb">
           {
             getFolderState().path.split("/").map((folder, i) => {

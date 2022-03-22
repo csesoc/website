@@ -33,6 +33,7 @@ export const initItemsAction = createAction<FileEntity[]>("folders/initItems");
  * Directory Traversal actions
  */
 export const traverseIntoFolder = createAction<number>("folders/traverseIntoFolder");
+export const traverseBackFolder = createAction<number>("folders/traverseBackFolder");
 export const setDirectory = createAction<SetDirPayloadType>("folders/setDirectory")
 
 /**
