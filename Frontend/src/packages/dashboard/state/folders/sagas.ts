@@ -93,6 +93,6 @@ export function* rootFoldersSaga() {
   yield takeEvery(actions.initAction, initSaga);
   yield takeEvery(actions.addItemAction, addItemSaga);
   yield takeEvery(actions.renameFileEntityAction, renameFileEntitySaga);
-  yield takeEvery(actions.traverseIntoFolder, traverseIntoFolderSaga);
-  yield takeEvery(actions.traverseBackFolder, traverseBackFolderSaga);
+  yield takeLatest(actions.traverseIntoFolder, traverseIntoFolderSaga);
+  yield takeLatest(actions.traverseBackFolder, traverseBackFolderSaga);
 }
