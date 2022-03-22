@@ -24,10 +24,11 @@ func TestEntityInfo(t *testing.T) {
 	// ==== test setup =====
 	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
 	mockFileRepo.EXPECT().GetEntryWithID(1).Return(repositories.FilesystemEntry{
-		EntityID:    1,
-		LogicalName: "random name",
-		IsDocument:  false,
-		ChildrenIDs: []int{},
+		EntityID:     1,
+		LogicalName:  "random name",
+		IsDocument:   false,
+		ParentFileID: 0,
+		ChildrenIDs:  []int{},
 	}, nil).Times(1)
 
 	mockDepFactory := mocks.NewMockDependencyFactory(controller)
@@ -46,6 +47,7 @@ func TestEntityInfo(t *testing.T) {
 		EntityID:   1,
 		EntityName: "random name",
 		IsDocument: false,
+		Parent:     0,
 		Children:   []endpoints.EntityInfo{},
 	})
 }
