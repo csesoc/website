@@ -11,6 +11,7 @@ type EntityInfo struct {
 	EntityID   int
 	EntityName string
 	IsDocument bool
+	Parent     int
 	Children   []EntityInfo
 }
 
@@ -36,6 +37,7 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory)
 				EntityID:   id,
 				EntityName: x.LogicalName,
 				IsDocument: x.IsDocument,
+				Parent:     entity.ParentFileID,
 				Children:   nil,
 			})
 		}
@@ -44,6 +46,7 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory)
 			EntityID:   entity.EntityID,
 			EntityName: entity.LogicalName,
 			IsDocument: entity.IsDocument,
+			Parent:     entity.ParentFileID,
 			Children:   childrenArr,
 		}, nil
 	} else {
