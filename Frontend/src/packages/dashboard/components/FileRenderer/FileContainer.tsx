@@ -38,6 +38,7 @@ const IconContainer = styled.div<styledProps>`
 
 function FileContainer({ name, id, selectedFile, setSelectedFile }: Props) {
   const handleClick = () => {
+    console.log(id)
     setSelectedFile(id);
   }
 

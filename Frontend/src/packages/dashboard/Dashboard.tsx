@@ -6,7 +6,7 @@ import { Breadcrumbs, Link } from "@mui/material";
 // local imports
 import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
 import Renderer from './components/FileRenderer/Renderer';
-import {initAction, setDirectory, traverseBackFolder} from './state/folders/actions';
+import {initAction, traverseBackFolder} from './state/folders/actions';
 import ConfirmationWindow from './components/ConfirmationModal/ConfirmationWindow';
 import {getFolderState} from "./api/helpers";
 
@@ -29,7 +29,6 @@ export default function Dashboard(this: any) {
   useEffect(() => {
     // fetches all folders and files from backend and displays it
     dispatch(initAction());
-    // dispatch(setDirectory({ parentFolder: 0, folderName: 'root' }));
   },[]);
 
   const handleClick = () => {
