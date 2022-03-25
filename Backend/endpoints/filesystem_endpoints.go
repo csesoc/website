@@ -37,7 +37,7 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory)
 				EntityID:   id,
 				EntityName: x.LogicalName,
 				IsDocument: x.IsDocument,
-				Parent:     entity.ParentFileID,
+				Parent:     x.ParentFileID,
 				Children:   nil,
 			})
 		}
