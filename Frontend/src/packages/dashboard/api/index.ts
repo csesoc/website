@@ -5,10 +5,8 @@ import { JSONFileFormat } from './types';
 // Given a file ID (if no ID is provided root is assumed), returns
 // a FileFormat of that file from the backend
 export async function getFolder (id?: number) {
-  console.log("parent folder: " + id);
-  const ending = (id === undefined) ? "?EntityID=2" : `?EntityID=${id}`;
+  const ending = (id === undefined) ? "" : `?EntityID=${id}`;
   const folder_resp = await fetch(`${BACKEND_URI}/filesystem/info${ending}`);
-  // const folder_resp = await fetch(`${BACKEND_URI}/filesystem/info?`);
 
   if (!folder_resp.ok) {
     const message = `An error has occured: ${folder_resp.status}`;
