@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { Breadcrumbs, Link } from "@mui/material";
 
 // local imports
 import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
 import Renderer from './components/FileRenderer/Renderer';
-import {initAction, traverseBackFolder} from './state/folders/actions';
+import { initAction } from './state/folders/actions';
 import ConfirmationWindow from './components/ConfirmationModal/ConfirmationWindow';
-import {getFolderState} from "./api/helpers";
+import Directory from "./components/Directory";
 
 
 const Container = styled.div`
@@ -23,7 +22,7 @@ export default function Dashboard(this: any) {
   });
 
   const [selectedFile, setSelectedFile] = useState<number|null>(null);
-  const parentFolder = getFolderState().parentFolder;
+  // const parentFolder = getFolderState().parentFolder;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -31,27 +30,10 @@ export default function Dashboard(this: any) {
     dispatch(initAction());
   },[]);
 
-  const handleClick = () => {
-    dispatch(traverseBackFolder(parentFolder));
-  };
-
   return (
     <Container>
       <SideBar setModalState={setModalState}/>
-      <div>
-        <button onClick={ () => handleClick()}>go back</button>
-        <Breadcrumbs aria-label="breadcrumb">
-          {
-            getFolderState().path.split("/").map((folder, i) => {
-              return (
-                <Link underline="hover" color="inherit" key={i}>
-                  {folder}
-                </Link>
-              )
-            })
-          }
-        </Breadcrumbs>
-      </div>
+      <Directory />
       <Renderer
         selectedFile={selectedFile}
         setSelectedFile={setSelectedFile}
