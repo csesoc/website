@@ -31,6 +31,8 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory)
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
 
+	fmt.Println("Entity ID from input: " + input.EntityID)
+
 	if entity, err := repository.GetEntryWithID(input.EntityID); err == nil {
 		childrenArr := []EntityInfo{}
 		fmt.Println("File Entity from Database: " + entity)
@@ -79,6 +81,8 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactor
 		IsDocument:   input.IsDocument,
 		OwnerUserId:  input.OwnerGroup,
 	}
+
+	fmt.Println("Created Entity: " + entityToCreate)
 
 	if e, err := repository.CreateEntry(entityToCreate); err != nil {
 		return http.StatusNotAcceptable, nil, nil
