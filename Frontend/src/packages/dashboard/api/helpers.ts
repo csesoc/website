@@ -7,12 +7,12 @@ import {folderSelectors} from "../state/folders";
 // Converts a backend response to the File or Folder type
 export function toFileOrFolder(json: JSONFileFormat): FileEntity {
   console.log(json)
-  const {EntityID, EntityName, IsDocument, ParentID} = json;
+  const {EntityID, EntityName, IsDocument, Parent} = json;
 
   return {
     id: EntityID,
     name: EntityName,
-    parentId: ParentID,
+    parentId: Parent,
     type: IsDocument ? "File" : "Folder",
   } as FileEntity
 }
