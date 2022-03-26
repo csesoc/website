@@ -5,6 +5,8 @@ import (
 	"reflect"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
+
+	"fmt"
 )
 
 type EntityInfo struct {
@@ -31,6 +33,7 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory)
 
 	if entity, err := repository.GetEntryWithID(input.EntityID); err == nil {
 		childrenArr := []EntityInfo{}
+		fmt.Println("File Entity from Database: " + entity)
 		for _, id := range entity.ChildrenIDs {
 			x, _ := repository.GetEntryWithID(id)
 			childrenArr = append(childrenArr, EntityInfo{
