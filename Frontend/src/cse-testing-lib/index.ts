@@ -1,8 +1,8 @@
 import {
   render,
-  fireEvent,
-  act
 } from "./test-utils"
+
+import { fireEvent, act } from "@testing-library/react"
 
 export {
   render,

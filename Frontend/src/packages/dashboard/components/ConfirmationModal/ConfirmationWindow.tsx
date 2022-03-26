@@ -80,7 +80,7 @@ export default function ConfirmationWindow({open, modalState, setModalState}: Pr
         });
       }}
     >
-      <Container>
+      <Container data-anchor="ConfirmationWindow">
         <Typography variant="h5">Choose your {modalState.type} name</Typography>
         <Box display="flex">
           <TextField value={inputValue} onChange={handleChange}/>
