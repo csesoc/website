@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Modal, Typography, TextField, Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
 
+import {getFolderState} from "../../api/helpers";
+
 // local imports
 import Button from '../../../../cse-ui-kit/buttons/Button';
 import {
@@ -38,6 +40,7 @@ const Container = styled.div`
 export default function ConfirmationWindow({open, modalState, setModalState}: Props) {
   const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState<string>('')
+  const folderState = getFolderState();
 
   const handleSubmit = () => {
     switch(modalState.type) {
@@ -45,7 +48,7 @@ export default function ConfirmationWindow({open, modalState, setModalState}: Pr
         const folderPayload: AddPayloadType = {
           name: inputValue,
           type: "Folder",
-          parentId: 0,
+          parentId: folderState.parentFolder,
         }
         dispatch(addItemAction(folderPayload));
         break;
@@ -54,7 +57,7 @@ export default function ConfirmationWindow({open, modalState, setModalState}: Pr
         const filePayload: AddPayloadType = {
           name: inputValue,
           type: "File",
-          parentId: 0
+          parentId: folderState.parentFolder,
         }
         dispatch(addItemAction(filePayload));
         break;
