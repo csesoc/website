@@ -17,25 +17,27 @@ function* initSaga() {
   }
 }
 
-function* addItemSaga({ payload }: { payload: actions.AddPayloadType }) {
+function*  addItemSaga({ payload }: { payload: actions.AddPayloadType }) {
   switch(payload.type) {
     case "Folder": {
-      const newId: string = yield call(API.newFolder, payload.name);
+      const newID: string = yield call(API.newFolder, payload.name, payload.parentId);
       // now put results to redux store
       const folderPayload: Folder = {
-        id: parseInt(newId),
+        id: parseInt(newID),
         name: payload.name,
+        parentId: payload.parentId,
         type: payload.type,
       }
       yield put(actions.addFolderItemAction(folderPayload))
       break;
     }
     case "File": {
-      const newId: string = yield call(API.newFile, payload.name);
+      const newID: string = yield call(API.newFile, payload.name, payload.parentId);
       // now put results to redux store
       const filePayload: File = {
-        id: parseInt(newId),
+        id: parseInt(newID),
         name: payload.name,
+        parentId: payload.parentId,
         type: payload.type,
       }
       yield put(actions.addFolderItemAction(filePayload))
@@ -53,12 +55,34 @@ function* renameFileEntitySaga({ payload: renamePayload }: { payload: actions.Re
  * Directory Sagas
  */
 function* traverseIntoFolderSaga({ payload: id }: { payload: number }) {
+  const folder: FileEntity = yield call(API.getFolder, id);
   const children: FileEntity[] = yield call(API.updateContents, id);
-  // todo change path
+  const dirPayload: actions.SetDirPayloadType = {
+    parentFolder: id,
+    folderName: folder.name
+  };
+  // change path
+  yield put(actions.setDirectory(dirPayload));
   // set children
-  yield put(actions.initItemsAction(children))
+  yield put(actions.initItemsAction(children));
 }
 
+function* traverseBackFolderSaga({ payload: id }: { payload: number }) {
+  if (id != 2) {
+    const parentFolder: FileEntity = yield call(API.getFolder, id);
+    const parentOfParentFolder: FileEntity = yield call(API.getFolder, parentFolder.parentId);
+    const children: FileEntity[] = yield call(API.updateContents, parentOfParentFolder.id);
+    const dirPayload: actions.SetDirPayloadType = {
+      parentFolder: parentOfParentFolder.id,
+      folderName: ''
+    };
+
+    // change path
+    yield put(actions.setDirectory(dirPayload));
+    // set children
+    yield put(actions.initItemsAction(children));
+  }
+}
 
 
 // root watchers
@@ -67,5 +91,6 @@ export function* rootFoldersSaga() {
   yield takeEvery(actions.initAction, initSaga);
   yield takeEvery(actions.addItemAction, addItemSaga);
   yield takeEvery(actions.renameFileEntityAction, renameFileEntitySaga);
-  yield takeEvery(actions.traverseIntoFolder, traverseIntoFolderSaga);
+  yield takeLatest(actions.traverseIntoFolder, traverseIntoFolderSaga);
+  yield takeLatest(actions.traverseBackFolder, traverseBackFolderSaga);
 }
