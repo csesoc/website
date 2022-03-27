@@ -1,27 +1,33 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import { ReactComponent as Bold } from '../../assets/bold-button.svg';
 import BoldButton from './BoldButton';
+import ItalicButton from './ItalicButton';
+import UnderlineButton from './UnderlineButton';
 
 export default {
-  title: 'CSE-UIKIT/Bold-Button',
+  title: 'CSE-UIKIT/SmallButtons',
   component: BoldButton,
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
 } as ComponentMeta<typeof BoldButton>;
 
 const Template: ComponentStory<typeof BoldButton> = (args) =>
 (
   <div
     style={{
-      margin: "30px"
+      margin: "30px",
+      display: "flex",
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "flex-start",
+      gap: "30px"
     }}
   >
-    Bold Button
-    <BoldButton {...args}><Bold height={parseInt(args.size) * 0.8} width={parseInt(args.size) * 0.8} /></BoldButton>
-  </div>
+    <BoldButton {...args} />
+
+    <ItalicButton {...args} />
+
+    <UnderlineButton {...args} />
+  </div >
 )
 
 export const Primary = Template.bind({});
