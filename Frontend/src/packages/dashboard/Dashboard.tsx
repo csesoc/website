@@ -15,7 +15,7 @@ const Container = styled.div`
   flex-direction: row;
 `;
 
-export default function Dashboard(this: any) {
+export default function Dashboard() {
   const [modalState, setModalState] = useState<{open: boolean, type: string}>({
     open: false,
     type: "",

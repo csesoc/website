@@ -1,12 +1,13 @@
-import {FileEntity, sliceState} from "../state/folders/types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux-state/reducers";
+
 import { JSONFileFormat } from "./types";
-import {useSelector} from "react-redux";
-import {RootState} from "../../../redux-state/reducers";
-import {folderSelectors} from "../state/folders";
+import { folderSelectors } from "../state/folders";
+import { FileEntity, sliceState } from "../state/folders/types";
+
 
 // Converts a backend response to the File or Folder type
 export function toFileOrFolder(json: JSONFileFormat): FileEntity {
-  console.log(json)
   const {EntityID, EntityName, IsDocument, Parent} = json;
 
   return {

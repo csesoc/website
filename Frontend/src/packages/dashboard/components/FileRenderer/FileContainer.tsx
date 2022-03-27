@@ -4,8 +4,8 @@
 // Wraps the contents of a file stored on the CMS into its own
 // functional component, with hovering capabilities
 
-import React, { useState } from "react";
-import styled, {css} from 'styled-components';
+import React from "react";
+import styled, { css } from 'styled-components';
 import Renamable from "./Renamable";
 
 type Props = {
@@ -38,7 +38,6 @@ const IconContainer = styled.div<styledProps>`
 
 function FileContainer({ name, id, selectedFile, setSelectedFile }: Props) {
   const handleClick = () => {
-    console.log(id)
     setSelectedFile(id);
   }
 

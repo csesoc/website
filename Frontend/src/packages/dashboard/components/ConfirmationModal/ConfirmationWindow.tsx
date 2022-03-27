@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Modal, Typography, TextField, Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
-
-import {getFolderState} from "../../api/helpers";
 
 // local imports
 import Button from '../../../../cse-ui-kit/buttons/Button';
@@ -11,7 +9,7 @@ import {
   addItemAction,
   AddPayloadType
 } from 'src/packages/dashboard/state/folders/actions';
-import { Folder, File } from 'src/packages/dashboard/state/folders/types';
+import { getFolderState } from "../../api/helpers";
 
 type Props = {
   open: boolean;

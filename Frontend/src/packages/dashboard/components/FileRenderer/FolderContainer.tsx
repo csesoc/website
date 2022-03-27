@@ -38,7 +38,6 @@ const Folder = styled.div<HighlightProps>`
 export default function FolderContainer({ name, id }: Props) {
   const dispatch = useDispatch();
   const handleClick = () => {
-    console.log(id);
     dispatch(traverseIntoFolder(id))
   }
 

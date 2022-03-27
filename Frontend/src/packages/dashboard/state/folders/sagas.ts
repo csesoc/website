@@ -1,9 +1,8 @@
-import { call, put, takeEvery, takeLatest, select } from 'redux-saga/effects';
+import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 // local
 import * as API from '../../api/index';
 import * as actions from './actions';
-import {Folder, File, FileEntity, sliceState} from './types';
-import { getFolderState } from "./selectors";
+import { Folder, File, FileEntity } from './types';
 
 function* initSaga() {
   try {

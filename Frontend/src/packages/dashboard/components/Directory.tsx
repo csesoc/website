@@ -5,8 +5,8 @@ import { emphasize, styled as customStyle } from '@mui/material/styles';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 
-import {traverseBackFolder} from "../state/folders/actions";
-import {getFolderState} from "../api/helpers";
+import { traverseBackFolder } from "../state/folders/actions";
+import { getFolderState } from "../api/helpers";
 
 
 const DirectoryFlex = styled.div`
