@@ -4,17 +4,6 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { ReactComponent as Bold } from '../../assets/bold-button.svg';
 import BoldButton from './BoldButton';
 
-// const stories = generateStories("Buttons");
-
-// stories.add("Buttons", () => {
-//   return (
-//     <div>
-//       <h1>this is a button</h1>
-//       <Button/>
-//     </div>
-//   )
-// })
-
 export default {
   title: 'CSE-UIKIT/Bold-Button',
   component: BoldButton,
@@ -31,7 +20,7 @@ const Template: ComponentStory<typeof BoldButton> = (args) =>
     }}
   >
     Bold Button
-    <BoldButton {...args}><Bold height={parseInt(args.size)*0.8} width={parseInt(args.size)*0.8}/></BoldButton>
+    <BoldButton {...args}><Bold height={parseInt(args.size) * 0.8} width={parseInt(args.size) * 0.8} /></BoldButton>
   </div>
 )
 

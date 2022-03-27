@@ -4,17 +4,6 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { ReactComponent as Underline } from '../../assets/underline-button.svg';
 import UnderlineButton from './UnderlineButton';
 
-// const stories = generateStories("Buttons");
-
-// stories.add("Buttons", () => {
-//   return (
-//     <div>
-//       <h1>this is a button</h1>
-//       <Button/>
-//     </div>
-//   )
-// })
-
 export default {
   title: 'CSE-UIKIT/Underline-Button',
   component: UnderlineButton,
@@ -31,7 +20,7 @@ const Template: ComponentStory<typeof UnderlineButton> = (args) =>
     }}
   >
     Underline Button
-    <UnderlineButton {...args}><Underline height={parseInt(args.size)*0.6} width={parseInt(args.size)*0.6}/></UnderlineButton>
+    <UnderlineButton {...args}><Underline height={parseInt(args.size) * 0.6} width={parseInt(args.size) * 0.6} /></UnderlineButton>
   </div>
 )
 
