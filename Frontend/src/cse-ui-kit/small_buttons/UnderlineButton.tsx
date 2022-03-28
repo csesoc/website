@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyledButton, buttonProps } from './small_buttons-Styled';
+import { StyledButton, buttonProps, scaleRate } from './small_buttons-Styled';
 import { ReactComponent as Underline } from '../../assets/underline-button.svg';
 
 type Props = {
@@ -12,7 +12,10 @@ export default function UnderlineButton({ onClick, ...styleProps }: Props) {
       onClick={onClick}
       {...styleProps}
     >
-      <Underline height={parseInt(styleProps.size) * 0.6} width={parseInt(styleProps.size) * 0.6} />
+      <Underline
+        height={styleProps.size * scaleRate.underlineRate}
+        width={styleProps.size * scaleRate.underlineRate}
+      />
     </StyledButton>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyledButton, buttonProps } from './small_buttons-Styled';
+import { StyledButton, buttonProps, scaleRate } from './small_buttons-Styled';
 import { ReactComponent as Italic } from '../../assets/italics-button.svg';
 
 
@@ -13,7 +13,10 @@ export default function ItalicButton({ onClick, ...styleProps }: Props) {
       onClick={onClick}
       {...styleProps}
     >
-      <Italic height={parseInt(styleProps.size) * 0.8} width={parseInt(styleProps.size) * 0.8} />
+      <Italic
+        height={styleProps.size * scaleRate.smallButtonRate}
+        width={styleProps.size * scaleRate.smallButtonRate}
+      />
     </StyledButton>
   );
 }

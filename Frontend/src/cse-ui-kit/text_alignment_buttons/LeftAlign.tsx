@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyledButton, buttonProps } from './left-right-alignment-Styled';
+import { StyledButton, buttonProps, scaleRate } from './text-alignment-Styled';
 import { ReactComponent as LeftAlign } from '../../assets/leftalign-button.svg';
 
 type Props = {
@@ -12,7 +12,10 @@ export default function LeftAlignButton({ onClick, ...styleProps }: Props) {
       onClick={onClick}
       {...styleProps}
     >
-      <LeftAlign height={parseInt(styleProps.size) * 0.65} width={parseInt(styleProps.size) * 0.65} />
+      <LeftAlign 
+        height={styleProps.size * scaleRate.textAlignmentRate} 
+        width={styleProps.size * scaleRate.textAlignmentRate} 
+      />
     </StyledButton>
   );
 }

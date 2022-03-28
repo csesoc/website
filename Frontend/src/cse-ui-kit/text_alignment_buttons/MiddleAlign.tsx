@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyledButton, buttonProps } from './middle-alignment-Styled';
-import { ReactComponent as MiddleAlign } from '../../assets/middlealign-button.svg';
+import { StyledButton, buttonProps, scaleRate } from './text-alignment-Styled';
+import { ReactComponent as MiddleAlign } from
+  '../../assets/middlealign-button.svg';
 
 type Props = {
   onClick?: (...args: any) => void;
@@ -12,7 +13,10 @@ export default function MiddleAlignButton({ onClick, ...styleProps }: Props) {
       onClick={onClick}
       {...styleProps}
     >
-      <MiddleAlign height={parseInt(styleProps.size) * 0.65} width={parseInt(styleProps.size) * 0.65} />
+      <MiddleAlign
+        height={styleProps.size * scaleRate.textAlignmentRate}
+        width={styleProps.size * scaleRate.textAlignmentRate}
+      />
     </StyledButton>
   );
 }

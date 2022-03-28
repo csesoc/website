@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyledButton, buttonProps } from './left-right-alignment-Styled';
-import { ReactComponent as RightAlign } from '../../assets/rightalign-button.svg';
+import { StyledButton, buttonProps, scaleRate } from './text-alignment-Styled';
+import { ReactComponent as RightAlign } from
+  '../../assets/rightalign-button.svg';
 
 type Props = {
   onClick?: (...args: any) => void;
@@ -12,7 +13,10 @@ export default function RightAlignButton({ onClick, ...styleProps }: Props) {
       onClick={onClick}
       {...styleProps}
     >
-      <RightAlign height={parseInt(styleProps.size) * 0.65} width={parseInt(styleProps.size) * 0.65} />
+      <RightAlign
+        height={styleProps.size * scaleRate.textAlignmentRate}
+        width={styleProps.size * scaleRate.textAlignmentRate}
+      />
     </StyledButton>
   );
 }

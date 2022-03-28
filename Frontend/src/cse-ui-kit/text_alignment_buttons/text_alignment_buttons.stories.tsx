@@ -22,15 +22,13 @@ const Template: ComponentStory<typeof LeftAlignButton> = (args) =>
       gap: "30px"
     }}
   >
-    <LeftAlignButton {...args} />
-    <MiddleAlignButton {...args} />
-    <RightAlignButton {...args} />
+    <LeftAlignButton {...{ ...args, variant: "left" }} />
+    <MiddleAlignButton {...{ ...args, variant: "middle" }} />
+    <RightAlignButton {...{ ...args, variant: "right" }} />
   </div>
 )
 
 export const Primary = Template.bind({});
 Primary.args = {
-  background: "#FFFFFF",
-  middleBackground: "#2B3648",
-  size: "45px"
+  size: 45
 }
