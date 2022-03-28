@@ -1,8 +1,6 @@
 import styled from "styled-components";
 
-export const scaleRate = {
-  textAlignmentRate: 0.65,
-}
+export const scaleRate = 0.65
 
 export type buttonProps = {
   variant: string;
@@ -22,7 +20,7 @@ export const StyledButton = styled.div<buttonProps>`
 
   &:hover { /*if middle: else left/right variant */
     background: ${props =>
-      props.variant == "middle" ? "#5B687D" : "#EFEEF3"};
+    props.variant == "middle" ? "#5B687D" : "#EFEEF3"};
     color: ${props => props.variant == "middle" ? "#FFFFFF" : "#2B3648"};
     transform: scale(1.04);
   }

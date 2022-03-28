@@ -14,8 +14,8 @@ export default function RightAlignButton({ onClick, ...styleProps }: Props) {
       {...styleProps}
     >
       <RightAlign
-        height={styleProps.size * scaleRate.textAlignmentRate}
-        width={styleProps.size * scaleRate.textAlignmentRate}
+        height={styleProps.size * scaleRate}
+        width={styleProps.size * scaleRate}
       />
     </StyledButton>
   );

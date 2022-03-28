@@ -14,8 +14,8 @@ export default function MiddleAlignButton({ onClick, ...styleProps }: Props) {
       {...styleProps}
     >
       <MiddleAlign
-        height={styleProps.size * scaleRate.textAlignmentRate}
-        width={styleProps.size * scaleRate.textAlignmentRate}
+        height={styleProps.size * scaleRate}
+        width={styleProps.size * scaleRate}
       />
     </StyledButton>
   );

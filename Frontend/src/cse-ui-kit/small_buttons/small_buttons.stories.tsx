@@ -4,6 +4,7 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import BoldButton from './BoldButton';
 import ItalicButton from './ItalicButton';
 import UnderlineButton from './UnderlineButton';
+import { Box } from "@mui/material";
 
 export default {
   title: 'CSE-UIKIT/SmallButtons',
@@ -12,22 +13,41 @@ export default {
 
 const Template: ComponentStory<typeof BoldButton> = (args) =>
 (
-  <div
-    style={{
-      margin: "30px",
-      display: "flex",
-      flexDirection: "row",
-      flexWrap: "wrap",
-      justifyContent: "flex-start",
-      gap: "30px"
-    }}
+  <Box
+    margin="30px"
+    display="flex"
+    flexDirection="row"
+    flexWrap="wrap"
+    justifyContent="flex-start"
+    gap="30px"
   >
-    <BoldButton {...args} />
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+    >
+      Bold Button
+      <BoldButton {...args} />
+    </Box>
 
-    <ItalicButton {...args} />
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+    >
+      Italic Button
+      <ItalicButton {...args} />
+    </Box>
 
-    <UnderlineButton {...args} />
-  </div >
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+    >
+      Underline Button
+      <UnderlineButton {...args} />
+    </Box>
+  </Box>
 )
 
 export const Primary = Template.bind({});

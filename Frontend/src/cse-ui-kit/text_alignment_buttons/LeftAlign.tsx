@@ -12,9 +12,9 @@ export default function LeftAlignButton({ onClick, ...styleProps }: Props) {
       onClick={onClick}
       {...styleProps}
     >
-      <LeftAlign 
-        height={styleProps.size * scaleRate.textAlignmentRate} 
-        width={styleProps.size * scaleRate.textAlignmentRate} 
+      <LeftAlign
+        height={styleProps.size * scaleRate}
+        width={styleProps.size * scaleRate}
       />
     </StyledButton>
   );
