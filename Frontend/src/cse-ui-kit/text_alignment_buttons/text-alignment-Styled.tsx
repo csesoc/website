@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
-export const scaleRate = 0.65
+export const scaleRate = 0.65;
 
 export type buttonProps = {
-  variant: string;
+  variant?: string;
   size: number;
 }
 export const StyledButton = styled.div<buttonProps>`

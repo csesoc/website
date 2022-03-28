@@ -27,7 +27,7 @@ const Template: ComponentStory<typeof LeftAlignButton> = (args) =>
       alignItems="center"
     >
       Left Alignment Button
-      <LeftAlignButton {...{ ...args, variant: "left" }} />
+      <LeftAlignButton {...args} />
     </Box>
     <Box
       display="flex"
@@ -44,7 +44,7 @@ const Template: ComponentStory<typeof LeftAlignButton> = (args) =>
       alignItems="center"
     >
       Right Alignment Button
-      <RightAlignButton {...{ ...args, variant: "right" }} />
+      <RightAlignButton {...args} />
     </Box>
 
   </Box>
