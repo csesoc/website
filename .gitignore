@@ -27,6 +27,9 @@
 
 node_modules
 
+# nextjs bundled files
+.next
+
 # ignore compiled main go file
 Backend/main
 
