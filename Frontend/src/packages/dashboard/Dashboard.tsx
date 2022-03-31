@@ -32,7 +32,7 @@ export default function Dashboard() {
 
   return (
     <Container>
-      <SideBar setModalState={setModalState}/>
+      <SideBar setModalState={setModalState} selectedFile={selectedFile}/>
       <Directory />
       <Renderer
         selectedFile={selectedFile}
