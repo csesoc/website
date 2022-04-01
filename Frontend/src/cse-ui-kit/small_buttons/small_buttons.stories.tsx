@@ -6,6 +6,13 @@ import ItalicButton from './ItalicButton';
 import UnderlineButton from './UnderlineButton';
 import { Box } from "@mui/material";
 
+// More on flexDirection type casting: https://stackoverflow.com/questions/62432985/typescript-saying-a-string-is-invalid-even-though-its-in-the-union
+const BoxContainerStyle = {
+  display: "flex",
+  flexDirection: "column" as const,
+  alignItems: "center"
+}
+
 export default {
   title: 'CSE-UIKIT/SmallButtons',
   component: BoldButton,
@@ -21,29 +28,17 @@ const Template: ComponentStory<typeof BoldButton> = (args) =>
     justifyContent="flex-start"
     gap="30px"
   >
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-    >
+    <Box {...BoxContainerStyle}>
       Bold Button
       <BoldButton {...args} />
     </Box>
 
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-    >
+    <Box {...BoxContainerStyle}>
       Italic Button
       <ItalicButton {...args} />
     </Box>
 
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-    >
+    <Box {...BoxContainerStyle}>
       Underline Button
       <UnderlineButton {...args} />
     </Box>
