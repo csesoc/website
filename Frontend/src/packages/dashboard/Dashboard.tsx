@@ -7,7 +7,7 @@ import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
 import Renderer from './components/FileRenderer/Renderer';
 import { initAction } from './state/folders/actions';
 import ConfirmationWindow from './components/ConfirmationModal/ConfirmationWindow';
-import { Folder, File } from './state/folders/types';
+import Directory from "./components/Directory";
 
 
 const Container = styled.div`
@@ -20,20 +20,21 @@ export default function Dashboard() {
     open: false,
     type: "",
   });
+
   const [selectedFile, setSelectedFile] = useState<number|null>(null);
+  // const parentFolder = getFolderState().parentFolder;
   const dispatch = useDispatch();
+
   useEffect(() => {
     // fetches all folders and files from backend and displays it
     dispatch(initAction());
-  },[])
+  },[]);
 
   return (
     <Container>
       <SideBar setModalState={setModalState}/>
-      <div>
-        <button>go back</button>
-      </div>
-      <Renderer 
+      <Directory />
+      <Renderer
         selectedFile={selectedFile}
         setSelectedFile={setSelectedFile}
       />

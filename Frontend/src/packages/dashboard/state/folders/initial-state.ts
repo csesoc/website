@@ -1,6 +1,7 @@
 import { sliceState } from "./types";
 
 export const initialState: sliceState = {
-  path: "",
+  parentFolder: 2,
+  path: "root",
   items: [], 
 }

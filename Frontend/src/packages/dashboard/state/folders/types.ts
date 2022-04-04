@@ -1,6 +1,7 @@
 export type baseEntity = {
   id: number,
   name: string,
+  parentId: number,
   type: string,
 }
 
@@ -14,6 +15,7 @@ export type File = {
 export type FileEntity = Folder | File;
 
 export type sliceState = {
+  parentFolder: number
   path: string
   items: (FileEntity)[];
 }
