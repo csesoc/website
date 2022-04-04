@@ -15,7 +15,7 @@ const AllTheProviders: React.FC = ({ children }) => {
 
 const customRender = (
   ui: React.ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>,
+  options?: Omit<RenderOptions, 'queries'>,
 ) => render(ui, {
   queries: {...queries, ...customQueries},
   wrapper: AllTheProviders,
