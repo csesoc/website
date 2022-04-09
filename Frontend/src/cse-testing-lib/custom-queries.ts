@@ -1,11 +1,10 @@
-import {queryHelpers, buildQueries} from '@testing-library/react'
+import { queryHelpers, buildQueries, GetAllBy } from '@testing-library/react'
 
 // The queryAllByAttribute is a shortcut for attribute-based matchers
 // You can also use document.querySelector or a combination of existing
 // testing library utilities to find matching nodes for your query
 
-const queryAllByDataAnchor = (...args: any[]) => {
-  // @ts-ignore
+const queryAllByDataAnchor: GetAllBy<[dataAnchorValue: any]> = (...args: any[]) => {
   return queryHelpers.queryAllByAttribute('data-anchor', ...args)
 }
 
