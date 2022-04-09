@@ -5,6 +5,7 @@ import { queryHelpers, buildQueries, GetAllBy } from '@testing-library/react'
 // testing library utilities to find matching nodes for your query
 
 const queryAllByDataAnchor: GetAllBy<[dataAnchorValue: any]> = (...args: any[]) => {
+  // @ts-ignore
   return queryHelpers.queryAllByAttribute('data-anchor', ...args)
 }
 
