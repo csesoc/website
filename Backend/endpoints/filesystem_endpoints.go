@@ -11,6 +11,7 @@ type EntityInfo struct {
 	EntityID   int
 	EntityName string
 	IsDocument bool
+	Parent     int
 	Children   []EntityInfo
 }
 
@@ -36,6 +37,7 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory)
 				EntityID:   id,
 				EntityName: x.LogicalName,
 				IsDocument: x.IsDocument,
+				Parent:     x.ParentFileID,
 				Children:   nil,
 			})
 		}
@@ -44,6 +46,7 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory)
 			EntityID:   entity.EntityID,
 			EntityName: entity.LogicalName,
 			IsDocument: entity.IsDocument,
+			Parent:     entity.ParentFileID,
 			Children:   childrenArr,
 		}, nil
 	} else {
@@ -119,6 +122,25 @@ func GetChildren(w http.ResponseWriter, r *http.Request, df DependencyFactory) (
 		}{
 			Children: fileInfo.ChildrenIDs,
 		}, nil
+	}
+}
+
+type ValidPathRequest struct {
+	Path string `schema:"Path,required"`
+}
+
+func GetIDWithPath(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
+	var input ValidPathRequest
+	if !ParseParamsToSchema(r, "GET", &input) {
+		return http.StatusBadRequest, nil, nil
+	}
+
+	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
+	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+	if entityID, err := repository.GetIDWithPath(input.Path); err != nil {
+		return http.StatusNotFound, nil, nil
+	} else {
+		return http.StatusOK, entityID, nil
 	}
 }
 

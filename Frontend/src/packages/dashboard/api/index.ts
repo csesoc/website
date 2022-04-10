@@ -29,7 +29,6 @@ export async function updateContents(id: number) {
   }
 
   const children_json = await children_resp.json();
-  console.log(children_json)
   const children = children_json.Response.Children.map((child: JSONFileFormat) => {
     return toFileOrFolder(child);
   });
@@ -39,7 +38,7 @@ export async function updateContents(id: number) {
 }
 
 
-export const newFile = async (name: string): Promise<Response> => {
+export const newFile = async (name: string, parentID: number): Promise<string> => {
 
   // This isn't attached to the parent folder yet,
   // TODO: patch once auth is finished
@@ -47,6 +46,7 @@ export const newFile = async (name: string): Promise<Response> => {
     method: "POST",
     body: new URLSearchParams({
       "LogicalName": name,
+      "Parent": parentID.toString(),
       "OwnerGroup": "1",
       "IsDocument": "true",
     })
@@ -56,19 +56,18 @@ export const newFile = async (name: string): Promise<Response> => {
     const message = `An error has occured: ${create_resp.status}`;
     throw new Error(message);
   }
-
-  return create_resp;
+  const response = await create_resp.json();
+  return response.Response.NewID;
 }
 
-export const newFolder = async (name: string): Promise<string> => {
+export const newFolder = async (name: string, parentID: number): Promise<string> => {
 
-  console.log(name)
-  // This isn't attached to the parent folder yet,
   // TODO: patch once auth is finished
   const create_resp = await fetch("http://localhost:8080/filesystem/create", {
     method: "POST",
     body: new URLSearchParams({
       "LogicalName": name,
+      "Parent": parentID.toString(),
       "OwnerGroup": "1",
       "IsDocument": "false",
     })

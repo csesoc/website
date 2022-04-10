@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Modal, Typography, TextField, Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
@@ -9,7 +9,7 @@ import {
   addItemAction,
   AddPayloadType
 } from 'src/packages/dashboard/state/folders/actions';
-import { Folder, File } from 'src/packages/dashboard/state/folders/types';
+import { getFolderState } from "../../api/helpers";
 
 type Props = {
   open: boolean;
@@ -38,6 +38,7 @@ const Container = styled.div`
 export default function ConfirmationWindow({open, modalState, setModalState}: Props) {
   const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState<string>('')
+  const folderState = getFolderState();
 
   const handleSubmit = () => {
     switch(modalState.type) {
@@ -45,6 +46,7 @@ export default function ConfirmationWindow({open, modalState, setModalState}: Pr
         const folderPayload: AddPayloadType = {
           name: inputValue,
           type: "Folder",
+          parentId: folderState.parentFolder,
         }
         dispatch(addItemAction(folderPayload));
         break;
@@ -53,6 +55,7 @@ export default function ConfirmationWindow({open, modalState, setModalState}: Pr
         const filePayload: AddPayloadType = {
           name: inputValue,
           type: "File",
+          parentId: folderState.parentFolder,
         }
         dispatch(addItemAction(filePayload));
         break;
@@ -80,7 +83,7 @@ export default function ConfirmationWindow({open, modalState, setModalState}: Pr
         });
       }}
     >
-      <Container>
+      <Container data-anchor="ConfirmationWindow">
         <Typography variant="h5">Choose your {modalState.type} name</Typography>
         <Box display="flex">
           <TextField value={inputValue} onChange={handleChange}/>

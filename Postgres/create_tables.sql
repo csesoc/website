@@ -57,7 +57,8 @@ CREATE TABLE filesystem (
   CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW(),
 
   OwnedBy       INT,
-  Parent        INT REFERENCES filesystem(EntityID) DEFAULT NULL,
+  /* Pain */
+  Parent        INT REFERENCES filesystem(EntityID) DEFAULT 1,
 
   /* FK Constraint */
   CONSTRAINT fk_owner FOREIGN KEY (OwnedBy) 
@@ -73,8 +74,10 @@ DECLARE
   randomGroup groups.UID%type;
   rootID      filesystem.EntityID%type;
 BEGIN
+  /* Root root :) */
   SELECT groups.UID INTO randomGroup FROM groups WHERE Name = 'admin'::VARCHAR;
-
+  INSERT INTO filesystem (LogicalName, IsDocument, IsPublished, OwnedBy, Parent)
+    VALUES ('rootroot', true, true, randomGroup, NULL);
   /* Insert the root directory */
   INSERT INTO filesystem (LogicalName, OwnedBy)
     VALUES ('root', randomGroup);
@@ -82,7 +85,7 @@ BEGIN
 
   /* insert "has parent" constraint*/
   EXECUTE 'ALTER TABLE filesystem 
-    ADD CONSTRAINT has_parent CHECK (Parent IS NOT NULL OR EntityID = '||rootID||')';
+    ADD CONSTRAINT has_parent CHECK (Parent != 1 OR EntityID = '||rootID||')';
 END $$;
 
 
@@ -99,7 +102,6 @@ BEGIN
     /* We shouldnt be delcaring that a document is our parent */
     RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'cannot make parent a document';
   END If;
-
   WITH newEntity AS (
     INSERT INTO filesystem (LogicalName, IsDocument, OwnedBy, Parent)
       VALUES (logicalNameP, isDocumentP, ownedByP, parentP)
@@ -134,6 +136,7 @@ BEGIN
   DELETE FROM filesystem WHERE EntityID = entityIDP;
 END $$;
 
+
 /* Insert dummy data */
 DO $$
 DECLARE
@@ -142,10 +145,10 @@ DECLARE
   wasPopping    filesystem.EntityID%type;
   oldEntity     filesystem.EntityID%type;
 BEGIN
-  SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE Parent IS NULL;
+  SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE Parent = 0;
   
-  newEntity := (SELECT new_entity(rootID::INT, 'downloads'::VARCHAR, 1, false));
-  oldEntity := (SELECT new_entity(rootID::INT, 'documents'::VARCHAR, 1, false));
+  newEntity := (SELECT new_entity(2, 'downloads'::VARCHAR, 1, false));
+  oldEntity := (SELECT new_entity(2, 'documents'::VARCHAR, 1, false));
 
   wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document'::VARCHAR, 1, true));
   wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document_round_2'::VARCHAR, 1, true));
