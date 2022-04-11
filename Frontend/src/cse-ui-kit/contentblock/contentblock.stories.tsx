@@ -3,13 +3,11 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import MoveableContentBlock from './contentblock-wrapper';
 
-// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'CSE-UIKIT/ContentBlock',
   component: MoveableContentBlock,
 } as ComponentMeta<typeof MoveableContentBlock>;
 
-// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof MoveableContentBlock> = (args) =>
 (
   <div
