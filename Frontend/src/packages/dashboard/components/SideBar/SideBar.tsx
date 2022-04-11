@@ -83,10 +83,18 @@ export default function SideBar ({ setModalState }: Props) {
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
-          <SidebarButton bgColor="#82A3F8" onClick={handleNewFile}>
+          <SidebarButton 
+            bgColor="#82A3F8"
+            onClick={handleNewFile}
+            data-anchor="NewPageButton"
+          >
             New page
           </SidebarButton>
-          <SidebarButton bgColor="#82A3F8" onClick={handleNewFolder}>
+          <SidebarButton
+            bgColor="#82A3F8"
+            onClick={handleNewFolder}
+            data-anchor="NewFolderButton"
+          >
             New folder
           </SidebarButton>
         </ButtonGroup>
