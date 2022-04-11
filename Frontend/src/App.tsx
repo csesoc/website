@@ -6,14 +6,13 @@ import { GlobalStore } from 'src/redux-state/index';
 // imports
 import Dashboard from './packages/dashboard/Dashboard';
 import Editor from './packages/editor/Editor';
-
-import './css/styles.css'
-
+import GlobalStyle from './cse-ui-kit/styles/GlobalStyles';
 
 const App: React.FC = () => {
 
   return (
     <div className="App">
+      <GlobalStyle />
       <Provider store={GlobalStore}>
         <Router>
           <Routes>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyledButton, buttonProps, scaleRate } from './small_buttons-Styled';
-import { ReactComponent as Italic } from '../../assets/italics-button.svg';
+import { ReactComponent as Italic } from 'src/cse-ui-kit/assets/italics-button.svg';
 
 
 type Props = {
