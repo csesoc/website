@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyledContent, StyledContentText } from './contentblock-Styled';
+import { StyledContent, StyledContentDots } from './contentblock-Styled';
 import { ReactComponent as Dots } from '../../assets/moveable-content-dots.svg';
+import { Box } from "@mui/material";
 
 type Props = {
   children?: React.ReactElement | any;
@@ -13,13 +14,20 @@ export default function MoveableContentBlock({ children, onClick, ...styleProps 
       onClick={onClick}
       {...styleProps}
     >
-      <StyledContentText>
+      <div
+        style={{
+          width: "90%",
+          wordWrap: "break-word"
+        }}
+      >
         {children}
-      </StyledContentText>
-      <Dots
-        height="18px"
-        width="18px"
-      />
+      </div>
+      <StyledContentDots>
+        <Dots
+          height="18px"
+          width="18px"
+        />
+      </StyledContentDots>
     </StyledContent>
   );
 }
