@@ -19,7 +19,10 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "test-utils": ["src/cse-testing/lib/test-utils"]
+    }
   },
   "include": [
     "src",
