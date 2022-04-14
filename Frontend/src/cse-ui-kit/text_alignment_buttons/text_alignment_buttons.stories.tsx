@@ -6,7 +6,6 @@ import LeftAlignButton from './LeftAlign';
 import MiddleAlignButton from './MiddleAlign';
 import RightAlignButton from './RightAlign';
 
-// More on flexDirection type casting: https://stackoverflow.com/questions/62432985/typescript-saying-a-string-is-invalid-even-though-its-in-the-union
 const BoxContainerStyle = {
   display: "flex",
   flexDirection: "column" as const,
