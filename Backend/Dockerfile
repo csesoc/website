@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine as build-env
+FROM golang:1.18.1-alpine as build-env
 
 # make current working directory /app
 WORKDIR /go/src/cms.csesoc.unsw.edu.au
