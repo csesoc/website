@@ -3,7 +3,7 @@ module cms.csesoc.unsw.edu.au
 go 1.17
 
 require (
-	github.com/emirpasic/gods v1.12.0
+	github.com/emirpasic/gods v1.18.0
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/schema v1.2.0
