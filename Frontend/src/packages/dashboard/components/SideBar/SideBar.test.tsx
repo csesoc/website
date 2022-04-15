@@ -5,9 +5,11 @@ import SideBar from "./SideBar"
 describe("Side bar tests", () => {
   it("Side bar is rendered with proper buttons", () => {
     const mockSetModalState = jest.fn();
+    const mockSelectedFileID = 5;
     const { queryByDataAnchor } = render(
       <SideBar 
         setModalState={mockSetModalState}
+        selectedFile={mockSelectedFileID}
       />
     )
     

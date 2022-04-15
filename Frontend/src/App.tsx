@@ -18,7 +18,7 @@ const App: React.FC = () => {
         <Router>
           <Routes>
             <Route path="/" element={<Dashboard/>}/>
-            <Route path="/editor" element={<Editor/>}/>
+            <Route path="/editor/:id" element={<Editor/>}/>
           </Routes>
         </Router>
       </Provider>
