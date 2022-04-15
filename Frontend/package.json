@@ -78,7 +78,7 @@
     "@storybook/manager-webpack5": "^6.4.18",
     "@storybook/node-logger": "^6.4.18",
     "@storybook/preset-create-react-app": "^4.0.0",
-    "@storybook/react": "^6.4.18",
+    "@storybook/react": "^6.4.22",
     "@testing-library/react": "^11.2.7",
     "@types/styled-components": "^5.1.13",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
