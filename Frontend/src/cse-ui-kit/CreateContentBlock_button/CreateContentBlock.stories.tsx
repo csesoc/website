@@ -22,7 +22,7 @@ const Template: ComponentStory<typeof CreateContentBlock> = (args) =>
     }}
   >
     Insert Button
-    <CreateContentBlock {...args}><AiFillEdit/>Insert Content Block</CreateContentBlock>
+    <CreateContentBlock {...args}></CreateContentBlock>
   </div>
 )
 
