@@ -10,7 +10,7 @@
     "@mui/icons-material": "5.5.1",
     "@mui/material": "5.5.1",
     "@mui/styles": "5.5.1",
-    "@reduxjs/toolkit": "1.8.0",
+    "@reduxjs/toolkit": "1.8.1",
     "@testing-library/jest-dom": "5.16.2",
     "@testing-library/user-event": "12.8.3",
     "@types/draft-js": "0.11.9",
