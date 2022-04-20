@@ -35,17 +35,17 @@ const EditorBlock: FC<{ update: UpdateValues; id: number }> = ({
 }) => {
   const editor = useMemo(() => withReact(createEditor()), []);
 
-  const preventTriple: MouseEventHandler<HTMLDivElement> = (event) => {
-    if (event.detail > 2) {
-      event.preventDefault();
-    }
-  };
+  // const preventTriple: MouseEventHandler<HTMLDivElement> = (event) => {
+  //   if (event.detail > 2) {
+  //     event.preventDefault();
+  //   }
+  // };
 
-  const renderElements: (props: RenderElementProps) => JSX.Element =
-    useCallback((props) => {
-      // eslint-disable-next-line react/prop-types
-      return <span {...props.attributes}>{props.children}</span>;
-    }, []);
+  // const renderElements: (props: RenderElementProps) => JSX.Element =
+  //   useCallback((props) => {
+  //     // eslint-disable-next-line react/prop-types
+  //     return <span {...props.attributes}>{props.children}</span>;
+  //   }, []);
 
   return (
     <EditorContainer>
@@ -55,8 +55,8 @@ const EditorBlock: FC<{ update: UpdateValues; id: number }> = ({
         onChange={() => update(id, editor.children)}
       >
         <Editable
-          onClick={preventTriple}
-          renderElement={renderElements}
+          // onClick={preventTriple}
+          // renderElement={renderElements}
           style={{ width: "100%", minHeight: "100%" }}
         />
       </Slate>
