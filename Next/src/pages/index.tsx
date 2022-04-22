@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import Navbar from "../components/Navbar"
 import styled from "styled-components";
 
 const PageContainer = styled.div`
@@ -18,7 +19,7 @@ const Home: NextPage = () => {
         <meta name="description" content="CSESoc Website Homepage" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      <Navbar/>
       <main>Empowering future Technological Leader</main>
 
       <footer></footer>
