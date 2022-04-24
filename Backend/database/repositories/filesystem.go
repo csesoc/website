@@ -2,14 +2,55 @@
 package repositories
 
 import (
+	Context "context"
 	"errors"
+	"fmt"
+	"os"
 	"strings"
+
+	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/client"
+	// "github.com/docker/docker/api/types"
+	// "github.com/docker/docker/api/types/filters"
+	// volumetypes "github.com/docker/docker/api/types/volume"
 )
 
 // Implements IRepositoryInterface
 type FilesystemRepository struct {
 	embeddedContext
 }
+
+type DockerFileystemRepository struct {
+	cli *client.Client
+}
+
+func NewDockerFilesystemRespository() (c *DockerFileystemRepository, err error) {
+	c = new(DockerFileystemRepository)
+
+	c.cli, err = client.NewClientWithOpts(client.FromEnv)
+	if err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+// Add file to volume
+func (c *DockerFileystemRepository) AddToVolume(fp *os.File) error {
+	volumes, err := c.cli.VolumeList(Context.Background(), filters.NewArgs())
+	if err != nil {
+		return err
+	}
+	for _, V := range volumes.Volumes {
+		fmt.Println(V.Name)
+	}
+	return err
+}
+
+// Update file to volume
+
+// Get file from volume
+
+// Delete file from volume
 
 // We really should use an ORM jesus this is ugly
 func (rep FilesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
