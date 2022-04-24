@@ -41,7 +41,7 @@ func (c *DockerFileystemRepository) AddToVolume(fp *os.File) error {
 		return err
 	}
 	for _, V := range volumes.Volumes {
-		fmt.Println(V.Name)
+		fmt.Println(V.Mountpoint)
 	}
 	return err
 }
