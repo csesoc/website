@@ -9,6 +9,7 @@ func RegisterFilesystemEndpoints(mux *http.ServeMux) {
 	mux.Handle("/filesystem/delete", handler(DeleteFilesystemEntity)) //auth
 	mux.Handle("/filesystem/rename", handler(RenameFilesystemEntity)) //auth
 	mux.Handle("/filesystem/children", handler(GetChildren))
+	mux.Handle("/filesystem/upload-image", handler(UploadImage))
 }
 
 // Registers the authentication based endpoints

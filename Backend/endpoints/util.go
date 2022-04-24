@@ -36,6 +36,10 @@ func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interfa
 	if err != nil {
 		return false
 	}
+	err = r.ParseMultipartForm(10 << 20)
+	if err != nil {
+		return false
+	}
 
 	if acceptingMethod != r.Method {
 		return false
@@ -47,9 +51,5 @@ func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interfa
 	} else {
 		err = decoder.Decode(target, r.PostForm)
 	}
-	if err != nil {
-		return false
-	}
-
-	return true
+	return err == nil
 }

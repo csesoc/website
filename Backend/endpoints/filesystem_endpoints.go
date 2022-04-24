@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"fmt"
 	"net/http"
 	"reflect"
 
@@ -162,5 +163,62 @@ func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request, df Dependenc
 		return http.StatusNotAcceptable, nil, nil
 	} else {
 		return http.StatusOK, nil, nil
+	}
+}
+
+type ValidImageUploadRequest struct {
+	Parent      int
+	LogicalName string `schema:"LogicalName,required"`
+	OwnerGroup  int    `schema:"OwnerGroup,required"`
+}
+
+// Request struct just needs parent id, and needs to check if it is a directory
+// Handler for retrieving children
+func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
+	var input ValidImageUploadRequest
+	if !ParseParamsToSchema(r, "POST", &input) {
+		return http.StatusBadRequest, nil, nil
+	}
+
+	// Extract image and check for error
+	file, _, err := r.FormFile("Image")
+	if err != nil {
+		fmt.Println("Error retrieving the file")
+		return http.StatusBadRequest, nil, err
+	}
+	defer file.Close()
+
+	// Create entity in repository
+	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
+	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+	entityToCreate := repositories.FilesystemEntry{
+		LogicalName:  input.LogicalName,
+		ParentFileID: input.Parent,
+		IsDocument:   false,
+		OwnerUserId:  input.OwnerGroup,
+	}
+
+	// // Create a temporary file
+	// tempFile, err := ioutil.TempFile("", "upload-*.png")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// defer tempFile.Close()
+
+	// // Write bytes to temporary file
+	// if fileBytes, err := ioutil.ReadAll(file); err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	tempFile.Write(fileBytes)
+	// }
+
+	if e, err := repository.CreateEntry(entityToCreate); err != nil {
+		return http.StatusNotAcceptable, nil, nil
+	} else {
+		return http.StatusOK, struct {
+			NewID int
+		}{
+			NewID: e.EntityID,
+		}, nil
 	}
 }
