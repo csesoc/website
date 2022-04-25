@@ -10,7 +10,7 @@ require (
 	github.com/gorilla/sessions v1.2.1
 	github.com/gorilla/websocket v1.5.0
 	github.com/jackc/pgx/v4 v4.15.0
-	github.com/lib/pq v1.10.4
+	github.com/lib/pq v1.10.5
 	github.com/ory/dockertest v3.3.5+incompatible
 	github.com/rs/cors v1.8.2
 	github.com/sergi/go-diff v1.2.0
