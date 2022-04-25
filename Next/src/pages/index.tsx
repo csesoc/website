@@ -4,7 +4,7 @@ import styled from "styled-components";
 //import { ReactComponent as HomePageIcon } from '../assets/homepage-icon.svg';
 
 //https://stackoverflow.com/questions/44717164/unable-to-import-svg-files-in-typescript
-const HomePageIcon = require("../assets/homepage-icon.svg") as string;
+// const HomePageIcon = require("../assets/homepage-icon.svg") as string;
 
 const PageContainer = styled.div`
   min-height: 100vh;
