@@ -8,7 +8,6 @@ import Renderer from './components/FileRenderer/Renderer';
 import { initAction } from './state/folders/actions';
 import ConfirmationWindow from './components/ConfirmationModal/ConfirmationWindow';
 import Directory from "./components/Directory";
-import { ReactComponent as HomepageIcon } from 'src/assets/homepage-icon.svg';
 
 const Container = styled.div`
   display: flex;
