@@ -2,13 +2,13 @@
 package repositories
 
 import (
-	Context "context"
 	"errors"
 	"fmt"
+	"io"
 	"os"
+	"path/filepath"
 	"strings"
 
-	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	// "github.com/docker/docker/api/types"
 	// "github.com/docker/docker/api/types/filters"
@@ -34,23 +34,54 @@ func NewDockerFilesystemRespository() (c *DockerFileystemRepository, err error) 
 	return c, nil
 }
 
-// Add file to volume
-func (c *DockerFileystemRepository) AddToVolume(fp *os.File) error {
-	volumes, err := c.cli.VolumeList(Context.Background(), filters.NewArgs())
+// Am I meant to use interface in Go or is doing it using structs ok?
+
+// Functions with a dest param assume the user knows the volume path (hard code?)
+// also left it there because we might want local dir for testing
+
+// Add file to volume or update if exists
+func (c *DockerFileystemRepository) AddToVolume(source string, dest string) error {
+	src, err := os.Open(source)
 	if err != nil {
-		return err
+		return fmt.Errorf("Couldn't open source file")
 	}
-	for _, V := range volumes.Volumes {
-		fmt.Println(V.Mountpoint)
+	moved, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	defer moved.Close()
+	if err != nil {
+		return fmt.Errorf("Couldn't read/create the destination file")
 	}
-	return err
+	_, err = io.Copy(moved, src)
+	if err != nil {
+		return fmt.Errorf("File couldn't be copied to destination")
+	}
+	src.Close()
+	err = os.Remove(source)
+	if err != nil {
+		return fmt.Errorf("Couldn't remove the source file")
+	}
+	return nil
 }
 
-// Update file to volume
-
 // Get file from volume
+func (c *DockerFileystemRepository) GetFromVolume(fp string, dest string) (*os.File, error) {
+	file, err := os.Open(filepath.Join(dest, fp))
+	if err != nil {
+		return nil, fmt.Errorf("File doesn't exist")
+	}
+	return file, nil
+}
 
 // Delete file from volume
+func (c *DockerFileystemRepository) DeleteFromVolume(fp string, dest string) error {
+	filepath := filepath.Join(dest, fp)
+	file, err := os.Open(filepath)
+	if err != nil {
+		return fmt.Errorf("File doesn't exist")
+	}
+	file.Close()
+	os.Remove(filepath)
+	return nil
+}
 
 // We really should use an ORM jesus this is ugly
 func (rep FilesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {

@@ -262,7 +262,7 @@ func TestGetIDWithPath(t *testing.T) {
 func TestSmth(t *testing.T) {
 	c, err := repositories.NewDockerFilesystemRespository()
 	assert.True(t, err != nil)
-	c.AddToVolume(nil)
+	c.AddToVolume("", "")
 }
 
 func contains(s []int, e int) bool {
