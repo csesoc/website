@@ -8,6 +8,7 @@ import { createEditor, Descendant } from "slate";
 import { Slate, Editable, withReact, RenderLeafProps } from "slate-react";
 
 import BoldButton from "src/cse-ui-kit/small_buttons/BoldButton";
+import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
 import { UpdateValues } from "..";
 
 const EditorContainer = styled.div`
@@ -17,7 +18,6 @@ const EditorContainer = styled.div`
   flex-direction: column;
   border-radius: 10px;
   margin: 5px;
-  padding-top: 1rem;
   padding-bottom: 1rem;
   padding-left: 10px;
   padding-right: 10px;
@@ -27,7 +27,9 @@ const EditorContainer = styled.div`
 const ToolbarContainer = styled.div`
   display: flex;
   flex-direction: row;
-  padding: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 10px;
+  padding-right: 10px;
 `;
 
 const Text = styled.span<{
@@ -72,7 +74,7 @@ const EditorBlock: FC<{ update: UpdateValues; id: number }> = ({
   );
 
   return (
-    <EditorContainer>
+    <ContentBlock>
       <Slate
         editor={editor}
         value={initialValues}
@@ -89,7 +91,7 @@ const EditorBlock: FC<{ update: UpdateValues; id: number }> = ({
           style={{ width: "100%", height: "100%" }}
         />
       </Slate>
-    </EditorContainer>
+    </ContentBlock>
   );
 };
 
