@@ -19,6 +19,7 @@ export const StyledButton = styled.div<buttonProps>`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 5px;
   border-radius: ${(props) => props.size / 10}px;
 
   &:hover {

@@ -1,23 +1,43 @@
 // Import React dependencies.
-import React, { FC, MouseEventHandler, useMemo, useCallback } from "react";
+import React, { FC, useMemo, useCallback, useState } from "react";
 import styled from "styled-components";
 // Import the Slate editor factory.
 import { createEditor, Descendant } from "slate";
 
 // Import the Slate components and React plugin.
-import { Slate, Editable, withReact, RenderElementProps } from "slate-react";
+import { Slate, Editable, withReact, RenderLeafProps } from "slate-react";
 
+import BoldButton from "src/cse-ui-kit/small_buttons/BoldButton";
 import { UpdateValues } from "..";
 
 const EditorContainer = styled.div`
   width: 100%;
   max-width: 500px;
-  min-height: 100px;
   display: flex;
+  flex-direction: column;
   border-radius: 10px;
   margin: 5px;
-  padding: 10px;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 10px;
+  padding-right: 10px;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+`;
+
+const ToolbarContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
+`;
+
+const Text = styled.span<{
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+}>`
+  font-weight: ${(props) => (props.bold ? 600 : 400)};
+  font-style: ${(props) => (props.italic ? "italic" : "normal")};
+  text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
 `;
 
 const initialValues: Descendant[] = [
@@ -35,17 +55,21 @@ const EditorBlock: FC<{ update: UpdateValues; id: number }> = ({
 }) => {
   const editor = useMemo(() => withReact(createEditor()), []);
 
-  // const preventTriple: MouseEventHandler<HTMLDivElement> = (event) => {
-  //   if (event.detail > 2) {
-  //     event.preventDefault();
-  //   }
-  // };
-
-  // const renderElements: (props: RenderElementProps) => JSX.Element =
-  //   useCallback((props) => {
-  //     // eslint-disable-next-line react/prop-types
-  //     return <span {...props.attributes}>{props.children}</span>;
-  //   }, []);
+  const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
+    ({ attributes, children, leaf }) => {
+      return (
+        <Text
+          bold={leaf.bold ?? false}
+          italic={leaf.italic ?? false}
+          underline={leaf.underline ?? false}
+          {...attributes}
+        >
+          {children}
+        </Text>
+      );
+    },
+    []
+  );
 
   return (
     <EditorContainer>
@@ -54,10 +78,15 @@ const EditorBlock: FC<{ update: UpdateValues; id: number }> = ({
         value={initialValues}
         onChange={() => update(id, editor.children)}
       >
+        {true && (
+          <ToolbarContainer>
+            <BoldButton size={30} />
+            <BoldButton size={30} />
+          </ToolbarContainer>
+        )}
         <Editable
-          // onClick={preventTriple}
-          // renderElement={renderElements}
-          style={{ width: "100%", minHeight: "100%" }}
+          renderLeaf={renderLeaf}
+          style={{ width: "100%", height: "100%" }}
         />
       </Slate>
     </EditorContainer>
