@@ -39,5 +39,4 @@ Primary.args = {
     colourMain: "#9B9BE1",
     colourSecondary: "#E8CAFF",
     angle: 261,
-    blur: 0,
 }
