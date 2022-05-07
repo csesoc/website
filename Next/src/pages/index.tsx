@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from 'next/image';
 import styled from "styled-components";
+import HomepageIcon from './assets/HomepageIcon';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -63,8 +64,9 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
+        <HomepageIcon />
         <ImageContainer>
-          <Image src="/logo.svg" width="362" height="84"/>
+          <Image src="/logo.svg" width="362" height="84" />
           <Text1>
             Empowering
             <Text3> future</Text3>
