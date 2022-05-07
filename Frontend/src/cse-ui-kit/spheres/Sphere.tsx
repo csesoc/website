@@ -5,9 +5,6 @@ type Props = sphereProps;
 
 export default function Sphere({ ...styleProps }: Props) {
     return (
-        <StyledSphere
-            {...styleProps}
-        >
-        </StyledSphere>
+        <StyledSphere {...styleProps} />
     );
 }
