@@ -36,7 +36,11 @@ const Template: ComponentStory<typeof Sphere> = (args) =>
 
 export const Primary = Template.bind({});
 Primary.args = {
-    colourMain: "#9B9BE1",
-    colourSecondary: "#E8CAFF",
+    size: 200,
+    colourMain: "#969DC7",
+    colourSecondary: "#DAE9FB",
+    startMainPoint: -12,
+    startSecondaryPoint: 76,
     angle: 261,
+    blur: 2,
 }
