@@ -28,7 +28,11 @@ const Template: ComponentStory<typeof Sphere> = (args) =>
         gap="30px"
     >
         <Box {...BoxContainerStyle}>
-            Spheres
+            Default Sphere
+            <Sphere />
+        </Box>
+        <Box {...BoxContainerStyle}>
+            Modified Sphere
             <Sphere {...args} />
         </Box>
     </Box>
