@@ -26,6 +26,8 @@ export const StyledSphere = styled.div<sphereProps>`
   border-radius: 50%;
 `;
 
+// The default main colour (#969DC7) represents violet whilst the default
+// secondary colour (#E8CAFF) represents pink
 StyledSphere.defaultProps = {
   size: 100,
   colourMain: "#9B9BE1",

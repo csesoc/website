@@ -39,6 +39,8 @@ const Template: ComponentStory<typeof Sphere> = (args) =>
 )
 
 export const Primary = Template.bind({});
+// The main colour below (#969DC7) represents violet whilst the secondary 
+// colour (#DAE9FB) represents blue
 Primary.args = {
     size: 200,
     colourMain: "#969DC7",
