@@ -9,35 +9,36 @@ import { initAction } from './state/folders/actions';
 import ConfirmationWindow from './components/ConfirmationModal/ConfirmationWindow';
 import Directory from "./components/Directory";
 
+
 const Container = styled.div`
   display: flex;
   flex-direction: row;
 `;
 
 export default function Dashboard() {
-  const [modalState, setModalState] = useState<{ open: boolean, type: string }>({
+  const [modalState, setModalState] = useState<{open: boolean, type: string}>({
     open: false,
     type: "",
   });
 
-  const [selectedFile, setSelectedFile] = useState<number | null>(null);
+  const [selectedFile, setSelectedFile] = useState<number|null>(null);
   // const parentFolder = getFolderState().parentFolder;
   const dispatch = useDispatch();
 
   useEffect(() => {
     // fetches all folders and files from backend and displays it
     dispatch(initAction());
-  }, []);
+  },[]);
 
   return (
     <Container>
-      <SideBar setModalState={setModalState} />
+      <SideBar setModalState={setModalState}/>
       <Directory />
       <Renderer
         selectedFile={selectedFile}
         setSelectedFile={setSelectedFile}
       />
-      <ConfirmationWindow
+      <ConfirmationWindow 
         open={modalState.open}
         modalState={modalState}
         setModalState={setModalState}
