@@ -12,6 +12,7 @@ export const StyledContent = styled.div`
   justify-content: space-between;
   align-items: center;
   border-radius: 5px;
+  margin: 5px;
 `;
 
 export const StyledContentDots = styled.div`

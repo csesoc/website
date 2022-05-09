@@ -25,6 +25,7 @@ const ButtonsContainer = styled.div`
 
 const EditorPage: FC = () => {
   const [blocks, setBlocks] = useState<BlockData[]>([]);
+  const [focusedId, setFocusedId] = useState<number>(0);
 
   useEffect(() => {
     console.log(blocks);
@@ -45,20 +46,21 @@ const EditorPage: FC = () => {
           style={{ userSelect: "none" }}
           onClick={() => {
             setBlocks((prev) => [...prev, []]);
+            setFocusedId(blocks.length);
           }}
         >
           add block
         </button>
-        <BoldButton
-          size={35}
-          onClick={() => {
-            console.log("clicked");
-          }}
-        />
       </ButtonsContainer>
       <Container>
         {blocks.map((_, idx) => (
-          <EditorBlock key={idx} id={idx} update={updateValues} />
+          <EditorBlock
+            onClick={() => setFocusedId(idx)}
+            showToolBar={focusedId === idx}
+            key={idx}
+            id={idx}
+            update={updateValues}
+          />
         ))}
       </Container>
     </div>

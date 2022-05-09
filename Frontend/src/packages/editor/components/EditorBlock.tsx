@@ -1,5 +1,5 @@
 // Import React dependencies.
-import React, { FC, useMemo, useCallback, useState } from "react";
+import React, { FC, useMemo, useCallback } from "react";
 import styled from "styled-components";
 // Import the Slate editor factory.
 import { createEditor, Descendant } from "slate";
@@ -8,28 +8,22 @@ import { createEditor, Descendant } from "slate";
 import { Slate, Editable, withReact, RenderLeafProps } from "slate-react";
 
 import BoldButton from "src/cse-ui-kit/small_buttons/BoldButton";
+import ItalicButton from "src/cse-ui-kit/small_buttons/ItalicButton";
+import UnderlineButton from "src/cse-ui-kit/small_buttons/UnderlineButton";
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
 import { UpdateValues } from "..";
 
-const EditorContainer = styled.div`
-  width: 100%;
-  max-width: 500px;
-  display: flex;
-  flex-direction: column;
-  border-radius: 10px;
-  margin: 5px;
-  padding-bottom: 1rem;
-  padding-left: 10px;
-  padding-right: 10px;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-`;
+const initialValues: Descendant[] = [
+  {
+    type: "paragraph",
+    children: [{ text: "" }],
+  },
+];
 
 const ToolbarContainer = styled.div`
   display: flex;
   flex-direction: row;
-  padding-bottom: 1rem;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-bottom: 10px;
 `;
 
 const Text = styled.span<{
@@ -42,18 +36,18 @@ const Text = styled.span<{
   text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
 `;
 
-const initialValues: Descendant[] = [
-  {
-    type: "paragraph",
-    children: [
-      { text: "This is editable plain text, just like a <textarea>!" },
-    ],
-  },
-];
+interface EditorBlockProps {
+  update: UpdateValues;
+  id: number;
+  showToolBar: boolean;
+  onClick: () => void;
+}
 
-const EditorBlock: FC<{ update: UpdateValues; id: number }> = ({
+const EditorBlock: FC<EditorBlockProps> = ({
   update,
   id,
+  showToolBar,
+  onClick,
 }) => {
   const editor = useMemo(() => withReact(createEditor()), []);
 
@@ -80,14 +74,16 @@ const EditorBlock: FC<{ update: UpdateValues; id: number }> = ({
         value={initialValues}
         onChange={() => update(id, editor.children)}
       >
-        {true && (
+        {showToolBar && (
           <ToolbarContainer>
             <BoldButton size={30} />
-            <BoldButton size={30} />
+            <ItalicButton size={30} />
+            <UnderlineButton size={30} />
           </ToolbarContainer>
         )}
         <Editable
           renderLeaf={renderLeaf}
+          onClick={() => onClick()}
           style={{ width: "100%", height: "100%" }}
         />
       </Slate>
