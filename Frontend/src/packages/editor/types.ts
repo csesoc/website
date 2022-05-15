@@ -1,30 +1,95 @@
-import { BaseEditor } from "slate";
-import { ReactEditor } from "slate-react";
+import { Text, createEditor, Node, Element, Editor, Descendant, BaseEditor, } from 'slate'
+import { ReactEditor } from 'slate-react'
 
+export type BlockQuoteElement = {
+  type: 'block-quote'
+  align?: string
+  children: Descendant[]
+}
 
-export type Editor = BaseEditor & ReactEditor
+export type BulletedListElement = {
+  type: 'bulleted-list'
+  align?: string
+  children: Descendant[]
+}
 
-export type ParagraphElement = {
-  type: 'paragraph'
-  children: CustomText[]
+export type CheckListItemElement = {
+  type: 'check-list-item'
+  checked: boolean
+  children: Descendant[]
+}
+
+export type EditableVoidElement = {
+  type: 'editable-void'
+  children: EmptyText[]
 }
 
 export type HeadingElement = {
   type: 'heading'
-  level: number
-  children: CustomText[]
+  align?: string
+  children: Descendant[]
 }
 
-export type CustomElement = ParagraphElement | HeadingElement
+export type HeadingTwoElement = {
+  type: 'heading-two'
+  align?: string
+  children: Descendant[]
+}
 
-export type FormattedText = { text: string; bold?: true }
+export type ImageElement = {
+  type: 'image'
+  url: string
+  children: EmptyText[]
+}
 
-export type CustomText = FormattedText
+export type LinkElement = { type: 'link'; url: string; children: Descendant[] }
+
+export type ButtonElement = { type: 'button'; children: Descendant[] }
+
+export type ListItemElement = { type: 'list-item'; children: Descendant[] }
+
+export type ParagraphElement = {
+  type: 'paragraph'
+  align?: string
+  children: Descendant[]
+}
+
+export type TitleElement = { type: 'title'; children: Descendant[] }
+
+export type VideoElement = { type: 'video'; url: string; children: EmptyText[] }
+
+type CustomElement =
+  | BlockQuoteElement
+  | BulletedListElement
+  | CheckListItemElement
+  | EditableVoidElement
+  | HeadingElement
+  | HeadingTwoElement
+  | ImageElement
+  | LinkElement
+  | ButtonElement
+  | ListItemElement
+  | ParagraphElement
+  | TitleElement
+  | VideoElement
+
+export type CustomText = {
+  bold?: boolean
+  italic?: boolean
+  code?: boolean
+  text: string
+}
+
+export type EmptyText = {
+  text: string
+}
+
+export type CustomEditor = BaseEditor & ReactEditor
 
 declare module 'slate' {
   interface CustomTypes {
-    Editor: Editor
+    Editor: CustomEditor
     Element: CustomElement
-    Text: CustomText
+    Text: CustomText | EmptyText
   }
 }
