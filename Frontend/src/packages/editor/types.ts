@@ -58,7 +58,7 @@ export type TitleElement = { type: 'title'; children: Descendant[] }
 
 export type VideoElement = { type: 'video'; url: string; children: EmptyText[] }
 
-type CustomElement =
+export type CustomElement =
   | BlockQuoteElement
   | BulletedListElement
   | CheckListItemElement
@@ -76,7 +76,7 @@ type CustomElement =
 export type CustomText = {
   bold?: boolean
   italic?: boolean
-  code?: boolean
+  underline?: boolean
   text: string
 }
 
