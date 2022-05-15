@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, {ReactNode, useCallback, useMemo, useState} from 'react';
 import { Box } from "@mui/material";
 import EditorHeader from 'src/deprecated/components/Editor/EditorHeader';
 import EditorFile from 'src/deprecated/components/Editor/EditorFile';
@@ -11,57 +10,133 @@ import LeftAlignButton from 'src/cse-ui-kit/text_alignment_buttons/LeftAlign';
 import MiddleAlignButton from 'src/cse-ui-kit/text_alignment_buttons/MiddleAlign';
 import RightAlignButton from 'src/cse-ui-kit/text_alignment_buttons/RightAlign';
 
-import { EditorState } from "draft-js";
+// slate-js dependencies
+import { Editable, Slate, withReact } from "slate-react";
+import { createEditor, Descendant } from "slate";
 
-const args = {
-  background: "#E2E1E7",
-  size: 30
+
+type RenderLeafProps = {
+  attributes: any
+  children: ReactNode
+  leaf: {
+    bold?: boolean
+    italic?: boolean
+    underline?: boolean
+  }
 }
 
-const BoxContainerStyle = {
-  display: "flex",
-  flexDirection: "row" as const,
-  alignItems: "center",
-  gap: 1,
-  padding: 1
-}
+const Editor = () => {
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`
-
-const Editor: React.FC = () => {
-  const [editorState, setEditorState] = useState(() => {
-    return EditorState.createEmpty();
-  });
+  const renderElement = useCallback(props => <Element { ...props } />, []);
+  const renderLeaf = useCallback(props => < Leaf { ...props } />, []);
+  const editor = useMemo(() => withReact(createEditor()), []);
 
   return (
-    <div style={{ height: '100%' }}>
-      <EditorHeader />
-      <div className="Editor" style={{ display: 'flex' }}>
-        <EditorSidebar
-          editorState={editorState}
-          setEditorState={setEditorState} />
-        <div style={{ flex: 1 }}>
-          <Box {...BoxContainerStyle}>
-            <BoldButton {...args} />
-            <ItalicButton {...args} />
-            <UnderlineButton {...args} />
-            <LeftAlignButton {...args} />
-            <MiddleAlignButton {...args} />
-            <RightAlignButton {...args} />
-          </Box>
-          <Container>
-            <EditorFile
-              editorState={editorState}
-              setEditorState={setEditorState} />
-          </Container>
-        </div>
-      </div>
-    </div>
+    <Slate editor={editor} value={initialValue}>
+      <Editable
+        renderElement={renderElement}
+        renderLeaf={renderLeaf}
+      />
+    </Slate>
   );
 };
+
+
+const Element = (props: any) => {
+  const { attributes, children, element } = props
+  const style = { textAlign: element.align }
+  switch (element.type) {
+    case 'block-quote':
+      return (
+        <blockquote style={style} {...attributes}>
+          {children}
+        </blockquote>
+      )
+    case 'bulleted-list':
+      return (
+        <ul style={style} {...attributes}>
+          {children}
+        </ul>
+      )
+    case 'heading-one':
+      return (
+        <h1 style={style} {...attributes}>
+          {children}
+        </h1>
+      )
+    case 'heading-two':
+      return (
+        <h2 style={style} {...attributes}>
+          {children}
+        </h2>
+      )
+    case 'list-item':
+      return (
+        <li style={style} {...attributes}>
+          {children}
+        </li>
+      )
+    case 'numbered-list':
+      return (
+        <ol style={style} {...attributes}>
+          {children}
+        </ol>
+      )
+    default:
+      return (
+        <p style={style} {...attributes}>
+          {children}
+        </p>
+      )
+  }
+};
+
+const Leaf = (props: RenderLeafProps) => {
+  // eslint-disable-next-line prefer-const
+  let { attributes, children, leaf } = props
+  if (leaf.bold === true) {
+    children = <strong>{children}</strong>
+  }
+
+  if (leaf.italic === true) {
+    children = <em>{children}</em>
+  }
+
+  if (leaf.underline === true) {
+    children = <u>{children}</u>
+  }
+
+  return <span {...attributes}>{children}</span>
+};
+
+const initialValue: Descendant[] = [
+  {
+    type: 'heading-two',
+    children: [
+      { text: 'A heading' },
+    ],
+  },
+  {
+    type: 'paragraph',
+    children: [
+      {
+        text: "This is a paragraph.",
+      },
+      {
+        text: "bold",
+        bold: true
+      }
+    ],
+  },
+  {
+    type: 'block-quote',
+    children: [{ text: 'A block quote.' }],
+  },
+  {
+    type: 'paragraph',
+    align: 'center',
+    children: [{ text: 'text in the center' }],
+  },
+]
 
 export default Editor;
