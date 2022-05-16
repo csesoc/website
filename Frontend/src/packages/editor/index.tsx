@@ -12,13 +12,6 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const ButtonsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  padding: 10px;
-`;
-
 const EditorPage: FC = () => {
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [focusedId, setFocusedId] = useState<number>(0);
