@@ -19,7 +19,9 @@ const initialValues: Descendant[] = [
 const ToolbarContainer = styled.div`
   display: flex;
   flex-direction: row;
-  padding-bottom: 10px;
+  width: 100%;
+  max-width: 440px;
+  margin: 5px;
 `;
 
 const Text = styled.span<{
@@ -66,26 +68,26 @@ const EditorBlock: FC<EditorBlockProps> = ({
   );
 
   return (
-    <ContentBlock>
-      <Slate
-        editor={editor}
-        value={initialValues}
-        onChange={() => update(id, editor.children)}
-      >
-        {showToolBar && (
-          <ToolbarContainer>
-            <EditorBoldButton />
-            <EditorItalicButton />
-            <EditorUnderlineButton />
-          </ToolbarContainer>
-        )}
+    <Slate
+      editor={editor}
+      value={initialValues}
+      onChange={() => update(id, editor.children)}
+    >
+      {showToolBar && (
+        <ToolbarContainer>
+          <EditorBoldButton />
+          <EditorItalicButton />
+          <EditorUnderlineButton />
+        </ToolbarContainer>
+      )}
+      <ContentBlock>
         <Editable
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}
           style={{ width: "100%", height: "100%" }}
         />
-      </Slate>
-    </ContentBlock>
+      </ContentBlock>
+    </Slate>
   );
 };
 
