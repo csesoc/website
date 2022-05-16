@@ -1,8 +1,5 @@
 import React, {ReactNode, useCallback, useMemo, useState} from 'react';
 import { Box } from "@mui/material";
-import EditorHeader from 'src/deprecated/components/Editor/EditorHeader';
-import EditorFile from 'src/deprecated/components/Editor/EditorFile';
-import EditorSidebar from 'src/deprecated/components/Editor/EditorSidebar';
 import BoldButton from 'src/cse-ui-kit/small_buttons/BoldButton';
 import ItalicButton from 'src/cse-ui-kit/small_buttons/ItalicButton';
 import UnderlineButton from 'src/cse-ui-kit/small_buttons/UnderlineButton';
@@ -13,6 +10,7 @@ import RightAlignButton from 'src/cse-ui-kit/text_alignment_buttons/RightAlign';
 // slate-js dependencies
 import { Editable, Slate, withReact } from "slate-react";
 import { createEditor, Descendant } from "slate";
+import styled from "styled-components";
 
 
 type RenderLeafProps = {
@@ -25,6 +23,20 @@ type RenderLeafProps = {
   }
 }
 
+const Toolbar = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 10px 20px;
+  height: fit-content;
+`
+const args = {
+  background: "#E2E1E7",
+  size: 30
+};
+
 const Editor = () => {
 
   const renderElement = useCallback(props => <Element { ...props } />, []);
@@ -33,6 +45,14 @@ const Editor = () => {
 
   return (
     <Slate editor={editor} value={initialValue}>
+      <Toolbar>
+        <BoldButton {...args} />
+        <ItalicButton {...args} />
+        <UnderlineButton {...args} />
+        <LeftAlignButton {...args} />
+        <MiddleAlignButton {...args} />
+        <RightAlignButton {...args} />
+      </Toolbar>
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
