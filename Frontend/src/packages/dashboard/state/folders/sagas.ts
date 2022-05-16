@@ -19,27 +19,26 @@ function* initSaga() {
 }
 
 function*  addItemSaga({ payload }: { payload: actions.AddPayloadType }) {
-  const folderState: sliceState = yield select(getFolderState);
   switch(payload.type) {
     case "Folder": {
-      const newID: string = yield call(API.newFolder, payload.name, folderState.parentFolder);
+      const newID: string = yield call(API.newFolder, payload.name, payload.parentId);
       // now put results to redux store
       const folderPayload: Folder = {
         id: parseInt(newID),
         name: payload.name,
-        parentId: folderState.parentFolder,
+        parentId: payload.parentId,
         type: payload.type,
       }
       yield put(actions.addFolderItemAction(folderPayload))
       break;
     }
     case "File": {
-      const newID: string = yield call(API.newFile, payload.name, folderState.parentFolder);
+      const newID: string = yield call(API.newFile, payload.name, payload.parentId);
       // now put results to redux store
       const filePayload: File = {
         id: parseInt(newID),
         name: payload.name,
-        parentId: folderState.parentFolder,
+        parentId: payload.parentId,
         type: payload.type,
       }
       yield put(actions.addFolderItemAction(filePayload))
@@ -70,12 +69,12 @@ function* traverseIntoFolderSaga({ payload: id }: { payload: number }) {
 }
 
 function* traverseBackFolderSaga({ payload: id }: { payload: number }) {
-  if (id != 0) {
+  if (id != 2) {
     const parentFolder: FileEntity = yield call(API.getFolder, id);
-    const targetFolder: FileEntity = yield call(API.getFolder, parentFolder.parentId);
-    const children: FileEntity[] = yield call(API.updateContents, targetFolder.id);
+    const parentOfParentFolder: FileEntity = yield call(API.getFolder, parentFolder.parentId);
+    const children: FileEntity[] = yield call(API.updateContents, parentOfParentFolder.id);
     const dirPayload: actions.SetDirPayloadType = {
-      parentFolder: targetFolder.id,
+      parentFolder: parentOfParentFolder.id,
       folderName: ''
     };
 

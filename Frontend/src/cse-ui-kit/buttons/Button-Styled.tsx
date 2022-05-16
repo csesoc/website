@@ -15,10 +15,14 @@ export const StyledButton = styled.div<buttonProps>`
   border-radius: 10px;
 
   &:hover {
-    transform: scale(1.05);
+    background: #EFEEF3;
+    color: black;
+    transform: scale(1.04);
   }
   &:active {
-    transform: scale(0.95);
+    background: #C8D1FA;
+    color: #7482CB;
+    transform: scale(0.96);
   }
 
   cursor: pointer;

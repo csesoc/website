@@ -29,7 +29,6 @@ export async function updateContents(id: number) {
   }
 
   const children_json = await children_resp.json();
-  console.log(children_json)
   const children = children_json.Response.Children.map((child: JSONFileFormat) => {
     return toFileOrFolder(child);
   });
@@ -63,8 +62,6 @@ export const newFile = async (name: string, parentID: number): Promise<string> =
 
 export const newFolder = async (name: string, parentID: number): Promise<string> => {
 
-  console.log(name)
-  // This isn't attached to the parent folder yet,
   // TODO: patch once auth is finished
   const create_resp = await fetch("http://localhost:8080/filesystem/create", {
     method: "POST",

@@ -8,55 +8,37 @@ import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
 import Renderer from './components/FileRenderer/Renderer';
 import {initAction, traverseBackFolder} from './state/folders/actions';
 import ConfirmationWindow from './components/ConfirmationModal/ConfirmationWindow';
-import {getFolderState} from "./api/helpers";
-
+import Directory from "./components/Directory";
 
 const Container = styled.div`
   display: flex;
   flex-direction: row;
 `;
 
-export default function Dashboard(this: any) {
-  const [modalState, setModalState] = useState<{open: boolean, type: string}>({
+export default function Dashboard() {
+  const [modalState, setModalState] = useState<{ open: boolean, type: string }>({
     open: false,
     type: "",
   });
 
-  const [selectedFile, setSelectedFile] = useState<number|null>(null);
-  const parentFolder = getFolderState().parentFolder;
+  const [selectedFile, setSelectedFile] = useState<number | null>(null);
+  // const parentFolder = getFolderState().parentFolder;
   const dispatch = useDispatch();
 
   useEffect(() => {
     // fetches all folders and files from backend and displays it
     dispatch(initAction());
-  },[]);
-
-  const handleClick = () => {
-    dispatch(traverseBackFolder(parentFolder));
-  };
+  }, []);
 
   return (
     <Container>
-      <SideBar setModalState={setModalState}/>
-      <div>
-        <button onClick={ () => handleClick()}>go back</button>
-        <Breadcrumbs aria-label="breadcrumb">
-          {
-            getFolderState().path.split("/").map((folder, i) => {
-              return (
-                <Link underline="hover" color="inherit" key={i}>
-                  {folder}
-                </Link>
-              )
-            })
-          }
-        </Breadcrumbs>
-      </div>
+      <SideBar setModalState={setModalState} />
+      <Directory />
       <Renderer
         selectedFile={selectedFile}
         setSelectedFile={setSelectedFile}
       />
-      <ConfirmationWindow 
+      <ConfirmationWindow
         open={modalState.open}
         modalState={modalState}
         setModalState={setModalState}
