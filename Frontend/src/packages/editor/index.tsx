@@ -1,12 +1,10 @@
 import styled from "styled-components";
 import React, { useState, FC, useEffect } from "react";
-import { Descendant } from "slate";
 
-import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import EditorBlock from "./components/EditorBlock";
-
-type BlockData = Descendant[];
-export type UpdateValues = (idx: number, updatedBlock: BlockData) => void;
+import { BlockData, UpdateHandler } from "./types";
+import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
+import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 
 const Container = styled.div`
   display: flex;
@@ -29,7 +27,7 @@ const EditorPage: FC = () => {
     console.log(blocks);
   }, [blocks]);
 
-  const updateValues: UpdateValues = (idx: number, updatedBlock: BlockData) => {
+  const updateValues: UpdateHandler = (idx, updatedBlock) => {
     if (JSON.stringify(blocks[idx]) !== JSON.stringify(updateValues)) return;
     setBlocks((prev) =>
       prev.map((block, i) => (i === idx ? updatedBlock : block))
@@ -39,27 +37,22 @@ const EditorPage: FC = () => {
   return (
     <div style={{ height: "100%" }}>
       <EditorHeader />
-      <ButtonsContainer>
-        <button
-          style={{ userSelect: "none" }}
+      <Container>
+        {blocks.map((_, idx) => (
+          <EditorBlock
+            id={idx}
+            key={idx}
+            update={updateValues}
+            showToolBar={focusedId === idx}
+            onEditorClick={() => setFocusedId(idx)}
+          />
+        ))}
+        <CreateContentBlock
           onClick={() => {
             setBlocks((prev) => [...prev, []]);
             setFocusedId(blocks.length);
           }}
-        >
-          add block
-        </button>
-      </ButtonsContainer>
-      <Container>
-        {blocks.map((_, idx) => (
-          <EditorBlock
-            onClick={() => setFocusedId(idx)}
-            showToolBar={focusedId === idx}
-            key={idx}
-            id={idx}
-            update={updateValues}
-          />
-        ))}
+        />
       </Container>
     </div>
   );

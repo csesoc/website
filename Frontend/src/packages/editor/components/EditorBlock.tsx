@@ -1,15 +1,12 @@
-// Import React dependencies.
-import React, { FC, useMemo, useCallback } from "react";
 import styled from "styled-components";
-// Import the Slate editor factory.
 import { createEditor, Descendant } from "slate";
-
-// Import the Slate components and React plugin.
+import React, { FC, useMemo, useCallback } from "react";
 import { Slate, Editable, withReact, RenderLeafProps } from "slate-react";
 
-import BoldButton from "src/cse-ui-kit/small_buttons/BoldButton";
-import ItalicButton from "src/cse-ui-kit/small_buttons/ItalicButton";
-import UnderlineButton from "src/cse-ui-kit/small_buttons/UnderlineButton";
+import { UpdateHandler } from "../types";
+import EditorBoldButton from "./buttons/EditorBoldButton";
+import EditorItalicButton from "./buttons/EditorItalicButton";
+import EditorUnderlineButton from "./buttons/EditorUnderlineButton";
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
 
 const initialValues: Descendant[] = [
@@ -36,17 +33,17 @@ const Text = styled.span<{
 `;
 
 interface EditorBlockProps {
-  update: (id: number, value: Descendant[]) => void;
+  update: UpdateHandler;
   id: number;
   showToolBar: boolean;
-  onClick: () => void;
+  onEditorClick: () => void;
 }
 
 const EditorBlock: FC<EditorBlockProps> = ({
-  update,
   id,
+  update,
   showToolBar,
-  onClick,
+  onEditorClick,
 }) => {
   const editor = useMemo(() => withReact(createEditor()), []);
 
@@ -75,14 +72,14 @@ const EditorBlock: FC<EditorBlockProps> = ({
       >
         {showToolBar && (
           <ToolbarContainer>
-            <BoldButton size={30} />
-            <ItalicButton size={30} />
-            <UnderlineButton size={30} />
+            <EditorBoldButton />
+            <EditorItalicButton />
+            <EditorUnderlineButton />
           </ToolbarContainer>
         )}
         <Editable
           renderLeaf={renderLeaf}
-          onClick={() => onClick()}
+          onClick={() => onEditorClick()}
           style={{ width: "100%", height: "100%" }}
         />
       </Slate>
