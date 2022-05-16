@@ -1,5 +1,9 @@
 import React, {ReactNode, useCallback, useMemo, useState} from 'react';
-import { Box } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
+
+import bold from '../../assets/bold-button.svg';
+import italics from '../../assets/italics-button.svg';
+import underline from '../../assets/underline-button.svg';
 import BoldButton from 'src/cse-ui-kit/small_buttons/BoldButton';
 import ItalicButton from 'src/cse-ui-kit/small_buttons/ItalicButton';
 import UnderlineButton from 'src/cse-ui-kit/small_buttons/UnderlineButton';
@@ -8,8 +12,8 @@ import MiddleAlignButton from 'src/cse-ui-kit/text_alignment_buttons/MiddleAlign
 import RightAlignButton from 'src/cse-ui-kit/text_alignment_buttons/RightAlign';
 
 // slate-js dependencies
-import { Editable, Slate, withReact } from "slate-react";
-import { createEditor, Descendant } from "slate";
+import {Editable, Slate, useSlate, withReact} from "slate-react";
+import { createEditor, Descendant, Editor as SlateEditor } from "slate";
 import styled from "styled-components";
 
 
@@ -127,6 +131,36 @@ const Leaf = (props: RenderLeafProps) => {
   }
 
   return <span {...attributes}>{children}</span>
+};
+
+const isMarkActive = (editor:any, format:string) => {
+  const marks = SlateEditor.marks(editor)
+  return marks ? marks[format] === true : false
+}
+
+const MarkButton = (format: string) => {
+  const editor = useSlate();
+  return (
+    <BoldButton {...args}
+      active={{isMarkActive(editor, format)}}
+      onMouseDown={event => {
+        event.preventDefault()
+        toggleMark(editor, format)
+      }}
+    >
+      <BoldButton {...args} />
+    </BoldButton>
+  )
+}
+
+const toggleMark = (editor:any, format:string) => {
+  const isActive = isMarkActive(editor, format)
+
+  if (isActive) {
+    SlateEditor.removeMark(editor, format)
+  } else {
+    SlateEditor.addMark(editor, format, true)
+  }
 };
 
 const initialValue: Descendant[] = [
