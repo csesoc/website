@@ -51,6 +51,8 @@ const EditorBlock: FC<EditorBlockProps> = ({
     ({ attributes, children, leaf }) => {
       return (
         <Text
+          // Nullish coalescing operator
+          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator
           bold={leaf.bold ?? false}
           italic={leaf.italic ?? false}
           underline={leaf.underline ?? false}
