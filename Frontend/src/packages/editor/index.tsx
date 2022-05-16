@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { useState, FC, useEffect } from "react";
+import React, { useState, FC } from "react";
 
 import EditorBlock from "./components/EditorBlock";
 import { BlockData, UpdateHandler } from "./types";
@@ -15,10 +15,6 @@ const Container = styled.div`
 const EditorPage: FC = () => {
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [focusedId, setFocusedId] = useState<number>(0);
-
-  useEffect(() => {
-    console.log(blocks);
-  }, [blocks]);
 
   const updateValues: UpdateHandler = (idx, updatedBlock) => {
     if (JSON.stringify(blocks[idx]) !== JSON.stringify(updateValues)) return;
