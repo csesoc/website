@@ -1,8 +1,15 @@
 import * as React from "react"
 
-const HomepageIcon = () => (
+export type iconProps = {
+  viewbox: string;
+}
+
+type Props = iconProps;
+
+const HomepageIcon = ({ ...iconProps }: Props) => (
   <svg
-    width={813}
+    viewBox={iconProps.viewbox}
+    width={809}
     height={549}
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
