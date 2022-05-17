@@ -16,7 +16,7 @@ type server struct {
 }
 
 type clientState struct {
-	c          *client
+	*client
 	canSendOps bool
 }
 
@@ -41,14 +41,14 @@ func (s *server) connectClient(c *client) pipe {
 	// to communicate to us via
 	clientID := len(s.clients)
 	s.clients[clientID] = &clientState{
-		c:          c,
+		client:     c,
 		canSendOps: true,
 	}
 
 	return func(operation op) {
 		// this could also just be captured from the outer func
 		clientState := s.clients[clientID]
-		thisClient := clientState.c
+		thisClient := clientState.client
 		if !clientState.canSendOps {
 			// todo: in the future terminate this client
 			// this is the only thing we can do in order to enforce
@@ -60,6 +60,8 @@ func (s *server) connectClient(c *client) pipe {
 		// not a poggers idea but goroutines are quite lightweight
 		go func() {
 			clientState.canSendOps = false
+
+			// apply op to client states
 			s.statelock.Lock()
 			// todo: do stuff with the incoming data
 			// replace the print with something else
@@ -75,7 +77,7 @@ func (s *server) connectClient(c *client) pipe {
 				}
 
 				// push update
-				connectedClient.c.sendOp <- transformedOperation
+				connectedClient.client.sendOp <- transformedOperation
 			}
 
 			clientState.canSendOps = true
