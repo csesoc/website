@@ -36,3 +36,6 @@ Backend/main
 
 # ignore .env files
 Config/.env.dev
+
+# System files
+.DS_Store
