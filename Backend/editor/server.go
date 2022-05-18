@@ -10,9 +10,10 @@ type server struct {
 	// todo: stop the client map from growing too large using some compaction
 	// strategy or a more appropriate ds
 	// state management
-	state     string
-	statelock sync.Mutex
-	clients   map[int]*clientState
+	state      string
+	statelock  sync.Mutex
+	clients    map[int]*clientState
+	workerPool *WorkerPool
 }
 
 type clientState struct {
@@ -24,9 +25,10 @@ func newServer() *server {
 	// ideally state shouldnt be a string due to its immutability
 	// any update requires the allocation + copy of a new string in memory
 	return &server{
-		state:     "amongus!!!",
-		statelock: sync.Mutex{},
-		clients:   make(map[int]*clientState),
+		state:      "amongus!!!",
+		statelock:  sync.Mutex{},
+		clients:    make(map[int]*clientState),
+		workerPool: NewWorkerPool(),
 	}
 }
 
@@ -36,6 +38,7 @@ type pipe = func(operation op)
 
 // connectClient connects a client to a server and returns a one way pipe
 // it can use for communication with the server
+// TODO: synchronise this properly
 func (s *server) connectClient(c *client) pipe {
 	// prepare a comm delegate for the client
 	// to communicate to us via
@@ -43,6 +46,11 @@ func (s *server) connectClient(c *client) pipe {
 	s.clients[clientID] = &clientState{
 		client:     c,
 		canSendOps: true,
+	}
+
+	// create a new worker if the number of workers doesnt equal the number of clients
+	for len(s.clients) != s.workerPool.GetPoolSize() {
+		s.workerPool.AddWorker()
 	}
 
 	return func(operation op) {
@@ -58,7 +66,7 @@ func (s *server) connectClient(c *client) pipe {
 
 		// spinning up a goroutine to propgate every update :flooshed:
 		// not a poggers idea but goroutines are quite lightweight
-		go func() {
+		s.workerPool.ScheduleWork(func() {
 			clientState.canSendOps = false
 
 			// apply op to client states
@@ -82,6 +90,6 @@ func (s *server) connectClient(c *client) pipe {
 
 			clientState.canSendOps = true
 			thisClient.sendAcknowledgement <- true
-		}()
+		})
 	}
 }
