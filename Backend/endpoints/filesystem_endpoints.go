@@ -50,7 +50,7 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory)
 			Children:   childrenArr,
 		}, nil
 	} else {
-		return http.StatusNotFound, nil, nil
+		return http.StatusNotFound, nil, err
 	}
 }
 
@@ -78,7 +78,7 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactor
 	}
 
 	if e, err := repository.CreateEntry(entityToCreate); err != nil {
-		return http.StatusNotAcceptable, nil, nil
+		return http.StatusNotAcceptable, nil, err
 	} else {
 		return http.StatusOK, struct {
 			NewID int
@@ -98,8 +98,8 @@ func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request, df Dependenc
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
-	if repository.DeleteEntryWithID(input.EntityID) != nil {
-		return http.StatusNotAcceptable, nil, nil
+	if err := repository.DeleteEntryWithID(input.EntityID); err != nil {
+		return http.StatusNotAcceptable, nil, err
 	} else {
 		return http.StatusOK, nil, nil
 	}
@@ -115,7 +115,7 @@ func GetChildren(w http.ResponseWriter, r *http.Request, df DependencyFactory) (
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
 	if fileInfo, err := repository.GetEntryWithID(input.EntityID); err != nil {
-		return http.StatusNotFound, nil, nil
+		return http.StatusNotFound, nil, err
 	} else {
 		return http.StatusOK, struct {
 			Children []int
@@ -138,7 +138,7 @@ func GetIDWithPath(w http.ResponseWriter, r *http.Request, df DependencyFactory)
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
 	if entityID, err := repository.GetIDWithPath(input.Path); err != nil {
-		return http.StatusNotFound, nil, nil
+		return http.StatusNotFound, nil, err
 	} else {
 		return http.StatusOK, entityID, nil
 	}
@@ -158,8 +158,8 @@ func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request, df Dependenc
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
-	if repository.RenameEntity(input.EntityID, input.NewName) != nil {
-		return http.StatusNotAcceptable, nil, nil
+	if err := repository.RenameEntity(input.EntityID, input.NewName); err != nil {
+		return http.StatusNotAcceptable, nil, err
 	} else {
 		return http.StatusOK, nil, nil
 	}
