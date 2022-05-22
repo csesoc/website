@@ -19,7 +19,7 @@ const ImageContainer = styled.div`
   justify-content: flex-end;
 `;
 
-const Text1 = styled.body`
+const Subtitle = styled.span`
   color: #010033;
   font-size: 36px;
   padding: 10px 0;
@@ -27,16 +27,12 @@ const Text1 = styled.body`
   margin-top: 100px;
 `;
 
-const Text2 = styled.body`
+const Coloured = styled.span`
   color: #3977f8;
-  font-size: 36px;
 `;
 
-const Text3 = styled.body`
-  color: #010033;
+const Italic = styled.span`
   font-style: italic;
-  font-size: 36px;
-  display: inline;
 `;
 
 const Button = styled.button`
@@ -65,11 +61,14 @@ const Home: NextPage = () => {
         <HomepageIcon />
         <ImageContainer>
           <Image src="/logo.svg" width="362" height="84" alt="csesoc logo" />
-          <Text1>
-            Empowering
-            <Text3> future</Text3>
-            <Text2>Technological Leaders</Text2>
-          </Text1>
+          <div>
+            <Subtitle>
+              Empowering
+              <Italic> future</Italic>
+              <br />
+              <Coloured>Technological Leaders</Coloured>
+            </Subtitle>
+          </div>
           <Button>Visit on Blog</Button>
         </ImageContainer>
       </main>
