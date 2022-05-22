@@ -36,7 +36,7 @@ type User struct {
 */
 func LoginHandler(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
 	var user User
-	if !ParseParamsToSchema(r, "POST", &user) {
+	if status := ParseParamsToSchema(r, "POST", &user); status != http.StatusOK {
 		http.Redirect(w, r, environment.GetFrontendURI()+"/login", http.StatusMovedPermanently)
 		return http.StatusMovedPermanently, nil, nil
 	}

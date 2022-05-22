@@ -31,14 +31,14 @@ func SendResponse(w http.ResponseWriter, marshaledJson string) {
 }
 
 // ParseParamsToSchema expects the target to be a pointer
-func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interface{}) bool {
+func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interface{}) int {
 	err := r.ParseForm()
 	if err != nil {
-		return false
+		return http.StatusBadRequest
 	}
 
 	if acceptingMethod != r.Method {
-		return false
+		return http.StatusMethodNotAllowed
 	}
 
 	decoder := schema.NewDecoder()
@@ -48,8 +48,8 @@ func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interfa
 		err = decoder.Decode(target, r.PostForm)
 	}
 	if err != nil {
-		return false
+		return http.StatusBadRequest
 	}
 
-	return true
+	return http.StatusOK
 }
