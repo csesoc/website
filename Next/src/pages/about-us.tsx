@@ -32,11 +32,11 @@ const MainTitle = styled.div`
     color: #A09FE3;
     font-family: 'Raleway';
     font-weight: 850;
-    font-size: 49px;
+    font-size: 4.3vw;
     line-height: 4vh;
     text-align: center;
     text-shadow: 0px 0px;
-    margin-top: 30vh;
+    margin-top: 40vh;
 `
 
 const MainRect = styled.div`
@@ -46,15 +46,15 @@ const MainRect = styled.div`
     color: #FFFFFF;
     font-family: 'Raleway';
     font-weight: 300;
-    font-size: 20px;
+    font-size: 1.4vw;
     line-height: 4vh;
     text-align: center;
     text-shadow: 0px 0px;
     padding: 3vh 2vw;
-    margin-top: 30px;
+    margin-top: 6vh;
 `;
 
-const BlueColor = styled.div`
+const BlueColor = styled.span`
     color: #3977F8;
 `
 
@@ -66,19 +66,23 @@ const AboutUs = () => (
                     About Us
                 </MainTitle>
                 <MainRect>
-                    We are one of the biggest and most active societies at UNSW, catering to over 3500 CSE students spanning across degrees in Computer Science, Software Engineering, Bioinformatics and Computer Engineering.
+                    We are one of the biggest and most active societies at
+                    <BlueColor> UNSW</BlueColor>
+                    , catering to over
+                    <BlueColor> 3500 CSE students </BlueColor>
+                    spanning across degrees in Computer Science, Software Engineering, Bioinformatics and Computer Engineering.
                 </MainRect>
             </AboutUsContent>
-            <SpherePositioning left={13} top={26}>
+            <SpherePositioning left={9} top={28}>
                 <Sphere {...args1} />
             </SpherePositioning>
-            <SpherePositioning left={46.04} top={43}>
+            <SpherePositioning left={46.04} top={47}>
                 <Sphere {...args2} />
             </SpherePositioning>
-            <SpherePositioning left={12} top={82}>
+            <SpherePositioning left={12} top={87}>
                 <Sphere {...args3} />
             </SpherePositioning>
-            <SpherePositioning left={71} top={82}>
+            <SpherePositioning left={71} top={86}>
                 <Sphere {...args4} />
             </SpherePositioning>
         </AboutUsPage>
