@@ -7,6 +7,7 @@ import { UpdateHandler } from "../types";
 import EditorBoldButton from "./buttons/EditorBoldButton";
 import EditorItalicButton from "./buttons/EditorItalicButton";
 import EditorUnderlineButton from "./buttons/EditorUnderlineButton";
+import EditorSelectFont from './buttons/EditorSelectFont'
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
 
 const initialValues: Descendant[] = [
@@ -28,9 +29,11 @@ const Text = styled.span<{
   bold: boolean;
   italic: boolean;
   underline: boolean;
+  textSize: number;
 }>`
   font-weight: ${(props) => (props.bold ? 600 : 400)};
   font-style: ${(props) => (props.italic ? "italic" : "normal")};
+  font-size: ${(props) => (props.textSize)}px;
   text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
 `;
 
@@ -58,6 +61,7 @@ const EditorBlock: FC<EditorBlockProps> = ({
           bold={leaf.bold ?? false}
           italic={leaf.italic ?? false}
           underline={leaf.underline ?? false}
+          textSize={leaf.textSize ?? 16}
           {...attributes}
         >
           {children}
@@ -78,6 +82,7 @@ const EditorBlock: FC<EditorBlockProps> = ({
           <EditorBoldButton />
           <EditorItalicButton />
           <EditorUnderlineButton />
+          <EditorSelectFont />
         </ToolbarContainer>
       )}
       <ContentBlock>

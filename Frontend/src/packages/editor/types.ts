@@ -6,6 +6,7 @@ export type UpdateHandler = (idx: number, updatedBlock: BlockData) => void;
 
 type CustomElement = { type: "paragraph"; children: CustomText[] };
 type CustomText = {
+  textSize?: number;
   text: string;
   bold?: boolean;
   italic?: boolean;
