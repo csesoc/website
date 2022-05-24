@@ -40,7 +40,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, df DependencyFactory) 
 		http.Redirect(w, r, environment.GetFrontendURI()+"/login", http.StatusMovedPermanently)
 		return http.StatusMovedPermanently, nil, nil
 	}
-	if user.IsValidEmail() != nil && user.checkPassword() != nil {
+	if user.IsValidEmail() != nil || user.checkPassword() != nil {
 		return http.StatusUnauthorized, nil, nil
 	}
 
