@@ -22,6 +22,7 @@ services:
     volumes:
       - './Backend:/go/src/cms.csesoc.unsw.edu.au'
       - './Backend/go.mod:/go/src/cms.csesoc.unsw.edu.au/go.mod'
+      - 'document_data:/var/lib/documents/data'
     ports:
       - 8080:8080
     environment:
@@ -60,3 +61,4 @@ services:
 volumes:
   pg_data:
   staging_data:
+  document_data:
