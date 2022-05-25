@@ -15,5 +15,5 @@ The backend folder contains all our backend code 🤯. Theres a few important fo
    - Mostly algorithms used by the editor such as Myer's string difference algorithm (glorified BFS tbh) and some prefix/suffix computation
  - ### `environment/` & `internal/`
    - Methods/packages that can be used to retrieve information about the current environment and other internal utilities 
- - ### `src`
-   - WIP TypeSCript implementation of client and server for Operational Transform algorithm
+ - ### `client`
+   - WIP TypeScript implementation of client server for operational transform
