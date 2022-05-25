@@ -1,11 +1,11 @@
-import { toFileOrFolder } from './helpers';
+import { toFileOrFolder} from './helpers';
 import { BACKEND_URI } from 'src/config';
 import { JSONFileFormat } from './types';
 
 // Given a file ID (if no ID is provided root is assumed), returns
 // a FileFormat of that file from the backend
 export async function getFolder (id?: number) {
-  const ending = (id === undefined) ? "" : `?EntityID=${id}`;
+  const ending = (id === undefined) ? "?EntityID=0" : `?EntityID=${id}`;
   const folder_resp = await fetch(`${BACKEND_URI}/filesystem/info${ending}`);
 
   if (!folder_resp.ok) {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"cms.csesoc.unsw.edu.au/editor"
 	"cms.csesoc.unsw.edu.au/endpoints"
 	"cms.csesoc.unsw.edu.au/environment"
 
@@ -17,9 +16,6 @@ func main() {
 	endpoints.RegisterFilesystemEndpoints(mux)
 	endpoints.RegisterAuthenticationEndpoints(mux)
 	mux.Handle("/", http.FileServer(http.Dir("./editor/html")))
-
-	// editor handler
-	mux.HandleFunc("/edit", editor.EditEndpoint)
 
 	// whitelisted URLs
 	var frontend_URI = environment.GetFrontendURI()
