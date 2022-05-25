@@ -9,7 +9,7 @@ import (
 )
 
 // This file just defines some of the endpoints for the editor
-// and ties togher its various disparate components
+// and ties together its various disparate components
 var Upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,

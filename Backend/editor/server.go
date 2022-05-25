@@ -21,7 +21,7 @@ type clientState struct {
 }
 
 func newServer() *server {
-	// ideally state shouldnt be a string due to its immutability
+	// ideally state shouldn't be a string due to its immutability
 	// any update requires the allocation + copy of a new string in memory
 	return &server{
 		state:     "amongus!!!",

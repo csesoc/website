@@ -4,7 +4,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// client is the embodyment of all data relating to a client connection
+// client is the embodiment of all data relating to a client connection
 // it is mostly managed by the server
 // quick sidenote:
 //		since sendOp and sendAcknowledgement are bounded we can actually deadlock the system
