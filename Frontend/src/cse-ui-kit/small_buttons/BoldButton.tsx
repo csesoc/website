@@ -1,17 +1,19 @@
-import React from 'react';
-import { StyledButton, buttonProps, scaleRate } from './small_buttons-Styled';
-import { ReactComponent as Bold } from '../../assets/bold-button.svg';
+import React, { MouseEventHandler } from "react";
+import { StyledButton, buttonProps, scaleRate } from "./small_buttons-Styled";
+import { ReactComponent as Bold } from "../../assets/bold-button.svg";
 
 type Props = {
-  onClick?: (...args: any) => void;
+  onClick?: MouseEventHandler<HTMLDivElement>;
+  onMouseDown?: MouseEventHandler<HTMLDivElement>;
 } & buttonProps;
 
-export default function BoldButton({ onClick, ...styleProps }: Props) {
+export default function BoldButton({
+  onClick,
+  onMouseDown,
+  ...styleProps
+}: Props) {
   return (
-    <StyledButton
-      onClick={onClick}
-      {...styleProps}
-    >
+    <StyledButton onClick={onClick} onMouseDown={onMouseDown} {...styleProps}>
       <Bold
         height={styleProps.size * scaleRate.smallButtonRate}
         width={styleProps.size * scaleRate.smallButtonRate}
