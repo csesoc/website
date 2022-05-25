@@ -4,19 +4,19 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// client is the embodiment of all data relating to a client connection
-// it is mostly managed by the server
+// clientView is the embodiment of all data relating to a clientView connection
+// it is mostly managed by the documentServer
 // quick sidenote:
 //		since sendOp and sendAcknowledgement are bounded we can actually deadlock the system
-//		by filling them up :P, the server avoids this with a little hack, it spins a goroutine
-//		to publish updates from the client within the pipe
-type client struct {
+//		by filling them up :P, the documentServer avoids this with a little hack, it spins a goroutine
+//		to publish updates from the clientView within the pipe
+type clientView struct {
 	socket              *websocket.Conn
 	sendOp              chan op
 	sendAcknowledgement chan bool
 }
 
-// models an operation a client can propagte to the server
+// models an operation a client can propagte to the documentServer
 type op struct {
 	data     string
 	location int
@@ -24,23 +24,24 @@ type op struct {
 }
 
 type opRequest struct {
-	operations []op
+	requestType string
+	operation   op
 }
 
-func newClient(socket *websocket.Conn) *client {
-	return &client{
+func newClient(socket *websocket.Conn) *clientView {
+	return &clientView{
 		socket:              socket,
 		sendOp:              make(chan op),
 		sendAcknowledgement: make(chan bool),
 	}
 }
 
-// stateClientInstance starts the client's spinny loop
-// in this loop the client listens for updates and pushes
+// run starts the client's spinny loop
+// in this loop the clientView listens for updates and pushes
 // them down the websocket, it also pulls stuff up the websocket
-// the server will use the appropriate channels to communicate
+// the documentServer will use the appropriate channels to communicate
 // updates to the client, namely: sendOp and sendAcknowledgement
-func (c *client) run(serverPipe pipe) {
+func (c *clientView) run(serverPipe pipe) {
 	for {
 		select {
 		case <-c.sendOp:
@@ -60,10 +61,8 @@ func (c *client) run(serverPipe pipe) {
 
 			}
 
-			// iterate over all incoming operations and push up the server pipe
-			for _, op := range request.operations {
-				serverPipe(op)
-			}
+			// push the update to the documentServer
+			serverPipe(request.operation)
 		}
 	}
 }
