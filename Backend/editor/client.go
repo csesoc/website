@@ -40,7 +40,7 @@ func newClient(socket *websocket.Conn) *client {
 // them down the websocket, it also pulls stuff up the websocket
 // the server will use the appropriate channels to communicate
 // updates to the client, namely: sendOp and sendAcknowledgement
-func (c *client) spin(serverPipe pipe) {
+func (c *client) run(serverPipe pipe) {
 	for {
 		select {
 		case <-c.sendOp:

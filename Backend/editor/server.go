@@ -10,10 +10,9 @@ type server struct {
 	// todo: stop the client map from growing too large using some compaction
 	// strategy or a more appropriate ds
 	// state management
-	state      string
-	statelock  sync.Mutex
-	clients    map[int]*clientState
-	workerPool *WorkerPool
+	state     string
+	statelock sync.Mutex
+	clients   map[int]*clientState
 }
 
 type clientState struct {
@@ -25,10 +24,9 @@ func newServer() *server {
 	// ideally state shouldnt be a string due to its immutability
 	// any update requires the allocation + copy of a new string in memory
 	return &server{
-		state:      "amongus!!!",
-		statelock:  sync.Mutex{},
-		clients:    make(map[int]*clientState),
-		workerPool: NewWorkerPool(),
+		state:     "amongus!!!",
+		statelock: sync.Mutex{},
+		clients:   make(map[int]*clientState),
 	}
 }
 
@@ -40,19 +38,26 @@ type pipe = func(operation op)
 // it can use for communication with the server
 // TODO: synchronise this properly
 func (s *server) connectClient(c *client) pipe {
-	// prepare a comm delegate for the client
-	// to communicate to us via
+	// register this client
 	clientID := len(s.clients)
 	s.clients[clientID] = &clientState{
 		client:     c,
 		canSendOps: true,
 	}
 
-	// create a new worker if the number of workers doesnt equal the number of clients
-	for len(s.clients) != s.workerPool.GetPoolSize() {
-		s.workerPool.AddWorker()
-	}
+	// we need to create a new worker for this client too
+	workerHandle := make(chan func())
+	killHandle := make(chan empty)
+	go createAndStartWorker(workerHandle, killHandle)
 
+	// finally build a comm pipe for this client
+	return s.buildClientPipe(clientID, workerHandle, killHandle)
+}
+
+// buildClientPipe is a function that returns the "pipe" for a client
+// this pipe contains all the necessary code that the client needs to communicate with the server
+// when the client wishes to send data to the server they simply just call this pipe with the operation
+func (s *server) buildClientPipe(clientID int, workerWorkHandle chan func(), workerKillHandle chan empty) func(op) {
 	return func(operation op) {
 		// this could also just be captured from the outer func
 		clientState := s.clients[clientID]
@@ -64,9 +69,9 @@ func (s *server) connectClient(c *client) pipe {
 			panic("oh no!")
 		}
 
-		// spinning up a goroutine to propgate every update :flooshed:
-		// not a poggers idea but goroutines are quite lightweight
-		s.workerPool.ScheduleWork(func() {
+		// to deal with this incoming operation we need to push
+		// data to the worker assigned to this client
+		workerWorkHandle <- func() {
 			clientState.canSendOps = false
 
 			// apply op to client states
@@ -90,6 +95,6 @@ func (s *server) connectClient(c *client) pipe {
 
 			clientState.canSendOps = true
 			thisClient.sendAcknowledgement <- true
-		})
+		}
 	}
 }
