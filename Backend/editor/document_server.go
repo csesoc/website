@@ -134,6 +134,8 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 // to use when it wants to tell the document server that it is leaving
 func (s *documentServer) buildAlertLeavingSignal(clientID int, workerKillHandle chan empty) func() {
 	// go doesnt have currying :(
-	go func() { workerKillHandle <- empty{} }()
-	return func() { s.disconnectClient(clientID) }
+	return func() {
+		workerKillHandle <- empty{}
+		s.disconnectClient(clientID)
+	}
 }
