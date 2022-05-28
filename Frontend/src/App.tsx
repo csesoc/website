@@ -5,7 +5,7 @@ import { GlobalStore } from "src/redux-state/index";
 
 // imports
 import Dashboard from "./packages/dashboard/Dashboard";
-import Editor from "./packages/editor";
+import Editor from "./packages/editor/index";
 
 import "./css/styles.css";
 
