@@ -1,17 +1,15 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Provider } from 'react-redux';
-import { GlobalStore } from 'src/redux-state/index';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import { GlobalStore } from "src/redux-state/index";
 
 // imports
-import Dashboard from './packages/dashboard/Dashboard';
-import Editor from './packages/editor/Editor';
+import Dashboard from "./packages/dashboard/Dashboard";
+import Editor from "./packages/editor";
 
-import './css/styles.css'
-
+import "./css/styles.css";
 
 const App: React.FC = () => {
-
   return (
     <div className="App">
       <Provider store={GlobalStore}>
@@ -24,6 +22,6 @@ const App: React.FC = () => {
       </Provider>
     </div>
   );
-}
+};
 
 export default App;
