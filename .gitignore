@@ -36,3 +36,5 @@ Backend/main
 
 # ignore .env files
 Config/.env.dev
+/Frontend/package-lock.json
+/Frontend/yarn.lock
