@@ -31,7 +31,7 @@ const HOTKEYS = {
 const BlockContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: 60%;
   height: fit-content;
   border: 1px solid black;
 `
@@ -45,9 +45,16 @@ const Toolbar = styled.div`
   height: fit-content;
   width: 100%;
   border-bottom: 1px solid black;
+  cursor: move;
 `
 
-const ContentBlock = () => {
+interface ContentBlockProps {
+  id: number;
+  showToolBar: boolean;
+  onEditorClick: () => void;
+}
+
+const ContentBlock = (props:ContentBlockProps) => {
 
   const renderElement = useCallback(props => <Element { ...props } />, []);
   const renderLeaf = useCallback(props => < Leaf { ...props } />, []);
