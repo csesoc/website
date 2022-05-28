@@ -73,6 +73,7 @@ const Home: NextPage = () => {
             <Text2>Technological Leaders</Text2>
           </Text1>
           <Button>Visit on Blog</Button>
+          <li><a href="/support">support</a></li>
         </ImageContainer>
       </main>
 
