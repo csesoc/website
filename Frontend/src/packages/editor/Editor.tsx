@@ -1,23 +1,11 @@
 import React, {ReactNode, useCallback, useMemo, useState} from 'react';
-import { Box, IconButton } from "@mui/material";
-import Button from 'react-bootstrap/Button'
-
-import Bold from '../../assets/bold-button.svg';
-import Italics from '../../assets/italics-button.svg';
-import Underline from '../../assets/underline-button.svg';
-import BoldButton from 'src/cse-ui-kit/small_buttons/BoldButton';
-import ItalicButton from 'src/cse-ui-kit/small_buttons/ItalicButton';
-import UnderlineButton from 'src/cse-ui-kit/small_buttons/UnderlineButton';
-import LeftAlignButton from 'src/cse-ui-kit/text_alignment_buttons/LeftAlign';
-import MiddleAlignButton from 'src/cse-ui-kit/text_alignment_buttons/MiddleAlign';
-import RightAlignButton from 'src/cse-ui-kit/text_alignment_buttons/RightAlign';
+import { EditorBoldButton, EditorItalicButton, EditorUnderlineButton } from "./components/buttons";
 
 // slate-js dependencies
 import {Editable, Slate, useSlate, withReact} from "slate-react";
 import { createEditor, Descendant, Editor as SlateEditor } from "slate";
 import styled from "styled-components";
 import {withHistory} from "slate-history";
-import {CustomText} from "./types";
 
 
 type RenderLeafProps = {
@@ -29,8 +17,6 @@ type RenderLeafProps = {
     underline?: boolean
   }
 }
-type MarkButtonProps = { format: string }
-
 
 const Toolbar = styled.div`
   display: flex;
@@ -42,10 +28,6 @@ const Toolbar = styled.div`
   height: fit-content;
   outline: 1px solid black;
 `
-const args = {
-  background: "#E2E1E7",
-  size: 30
-};
 
 const Editor = () => {
 
@@ -56,9 +38,9 @@ const Editor = () => {
   return (
     <Slate editor={editor} value={initialValue}>
       <Toolbar>
-        <MarkButton format="bold" />
-        <MarkButton format="italic" />
-        <MarkButton format="underline" />
+        <EditorBoldButton />
+        <EditorItalicButton />
+        <EditorUnderlineButton />
       </Toolbar>
       <Editable
         renderElement={renderElement}
@@ -141,26 +123,6 @@ const isMarkActive = (editor: SlateEditor, format: string): boolean => {
   return marks ? marks[format as keyof typeof marks] === true : false;
 };
 
-const MarkButton = (props: MarkButtonProps) => {
-  const { format } = props
-  const editor = useSlate();
-  const button = getButtonIcon(format)
-
-  return (
-    <Button
-      // variant={'outline-primary'}
-      className ='toolbar-btn'
-      active={isMarkActive(editor, format)}
-      onMouseDown={event => {
-        event.preventDefault()
-        toggleMark(editor, format)
-      }}
-    >
-      { button }
-    </Button>
-  )
-}
-
 const toggleMark = (editor: SlateEditor, format: string) => {
   const isActive = isMarkActive(editor, format);
 
@@ -168,17 +130,6 @@ const toggleMark = (editor: SlateEditor, format: string) => {
     SlateEditor.removeMark(editor, format)
   } else {
     SlateEditor.addMark(editor, format, true)
-  }
-};
-
-const getButtonIcon = (format: string) => {
-  switch (format) {
-    case 'bold':
-      return <BoldButton {...args} />
-    case 'italic':
-      return <ItalicButton {...args} />
-    case 'underline':
-      return <UnderlineButton {...args} />
   }
 };
 

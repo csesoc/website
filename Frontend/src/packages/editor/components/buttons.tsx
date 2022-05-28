@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React from "react";
 import BoldButton from "src/cse-ui-kit/small_buttons/BoldButton";
 import ItalicButton from "src/cse-ui-kit/small_buttons/ItalicButton";
 import UnderlineButton from "src/cse-ui-kit/small_buttons/UnderlineButton";
@@ -6,14 +6,13 @@ import {Editor as SlateEditor} from "slate";
 import {useSlate} from "slate-react";
 
 export const EditorBoldButton = () => {
-//   use redux get the current editor
   const editor = useSlate();
   return (
     <BoldButton
       size={30}
-      onMouseDown={(event:MouseEvent) => {
-        event.preventDefault()
-        toggleMark(editor, 'bold')
+      onMouseDown={(event) => {
+        event.preventDefault();
+        toggleMark(editor, "bold");
       }}
     />
   );
@@ -24,7 +23,7 @@ export const EditorItalicButton = () => {
   return (
     <ItalicButton
       size={30}
-      onMouseDown={(event: MouseEvent) => {
+      onMouseDown={(event) => {
         event.preventDefault();
         toggleMark(editor, "italic");
       }}
@@ -37,7 +36,7 @@ export const EditorUnderlineButton = () => {
   return (
     <UnderlineButton
       size={30}
-      onMouseDown={(event: MouseEvent) => {
+      onMouseDown={(event) => {
         event.preventDefault();
         toggleMark(editor, "underline");
       }}
