@@ -18,16 +18,23 @@ type RenderLeafProps = {
   }
 }
 
+const BlockContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  height: fit-content;
+  border: 1px solid black;
+`
 
 const Toolbar = styled.div`
   display: flex;
   flex-direction: row;
   gap: 20px;
   align-items: center;
-  justify-content: flex-start;
-  margin: 10px 20px;
+  justify-content: center;
   height: fit-content;
-  outline: 1px solid black;
+  width: 100%;
+  border-bottom: 1px solid black;
 `
 
 const ContentBlock = () => {
@@ -37,17 +44,19 @@ const ContentBlock = () => {
   const editor = useMemo(() => withHistory(createEditor()), []);
 
   return (
-    <Slate editor={editor} value={initialValue}>
-      <Toolbar>
-        <EditorBoldButton />
-        <EditorItalicButton />
-        <EditorUnderlineButton />
-      </Toolbar>
-      <Editable
-        renderElement={renderElement}
-        renderLeaf={renderLeaf}
-      />
-    </Slate>
+    <BlockContainer>
+      <Slate editor={editor} value={initialValue}>
+        <Toolbar>
+          <EditorBoldButton />
+          <EditorItalicButton />
+          <EditorUnderlineButton />
+        </Toolbar>
+        <Editable
+          renderElement={renderElement}
+          renderLeaf={renderLeaf}
+        />
+      </Slate>
+    </BlockContainer>
   );
 };
 
