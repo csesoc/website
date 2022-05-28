@@ -12,14 +12,6 @@ const PageContainer = styled.div`
   padding-right: 2rem;
 `;
 
-// const ImageContainer = styled.div`
-//   @import url('https://fonts.googleapis.com/css?family=Raleway:300,400,700&display=swap');
-//   position: absolute;
-//   left: 10%;
-//   top: 25%;
-//   font-family: "Raleway", sans-serif;
-//   justify-content: flex-end;
-// `;
 
 
 // const Button = styled.button`
