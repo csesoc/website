@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import Button from '@mui/material/Button';
 
 const Container = styled.div`
+  position: sticky;
+  top: 0;
   height: 50px;
   background: #2B3648;
   width: 100%;
