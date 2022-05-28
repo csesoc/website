@@ -8,7 +8,11 @@ type Props = {
 
 export default function CreateContentBlock({ onClick, ...styleProps }: Props) {
   return (
-    <StyledButton onClick={onClick} {...styleProps}>
+    <StyledButton
+      data-anchor="CreateContentBlockButton"
+      onClick={onClick}
+      {...styleProps}
+    >
       <AiFillEdit />
       Insert Content Block
     </StyledButton>
