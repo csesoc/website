@@ -1,11 +1,14 @@
-import React, {ReactNode, useCallback, useMemo, useState} from 'react';
+import React, {ReactNode, useCallback, useMemo } from 'react';
+import isHotkey from 'is-hotkey'
+
 import { EditorBoldButton, EditorItalicButton, EditorUnderlineButton } from "./buttons";
+import { toggleMark } from "./helpers";
 
 // slate-js dependencies
 import { Editable, Slate } from "slate-react";
-import { createEditor, Descendant, Editor as SlateEditor } from "slate";
+import { createEditor, Descendant } from "slate";
 import styled from "styled-components";
-import {withHistory} from "slate-history";
+import { withHistory } from "slate-history";
 
 
 type RenderLeafProps = {
@@ -16,6 +19,13 @@ type RenderLeafProps = {
     italic?: boolean
     underline?: boolean
   }
+}
+
+const HOTKEYS = {
+  'mod+b': 'bold',
+  'mod+i': 'italic',
+  'mod+u': 'underline',
+  'mod+`': 'code',
 }
 
 const BlockContainer = styled.div`
@@ -54,6 +64,18 @@ const ContentBlock = () => {
         <Editable
           renderElement={renderElement}
           renderLeaf={renderLeaf}
+          spellCheck
+          autoFocus
+          onKeyDown={event => {
+            for (const hotkey in HOTKEYS) {
+              // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+              if (isHotkey(hotkey, event as any)) {
+                event.preventDefault()
+                const mark = getHotkeyMark(hotkey)
+                toggleMark(editor, mark)
+              }
+            }
+          }}
         />
       </Slate>
     </BlockContainer>
@@ -126,6 +148,19 @@ const Leaf = (props: RenderLeafProps) => {
   }
 
   return <span {...attributes}>{children}</span>
+};
+
+const getHotkeyMark  = (hotkey:string) => {
+  switch (hotkey) {
+    case 'mod+b':
+      return 'bold'
+    case 'mod+i':
+      return 'italic'
+    case 'mod+u':
+      return 'underline'
+    default:
+      return ''
+  }
 };
 
 const initialValue: Descendant[] = [
