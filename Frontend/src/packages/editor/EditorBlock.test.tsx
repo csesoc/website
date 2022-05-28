@@ -6,7 +6,7 @@ import EditorPage from "./index";
 describe("Editor Block tests", () => {
   it("On CreateContentBlockButton click should create content block", () => {
     const { queryByDataAnchor, queryAllByDataAnchor } = render(<EditorPage/>);
-    const CreateContentBlockButton = queryByDataAnchor("CreateContentBlockButton");
+    const CreateContentBlockButton = queryByDataAnchor("CreateContentBlockButton")!;
 
     // click createcontentblock button
     expect(CreateContentBlockButton).toBeTruthy();
@@ -23,7 +23,7 @@ describe("Editor Block tests", () => {
   })
   it("clicking CreateContentBlock Button 5 times should create 5 content block wrappers", () => {
     const { queryByDataAnchor, queryAllByDataAnchor } = render(<EditorPage/>);
-    const CreateContentBlockButton = queryByDataAnchor("CreateContentBlockButton");
+    const CreateContentBlockButton = queryByDataAnchor("CreateContentBlockButton")!;
 
     for(let i = 0; i < 5; i++) {
       fireEvent.click(CreateContentBlockButton);
