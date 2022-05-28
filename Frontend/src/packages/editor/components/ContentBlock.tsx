@@ -1,11 +1,11 @@
-import React, {ReactNode, useCallback, useMemo } from 'react';
+import React, {ReactNode, useCallback, useMemo, useState} from 'react';
 import isHotkey from 'is-hotkey'
 
 import { EditorBoldButton, EditorItalicButton, EditorUnderlineButton } from "./buttons";
 import { toggleMark } from "./helpers";
 
 // slate-js dependencies
-import { Editable, Slate } from "slate-react";
+import {Editable, Slate, withReact} from "slate-react";
 import { createEditor, Descendant } from "slate";
 import styled from "styled-components";
 import { withHistory } from "slate-history";
@@ -51,7 +51,8 @@ const ContentBlock = () => {
 
   const renderElement = useCallback(props => <Element { ...props } />, []);
   const renderLeaf = useCallback(props => < Leaf { ...props } />, []);
-  const editor = useMemo(() => withHistory(createEditor()), []);
+  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  // const [value, setValue] = useState(initialValue)
 
   return (
     <BlockContainer>
