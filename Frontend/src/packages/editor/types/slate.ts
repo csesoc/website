@@ -2,6 +2,8 @@ import { Text, createEditor, Node, Element, Editor, Descendant, BaseEditor, } fr
 import { ReactEditor } from 'slate-react'
 import { HistoryEditor } from 'slate-history'
 
+export type BlockData = Descendant[];
+export type UpdateHandler = (idx: number, updatedBlock: BlockData) => void;
 
 export type BlockQuoteElement = {
   type: 'block-quote'
