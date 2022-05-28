@@ -7,7 +7,7 @@ import (
 	"cms.csesoc.unsw.edu.au/internal/session"
 )
 
-// Basic organisation of a response we will receieve from the API
+// Basic organisation of a response we will receive from the API
 type Response struct {
 	Status   int
 	Message  string
@@ -18,7 +18,7 @@ type Response struct {
 // a bit easier and less messy
 type handler func(http.ResponseWriter, *http.Request, DependencyFactory) (int, interface{}, error)
 
-// authenticated handler is basically a regular http handler the only difference is that
+// Authenticated handler is basically a regular http handler the only difference is that
 // they can only be accessed by an authenticated client
 type authenticatedHandler func(http.ResponseWriter, *http.Request, DependencyFactory) (int, interface{}, error)
 
@@ -65,7 +65,7 @@ func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// authentiacated handler impl
+// Authenticated handler impl
 func (fn authenticatedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// check authentication
 	if ok, err := session.IsAuthenticated(w, r); !ok || err != nil {
