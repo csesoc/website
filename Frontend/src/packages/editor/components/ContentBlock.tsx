@@ -1,25 +1,15 @@
-import React, {ReactNode, useCallback, useMemo, useState} from 'react';
+import React, { useCallback, useMemo } from 'react';
 import isHotkey from 'is-hotkey'
+import styled from "styled-components";
 
 import { EditorBoldButton, EditorItalicButton, EditorUnderlineButton } from "./buttons";
 import { toggleMark } from "./helpers";
+import { RenderLeafProps, ContentBlockProps } from "./types";
 
 // slate-js dependencies
-import {Editable, Slate, withReact} from "slate-react";
+import { Editable, Slate, withReact } from "slate-react";
 import { createEditor, Descendant } from "slate";
-import styled from "styled-components";
 import { withHistory } from "slate-history";
-
-
-type RenderLeafProps = {
-  attributes: any
-  children: ReactNode
-  leaf: {
-    bold?: boolean
-    italic?: boolean
-    underline?: boolean
-  }
-}
 
 const HOTKEYS = {
   'mod+b': 'bold',
@@ -34,6 +24,7 @@ const BlockContainer = styled.div`
   width: 60%;
   height: fit-content;
   border: 1px solid black;
+  padding: 0 10px;
 `
 
 const Toolbar = styled.div`
@@ -45,21 +36,20 @@ const Toolbar = styled.div`
   height: fit-content;
   width: 100%;
   border-bottom: 1px solid black;
-  cursor: move;
 `
 
-interface ContentBlockProps {
-  id: number;
-  showToolBar: boolean;
-  onEditorClick: () => void;
-}
+const initialValue: Descendant[] = [
+  {
+    type: "paragraph",
+    children: [{ text: "" }],
+  },
+];
 
 const ContentBlock = (props:ContentBlockProps) => {
 
   const renderElement = useCallback(props => <Element { ...props } />, []);
   const renderLeaf = useCallback(props => < Leaf { ...props } />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
-  // const [value, setValue] = useState(initialValue)
 
   return (
     <BlockContainer>
@@ -74,6 +64,7 @@ const ContentBlock = (props:ContentBlockProps) => {
           renderLeaf={renderLeaf}
           spellCheck
           autoFocus
+          placeholder="Enter some text…"
           onKeyDown={event => {
             for (const hotkey in HOTKEYS) {
               // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
@@ -170,35 +161,5 @@ const getHotkeyMark  = (hotkey:string) => {
       return ''
   }
 };
-
-const initialValue: Descendant[] = [
-  {
-    type: 'heading-two',
-    children: [
-      { text: 'A heading' },
-    ],
-  },
-  {
-    type: 'paragraph',
-    children: [
-      {
-        text: "This is a paragraph.",
-      },
-      {
-        text: "bold",
-        bold: true
-      }
-    ],
-  },
-  {
-    type: 'block-quote',
-    children: [{ text: 'A block quote.' }],
-  },
-  {
-    type: 'paragraph',
-    align: 'center',
-    children: [{ text: 'text in the center' }],
-  },
-]
 
 export default ContentBlock;
