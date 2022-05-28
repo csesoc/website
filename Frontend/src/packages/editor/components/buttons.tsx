@@ -1,9 +1,10 @@
 import React from "react";
+import { useSlate } from "slate-react";
+
 import BoldButton from "src/cse-ui-kit/small_buttons/BoldButton";
 import ItalicButton from "src/cse-ui-kit/small_buttons/ItalicButton";
 import UnderlineButton from "src/cse-ui-kit/small_buttons/UnderlineButton";
-import {Editor as SlateEditor} from "slate";
-import {useSlate} from "slate-react";
+import { toggleMark } from "./helpers";
 
 export const EditorBoldButton = () => {
   const editor = useSlate();
@@ -42,19 +43,4 @@ export const EditorUnderlineButton = () => {
       }}
     />
   );
-};
-
-const toggleMark = (editor: SlateEditor, format: string) => {
-  const isActive = isMarkActive(editor, format);
-
-  if (isActive) {
-    SlateEditor.removeMark(editor, format)
-  } else {
-    SlateEditor.addMark(editor, format, true)
-  }
-};
-
-const isMarkActive = (editor: SlateEditor, format: string): boolean => {
-  const marks = SlateEditor.marks(editor);
-  return marks ? marks[format as keyof typeof marks] === true : false;
 };
