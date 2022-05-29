@@ -46,16 +46,10 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
-<<<<<<< HEAD
 	github.com/tidwall/gjson v1.14.1
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect
 	golang.org/x/sys v0.0.0-20211019181941-9d821ace8654 // indirect
-=======
-	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
-	golang.org/x/net v0.0.0-20220526153639-5463443f8c37 // indirect
-	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
->>>>>>> e3e6c98af199a27c24e4aea9a82ef3940ebbc226
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/yaml.v3 v3.0.0 // indirect
 	gotest.tools v2.2.0+incompatible // indirect
