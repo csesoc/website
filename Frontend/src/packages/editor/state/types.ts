@@ -1,6 +1,6 @@
 export type BlockInfo = {
   id: number
-  data: JSON
+  data: string
 }
 
 export type editorState = {
