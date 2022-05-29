@@ -44,6 +44,7 @@ func (sf *documentServerFactory) FetchDocumentServer(serverID uuid.UUID) *docume
 		// setup the new server's state with the document contents
 		sf.activeServers[serverID] = newDocumentServer()
 		s = sf.activeServers[serverID]
+		s.ID = serverID
 	} else {
 		s = locatedServer
 	}
@@ -51,4 +52,30 @@ func (sf *documentServerFactory) FetchDocumentServer(serverID uuid.UUID) *docume
 	sf.lock.Unlock()
 
 	return s
+}
+
+// closeDocumentServer terminates a documentServer, note that this method is only called by
+// this package itself and never outside of the package
+func (sf *documentServerFactory) closeDocumentServer(serverID uuid.UUID) {
+	sf.lock.Lock()
+
+	if doc, ok := sf.activeServers[serverID]; ok {
+		if len(doc.clients) != 0 {
+			// if there are still connected documents we consider this function call a nop
+			// why? Consider the following scheduling order:
+			//	a client view creates a buildAlertLeavingSignal signal
+			//		-> in response this method is called
+			//		-> right before acquiring the factory lock a new client attempts to join and acquires the lock
+			//		-> its been added to the document that just tried to terminate itself
+			//		-> we now acquire the lock, and reach this point, if this were no a noop we would have either
+			//			paniced when there are clients or killed an active server
+			sf.lock.Unlock()
+			return
+		}
+		delete(sf.activeServers, serverID)
+	} else {
+		panic("Fatal Error: attempted to close a non-existent document server")
+	}
+
+	sf.lock.Unlock()
 }
