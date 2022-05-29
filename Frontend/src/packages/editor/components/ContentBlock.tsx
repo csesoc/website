@@ -5,11 +5,14 @@ import styled from "styled-components";
 import { EditorBoldButton, EditorItalicButton, EditorUnderlineButton } from "./buttons";
 import { toggleMark } from "./helpers";
 import { RenderLeafProps, ContentBlockProps } from "./types";
+import { updateContent } from "../state/actions"
 
 // slate-js dependencies
 import { Editable, Slate, withReact } from "slate-react";
-import { createEditor, Descendant } from "slate";
+import { createEditor } from "slate";
 import { withHistory } from "slate-history";
+import { useDispatch } from "react-redux";
+import { getBlockContent } from "../state/helpers";
 
 const HOTKEYS = {
   'mod+b': 'bold',
@@ -38,22 +41,28 @@ const Toolbar = styled.div`
   border-bottom: 1px solid black;
 `
 
-const initialValue: Descendant[] = [
-  {
-    type: "paragraph",
-    children: [{ text: "" }],
-  },
-];
-
 const ContentBlock = (props:ContentBlockProps) => {
+  const { id, showToolBar, onEditorClick } = props
+  const dispatch = useDispatch();
 
   const renderElement = useCallback(props => <Element { ...props } />, []);
   const renderLeaf = useCallback(props => < Leaf { ...props } />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
+  const initialValue = JSON.parse(getBlockContent(id));
+
   return (
     <BlockContainer>
-      <Slate editor={editor} value={initialValue}>
+      <Slate editor={editor}
+             value={initialValue}
+             onChange={(value) => {
+               const content = JSON.stringify(value)
+               dispatch(updateContent({
+                 id: id,
+                 data: content,
+               }))
+             }}
+      >
         <Toolbar>
           <EditorBoldButton />
           <EditorItalicButton />
