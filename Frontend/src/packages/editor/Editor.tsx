@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import styled from "styled-components"
-// import Dragula from 'react-dragula';
 
 import ContentBlock from "./components/ContentBlock";
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
-import { BlockData } from "./types/slate";
+import { BlockData } from "./types";
 
 const Container = styled.div`
   display: flex;
@@ -14,10 +13,6 @@ const Container = styled.div`
   gap: 20px;
   padding: 10px;
 `;
-//
-// Dragula([document.getElementById("content-block-draggable")!], {
-//   direction: 'vertical',
-// });
 
 const Editor = () => {
 
