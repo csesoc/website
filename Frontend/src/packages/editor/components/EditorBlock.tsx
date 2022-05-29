@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { createEditor, Descendant } from "slate";
 import React, { FC, useMemo, useCallback } from "react";
-import { Slate, Editable, withReact, RenderLeafProps } from "slate-react";
+import { Slate, Editable, withReact, RenderLeafProps, useSlate } from "slate-react";
 
 import { UpdateHandler } from "../types";
 import EditorBoldButton from "./buttons/EditorBoldButton";
@@ -9,6 +9,7 @@ import EditorItalicButton from "./buttons/EditorItalicButton";
 import EditorUnderlineButton from "./buttons/EditorUnderlineButton";
 import EditorSelectFont from './buttons/EditorSelectFont'
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
+import { toggleMark } from "./buttons/buttonHelpers";
 
 const initialValues: Descendant[] = [
   {
@@ -90,6 +91,29 @@ const EditorBlock: FC<EditorBlockProps> = ({
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}
           style={{ width: "100%", height: "100%" }}
+          onKeyDown={event => {
+            if (!event.ctrlKey) {
+              return
+            }
+            switch (event.key) {
+              case 'b': {
+                event.preventDefault();
+                toggleMark(editor, "bold");
+              }
+            }
+            switch (event.key) {
+              case 'i': {
+                event.preventDefault();
+                toggleMark(editor, "italic");
+              }
+            }
+            switch (event.key) {
+              case 'u': {
+                event.preventDefault();
+                toggleMark(editor, "underline");
+              }
+            }
+          }}
         />
       </ContentBlock>
     </Slate>
