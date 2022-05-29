@@ -1,4 +1,4 @@
-import {Editor as SlateEditor} from "slate";
+import { Editor as SlateEditor } from "slate";
 
 export const toggleMark = (editor: SlateEditor, format: string) => {
   const isActive = isMarkActive(editor, format);

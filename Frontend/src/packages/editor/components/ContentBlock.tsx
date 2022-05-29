@@ -1,18 +1,20 @@
 import React, { useCallback, useMemo } from 'react';
 import isHotkey from 'is-hotkey'
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
 
+// local imports
 import { EditorBoldButton, EditorItalicButton, EditorUnderlineButton } from "./buttons";
 import { toggleMark } from "./helpers";
 import { RenderLeafProps, ContentBlockProps } from "./types";
 import { updateContent } from "../state/actions"
+import { getBlockContent } from "../state/helpers";
 
 // slate-js dependencies
 import { Editable, Slate, withReact } from "slate-react";
 import { createEditor } from "slate";
 import { withHistory } from "slate-history";
-import { useDispatch } from "react-redux";
-import { getBlockContent } from "../state/helpers";
+
 
 const HOTKEYS = {
   'mod+b': 'bold',
