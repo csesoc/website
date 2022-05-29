@@ -1,11 +1,8 @@
 import { createAction } from "@reduxjs/toolkit";
-
-export type updatePayloadType = {
-  id: number
-  newData: JSON
-}
+import { BlockInfo } from "./types";
 
 /**
  * Content actions
  */
-export const updateContent = createAction<updatePayloadType>("editor/updateContent");
+export const addContentBlock = createAction<BlockInfo>("editor/createContentBlock");
+export const updateContent = createAction<BlockInfo>("editor/updateContent");

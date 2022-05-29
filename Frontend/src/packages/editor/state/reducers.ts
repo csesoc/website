@@ -1,15 +1,24 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { updatePayloadType } from "./actions";
-import { editorState } from "./types";
+import { editorState, BlockInfo } from "./types";
 
-export function updateContent(state: editorState, action: PayloadAction<updatePayloadType>): editorState {
-  const { id, newData } = action.payload;
+
+export function addContentBlock(state: editorState, action: PayloadAction<BlockInfo>): editorState {
+  return {
+    contents: [
+      ...state.contents,
+      action.payload,
+    ]
+  }
+}
+
+export function updateContent(state: editorState, action: PayloadAction<BlockInfo>): editorState {
+  const { id, data } = action.payload;
   return {
     contents: state.contents.map((block) => {
       if (block.id == id) {
         return ({
           ...block,
-          data: newData,
+          data: data,
         })
       }
       return block;
