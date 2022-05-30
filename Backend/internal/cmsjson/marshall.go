@@ -6,7 +6,7 @@ import (
 )
 
 // Marshall can potentially be a rather expensive operation
-// why? Strings in go are immutable, if we recrusively modify
+// why? Strings in go are immutable, if we recursively modify
 // a string each invocation ends up allocation a new string on the heap
 // resulting in GC overhead :P
 func (c Configuration) Marshall(source interface{}) string {
@@ -44,7 +44,7 @@ func (c Configuration) marshallArray(source reflect.Value) []byte {
 		elementValue := source.Index(i)
 		result = append(result, c.marshallCore(elementValue)...)
 
-		// if this isnt the last field we require a comma deliminater
+		// if this isnt the last field we require a comma delimiter
 		if i != source.Len()-1 {
 			result = append(result, ',')
 		}
@@ -67,7 +67,7 @@ func (c Configuration) marshallInterface(source reflect.Value) []byte {
 		}
 	}
 
-	// this is some hacky string manipilation, basically chop the opening brace
+	// this is some hacky string manipulation, basically chop the opening brace
 	// so we can insert a type annotation in
 	generatedJson := c.marshallStruct(source.Elem())
 	generatedJson = generatedJson[1:]

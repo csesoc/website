@@ -66,7 +66,7 @@ func (c Configuration) parseArray(result gjson.Result, primitiveType reflect.Typ
 
 // parseInterface is rather tricky as it requires actually resolving the struct value
 // that the interface points to :O, this is done via the type registration within the configuration
-// note: unliked parseStruct the actual output of parseInterface is written to reflect.Value
+// note: unlike parseStruct the actual output of parseInterface is written to reflect.Value
 func (c Configuration) parseInterface(root gjson.Result, primitiveType reflect.Type, v *reflect.Value) {
 	targetType := root.Get("$type").String()
 	typeRegistration := c.RegisteredTypes[primitiveType]
@@ -94,7 +94,7 @@ func (c Configuration) parseCore(result gjson.Result, primitiveType reflect.Type
 	}
 }
 
-// parse just parses a gjosn result and returns a reflect.Value
+// parse just parses a gjson result and returns a reflect.Value
 func (c Configuration) parsePrimitive(result gjson.Result, expected reflect.Type) reflect.Value {
 	var value interface{}
 	switch expected.Kind() {
