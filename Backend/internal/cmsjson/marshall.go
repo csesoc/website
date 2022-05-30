@@ -22,7 +22,7 @@ func (c Configuration) marshallStruct(v reflect.Value) []byte {
 		underlyingType := resolveType(field.Type())
 
 		if underlyingType == _primitive {
-			result = append(result, c.parseKeyValuePair(field, v.Type().Field(i))...)
+			result = append(result, c.marshallKeyValuePair(field, v.Type().Field(i))...)
 		} else {
 			result = append(result, fmt.Sprintf(`"%s": %s`, v.Type().Field(i).Name, c.marshallCore(field))...)
 		}
@@ -75,8 +75,8 @@ func (c Configuration) marshallInterface(source reflect.Value) []byte {
 	return []byte(fmt.Sprintf(`{"$type": "%s", %s`, typeName, generatedJson))
 }
 
-// parseKeyValuePair parses a key value pair within a struct
-func (c Configuration) parseKeyValuePair(field reflect.Value, structEntry reflect.StructField) []byte {
+// marshallKeyValuePair parses a key value pair within a struct
+func (c Configuration) marshallKeyValuePair(field reflect.Value, structEntry reflect.StructField) []byte {
 	if field.Type().Kind() == reflect.Int {
 		return []byte(fmt.Sprintf(`"%s": %d`, structEntry.Name,
 			field.Convert(reflect.TypeOf(3)).Int()))
