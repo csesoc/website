@@ -16,25 +16,19 @@ func (c Configuration) Unmarshall(json []byte, dest interface{}) error {
 	return nil
 }
 
-// the base helper function, this function calls itself several times recursively
-// and is invoked by the bigger unmarshall method
+// the base helper function, this function calls parseCore which recursively evaluates the json
 func (c Configuration) parseStruct(root gjson.Result, primitiveType reflect.Type, v reflect.Value) {
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Field(i)
 		element := root.Get(v.Type().Field(i).Name)
-		underylingType := resolveType(field.Type())
+		underlyingType := resolveType(field.Type())
 
 		var out reflect.Value
 		c.parseCore(element, field.Type(), &out)
 
-		if underylingType == _array || underylingType == _slice {
-			if underylingType == _array {
-				field.Set(out.Elem())
-			} else {
-				field.Set(out)
-			}
+		if underlyingType == _array {
+			field.Set(out.Elem())
 		} else {
-			c.parseCore(element, field.Type(), &out)
 			field.Set(out)
 		}
 	}
@@ -44,14 +38,16 @@ func (c Configuration) parseStruct(root gjson.Result, primitiveType reflect.Type
 // some gjson.Result, it can also optionally create a slice
 func (c Configuration) parseArray(result gjson.Result, primitiveType reflect.Type, isSlice bool) reflect.Value {
 	elements := result.Array()
-	var out reflect.Value
-	var toWrite reflect.Value
+	var arrayPointer reflect.Value
+	var array reflect.Value
 	if isSlice {
-		out = reflect.MakeSlice(reflect.SliceOf(primitiveType), len(elements), len(elements))
-		toWrite = out
+		// for a slice the "array" (the thing we can write to) is the slice itself
+		arrayPointer = reflect.MakeSlice(reflect.SliceOf(primitiveType), len(elements), len(elements))
+		array = arrayPointer
 	} else {
-		out = reflect.New(reflect.ArrayOf(len(elements), primitiveType))
-		toWrite = out.Elem()
+		// for an array, reflect.New returns a pointer to an array, hence the .Elem invocation
+		arrayPointer = reflect.New(reflect.ArrayOf(len(elements), primitiveType))
+		array = arrayPointer.Elem()
 	}
 
 	// finally iterate over all members of the json array and construct
@@ -59,9 +55,9 @@ func (c Configuration) parseArray(result gjson.Result, primitiveType reflect.Typ
 	for i, element := range elements {
 		var output reflect.Value
 		c.parseCore(element, primitiveType, &output)
-		toWrite.Index(i).Set(output)
+		array.Index(i).Set(output)
 	}
-	return out
+	return arrayPointer
 }
 
 // parseInterface is rather tricky as it requires actually resolving the struct value
@@ -77,17 +73,17 @@ func (c Configuration) parseInterface(root gjson.Result, primitiveType reflect.T
 
 // parseCore is the core method for parsing (really its just a way to reduce code duplication)
 func (c Configuration) parseCore(result gjson.Result, primitiveType reflect.Type, output *reflect.Value) {
-	underylingType := resolveType(primitiveType)
+	underlyingType := resolveType(primitiveType)
 
-	if underylingType == _primitive {
+	if underlyingType == _primitive {
 		*output = c.parsePrimitive(result, primitiveType)
-	} else if underylingType == _array || underylingType == _slice {
-		*output = c.parseArray(result, primitiveType.Elem(), underylingType == _slice)
-	} else if underylingType == _struct {
+	} else if underlyingType == _array || underlyingType == _slice {
+		*output = c.parseArray(result, primitiveType.Elem(), underlyingType == _slice)
+	} else if underlyingType == _struct {
 		out := reflect.New(primitiveType)
 		c.parseStruct(result, primitiveType, out.Elem())
 		*output = out.Elem()
-	} else if underylingType == _interface {
+	} else if underlyingType == _interface {
 		var out reflect.Value
 		c.parseInterface(result, primitiveType, &out)
 		*output = out.Elem()
@@ -102,6 +98,10 @@ func (c Configuration) parsePrimitive(result gjson.Result, expected reflect.Type
 		value = result.String()
 	case reflect.Int:
 		value = result.Int()
+	case reflect.Float32:
+		fallthrough
+	case reflect.Float64:
+		value = result.Float()
 	default:
 		value = nil
 	}

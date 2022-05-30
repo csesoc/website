@@ -19,9 +19,9 @@ func (c Configuration) marshallStruct(v reflect.Value) []byte {
 	result := []byte{'{'}
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Field(i)
-		underylingType := resolveType(field.Type())
+		underlyingType := resolveType(field.Type())
 
-		if underylingType == _primitive {
+		if underlyingType == _primitive {
 			result = append(result, c.parseKeyValuePair(field, v.Type().Field(i))...)
 		} else {
 			result = append(result, fmt.Sprintf(`"%s": %s`, v.Type().Field(i).Name, c.marshallCore(field))...)
@@ -57,12 +57,12 @@ func (c Configuration) marshallArray(source reflect.Value) []byte {
 // string
 func (c Configuration) marshallInterface(source reflect.Value) []byte {
 	typeMappings := c.RegisteredTypes[source.Type()]
-	implentingType := source.Elem().Type()
+	implementingType := source.Elem().Type()
 	var typeName string = ""
 
 	// just locate the required name for this struct
 	for key, v := range typeMappings {
-		if v == implentingType {
+		if v == implementingType {
 			typeName = key
 		}
 	}
@@ -80,6 +80,9 @@ func (c Configuration) parseKeyValuePair(field reflect.Value, structEntry reflec
 	if field.Type().Kind() == reflect.Int {
 		return []byte(fmt.Sprintf(`"%s": %d`, structEntry.Name,
 			field.Convert(reflect.TypeOf(3)).Int()))
+	} else if field.Type().Kind() == reflect.Float32 || field.Type().Kind() == reflect.Float64 {
+		return []byte(fmt.Sprintf(`"%s": %f`, structEntry.Name,
+			field.Convert(reflect.TypeOf(float64(0.3))).Float()))
 	} else if field.Type().Kind() == reflect.String {
 		return []byte(fmt.Sprintf(`"%s": "%s"`, structEntry.Name,
 			field.Convert(reflect.TypeOf("string")).String()))
@@ -92,6 +95,8 @@ func (c Configuration) parseKeyValuePair(field reflect.Value, structEntry reflec
 func (c Configuration) marshallPrimitive(field reflect.Value) []byte {
 	if field.Type().Kind() == reflect.Int {
 		return []byte(fmt.Sprintf(`%d`, field.Convert(reflect.TypeOf(3)).Int()))
+	} else if field.Type().Kind() == reflect.Float32 || field.Type().Kind() == reflect.Float64 {
+		return []byte(fmt.Sprintf(`%f`, field.Convert(reflect.TypeOf(float64(0.3))).Float()))
 	} else if field.Type().Kind() == reflect.String {
 		return []byte(fmt.Sprintf(`"%s"`, field.Convert(reflect.TypeOf("string")).String()))
 	}
@@ -100,15 +105,15 @@ func (c Configuration) marshallPrimitive(field reflect.Value) []byte {
 
 // marshallCore marshalls the value within source
 func (c Configuration) marshallCore(source reflect.Value) []byte {
-	underylingType := resolveType(source.Type())
+	underlyingType := resolveType(source.Type())
 
-	if underylingType == _primitive {
+	if underlyingType == _primitive {
 		return c.marshallPrimitive(source)
-	} else if underylingType == _array || underylingType == _slice {
+	} else if underlyingType == _array || underlyingType == _slice {
 		return c.marshallArray(source)
-	} else if underylingType == _struct {
+	} else if underlyingType == _struct {
 		return c.marshallStruct(source)
-	} else if underylingType == _interface {
+	} else if underlyingType == _interface {
 		return c.marshallInterface(source)
 	}
 
