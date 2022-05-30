@@ -5,7 +5,7 @@ FROM node:18.2.0-alpine as builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install
 
 COPY . .
 
