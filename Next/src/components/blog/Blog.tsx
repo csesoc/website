@@ -1,34 +1,13 @@
-import styled from "styled-components";
-import type { Element, TextStyle } from "../types";
 import Link from "next/link";
 
-interface ParagraphStyle {
-  align?: "left" | "right" | "center";
-}
-
-const Text = styled.span<TextStyle>`
-  font-weight: ${(props) => (props.bold ? 600 : 400)};
-  font-style: ${(props) => (props.italic ? "italic" : "normal")};
-  text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
-`;
-const StyledLink = styled.span`
-  color: red;
-`;
-
-const ImagePlaceholder = styled.div`
-  width: 200px;
-  height: 200px;
-  background-color: #5a6978;
-`;
-
-const ParagraphBlock = styled.p<ParagraphStyle>`
-  text-align: ${(props) => props.align ?? "left"};
-`;
-
-const BlogContainer = styled.div`
-  max-width: 600px;
-  font-size: 1.25rem;
-`;
+import {
+  Text,
+  StyledLink,
+  ImagePlaceholder,
+  ParagraphBlock,
+  BlogContainer,
+} from "./Styled";
+import type { Element } from "./types";
 
 const Block = ({ element }: { element: Element }) => {
   if (element.type === "image") {
@@ -38,6 +17,8 @@ const Block = ({ element }: { element: Element }) => {
     <ParagraphBlock align={element.align}>
       {element.children.map(({ text, link, ...textStyle }, idx) => (
         <Text key={idx} {...textStyle}>
+          {/* if link attribute is undefined, the current node is plain text */}
+          {/* if link attribute is string, the curent node is a hyper link, with url link */}
           {link ? (
             <StyledLink>
               <Link href={link} passHref>
