@@ -1,21 +1,26 @@
-# pulling official base image
-FROM node:13.12.0-alpine
+# Grab the latest Node base image
+FROM node:18.2.0-alpine as builder
 
-# Setting working directory
+# Set the current working directory inside the container
 WORKDIR /app
 
-# Cache and Install dependnecies
 COPY package.json package-lock.json ./
-RUN npm install 
+RUN npm ci
 
 COPY . .
 
-# exposing ports
-EXPOSE 3000
+RUN npm run build
 
-# setting environment variables
-ARG BACKEND_URI
-ENV REACT_APP_BACKEND_URI $BACKEND_URI
+# nginx state for serving content
+FROM nginx:1.21.6-alpine
+# Set working directory to nginx asset directory
+WORKDIR /usr/share/nginx/html
+# Remove default nginx static assets
+RUN rm -rf ./*
+# Copy static assets from builder stage
+COPY --from=builder /app/build .
 
-# npm start
-CMD ["npm", "start"]
+EXPOSE 80
+
+# Containers run nginx with global directives and daemon off
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
