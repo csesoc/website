@@ -6,7 +6,7 @@ import {
   ImagePlaceholder,
   ParagraphBlock,
   BlogContainer,
-} from "./Styled";
+} from "./Blog-styled";
 import type { Element } from "./types";
 
 const Block = ({ element }: { element: Element }) => {
