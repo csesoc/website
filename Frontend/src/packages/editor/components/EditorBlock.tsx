@@ -8,13 +8,7 @@ import EditorBoldButton from "./buttons/EditorBoldButton";
 import EditorItalicButton from "./buttons/EditorItalicButton";
 import EditorUnderlineButton from "./buttons/EditorUnderlineButton";
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
-
-const initialValues: Descendant[] = [
-  {
-    type: "paragraph",
-    children: [{ text: "" }],
-  },
-];
+import {getBlockContent} from "../state/helpers";
 
 const ToolbarContainer = styled.div`
   display: flex;
@@ -67,10 +61,12 @@ const EditorBlock: FC<EditorBlockProps> = ({
     []
   );
 
+  const initialValue = JSON.parse(getBlockContent(id));
+
   return (
     <Slate
       editor={editor}
-      value={initialValues}
+      value={initialValue}
       onChange={() => update(id, editor.children)}
     >
       {showToolBar && (
