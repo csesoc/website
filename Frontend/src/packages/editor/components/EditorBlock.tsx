@@ -8,7 +8,11 @@ import EditorBoldButton from "./buttons/EditorBoldButton";
 import EditorItalicButton from "./buttons/EditorItalicButton";
 import EditorUnderlineButton from "./buttons/EditorUnderlineButton";
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
-import {getBlockContent} from "../state/helpers";
+import { getBlockContent } from "../state/helpers";
+
+// Redux
+import { useDispatch } from "react-redux";
+import {updateContent} from "../state/actions";
 
 const ToolbarContainer = styled.div`
   display: flex;
@@ -41,6 +45,8 @@ const EditorBlock: FC<EditorBlockProps> = ({
   showToolBar,
   onEditorClick,
 }) => {
+
+  const dispatch  = useDispatch();
   const editor = useMemo(() => withReact(createEditor()), []);
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
@@ -67,7 +73,15 @@ const EditorBlock: FC<EditorBlockProps> = ({
     <Slate
       editor={editor}
       value={initialValue}
-      onChange={() => update(id, editor.children)}
+      onChange={(value) => {
+        const content = JSON.stringify(value)
+        update(id, editor.children)
+
+        dispatch(updateContent({
+          id: id,
+          data: content,
+        }))
+      }}
     >
       {showToolBar && (
         <ToolbarContainer>
