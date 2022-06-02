@@ -1,6 +1,8 @@
+import { Descendant } from "slate";
+
 export type BlockInfo = {
   id: number
-  data: string
+  data: Descendant[]
 }
 
 export type editorState = {

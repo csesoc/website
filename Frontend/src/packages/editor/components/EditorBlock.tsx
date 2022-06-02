@@ -67,19 +67,18 @@ const EditorBlock: FC<EditorBlockProps> = ({
     []
   );
 
-  const initialValue = JSON.parse(getBlockContent(id));
+  const initialValue = getBlockContent(id);
 
   return (
     <Slate
       editor={editor}
       value={initialValue}
       onChange={(value) => {
-        const content = JSON.stringify(value)
         update(id, editor.children)
 
         dispatch(updateContent({
           id: id,
-          data: content,
+          data: value,
         }))
       }}
     >
