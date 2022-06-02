@@ -13,13 +13,11 @@ const PageContainer = styled.div`
   padding-right: 2rem;
 `;
 
-// const HomePageIconContainer = styled.div`
-//   position: absolute;
-//   left: 30%;
-//   top: 15%;
-//   font-family: "Raleway", sans-serif;
-//   justify-content: flex-end;
-// `;
+const HomePageContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
 
 const ImageContainer = styled.div`
   @import url('https://fonts.googleapis.com/css?family=Raleway:300,400,700&display=swap');
@@ -73,6 +71,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
+        <HomePageContainer>
           <ImageContainer>
             <Image src="/logo.svg" width="362" height="84" />
             <Text1>
@@ -82,9 +81,8 @@ const Home: NextPage = () => {
             </Text1>
             <Button>Visit on Blog</Button>
           </ImageContainer>
-          {/* <HomePageIconContainer> */}
-            <HomepageIcon viewbox="-400 -250 1000 1000" />
-          {/* </HomePageIconContainer> */}
+          <HomepageIcon viewbox="-400 -250 1000 1000" />
+        </HomePageContainer>
       </main>
       <AboutUs />
       <footer></footer>
