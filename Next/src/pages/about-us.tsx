@@ -73,7 +73,7 @@ const AboutUs = () => (
                     spanning across degrees in Computer Science, Software Engineering, Bioinformatics and Computer Engineering.
                 </MainRect>
             </AboutUsContent>
-            <SpherePositioning left={9} top={28}>
+            <SpherePositioning left={9} top={30}>
                 <Sphere {...args1} />
             </SpherePositioning>
             <SpherePositioning left={46.04} top={47}>
@@ -90,7 +90,7 @@ const AboutUs = () => (
 )
 
 const args1 = {
-    size: 215,
+    size: 14,
     colourMain: "#969DC7",
     colourSecondary: "#DAE9FB",
     startMainPoint: -12,
@@ -101,7 +101,7 @@ const args1 = {
 }
 
 const args2 = {
-    size: 160,
+    size: 10,
     colourMain: "#D0E0ED",
     colourSecondary: "#498AC1",
     startMainPoint: 10.97,
@@ -110,7 +110,7 @@ const args2 = {
     blur: 3,
 }
 const args3 = {
-    size: 175,
+    size: 12,
     colourMain: "#9B9BE1",
     colourSecondary: "#E8CAFF",
     startMainPoint: -12,
@@ -120,7 +120,7 @@ const args3 = {
 }
 
 const args4 = {
-    size: 278,
+    size: 18,
     colourMain: "#0069E7",
     colourSecondary: "#BDDBFF",
     startMainPoint: -10.14,
