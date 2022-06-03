@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import styled from "styled-components";
-import Events from './events'
+import Events from './Events'
 import Homepage from "./Homepage";
 
 const PageContainer = styled.div`
@@ -37,8 +37,8 @@ const Home: NextPage = () => {
       </Head>
       <main>
         <Homepage />
+        <Events />
       </main>
-      <Events />
       <footer></footer>
     </PageContainer>
   );

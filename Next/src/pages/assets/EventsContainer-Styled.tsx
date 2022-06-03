@@ -8,20 +8,21 @@ export type positionProps = {
 
 export const StyledContainer = styled.div<positionProps>`
     position: ${(props) => props.position};
-    width: 40vw;
-    height: 22vw;
+    width: 36.7vw;
+    height: 20vw;
     top: ${(props) => props.top}vw;
     left: ${(props) => props.left}vw;
     border-radius: 1vw;
-    background-color: #FFFFFF20;
+    background-color: #FFFFFF30;
     border-width: 0.15vw;
     border-style: solid;
     border-color: #FAFCFF;
 `;
 
 export const ImgContainer = styled.div`
-    position: absolute;
-    width: 100%;
-    top: 2vw;
-    left: 2vw;
+    position: relative;
+    width: 36vw;
+    height: 17.8vw;
+    top: 2.15vw;
+    left: 1.5vw;
 `

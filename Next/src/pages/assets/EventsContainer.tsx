@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyledContainer, ImgContainer } from './EventsContainer-Styled';
-import EventsImg from './EventsImg';
+import Image from 'next/image';
 
 export default function EventsContainer() {
   return (
@@ -8,7 +8,7 @@ export default function EventsContainer() {
       <StyledContainer position="relative">
         <StyledContainer position="absolute" top={1} left={1} />
         <ImgContainer>
-          <EventsImg/>
+          <Image src="/assets/CSESocEventsCP.png" layout="fill" objectFit="contain" />
         </ImgContainer>
       </StyledContainer>
     </div>
