@@ -3,6 +3,7 @@ import Head from "next/head";
 import Image from 'next/image';
 import styled from "styled-components";
 import HomepageIcon from './assets/HomepageIcon';
+import Events from './events'
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -75,7 +76,7 @@ const Home: NextPage = () => {
           <Button>Visit on Blog</Button>
         </ImageContainer>
       </main>
-
+      <Events />
       <footer></footer>
     </PageContainer>
   );
