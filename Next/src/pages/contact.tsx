@@ -77,7 +77,7 @@ const Line = styled.div`
   margin: -25px;
   display: inline;
 `;
-const Support: NextPage = () => {
+const Contact: NextPage = () => {
   return (
     <PageContainer>
       <Head>
@@ -160,4 +160,4 @@ const Support: NextPage = () => {
   );
 };
 
-export default Support;
+export default Contact;

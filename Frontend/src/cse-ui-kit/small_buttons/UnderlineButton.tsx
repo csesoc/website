@@ -1,6 +1,6 @@
-import React, { MouseEventHandler } from "react";
-import { StyledButton, buttonProps, scaleRate } from "./small_buttons-Styled";
-import { ReactComponent as Underline } from "../../assets/underline-button.svg";
+import React, { MouseEventHandler } from 'react';
+import { StyledButton, buttonProps, scaleRate } from './small_buttons-Styled';
+import { ReactComponent as Underline } from 'src/cse-ui-kit/assets/underline-button.svg';
 
 type Props = {
   onClick?: MouseEventHandler<HTMLDivElement>;
