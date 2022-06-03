@@ -1,4 +1,4 @@
-import Sphere from './assets/ReusableSpheres';
+import Sphere from '../components/aboutus/ReusableSpheres';
 import styled from "styled-components";
 
 const AboutUsPage = styled.div`
