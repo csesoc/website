@@ -81,7 +81,7 @@ const Home: NextPage = () => {
             </Text1>
             <Button>Visit on Blog</Button>
           </ImageContainer>
-          <HomepageIcon viewbox="-400 -250 1000 1000" />
+          <HomepageIcon />
         </HomePageContainer>
       </main>
       <AboutUs />

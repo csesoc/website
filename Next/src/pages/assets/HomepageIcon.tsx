@@ -1,16 +1,9 @@
 import * as React from "react"
 
-export type iconProps = {
-  viewbox: string;
-}
-
-type Props = iconProps;
-
-const HomepageIcon = ({ ...iconProps }: Props) => (
+const HomepageIcon = () => (
   <svg
-    viewBox="0 0 813 549"
-    width="813"
-    height="549"
+    // viewBox="0 0 813 549"
+    viewBox="0 0 2000 1000"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
