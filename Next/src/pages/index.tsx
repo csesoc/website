@@ -12,8 +12,6 @@ const PageContainer = styled.div`
   padding-right: 2rem;
 `;
 
-
-
 // const Button = styled.button`
 //   background-color:#FFFFFF;
 //   color: #3977F8;
@@ -45,4 +43,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
