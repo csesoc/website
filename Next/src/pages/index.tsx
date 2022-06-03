@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import styled from "styled-components";
 import Homepage from "./Homepage";
-import AboutUs from './about-us';
+import AboutUs from './AboutUs';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -35,8 +35,8 @@ const Home: NextPage = () => {
       </Head>
       <main>
         <Homepage />
+        <AboutUs />
       </main>
-      <AboutUs />
       <footer></footer>
     </PageContainer>
   );

@@ -27,34 +27,29 @@ const SpherePositioning = styled.div<positionProps>`
     top: ${props => props.top}%;
 `
 
-const MainTitle = styled.div`
-    align-self: flex-end;
+const AboutUsText = styled.div`
     color: #A09FE3;
     font-family: 'Raleway';
-    font-weight: 850;
-    font-size: 4.3vw;
+    font-weight: 810;
+    font-size: 3.5vw;
     line-height: 4vh;
-    text-align: center;
-    text-shadow: 0px 0px;
+    text-align: right;
     margin-top: 40vh;
 `
 
-const MainRect = styled.div`
-    max-width: 60vw;
+const MainText = styled.div`
+    max-width: 58vw;
     background: #A09FE3;
     border-radius: 1vw;
     color: #FFFFFF;
-    font-family: 'Raleway';
     font-weight: 300;
-    font-size: 1.4vw;
-    line-height: 4vh;
+    font-size: 1.3vw;
     text-align: center;
-    text-shadow: 0px 0px;
     padding: 3vh 2vw;
     margin-top: 6vh;
 `;
 
-const BlueColor = styled.span`
+const HighlightedText = styled.span`
     color: #3977F8;
 `
 
@@ -62,16 +57,16 @@ const AboutUs = () => (
     <div>
         <AboutUsPage>
             <AboutUsContent>
-                <MainTitle>
+                <AboutUsText>
                     About Us
-                </MainTitle>
-                <MainRect>
-                    We are one of the biggest and most active societies at
-                    <BlueColor> UNSW</BlueColor>
-                    , catering to over
-                    <BlueColor> 3500 CSE students </BlueColor>
-                    spanning across degrees in Computer Science, Software Engineering, Bioinformatics and Computer Engineering.
-                </MainRect>
+                    <MainText>
+                        We are one of the biggest and most active societies at
+                        <HighlightedText> UNSW</HighlightedText>
+                        , catering to over
+                        <HighlightedText> 3500 CSE students </HighlightedText>
+                        spanning across degrees in Computer Science, Software Engineering, Bioinformatics and Computer Engineering.
+                    </MainText>
+                </AboutUsText>
             </AboutUsContent>
             <SpherePositioning left={9} top={30}>
                 <Sphere {...args1} />
