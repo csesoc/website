@@ -12,8 +12,6 @@ const PageContainer = styled.div`
   padding-right: 2rem;
 `;
 
-
-
 // const Button = styled.button`
 //   background-color:#FFFFFF;
 //   color: #3977F8;
@@ -36,7 +34,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Homepage/>
+        <Homepage />
       </main>
 
       <footer></footer>
@@ -45,4 +43,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
