@@ -8,6 +8,7 @@ const Container = styled.div`
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    margin-top: 22vh;
 `
 
 const ColumnContainer = styled.div`
