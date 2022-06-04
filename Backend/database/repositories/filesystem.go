@@ -9,10 +9,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	cx "context"
+
+	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
-	// "github.com/docker/docker/api/types"
-	// "github.com/docker/docker/api/types/filters"
-	// volumetypes "github.com/docker/docker/api/types/volume"
 )
 
 // Implements IRepositoryInterface
@@ -34,10 +34,18 @@ func NewDockerFilesystemRespository() (c *DockerFileystemRepository, err error) 
 	return c, nil
 }
 
-// Am I meant to use interface in Go or is doing it using structs ok?
+func (c *DockerFileystemRepository) SearchVolumes() (err error) {
+	volumes, err := c.cli.VolumeList(cx.Background(), filters.NewArgs())
 
-// Functions with a dest param assume the user knows the volume path (hard code?)
-// also left it there because we might want local dir for testing
+	if err != nil {
+		return err
+	}
+
+	for _, v := range volumes.Volumes {
+		fmt.Println(v.Mountpoint)
+	}
+	return nil
+}
 
 // Add file to volume or update if exists
 func (c *DockerFileystemRepository) AddToVolume(source string, dest string) error {
