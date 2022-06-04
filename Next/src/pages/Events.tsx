@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "styled-components";
-import EventsContainer from "./assets/EventsContainer";
+import ClearLayeredGlass from "../components/eventspage/ClearLayeredGlassContainer";
 
 const Container = styled.div`
     min-height: 100vh;
@@ -44,7 +44,7 @@ export default function Events() {
                     </BodyText>
                 </EventsText>
             </ColumnContainer>
-            <EventsContainer />
+            <ClearLayeredGlass />
         </Container>
     )
 }

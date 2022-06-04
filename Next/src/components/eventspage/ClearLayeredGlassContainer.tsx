@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyledContainer, ImgContainer } from './EventsContainer-Styled';
+import { StyledContainer, ImgContainer } from './ClearLayeredGlassContainer-Styled';
 import Image from 'next/image';
 
-export default function EventsContainer() {
+export default function ClearLayeredGlass() {
   return (
     <div>
       <StyledContainer position="relative">
