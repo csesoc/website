@@ -10,13 +10,11 @@ import EditorUnderlineButton from "./buttons/EditorUnderlineButton";
 import EditorSelectFont from './buttons/EditorSelectFont'
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
 import { toggleMark } from "./buttons/buttonHelpers";
+import { getBlockContent } from "../state/helpers";
 
-const initialValues: Descendant[] = [
-  {
-    type: "paragraph",
-    children: [{ text: "" }],
-  },
-];
+// Redux
+import { useDispatch } from "react-redux";
+import {updateContent} from "../state/actions";
 
 const ToolbarContainer = styled.div`
   display: flex;
@@ -51,6 +49,8 @@ const EditorBlock: FC<EditorBlockProps> = ({
   showToolBar,
   onEditorClick,
 }) => {
+
+  const dispatch  = useDispatch();
   const editor = useMemo(() => withReact(createEditor()), []);
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
@@ -72,11 +72,20 @@ const EditorBlock: FC<EditorBlockProps> = ({
     []
   );
 
+  const initialValue = getBlockContent(id);
+
   return (
     <Slate
       editor={editor}
-      value={initialValues}
-      onChange={() => update(id, editor.children)}
+      value={initialValue}
+      onChange={(value) => {
+        update(id, editor.children)
+
+        dispatch(updateContent({
+          id: id,
+          data: value,
+        }))
+      }}
     >
       {showToolBar && (
         <ToolbarContainer>
