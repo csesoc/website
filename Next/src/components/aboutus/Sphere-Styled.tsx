@@ -12,8 +12,8 @@ export type sphereProps = {
 }
 
 export const StyledSphere = styled.div<sphereProps>`
-  width: ${props => props.size}px;
-  height: ${props => props.size}px;
+  width: ${props => props.size}vw;
+  height: ${props => props.size}vw;
   background: linear-gradient(
     ${props => props.angle}deg, 
     ${props => props.colourMain} ${props => props.startMainPoint}%, 
