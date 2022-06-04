@@ -6,12 +6,14 @@ export const AboutUsPage = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 22vh;
 `
 
 export const AboutUsContent = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    margin-bottom: 5vw;
 `
 
 type positionProps = {
@@ -31,9 +33,8 @@ export const AboutUsText = styled.div`
     font-family: 'Raleway';
     font-weight: 810;
     font-size: 3.5vw;
-    line-height: 4vh;
+    line-height: 1.9vw;
     text-align: right;
-    margin-top: 40vh;
 `
 
 export const MainText = styled.div`
@@ -44,8 +45,8 @@ export const MainText = styled.div`
     font-weight: 300;
     font-size: 1.3vw;
     text-align: center;
-    padding: 3vh 2vw;
-    margin-top: 6vh;
+    padding: 1.4vw 2vw;
+    margin-top: 2.8vw;
 `;
 
 export const BlueText = styled.span`

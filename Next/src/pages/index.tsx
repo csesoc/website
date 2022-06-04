@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import styled from "styled-components";
+import Events from './Events'
 import Homepage from "./Homepage";
 import AboutUs from './AboutUs';
 
@@ -36,6 +37,7 @@ const Home: NextPage = () => {
       <main>
         <Homepage />
         <AboutUs />
+        <Events />
       </main>
       <footer></footer>
     </PageContainer>

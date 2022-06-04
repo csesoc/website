@@ -2,9 +2,9 @@ import Sphere from '../components/aboutus/ReusableSpheres';
 import * as PageStyle from '../components/aboutus/AboutUs-Styled';
 
 const args1 = {
-    left: 9,
-    top: 30,
-    size: 14,
+    left: 11,
+    top: 7,
+    size: 13,
     colourMain: "#969DC7",
     colourSecondary: "#DAE9FB",
     startMainPoint: -12,
@@ -15,9 +15,9 @@ const args1 = {
 }
 
 const args2 = {
-    left: 46.04,
-    top: 47,
-    size: 10,
+    left: 45,
+    top: 23,
+    size: 9,
     colourMain: "#D0E0ED",
     colourSecondary: "#498AC1",
     startMainPoint: 10.97,
@@ -27,9 +27,9 @@ const args2 = {
 }
 
 const args3 = {
-    left: 12,
-    top: 87,
-    size: 12,
+    left: 14,
+    top: 62,
+    size: 9,
     colourMain: "#9B9BE1",
     colourSecondary: "#E8CAFF",
     startMainPoint: -12,
@@ -39,9 +39,9 @@ const args3 = {
 }
 
 const args4 = {
-    left: 71,
-    top: 86,
-    size: 18,
+    left: 72,
+    top: 61,
+    size: 16,
     colourMain: "#0069E7",
     colourSecondary: "#BDDBFF",
     startMainPoint: -10.14,
