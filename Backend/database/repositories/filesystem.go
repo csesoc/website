@@ -9,11 +9,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	cx "context"
-
-	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 )
+
+const volume_path = "/var/lib/documents/data"
 
 // Implements IRepositoryInterface
 type FilesystemRepository struct {
@@ -24,6 +23,7 @@ type DockerFileystemRepository struct {
 	cli *client.Client
 }
 
+// Create instance of DockerFileSystemRepository struct
 func NewDockerFilesystemRespository() (c *DockerFileystemRepository, err error) {
 	c = new(DockerFileystemRepository)
 
@@ -34,45 +34,38 @@ func NewDockerFilesystemRespository() (c *DockerFileystemRepository, err error) 
 	return c, nil
 }
 
-func (c *DockerFileystemRepository) SearchVolumes() (err error) {
-	volumes, err := c.cli.VolumeList(cx.Background(), filters.NewArgs())
-
-	if err != nil {
-		return err
-	}
-
-	for _, v := range volumes.Volumes {
-		fmt.Println(v.Mountpoint)
-	}
-	return nil
-}
-
 // Add file to volume or update if exists
-func (c *DockerFileystemRepository) AddToVolume(source string, dest string) error {
-	src, err := os.Open(source)
+func (c *DockerFileystemRepository) AddToVolume(filename string) error {
+	// Check if source file is valid
+	src, err := os.Open(filename)
 	if err != nil {
 		return fmt.Errorf("Couldn't open source file")
 	}
-	moved, err := os.OpenFile(dest, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	// Create/update destination file and check it is valid
+	filepath := filepath.Join(volume_path, filename)
+	moved, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	defer moved.Close()
 	if err != nil {
 		return fmt.Errorf("Couldn't read/create the destination file")
 	}
+	// Copy source to destination
 	_, err = io.Copy(moved, src)
 	if err != nil {
 		return fmt.Errorf("File couldn't be copied to destination")
 	}
 	src.Close()
-	err = os.Remove(source)
+	// Delete source file
+	err = os.Remove(filename)
 	if err != nil {
 		return fmt.Errorf("Couldn't remove the source file")
 	}
 	return nil
 }
 
-// Get file from volume
-func (c *DockerFileystemRepository) GetFromVolume(fp string, dest string) (*os.File, error) {
-	file, err := os.Open(filepath.Join(dest, fp))
+// Get file from volume. Returns a valid file pointer
+func (c *DockerFileystemRepository) GetFromVolume(filename string) (*os.File, error) {
+	// Concatenate volume path with file name
+	file, err := os.Open(filepath.Join(volume_path, filename))
 	if err != nil {
 		return nil, fmt.Errorf("File doesn't exist")
 	}
@@ -80,8 +73,8 @@ func (c *DockerFileystemRepository) GetFromVolume(fp string, dest string) (*os.F
 }
 
 // Delete file from volume
-func (c *DockerFileystemRepository) DeleteFromVolume(fp string, dest string) error {
-	filepath := filepath.Join(dest, fp)
+func (c *DockerFileystemRepository) DeleteFromVolume(filename string) error {
+	filepath := filepath.Join(volume_path, filename)
 	file, err := os.Open(filepath)
 	if err != nil {
 		return fmt.Errorf("File doesn't exist")
