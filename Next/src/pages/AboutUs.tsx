@@ -52,9 +52,9 @@ const args4 = {
 
 const SphereArgs = [args1, args2, args3, args4];
 
-const CreateSpheres = SphereArgs.map((arg) => {
+const CreateSpheres = SphereArgs.map((arg, index) => {
     return (
-        <PageStyle.SpherePosition left={arg.left} top={arg.top}>
+        <PageStyle.SpherePosition key={index} left={arg.left} top={arg.top}>
             <Sphere {...arg} />
         </PageStyle.SpherePosition>
     )
