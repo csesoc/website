@@ -1,90 +1,9 @@
 import Sphere from '../components/aboutus/ReusableSpheres';
-import styled from "styled-components";
-
-const AboutUsPage = styled.div`
-    position: relative;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`
-
-const AboutUsContent = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-`
-
-export type positionProps = {
-    left?: number;
-    top?: number;
-}
-
-const SpherePositioning = styled.div<positionProps>`
-    position: absolute;
-    z-index: -1;
-    left: ${props => props.left}%;
-    top: ${props => props.top}%;
-`
-
-const AboutUsText = styled.div`
-    color: #A09FE3;
-    font-family: 'Raleway';
-    font-weight: 810;
-    font-size: 3.5vw;
-    line-height: 4vh;
-    text-align: right;
-    margin-top: 40vh;
-`
-
-const MainText = styled.div`
-    max-width: 58vw;
-    background: #A09FE3;
-    border-radius: 1vw;
-    color: #FFFFFF;
-    font-weight: 300;
-    font-size: 1.3vw;
-    text-align: center;
-    padding: 3vh 2vw;
-    margin-top: 6vh;
-`;
-
-const HighlightedText = styled.span`
-    color: #3977F8;
-`
-
-const AboutUs = () => (
-    <div>
-        <AboutUsPage>
-            <AboutUsContent>
-                <AboutUsText>
-                    About Us
-                    <MainText>
-                        We are one of the biggest and most active societies at
-                        <HighlightedText> UNSW</HighlightedText>
-                        , catering to over
-                        <HighlightedText> 3500 CSE students </HighlightedText>
-                        spanning across degrees in Computer Science, Software Engineering, Bioinformatics and Computer Engineering.
-                    </MainText>
-                </AboutUsText>
-            </AboutUsContent>
-            <SpherePositioning left={9} top={30}>
-                <Sphere {...args1} />
-            </SpherePositioning>
-            <SpherePositioning left={46.04} top={47}>
-                <Sphere {...args2} />
-            </SpherePositioning>
-            <SpherePositioning left={12} top={87}>
-                <Sphere {...args3} />
-            </SpherePositioning>
-            <SpherePositioning left={71} top={86}>
-                <Sphere {...args4} />
-            </SpherePositioning>
-        </AboutUsPage>
-    </div>
-)
+import * as PageStyle from '../components/aboutus/AboutUs-Styled';
 
 const args1 = {
+    left: 9,
+    top: 30,
     size: 14,
     colourMain: "#969DC7",
     colourSecondary: "#DAE9FB",
@@ -96,6 +15,8 @@ const args1 = {
 }
 
 const args2 = {
+    left: 46.04,
+    top: 47,
     size: 10,
     colourMain: "#D0E0ED",
     colourSecondary: "#498AC1",
@@ -104,7 +25,10 @@ const args2 = {
     angle: 261.11,
     blur: 3,
 }
+
 const args3 = {
+    left: 12,
+    top: 87,
     size: 12,
     colourMain: "#9B9BE1",
     colourSecondary: "#E8CAFF",
@@ -115,6 +39,8 @@ const args3 = {
 }
 
 const args4 = {
+    left: 71,
+    top: 86,
     size: 18,
     colourMain: "#0069E7",
     colourSecondary: "#BDDBFF",
@@ -123,5 +49,35 @@ const args4 = {
     angle: 155.55,
     rotation: 96.49,
 }
+
+const SphereArgs = [args1, args2, args3, args4];
+
+const CreateSpheres = SphereArgs.map((arg) => {
+    return (
+        <PageStyle.SpherePosition left={arg.left} top={arg.top}>
+            <Sphere {...arg} />
+        </PageStyle.SpherePosition>
+    )
+})
+
+const AboutUs = () => (
+    <div>
+        <PageStyle.AboutUsPage>
+            <PageStyle.AboutUsContent>
+                <PageStyle.AboutUsText>
+                    About Us
+                    <PageStyle.MainText>
+                        We are one of the biggest and most active societies at
+                        <PageStyle.BlueText> UNSW</PageStyle.BlueText>
+                        , catering to over
+                        <PageStyle.BlueText> 3500 CSE students </PageStyle.BlueText>
+                        spanning across degrees in Computer Science, Software Engineering, Bioinformatics and Computer Engineering.
+                    </PageStyle.MainText>
+                </PageStyle.AboutUsText>
+            </PageStyle.AboutUsContent>
+            {CreateSpheres}
+        </PageStyle.AboutUsPage>
+    </div>
+)
 
 export default AboutUs
