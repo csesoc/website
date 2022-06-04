@@ -10,6 +10,7 @@ type Image struct {
 }
 
 func (i Image) GetKey(key string) (interface{}, reflect.Type, error) {
+	// TODO: Check if key exists
 	r := reflect.ValueOf(i)
 	f := reflect.Indirect(r).FieldByName(key)
 
