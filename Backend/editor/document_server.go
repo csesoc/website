@@ -3,6 +3,8 @@ package editor
 import (
 	"fmt"
 	"sync"
+
+	"github.com/google/uuid"
 )
 
 type documentServer struct {
@@ -10,9 +12,12 @@ type documentServer struct {
 	// todo: stop the clientView map from growing too large using some compaction
 	// strategy or a more appropriate ds
 	// state management
+	ID        uuid.UUID
 	state     string
 	statelock sync.Mutex
-	clients   map[int]*clientState
+
+	clients     map[int]*clientState
+	clientsLock sync.Mutex
 }
 
 type clientState struct {
@@ -24,9 +29,10 @@ func newDocumentServer() *documentServer {
 	// ideally state shouldn't be a string due to its immutability
 	// any update requires the allocation + copy of a new string in memory
 	return &documentServer{
-		state:     "amongus!!!",
-		statelock: sync.Mutex{},
-		clients:   make(map[int]*clientState),
+		state:       "amongus!!!",
+		statelock:   sync.Mutex{},
+		clients:     make(map[int]*clientState),
+		clientsLock: sync.Mutex{},
 	}
 }
 
@@ -34,16 +40,22 @@ func newDocumentServer() *documentServer {
 // with the server, it wraps its internal clientView ID for security reasons
 type pipe = func(operation op)
 
+// alertLeaving is like a pipe except a client uses it to tell a document
+// that it is leaving
+type alertLeaving = func()
+
 // connectClient connects a clientView to a documentServer and returns a one way pipe
 // it can use for communication with the documentServer
 // TODO: synchronise this properly
-func (s *documentServer) connectClient(c *clientView) pipe {
+func (s *documentServer) connectClient(c *clientView) (pipe, alertLeaving) {
 	// register this clientView
+	s.clientsLock.Lock()
 	clientID := len(s.clients)
 	s.clients[clientID] = &clientState{
 		clientView: c,
 		canSendOps: true,
 	}
+	s.clientsLock.Unlock()
 
 	// we need to create a new worker for this clientView too
 	workerHandle := make(chan func())
@@ -51,7 +63,21 @@ func (s *documentServer) connectClient(c *clientView) pipe {
 	go createAndStartWorker(workerHandle, killHandle)
 
 	// finally build a comm pipe for this clientView
-	return s.buildClientPipe(clientID, workerHandle, killHandle)
+	return s.buildClientPipe(clientID, workerHandle, killHandle), s.buildAlertLeavingSignal(clientID, killHandle)
+}
+
+// disconnectClient removes a client from a document server
+func (s *documentServer) disconnectClient(clientID int) {
+	s.clientsLock.Lock()
+	if _, ok := s.clients[clientID]; !ok {
+		panic("Trying to disconnect non-existent client")
+	}
+
+	delete(s.clients, clientID)
+	s.clientsLock.Unlock()
+
+	// if we have no more connected clients it may be time to terminate ourselves
+	GetDocumentServerFactoryInstance().closeDocumentServer(s.ID)
 }
 
 // buildClientPipe is a function that returns the "pipe" for a clientView
@@ -63,10 +89,13 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 		clientState := s.clients[clientID]
 		thisClient := clientState.clientView
 		if !clientState.canSendOps {
-			// todo: in the future terminate this clientView
+			// terminate this clientView
 			// this is the only thing we can do in order to enforce
 			// consistency across all clients
-			panic("oh no!")
+			s.disconnectClient(clientID)
+			go func() { clientState.sendTerminateSignal <- empty{} }()
+			go func() { workerKillHandle <- empty{} }()
+			return
 		}
 
 		// to deal with this incoming operation we need to push
@@ -84,6 +113,7 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 
 			// propagate updates to all connected clients except this one
 			// if we send it to this clientView then we may deadlock the server and clientView
+			s.clientsLock.Lock()
 			for id, connectedClient := range s.clients {
 				if id == clientID {
 					continue
@@ -92,9 +122,20 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 				// push update
 				connectedClient.clientView.sendOp <- transformedOperation
 			}
+			s.clientsLock.Unlock()
 
 			clientState.canSendOps = true
-			thisClient.sendAcknowledgement <- true
+			thisClient.sendAcknowledgement <- empty{}
 		}
+	}
+}
+
+// buildAlertLeavingSignal builds a leaving signal for the client view
+// to use when it wants to tell the document server that it is leaving
+func (s *documentServer) buildAlertLeavingSignal(clientID int, workerKillHandle chan empty) func() {
+	// go doesnt have currying :(
+	return func() {
+		workerKillHandle <- empty{}
+		s.disconnectClient(clientID)
 	}
 }

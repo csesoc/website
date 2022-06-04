@@ -33,7 +33,7 @@ func EditEndpoint(w http.ResponseWriter, r *http.Request) {
 
 	wsClient := newClient(ws)
 	targetServer := GetDocumentServerFactoryInstance().FetchDocumentServer(uuid.MustParse(requestedDocument[0]))
-	commPipe := targetServer.connectClient(wsClient)
+	commPipe, terminatePipe := targetServer.connectClient(wsClient)
 
-	go wsClient.run(commPipe)
+	go wsClient.run(commPipe, terminatePipe)
 }

@@ -11,9 +11,11 @@ import (
 //		by filling them up :P, the documentServer avoids this with a little hack, it spins a goroutine
 //		to publish updates from the clientView within the pipe
 type clientView struct {
-	socket              *websocket.Conn
+	socket *websocket.Conn
+
 	sendOp              chan op
-	sendAcknowledgement chan bool
+	sendAcknowledgement chan empty
+	sendTerminateSignal chan empty
 }
 
 // models an operation a client can propagte to the documentServer
@@ -32,7 +34,8 @@ func newClient(socket *websocket.Conn) *clientView {
 	return &clientView{
 		socket:              socket,
 		sendOp:              make(chan op),
-		sendAcknowledgement: make(chan bool),
+		sendAcknowledgement: make(chan empty),
+		sendTerminateSignal: make(chan empty),
 	}
 }
 
@@ -41,7 +44,7 @@ func newClient(socket *websocket.Conn) *clientView {
 // them down the websocket, it also pulls stuff up the websocket
 // the documentServer will use the appropriate channels to communicate
 // updates to the client, namely: sendOp and sendAcknowledgement
-func (c *clientView) run(serverPipe pipe) {
+func (c *clientView) run(serverPipe pipe, terminatePipe alertLeaving) {
 	for {
 		select {
 		case <-c.sendOp:
@@ -52,13 +55,20 @@ func (c *clientView) run(serverPipe pipe) {
 			// push the acknowlegement down the websocket
 			break
 
+		case <-c.sendTerminateSignal:
+			// looks like we've been told to terminate by the documentServer
+			// propagate this to the client and close this connection
+			c.socket.Close()
+			return
+
 		default:
 			request := opRequest{}
 
 			err := c.socket.ReadJSON(&request)
 			if err != nil {
-				// todo: terminate & close websocket
-
+				// todo: push a terminate signal to the client, also tell the server we're leaving
+				terminatePipe()
+				c.socket.Close()
 			}
 
 			// push the update to the documentServer
