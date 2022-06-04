@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyledButton, buttonProps, scaleRate } from './text-alignment-Styled';
 import { ReactComponent as RightAlign } from
-  '../../assets/rightalign-button.svg';
+  'src/cse-ui-kit/assets/rightalign-button.svg';
 
 type Props = {
   onClick?: (...args: any) => void;
