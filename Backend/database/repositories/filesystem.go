@@ -62,7 +62,7 @@ func (c *DockerFileSystemRepository) AddToVolume(filename string) (err error) {
 }
 
 // Get file from volume. Returns a valid file pointer
-func (c *DockerFileSystemRepository) GetFromVolume(filename string) (*os.File, error) {
+func (c *DockerFileSystemRepository) GetFromVolume(filename string) (fp *os.File, err error) {
 	// Concatenate volume path with file name
 	if file, err := os.Open(filepath.Join(volume_path, filename)); err != nil {
 		return nil, errors.New("File doesn't exist")
@@ -72,7 +72,7 @@ func (c *DockerFileSystemRepository) GetFromVolume(filename string) (*os.File, e
 }
 
 // Delete file from volume
-func (c *DockerFileSystemRepository) DeleteFromVolume(filename string) error {
+func (c *DockerFileSystemRepository) DeleteFromVolume(filename string) (err error) {
 	filepath := filepath.Join(volume_path, filename)
 	file, err := os.Open(filepath)
 	defer file.Close()
