@@ -37,17 +37,17 @@ func NewDockerFilesystemRespository() (dockerFS *DockerFileSystemRepository, err
 func (c *DockerFileSystemRepository) AddToVolume(filename string) (err error) {
 	// Check if source file is valid
 	src, err := os.Open(filename)
-	defer src.Close()
 	if err != nil {
 		return errors.New("Couldn't open source file")
 	}
+	defer src.Close()
 	// Create/update destination file and check it is valid
 	filepath := filepath.Join(volume_path, filename)
 	moved, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
-	defer moved.Close()
 	if err != nil {
 		return errors.New("Couldn't read/create the destination file")
 	}
+	defer moved.Close()
 	// Copy source to destination
 	_, err = io.Copy(moved, src)
 	if err != nil {
@@ -64,21 +64,18 @@ func (c *DockerFileSystemRepository) AddToVolume(filename string) (err error) {
 // Get file from volume. Returns a valid file pointer
 func (c *DockerFileSystemRepository) GetFromVolume(filename string) (fp *os.File, err error) {
 	// Concatenate volume path with file name
-	if file, err := os.Open(filepath.Join(volume_path, filename)); err != nil {
-		return nil, errors.New("File doesn't exist")
-	} else {
-		return file, nil
-	}
+	fp, err = os.Open(filepath.Join(volume_path, filename))
+	return
 }
 
 // Delete file from volume
 func (c *DockerFileSystemRepository) DeleteFromVolume(filename string) (err error) {
 	filepath := filepath.Join(volume_path, filename)
 	file, err := os.Open(filepath)
-	defer file.Close()
 	if err != nil {
 		return errors.New("File doesn't exist")
 	}
+	defer file.Close()
 	os.Remove(filepath)
 	if err = os.Remove(filepath); err != nil {
 		return errors.New("Couldn't remove the source file")
