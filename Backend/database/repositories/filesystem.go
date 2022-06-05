@@ -27,11 +27,7 @@ type DockerFileystemRepository struct {
 func NewDockerFilesystemRespository() (c *DockerFileystemRepository, err error) {
 	c = new(DockerFileystemRepository)
 
-	c.cli, err = client.NewClientWithOpts(client.FromEnv)
-	if err != nil {
-		return nil, err
-	}
-	return c, nil
+    return client.NewClientWithOpts(client.FromEnv)
 }
 
 // Add file to volume or update if exists
