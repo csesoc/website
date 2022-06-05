@@ -50,8 +50,7 @@ func (c *DockerFileystemRepository) AddToVolume(filename string) error {
 	}
 	src.Close()
 	// Delete source file
-	err = os.Remove(filename)
-	if err != nil {
+	if err = os.Remove(filename); err != nil {
 		return fmt.Errorf("Couldn't remove the source file")
 	}
 	return nil
