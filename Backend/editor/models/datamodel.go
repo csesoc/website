@@ -36,7 +36,6 @@ func (d Document) Set(field string, value reflect.Value) error {
 	return nil
 }
 
-// TODO: Does text edit need a seperate struct since its format is different? Does keyEdit and arrayEdit too, is it a coincidence its currently the same?
 func process(request string) (err error) {
 	requestObject := Request{}
 	if err := json.Unmarshal([]byte(request), &requestObject); err != nil {
@@ -59,7 +58,7 @@ func process(request string) (err error) {
 func pathParser(path string) ([]string, error) {
 	subpaths := strings.Split(path, "/")
 	// TODO: Maybe generalise this hardcoded check
-	if subpaths[0] != "content" {
+	if len(subpaths) < 1 || subpaths[0] != "content" {
 		return nil, errors.New("First subpath must be 'content'")
 	}
 	return subpaths, nil
@@ -99,25 +98,3 @@ func dataTypeEvaluator(dataStr string, dataType string) (data interface{}, err e
 		return nil, errors.New("Incompatible data type")
 	}
 }
-
-// func (d Document) getContentComponent(path string, dest interface{}) error {
-// 	paths, err := pathParser(path)
-// 	if err != nil {
-// 		return nil, nil, err
-// 	}
-// 	// Traverse the paths
-// 	length := len(paths)
-
-// 	var curr reflect.Value
-// 	for i := 0; i < length; i++ {
-// 		// Check if we are traversing an array
-
-// 		// If we are at the end of paths, we are the target, thus don't expect an incoming index
-
-// 	}
-// 	return curr, reflect.TypeOf(curr), nil
-// }
-
-// func (d Document) keyInsert(path string, data interface{}) {
-
-// }
