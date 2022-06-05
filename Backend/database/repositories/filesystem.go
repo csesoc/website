@@ -75,7 +75,7 @@ func (c *DockerFileSystemRepository) DeleteFromVolume(filename string) (err erro
 	if err != nil {
 		return errors.New("File doesn't exist")
 	}
-	defer file.Close()
+	file.Close()
 	os.Remove(filepath)
 	if err = os.Remove(filepath); err != nil {
 		return errors.New("Couldn't remove the source file")
