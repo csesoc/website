@@ -45,8 +45,7 @@ func (c *DockerFileystemRepository) AddToVolume(filename string) error {
 		return fmt.Errorf("Couldn't read/create the destination file")
 	}
 	// Copy source to destination
-	_, err = io.Copy(moved, src)
-	if err != nil {
+	if _, err = io.Copy(moved, src); err != nil {
 		return fmt.Errorf("File couldn't be copied to destination")
 	}
 	src.Close()
