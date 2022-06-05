@@ -80,7 +80,9 @@ func (c *DockerFileystemRepository) DeleteFromVolume(filename string) error {
 		return fmt.Errorf("File doesn't exist")
 	}
 	file.Close()
-	os.Remove(filepath)
+	if err = os.Remove(filepath); err != nil {
+		return fmt.Errorf("Couldn't remove the source file")
+	}
 	return nil
 }
 
