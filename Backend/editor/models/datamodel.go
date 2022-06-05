@@ -24,18 +24,6 @@ type Document struct {
 // - Add error checking for the paths as we traverse, e.g missing an index when traversing an array (assuming we didn't reach the end)
 // - Make sure the item we are adding keeps the validity of the object
 
-// Get returns the reflect.Value corresponding to a specific field
-func (d Document) Get(field string) (reflect.Value, error) {
-	return reflect.ValueOf(d).FieldByName(field), nil
-}
-
-// Set sets a reflect.Value given a specific field
-func (d Document) Set(field string, value reflect.Value) error {
-	reflectionField := reflect.ValueOf(d).FieldByName(field)
-	reflectionField.Set(value)
-	return nil
-}
-
 func process(request string) (err error) {
 	requestObject := Request{}
 	if err := json.Unmarshal([]byte(request), &requestObject); err != nil {
@@ -98,3 +86,44 @@ func dataTypeEvaluator(dataStr string, dataType string) (data interface{}, err e
 		return nil, errors.New("Incompatible data type")
 	}
 }
+
+// TODO: Error check index logic
+func (d Document) get(path string) (interface{}, error) {
+	paths, err := pathParser(path)
+	if err != nil {
+		return nil, err
+	}
+	// We get the parent struct/array
+	target := paths[len(paths)-1]
+	var parentPointer reflect.Value
+	parentPointer = traverse(d, paths)
+	// Check if we are dealing with an array/slice
+	if parentPointer.Kind() == reflect.Array || parentPointer.Kind() == reflect.Slice {
+		// Target must thus be an index if len(paths) > 1
+		if len(paths) > 1 {
+			if index, err := strconv.ParseInt(target, 10, 32); err != nil {
+				return nil, err
+			} else {
+				return parentPointer.Elem().Index(int(index)), nil
+			}
+		} else { // Edge case for a path "content" -> we return everything inside it
+			return parentPointer.Elem(), nil
+		}
+	}
+	// We are dealing with a struct
+	for i := 0; i < parentPointer.NumField(); i++ {
+		field := parentPointer.Field(i)
+		if field.Type().Field(i).Name == target {
+			return field.Elem(), nil
+		}
+	}
+	// Didn't find the key
+	return nil, errors.New("Didn't find")
+}
+
+// TODO
+// textEdit functions
+
+// keyEdit functions
+
+// arrayEdit functions
