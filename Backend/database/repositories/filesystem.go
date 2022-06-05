@@ -3,7 +3,6 @@ package repositories
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -19,67 +18,67 @@ type FilesystemRepository struct {
 	embeddedContext
 }
 
-type DockerFileystemRepository struct {
-	cli *client.Client
+type DockerFileSystemRepository struct {
+	dockerCli *client.Client
 }
 
 // Create instance of DockerFileSystemRepository struct
-func NewDockerFilesystemRespository() (c *DockerFileystemRepository, err error) {
-	c = new(DockerFileystemRepository)
+func NewDockerFilesystemRespository() (dockerFS *DockerFileSystemRepository, err error) {
+	fs := DockerFileSystemRepository{}
 
-	c.cli, err = client.NewClientWithOpts(client.FromEnv)
+	dockerFS.dockerCli, err = client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		return nil, err
 	}
-	return c, nil
+	return &fs, nil
 }
 
 // Add file to volume or update if exists
-func (c *DockerFileystemRepository) AddToVolume(filename string) error {
+func (c *DockerFileSystemRepository) AddToVolume(filename string) (err error) {
 	// Check if source file is valid
 	src, err := os.Open(filename)
+	defer src.Close()
 	if err != nil {
-		return fmt.Errorf("Couldn't open source file")
+		return errors.New("Couldn't open source file")
 	}
 	// Create/update destination file and check it is valid
 	filepath := filepath.Join(volume_path, filename)
 	moved, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	defer moved.Close()
 	if err != nil {
-		return fmt.Errorf("Couldn't read/create the destination file")
+		return errors.New("Couldn't read/create the destination file")
 	}
 	// Copy source to destination
 	_, err = io.Copy(moved, src)
 	if err != nil {
-		return fmt.Errorf("File couldn't be copied to destination")
+		return errors.New("File couldn't be copied to destination")
 	}
-	src.Close()
 	// Delete source file
 	err = os.Remove(filename)
 	if err != nil {
-		return fmt.Errorf("Couldn't remove the source file")
+		return errors.New("Couldn't remove the source file")
 	}
 	return nil
 }
 
 // Get file from volume. Returns a valid file pointer
-func (c *DockerFileystemRepository) GetFromVolume(filename string) (*os.File, error) {
+func (c *DockerFileSystemRepository) GetFromVolume(filename string) (*os.File, error) {
 	// Concatenate volume path with file name
-	file, err := os.Open(filepath.Join(volume_path, filename))
-	if err != nil {
-		return nil, fmt.Errorf("File doesn't exist")
+	if file, err := os.Open(filepath.Join(volume_path, filename)); err != nil {
+		return nil, errors.New("File doesn't exist")
+	} else {
+		return file, nil
 	}
-	return file, nil
 }
 
 // Delete file from volume
-func (c *DockerFileystemRepository) DeleteFromVolume(filename string) error {
+func (c *DockerFileSystemRepository) DeleteFromVolume(filename string) error {
 	filepath := filepath.Join(volume_path, filename)
 	file, err := os.Open(filepath)
+	defer file.Close()
 	if err != nil {
-		return fmt.Errorf("File doesn't exist")
+		return errors.New("File doesn't exist")
 	}
-	file.Close()
 	os.Remove(filepath)
 	return nil
 }
