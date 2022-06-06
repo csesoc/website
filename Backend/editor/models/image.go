@@ -4,7 +4,7 @@ import "reflect"
 
 // @implements the Component interface
 type Image struct {
-	ImageDocumentID int
+	ImageDocumentID string
 	ImageSource     string
 }
 

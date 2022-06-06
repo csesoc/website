@@ -27,7 +27,7 @@ func traverse(d Document, subpaths []string) reflect.Value {
 						curr = field.Elem().Index(int(index))
 					}
 				} else {
-					curr = field.Elem()
+					curr = field
 				}
 				break
 			}
