@@ -32,7 +32,7 @@ next-only:
 	up next backend db
 
 next-build:
-  	docker-compose \
+  docker-compose \
 	--env-file=./Config/.env.dev \
 	up --build next backend db
 

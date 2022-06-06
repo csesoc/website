@@ -13,7 +13,7 @@ services:
       - 3001:3001
   frontend:
     container_name: Frontend
-    build: 
+    build:
       context: ./Frontend
       dockerfile: ./Dockerfile.development
     volumes:
