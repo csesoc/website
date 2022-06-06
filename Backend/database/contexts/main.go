@@ -9,10 +9,9 @@ import (
 
 // Constants regarding database connections
 var USER = environment.GetDBUser()
+var HOST = environment.GetDBHost()
 var PASSWORD = environment.GetDBPassword()
 var DATABASE = environment.GetDB()
-
-const HOST_AND_PORT = "db:5432"
 
 const TEST_USER = "postgres"
 const TEST_PASSWORD = "test"
