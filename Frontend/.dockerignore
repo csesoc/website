@@ -4,4 +4,4 @@ build
 .dockerignore
 Dockerfile
 Dockerfile.prod
-DOckerfile.development
+Dockerfile.development
