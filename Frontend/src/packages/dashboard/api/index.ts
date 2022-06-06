@@ -1,12 +1,11 @@
 import { toFileOrFolder } from './helpers';
-import { BACKEND_URI } from 'src/config';
 import { JSONFileFormat } from './types';
 
 // Given a file ID (if no ID is provided root is assumed), returns
 // a FileFormat of that file from the backend
 export async function getFolder (id?: number) {
   const ending = (id === undefined) ? "" : `?EntityID=${id}`;
-  const folder_resp = await fetch(`${BACKEND_URI}/filesystem/info${ending}`);
+  const folder_resp = await fetch(`/filesystem/info${ending}`);
 
   if (!folder_resp.ok) {
     const message = `An error has occured: ${folder_resp.status}`;
@@ -21,7 +20,7 @@ export async function getFolder (id?: number) {
 // of that file
 export async function updateContents(id: number) {
   // const id = getCurrentID();
-  const children_resp = await fetch(`${BACKEND_URI}/filesystem/info?EntityID=${id}`);
+  const children_resp = await fetch(`/filesystem/info?EntityID=${id}`);
 
   if (!children_resp.ok) {
     const message = `An error has occured: ${children_resp.status}`;
@@ -42,7 +41,7 @@ export const newFile = async (name: string, parentID: number): Promise<string> =
 
   // This isn't attached to the parent folder yet,
   // TODO: patch once auth is finished
-  const create_resp = await fetch("http://localhost:8080/filesystem/create", {
+  const create_resp = await fetch("/filesystem/create", {
     method: "POST",
     body: new URLSearchParams({
       "LogicalName": name,
@@ -63,7 +62,7 @@ export const newFile = async (name: string, parentID: number): Promise<string> =
 export const newFolder = async (name: string, parentID: number): Promise<string> => {
 
   // TODO: patch once auth is finished
-  const create_resp = await fetch("http://localhost:8080/filesystem/create", {
+  const create_resp = await fetch("/filesystem/create", {
     method: "POST",
     body: new URLSearchParams({
       "LogicalName": name,

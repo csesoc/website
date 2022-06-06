@@ -6,8 +6,6 @@ services:
     build:
       context: ./Next
       dockerfile: ./Dockerfile.development
-      args:
-        BACKEND_URI: ${BACKEND_URI}
     volumes:
       - '/next/node_modules'
       - './Next:/next'
@@ -19,8 +17,6 @@ services:
     build: 
       context: ./Frontend
       dockerfile: ./Dockerfile.development
-      args: 
-        BACKEND_URI: ${BACKEND_URI}
     volumes:
       # Note must include node_modules as a seperate volume
       - '/app/node_modules'
