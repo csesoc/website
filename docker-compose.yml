@@ -47,7 +47,6 @@ services:
       - POSTGRES_PASSWORD=${PG_PASSWORD}
       - POSTGRES_DB=${PG_DB}
       - POSTGRES_PORT=${PG_PORT}
-
   db:
     container_name: pg_container
     image: postgres
