@@ -7,7 +7,6 @@ services:
       context: ./Next
       dockerfile: ./Dockerfile.development
     volumes:
-      - '/next/node_modules'
       - './Next:/next'
     stdin_open: true
     ports:
@@ -18,22 +17,19 @@ services:
       context: ./Frontend
       dockerfile: ./Dockerfile.development
     volumes:
-      # Note must include node_modules as a seperate volume
-      - '/app/node_modules'
       - './Frontend:/app'
     stdin_open: true
     ports:
       - 3000:3000
   backend:
     container_name: go_backend
-    build: 
+    build:
       context: ./Backend
       dockerfile: ./Dockerfile.development
     depends_on:
       - db
     volumes:
       - './Backend:/go/src/cms.csesoc.unsw.edu.au'
-      - './Backend/go.mod:/go/src/cms.csesoc.unsw.edu.au/go.mod'
       - 'document_data:/var/lib/documents/data'
     ports:
       - 8080:8080
