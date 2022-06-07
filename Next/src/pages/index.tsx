@@ -1,10 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import styled from "styled-components";
-
+import Events from './Events'
 import Homepage from "./Homepage";
 import Contact from "./contact";
 import Support from "./support";
+import AboutUs from './AboutUs';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -13,8 +14,6 @@ const PageContainer = styled.div`
   padding-left: 2rem;
   padding-right: 2rem;
 `;
-
-
 
 // const Button = styled.button`
 //   background-color:#FFFFFF;
@@ -41,12 +40,12 @@ const Home: NextPage = () => {
         <Homepage/>
         <Contact/>
         <Support/>
+        <AboutUs />
+        <Events />
       </main>
-
       <footer></footer>
     </PageContainer>
   );
 };
 
 export default Home;
-
