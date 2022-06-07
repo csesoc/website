@@ -1,17 +1,15 @@
-// flex-row
-// each icon (wrapper)
-
 import type { NextPage } from "next";
-import Head from "next/head";
 import Image from 'next/image';
 import styled from "styled-components";
 
 const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  flex-wrap: wrap;
+  flex-direction: row;
+  padding: 2rem;
+  margin: 5rem;
+  justify-content: space-evenly;
 `;
 
 const ImageContainer = styled.div`
@@ -20,20 +18,17 @@ const ImageContainer = styled.div`
   font-family: "Raleway", sans-serif;
   text-align: center;
   display: flex;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60%;
-  display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
+  max-width: 75vw;
+  padding-left: 5rem;
+  padding-right: 5rem;
 `;
 
 const Title = styled.h1`
   font-family: "Raleway", sans-serif;
   color: #A09FE3;
-  font-size: 64px;
+  font-size: 5rem;
   text-align: center;
 `
 
@@ -49,28 +44,22 @@ const File = styled.div`
 `;
 
 const DockContainer = styled.div`
-  position: fixed;
-  bottom: 0;
-  text-align: center;
-  right: 25%;
-  left: 25%;
-  width: 50%;
   background: #C1C1C1;
-  border-radius: 10px;
-  display: inline-block;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  height: 6rem;
+  position: relative;
+  margin-top: 5rem;
+  left: 50%;
+  right: 50%;
+  transform: translate(-50%, -50%);
 `;
 
-const DockLi = styled.li`
-  display: inline-block;
-  position: relative;
-`
 const Dock = styled.div`
   margin: 25px;
   display: inline;
-`;
-
-const Dot = styled.div`
-  display: block;
 `;
 
 const Line = styled.div`
@@ -80,82 +69,72 @@ const Line = styled.div`
 const Contact: NextPage = () => {
   return (
     <PageContainer>
-      <Head>
-        <title>CSESoc</title>
-        <meta name="description" content="CSESoc Website Homepage" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main>
-        <Title>Resources and Contacts</Title>
         <ImageContainer>
+            <Title>Resources and Contacts</Title>
             <File>
-                <Image src="/image 13.svg" width={132} height={88}/>
+                <Image src="/assets/File.svg" width={132} height={88}/>
                 <Text3>Jobs Board</Text3>
-
             </File>
 
             <File>
-                <Image src="/image 13.svg" width={132} height={88}/>
+                <Image src="/assets/File.svg" width={132} height={88}/>
                 <Text3>Comp Club</Text3>
             </File>
 
             <File>
-                <Image src="/image 13.svg" width={132} height={88}/>
+                <Image src="/assets/File.svg" width={132} height={88}/>
                 <Text3>Notangles</Text3>
             </File>
 
             <File>
-                <Image src="/image 13.svg" width={132} height={88}/>
+                <Image src="/assets/File.svg" width={132} height={88}/>
                 <Text3>CSElectives</Text3>
             </File>
 
             <File>
-                <Image src="/image 13.svg" width={132} height={88}/>
+                <Image src="/assets/File.svg" width={132} height={88}/>
                 <Text3>CSESoc Media</Text3>
             </File>
 
             <File>
-                <Image src="/image 13.svg" width={132} height={88}/>
+                <Image src="/assets/File.svg" width={132} height={88}/>
                 <Text3>First Year Guide</Text3>
             </File>
 
             <File>
-                <Image src="/image 13.svg" width={132} height={88}/>
+                <Image src="/assets/File.svg" width={132} height={88}/>
                 <Text3>Enrolment Guide</Text3>
             </File>
-        </ImageContainer>
 
-        <DockContainer>
-            <ul>
+            <DockContainer>
+              <ul>
                 <Dock>
-                    <Image src="/Component 12.svg" width={66} height={66}/>
+                    <Image src="/assets/Spotify.svg" width={66} height={66}/>
                     
                 </Dock>
 
                 <Dock>
-                    <Image src="/Component 13.svg" width={66} height={66}/>
+                    <Image src="/assets/Discord.svg" width={66} height={66}/>
                 </Dock>
 
                 <Dock>
-                    <Image src="/Component 14.svg" width={66} height={66}/>
+                    <Image src="/assets/Facebook.svg" width={66} height={66}/>
                 </Dock>
 
                 <Dock>
-                    <Image src="/Component 15.svg" width={66} height={66}/>
+                    <Image src="/assets/Youtube.svg" width={66} height={66}/>
                 </Dock>
 
                 <Line>
-                    <Image src="/Line 1.svg" width={66} height={66}/>
+                    <Image src="/assets/Line 1.svg" width={66} height={66}/>
                 </Line>
                 <Dock>
-                    <Image src="/Component 10.svg" width={66} height={66}/>
+                    <Image src="/assets/GreyArrow.svg" width={66} height={66}/>
                 </Dock>
 
-            </ul>
-        </DockContainer>
-        
-      </main>
+              </ul>
+            </DockContainer>  
+        </ImageContainer>      
     </PageContainer>
   );
 };

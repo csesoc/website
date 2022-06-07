@@ -38,10 +38,10 @@ const Home: NextPage = () => {
       </Head>
       <main>
         <Homepage/>
-        <Contact/>
-        <Support/>
         <AboutUs />
         <Events />
+        <Contact/>
+        <Support/>
       </main>
       <footer></footer>
     </PageContainer>
