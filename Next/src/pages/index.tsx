@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Homepage from "./Homepage";
 import Contact from "./contact";
 import Support from "./support";
+
 const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
@@ -38,6 +39,8 @@ const Home: NextPage = () => {
       </Head>
       <main>
         <Homepage/>
+        <Contact/>
+        <Support/>
       </main>
 
       <footer></footer>
