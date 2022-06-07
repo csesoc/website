@@ -16,7 +16,7 @@ type Log struct {
 func OpenLog(startingMessage string) *Log {
 	return &Log{
 		startingMessage: startingMessage,
-		logBuffer:       make([][]byte, 2, 2),
+		logBuffer:       [][]byte{},
 		logLock:         sync.Mutex{},
 	}
 }
