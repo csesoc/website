@@ -1,4 +1,4 @@
-FROM golang:1.18-alpine as build-env
+FROM golang:1.18-alpine as app-builder
 WORKDIR /go/src/app
 COPY . .
 RUN apk add git
