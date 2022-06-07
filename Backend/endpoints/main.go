@@ -2,8 +2,10 @@ package endpoints
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
+	"cms.csesoc.unsw.edu.au/internal/logger"
 	"cms.csesoc.unsw.edu.au/internal/session"
 )
 
@@ -16,17 +18,19 @@ type Response struct {
 
 // This file contains a series of types defined to make writing http handlers
 // a bit easier and less messy
-type handler func(http.ResponseWriter, *http.Request, DependencyFactory) (int, interface{}, error)
+type handler func(http.ResponseWriter, *http.Request, DependencyFactory, *logger.Log) (int, interface{}, error)
 
 // Authenticated handler is basically a regular http handler the only difference is that
 // they can only be accessed by an authenticated client
-type authenticatedHandler func(http.ResponseWriter, *http.Request, DependencyFactory) (int, interface{}, error)
+type authenticatedHandler func(http.ResponseWriter, *http.Request, DependencyFactory, *logger.Log) (int, interface{}, error)
 
 // impl of http Handler interface so that it can serve http requests
 func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	log := logger.OpenLog(
+		fmt.Sprintf("Handling http %s request to %s", r.Method, r.URL.Path))
 
-	if status, resp, err := fn(w, r, DependencyProvider{}); err == nil {
+	if status, resp, err := fn(w, r, DependencyProvider{}, log); err == nil {
 		if status != http.StatusMovedPermanently {
 			w.WriteHeader(status)
 		}
