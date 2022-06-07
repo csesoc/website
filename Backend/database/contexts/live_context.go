@@ -12,6 +12,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 
 	"cms.csesoc.unsw.edu.au/environment"
 
@@ -28,6 +29,8 @@ type liveContext struct {
 func newLiveContext() (*liveContext, error) {
 	conn, err := pgxpool.Connect(context.Background(),
 		fmt.Sprintf("postgres://%s:%s@%s/%s", USER, PASSWORD, HOST, DATABASE))
+
+	log.Print("== Acquired live DB context == ")
 	if err != nil {
 		return nil, errors.New("unable to connect to the database")
 	}

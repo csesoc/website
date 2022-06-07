@@ -1,10 +1,12 @@
 package endpoints
 
 import (
+	"fmt"
 	"net/http"
 	"reflect"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
+	"cms.csesoc.unsw.edu.au/internal/logger"
 )
 
 type EntityInfo struct {
@@ -20,7 +22,7 @@ type ValidInfoRequest struct {
 }
 
 // Defines endpoints consumable via the API
-func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
+func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
 	var input ValidInfoRequest
 	if status := ParseParamsToSchema(r, "GET", &input); status != http.StatusOK {
 		return status, nil, nil
@@ -29,27 +31,29 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory)
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
 
-	if entity, err := repository.GetEntryWithID(input.EntityID); err == nil {
-		childrenArr := []EntityInfo{}
-		for _, id := range entity.ChildrenIDs {
-			x, _ := repository.GetEntryWithID(id)
-			childrenArr = append(childrenArr, EntityInfo{
-				EntityID:   id,
-				EntityName: x.LogicalName,
-				IsDocument: x.IsDocument,
-				Parent:     x.ParentFileID,
-				Children:   nil,
-			})
-		}
+	log.Write([]byte("Acquired repository."))
 
+	if entity, err := repository.GetEntryWithID(input.EntityID); err == nil {
+		log.Write([]byte(fmt.Sprintf("Retreived entity: %v", entity)))
+		// Return a final structure with the children array mapped over as well
 		return http.StatusOK, EntityInfo{
 			EntityID:   entity.EntityID,
 			EntityName: entity.LogicalName,
 			IsDocument: entity.IsDocument,
 			Parent:     entity.ParentFileID,
-			Children:   childrenArr,
+			Children: mapOver(entity.ChildrenIDs, func(id int) EntityInfo {
+				x, _ := repository.GetEntryWithID(id)
+				return EntityInfo{
+					EntityID:   id,
+					EntityName: x.LogicalName,
+					IsDocument: x.IsDocument,
+					Parent:     x.ParentFileID,
+					Children:   nil,
+				}
+			}),
 		}, nil
 	} else {
+		log.Write([]byte("Failed request!"))
 		return http.StatusNotFound, nil, nil
 	}
 }
@@ -62,7 +66,7 @@ type ValidEntityCreationRequest struct {
 	IsDocument  bool   `schema:"IsDocument,required"`
 }
 
-func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
+func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
 	var input ValidEntityCreationRequest
 	if status := ParseParamsToSchema(r, "POST", &input); status != http.StatusOK {
 		return status, nil, nil
@@ -70,6 +74,8 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactor
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+	log.Write([]byte("Acquired repository."))
+
 	entityToCreate := repositories.FilesystemEntry{
 		LogicalName:  input.LogicalName,
 		ParentFileID: input.Parent,
@@ -78,8 +84,10 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactor
 	}
 
 	if e, err := repository.CreateEntry(entityToCreate); err != nil {
+		log.Write([]byte("Failed request!"))
 		return http.StatusNotAcceptable, nil, err
 	} else {
+		log.Write([]byte(fmt.Sprintf("Created new entity %v.", entityToCreate)))
 		return http.StatusOK, struct {
 			NewID int
 		}{
@@ -90,7 +98,7 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactor
 }
 
 // Handler for deleting filesystem entities
-func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
+func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
 	var input ValidInfoRequest
 	if status := ParseParamsToSchema(r, "POST", &input); status != http.StatusOK {
 		return status, nil, nil
@@ -98,15 +106,19 @@ func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request, df Dependenc
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+	log.Write([]byte("Acquired repository."))
+
 	if err := repository.DeleteEntryWithID(input.EntityID); err != nil {
+		log.Write([]byte("Failed request!"))
 		return http.StatusNotAcceptable, nil, err
 	} else {
+		log.Write([]byte(fmt.Sprintf("Deleted entity wity ID: %d", input.EntityID)))
 		return http.StatusOK, nil, nil
 	}
 }
 
 // Handler for retrieving children
-func GetChildren(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
+func GetChildren(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
 	var input ValidInfoRequest
 	if status := ParseParamsToSchema(r, "GET", &input); status != http.StatusOK {
 		return status, nil, nil
@@ -114,9 +126,13 @@ func GetChildren(w http.ResponseWriter, r *http.Request, df DependencyFactory) (
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+	log.Write([]byte("Acquired repository."))
+
 	if fileInfo, err := repository.GetEntryWithID(input.EntityID); err != nil {
+		log.Write([]byte("Failed request!"))
 		return http.StatusNotFound, nil, nil
 	} else {
+		log.Write([]byte(fmt.Sprintf("Fetched children for %d, got %v", input.EntityID, fileInfo.ChildrenIDs)))
 		return http.StatusOK, struct {
 			Children []int
 		}{
@@ -129,7 +145,7 @@ type ValidPathRequest struct {
 	Path string `schema:"Path,required"`
 }
 
-func GetIDWithPath(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
+func GetIDWithPath(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
 	var input ValidPathRequest
 	if status := ParseParamsToSchema(r, "GET", &input); status != http.StatusOK {
 		return status, nil, nil
@@ -137,9 +153,13 @@ func GetIDWithPath(w http.ResponseWriter, r *http.Request, df DependencyFactory)
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+	log.Write([]byte("Acquired repository."))
+
 	if entityID, err := repository.GetIDWithPath(input.Path); err != nil {
+		log.Write([]byte("Failed request!"))
 		return http.StatusNotFound, nil, nil
 	} else {
+		log.Write([]byte(fmt.Sprintf("Got ID %d for %s", entityID, input.Path)))
 		return http.StatusOK, entityID, nil
 	}
 }
@@ -150,7 +170,7 @@ type ValidRenameRequest struct {
 }
 
 // Handler for renaming filesystem entities
-func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
+func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
 	var input ValidRenameRequest
 	if status := ParseParamsToSchema(r, "POST", &input); status != http.StatusOK {
 		return status, nil, nil
@@ -158,9 +178,21 @@ func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request, df Dependenc
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+
 	if err := repository.RenameEntity(input.EntityID, input.NewName); err != nil {
+		log.Write([]byte("Failed request!"))
 		return http.StatusNotAcceptable, nil, nil
 	} else {
+		log.Write([]byte(fmt.Sprintf("Renamed %d's name to %s", input.EntityID, input.NewName)))
 		return http.StatusOK, nil, nil
 	}
+}
+
+// generalised map function to make code a little cleaner
+func mapOver[T any, V any](input []T, mapFunction func(T) V) []V {
+	output := []V{}
+	for _, i := range input {
+		output = append(output, mapFunction(i))
+	}
+	return output
 }
