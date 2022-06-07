@@ -24,8 +24,8 @@ jobs:
       - name: Golang Tests
         run: go test -v ./...
         working-directory: ./Backend
-    with:
-      go-version: 1.18
+        with:
+          go-version: 1.18
   frontend_testing:
     runs-on: ubuntu-latest
     steps:
