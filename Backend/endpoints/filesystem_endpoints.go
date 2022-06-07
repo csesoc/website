@@ -22,8 +22,8 @@ type ValidInfoRequest struct {
 // Defines endpoints consumable via the API
 func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
 	var input ValidInfoRequest
-	if !ParseParamsToSchema(r, "GET", &input) {
-		return http.StatusBadRequest, nil, nil
+	if status := ParseParamsToSchema(r, "GET", &input); status != http.StatusOK {
+		return status, nil, nil
 	}
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
@@ -64,8 +64,8 @@ type ValidEntityCreationRequest struct {
 
 func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
 	var input ValidEntityCreationRequest
-	if !ParseParamsToSchema(r, "POST", &input) {
-		return http.StatusBadRequest, nil, nil
+	if status := ParseParamsToSchema(r, "POST", &input); status != http.StatusOK {
+		return status, nil, nil
 	}
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
@@ -78,7 +78,7 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactor
 	}
 
 	if e, err := repository.CreateEntry(entityToCreate); err != nil {
-		return http.StatusNotAcceptable, nil, nil
+		return http.StatusNotAcceptable, nil, err
 	} else {
 		return http.StatusOK, struct {
 			NewID int
@@ -92,14 +92,14 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactor
 // Handler for deleting filesystem entities
 func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
 	var input ValidInfoRequest
-	if !ParseParamsToSchema(r, "POST", &input) {
-		return http.StatusBadRequest, nil, nil
+	if status := ParseParamsToSchema(r, "POST", &input); status != http.StatusOK {
+		return status, nil, nil
 	}
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
-	if repository.DeleteEntryWithID(input.EntityID) != nil {
-		return http.StatusNotAcceptable, nil, nil
+	if err := repository.DeleteEntryWithID(input.EntityID); err != nil {
+		return http.StatusNotAcceptable, nil, err
 	} else {
 		return http.StatusOK, nil, nil
 	}
@@ -108,8 +108,8 @@ func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request, df Dependenc
 // Handler for retrieving children
 func GetChildren(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
 	var input ValidInfoRequest
-	if !ParseParamsToSchema(r, "GET", &input) {
-		return http.StatusBadRequest, nil, nil
+	if status := ParseParamsToSchema(r, "GET", &input); status != http.StatusOK {
+		return status, nil, nil
 	}
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
@@ -131,8 +131,8 @@ type ValidPathRequest struct {
 
 func GetIDWithPath(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
 	var input ValidPathRequest
-	if !ParseParamsToSchema(r, "GET", &input) {
-		return http.StatusBadRequest, nil, nil
+	if status := ParseParamsToSchema(r, "GET", &input); status != http.StatusOK {
+		return status, nil, nil
 	}
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
@@ -152,13 +152,13 @@ type ValidRenameRequest struct {
 // Handler for renaming filesystem entities
 func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
 	var input ValidRenameRequest
-	if !ParseParamsToSchema(r, "POST", &input) {
-		return http.StatusBadRequest, nil, nil
+	if status := ParseParamsToSchema(r, "POST", &input); status != http.StatusOK {
+		return status, nil, nil
 	}
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
-	if repository.RenameEntity(input.EntityID, input.NewName) != nil {
+	if err := repository.RenameEntity(input.EntityID, input.NewName); err != nil {
 		return http.StatusNotAcceptable, nil, nil
 	} else {
 		return http.StatusOK, nil, nil

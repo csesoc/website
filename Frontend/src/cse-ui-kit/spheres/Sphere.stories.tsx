@@ -49,4 +49,5 @@ Primary.args = {
     startSecondaryPoint: 76,
     angle: 261,
     blur: 2,
+    rotation: 93.47,
 }

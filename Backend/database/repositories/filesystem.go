@@ -3,12 +3,84 @@ package repositories
 
 import (
 	"errors"
+	"io"
+	"os"
+	"path/filepath"
 	"strings"
+
+	"github.com/docker/docker/client"
 )
+
+const volume_path = "/var/lib/documents/data"
 
 // Implements IRepositoryInterface
 type FilesystemRepository struct {
 	embeddedContext
+}
+
+type DockerFileSystemRepository struct {
+	dockerCli *client.Client
+}
+
+// Create instance of DockerFileSystemRepository struct
+func NewDockerFilesystemRespository() (dockerFS *DockerFileSystemRepository, err error) {
+	fs := DockerFileSystemRepository{}
+
+	dockerFS.dockerCli, err = client.NewClientWithOpts(client.FromEnv)
+	if err != nil {
+		return nil, err
+	}
+	return &fs, nil
+}
+
+// Add file to volume or update if exists
+func (c *DockerFileSystemRepository) AddToVolume(filename string) (err error) {
+	// Check if source file is valid
+	src, err := os.Open(filename)
+	if err != nil {
+		return errors.New("Couldn't open source file")
+	}
+	defer src.Close()
+	// Create/update destination file and check it is valid
+	filepath := filepath.Join(volume_path, filename)
+	moved, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	if err != nil {
+		return errors.New("Couldn't read/create the destination file")
+	}
+	defer moved.Close()
+	// Copy source to destination
+	_, err = io.Copy(moved, src)
+	if err != nil {
+		return errors.New("File couldn't be copied to destination")
+	}
+	// Delete source file
+	err = os.Remove(filename)
+	if err != nil {
+		return errors.New("Couldn't remove the source file")
+	}
+	return nil
+}
+
+// Get file from volume. Returns a valid file pointer
+func (c *DockerFileSystemRepository) GetFromVolume(filename string) (fp *os.File, err error) {
+	// Concatenate volume path with file name
+	fp, err = os.Open(filepath.Join(volume_path, filename))
+	return
+}
+
+// Delete file from volume
+func (c *DockerFileSystemRepository) DeleteFromVolume(filename string) (err error) {
+	filepath := filepath.Join(volume_path, filename)
+	file, err := os.Open(filepath)
+	if err != nil {
+		return errors.New("File doesn't exist")
+	}
+	file.Close()
+	os.Remove(filepath)
+	if err = os.Remove(filepath); err != nil {
+		return errors.New("Couldn't remove the source file")
+	}
+	return nil
 }
 
 // We really should use an ORM jesus this is ugly

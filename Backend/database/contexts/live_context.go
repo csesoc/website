@@ -27,7 +27,7 @@ type liveContext struct {
 // NewPool returns a new pool from a given configuration
 func newLiveContext() (*liveContext, error) {
 	conn, err := pgxpool.Connect(context.Background(),
-		fmt.Sprintf("postgres://%s:%s@%s/%s", USER, PASSWORD, HOST_AND_PORT, DATABASE))
+		fmt.Sprintf("postgres://%s:%s@%s/%s", USER, PASSWORD, HOST, DATABASE))
 	if err != nil {
 		return nil, errors.New("unable to connect to the database")
 	}
