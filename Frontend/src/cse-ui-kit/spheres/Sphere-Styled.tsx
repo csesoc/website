@@ -8,6 +8,7 @@ export type sphereProps = {
   startSecondaryPoint?: number;
   angle?: number;
   blur?: number;
+  rotation?: number;
 }
 
 export const StyledSphere = styled.div<sphereProps>`
@@ -19,6 +20,7 @@ export const StyledSphere = styled.div<sphereProps>`
     ${props => props.colourSecondary} ${props => props.startSecondaryPoint}%
   );
   filter: blur(${props => props.blur}px);
+  transform: rotate(${props => props.rotation}deg);
   mix-blend-mode: normal;
   display: flex;
   justify-content: center;
@@ -36,4 +38,5 @@ StyledSphere.defaultProps = {
   startSecondaryPoint: 100,
   angle: 0,
   blur: 0,
+  rotation: 0,
 }

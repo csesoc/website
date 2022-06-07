@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyledButton, buttonProps, scaleRate } from './text-alignment-Styled';
-import { ReactComponent as LeftAlign } from '../../assets/leftalign-button.svg';
+import { ReactComponent as LeftAlign } from 'src/cse-ui-kit/assets/leftalign-button.svg';
 
 type Props = {
   onClick?: (...args: any) => void;
