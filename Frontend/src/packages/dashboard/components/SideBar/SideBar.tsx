@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
+import {useNavigate} from 'react-router-dom';
 
 const Container = styled.div`
   width: 250px;
@@ -44,10 +45,11 @@ const SidebarButton = styled(Button) <SideBarButtonProps>`
 
 type Props = {
   setModalState: (state: {open: boolean, type: string}) => void;
+  selectedFile: number | null;
 }
 
 // Wrapper component ${props => props.color}
-export default function SideBar ({ setModalState }: Props) {
+export default function SideBar ({ setModalState, selectedFile}: Props) {
 
   const handleNewFile = () => {
     setModalState({
@@ -62,6 +64,13 @@ export default function SideBar ({ setModalState }: Props) {
       type: "folder",
     });
   }
+
+  const navigate = useNavigate();
+  const handleEdit = () => {
+    if (selectedFile !== null) {
+      navigate('/editor/' + selectedFile, {replace: false}), [navigate]
+    }
+  };
 
   // TODO
   const handleRecycle = () => {
@@ -99,8 +108,8 @@ export default function SideBar ({ setModalState }: Props) {
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
-          <SidebarButton bgColor="#B8E8E8">
-            Edit
+          <SidebarButton bgColor="#B8E8E8" onClick={handleEdit}>
+              Edit
           </SidebarButton>
           <SidebarButton bgColor="#B8E8E8">
             Feature
