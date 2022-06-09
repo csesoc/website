@@ -23,19 +23,19 @@ const ImageContainer = styled.div`
   margin-left: 100px;
 `
 
-const Text1 = styled.body`
+const Text1 = styled.p`
   color: #010033;
   font-size: 36px;
   padding: 10px 0;
   margin-top: 100px;
 `;
 
-const Text2 = styled.body`
+const Text2 = styled.p`
   color: #3977F8;
   font-size: 36px;
 `;
 
-const Text3 = styled.body`
+const Text3 = styled.p`
   color: #010033;
   font-style: italic;
   font-size: 36px;

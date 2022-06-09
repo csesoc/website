@@ -2,7 +2,10 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import styled from "styled-components";
 
+// local
 import Homepage from "./Homepage";
+import Events from './Events'
+import AboutUs from './AboutUs';
 import HomepageCurve from "../svgs/HomepageCurve";
 import RectangleCurve from "../svgs/RectangleCurve";
 
@@ -57,14 +60,13 @@ const Home: NextPage = () => {
             dontPreserveAspectRatio
           />
         </CurveContainer>
-        <Homepage/>
-
+        <Homepage />
+        <AboutUs />
+        <Events />
       </main>
-
       <footer></footer>
     </PageContainer>
   );
 };
 
 export default Home;
-

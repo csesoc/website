@@ -14,6 +14,7 @@ import (
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/environment"
+	"cms.csesoc.unsw.edu.au/internal/logger"
 	"cms.csesoc.unsw.edu.au/internal/session"
 
 	"errors"
@@ -34,7 +35,7 @@ type User struct {
 	-d password=password \
 	localhost:8080/login
 */
-func LoginHandler(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
+func LoginHandler(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
 	var user User
 	if status := ParseParamsToSchema(r, "POST", &user); status != http.StatusOK {
 		http.Redirect(w, r, environment.GetFrontendURI()+"/login", http.StatusMovedPermanently)
@@ -87,7 +88,7 @@ func (u *User) checkPassword() error {
 // expecting header to contain session-token
 // will perform the redirection in frontend
 // backend's job for logout is only to remove the HTTPONLY cookie
-func LogoutHandler(w http.ResponseWriter, r *http.Request, df DependencyFactory) (int, interface{}, error) {
+func LogoutHandler(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
 	switch r.Method {
 	case "POST":
 		// CORS headers
