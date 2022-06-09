@@ -6,14 +6,17 @@ type Props = {}
 
 const Container = styled.div`
   width: 100%;
+  height: 100vh;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 20vw;
 `;
 
 const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 0 100px;
 `;
 
 const ImageContainer = styled.div`
