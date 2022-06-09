@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from "styled-components";
 import Image from 'next/image';
+import NavbarComponent from "../components/Navbar";
 
 type Props = {}
 
@@ -26,19 +27,19 @@ const ImageContainer = styled.div`
   margin-left: 100px;
 `
 
-const Text1 = styled.p`
+const Text1 = styled.span`
   color: #010033;
   font-size: 36px;
   padding: 10px 0;
   margin-top: 100px;
 `;
 
-const Text2 = styled.p`
+const Text2 = styled.span`
   color: #3977F8;
   font-size: 36px;
 `;
 
-const Text3 = styled.p`
+const Text3 = styled.span`
   color: #010033;
   font-style: italic;
   font-size: 36px;
@@ -49,6 +50,7 @@ const Text3 = styled.p`
 export default function Homepage({}: Props) {
   return (
     <>
+      <NavbarComponent />
       <Container>
         <ColumnContainer>
           <Image src="/assets/logo.svg" width="362" height="84" />

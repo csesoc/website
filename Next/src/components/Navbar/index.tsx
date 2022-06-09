@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import HamburgerIcon from './hamburger_icon.png';
+import Image from 'next/image';
 
 const Navbar = styled.div`
     padding: 30px 0 30px 0;
@@ -30,9 +31,9 @@ const HamburgerButton = styled.button`
     }
 `
 
-const HamburgerIcon = styled.img`
-
-`
+// const HamburgerIconContainer = styled.img`
+//
+// `
 
 const NavbarComponent = () => {
     const [navbarOpen, setNavbarOpen] = useState(false);
@@ -44,7 +45,7 @@ const NavbarComponent = () => {
     return (
       <Navbar>
         <ItemWrapper>
-            <HamburgerButton onClick={handleToggle}><HamburgerIcon src={HamburgerIcon}></HamburgerIcon></HamburgerButton>
+            <HamburgerButton onClick={handleToggle}><Image src={HamburgerIcon} /></HamburgerButton>
             <NavItem>About Us</NavItem>
             <NavItem>Contact</NavItem>
             <NavItem>Events</NavItem>
