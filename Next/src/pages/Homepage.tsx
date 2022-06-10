@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
 import styled from "styled-components";
 import Image from 'next/image';
-import NavbarComponent from "../components/navbar";
-import {NavbarOpenHandler} from "./blog/types";
+import Navbar from "../components/navbar/Navbar";
+import { NavbarOpenHandler } from "../components/navbar/types";
 import HamburgerMenu from "../components/navbar/HamburgerMenu";
 
 type Props = {}
@@ -64,7 +64,7 @@ export default function Homepage({}: Props) {
     <>
       { navbarOpen ? <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} /> : <></> }
       <HomepageContainer>
-        <NavbarComponent open={navbarOpen} setNavbarOpen={handleToggle} />
+        <Navbar open={navbarOpen} setNavbarOpen={handleToggle} />
         <Container>
           <ColumnContainer>
             <Image src="/assets/logo.svg" width="362" height="84" />
