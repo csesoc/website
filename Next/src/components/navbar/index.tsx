@@ -1,21 +1,27 @@
 import styled from 'styled-components';
-import { useState, useEffect } from 'react';
-import HamburgerIcon from './hamburger_icon.png';
+import HamburgerIcon from "../../../public/assets/menu_icon.svg";
 import Image from 'next/image';
+import { NavbarOpenProps } from "../../pages/blog/types";
 
 const Navbar = styled.div`
-    padding: 30px 0 30px 0;
-    background: #fafcff;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 20vh;
+    padding: 20px 0;
+    background: transparent;
     display: flex;
 `
 
 const ItemWrapper = styled.ul`
+    display: inline-flex;
+    align-items: center;
     margin-left: auto;
+    gap: 5vw;
+    list-style: none;
 `
 
 const NavItem = styled.li`
-    padding: 0 50px 0 50px;
-    display: inline;
     font-size: 20px;
     font-weight: bold;
 
@@ -23,29 +29,23 @@ const NavItem = styled.li`
         display: none;
     }
 `
-
 const HamburgerButton = styled.button`
+    width: fit-content;
+    height: auto;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
     display: none;
     @media (max-width: 768px) {
         display: block;
     }
 `
 
-// const HamburgerIconContainer = styled.img`
-//
-// `
-
-const NavbarComponent = () => {
-    const [navbarOpen, setNavbarOpen] = useState(false);
-
-    const handleToggle = () => {
-        setNavbarOpen(!navbarOpen)
-    };
-
+const NavbarComponent = (props: NavbarOpenProps) => {
     return (
       <Navbar>
         <ItemWrapper>
-            <HamburgerButton onClick={handleToggle}><Image src={HamburgerIcon} /></HamburgerButton>
+            <HamburgerButton onClick={props.setNavbarOpen}><Image src={HamburgerIcon} /></HamburgerButton>
             <NavItem>About Us</NavItem>
             <NavItem>Contact</NavItem>
             <NavItem>Events</NavItem>
