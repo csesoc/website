@@ -1,20 +1,20 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import CreateTitleBlock from './CreateTitleBlock';
+import CreateHeadingBlock from './CreateHeadingBlock';
 
 import { AiFillEdit } from "react-icons/ai";
 
 export default {
   title: 'CSE-UIKIT/CreateTitleBlockButton',
-  component: CreateTitleBlock,
+  component: CreateHeadingBlock,
 
   argTypes: {
     backgroundColor: { control: 'color' },
   },
-} as ComponentMeta<typeof CreateTitleBlock>;
+} as ComponentMeta<typeof CreateHeadingBlock>;
 
-const Template: ComponentStory<typeof CreateTitleBlock> = (args) =>
+const Template: ComponentStory<typeof CreateHeadingBlock> = (args) =>
 (
   <div
     style={{
@@ -22,7 +22,7 @@ const Template: ComponentStory<typeof CreateTitleBlock> = (args) =>
     }}
   >
     Insert Button
-    <CreateTitleBlock {...args}></CreateTitleBlock>
+    <CreateHeadingBlock {...args}></CreateHeadingBlock>
   </div>
 )
 

@@ -38,4 +38,32 @@ const isMarkActive = (
   return marks ? marks[format] === true : false;
 };
 
-export { toggleMark, isMarkActive };
+
+const handleKey = (
+  event: React.KeyboardEvent, 
+  editor: BaseEditor & ReactEditor
+) => {
+  if (!event.ctrlKey) {
+    return
+  }
+  switch (event.key) {
+    case 'b': {
+      event.preventDefault();
+      toggleMark(editor, "bold");
+    }
+  }
+  switch (event.key) {
+    case 'i': {
+      event.preventDefault();
+      toggleMark(editor, "italic");
+    }
+  }
+  switch (event.key) {
+    case 'u': {
+      event.preventDefault();
+      toggleMark(editor, "underline");
+    }
+  }
+}
+
+export { toggleMark, isMarkActive, handleKey };

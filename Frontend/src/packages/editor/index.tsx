@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import React, { useState, FC } from "react";
 
-import TitleBlock from "./components/TitleBlock";
+import HeadingBlock from "./components/HeadingBlock";
 import EditorBlock from "./components/EditorBlock";
 import { BlockData, UpdateHandler } from "./types";
 import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
-import CreateTitleBlock from "src/cse-ui-kit/CreateTitleBlock_button";
+import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import { addContentBlock } from "./state/actions";
 import { defaultContent, headingContent } from "./state/helpers";
@@ -51,7 +51,7 @@ const EditorPage: FC = () => {
               onEditorClick={() => setFocusedId(idx)}
             /> 
             :
-            <TitleBlock 
+            <HeadingBlock 
               id={idx}
               key={idx}
               update={updateValues}
@@ -62,7 +62,7 @@ const EditorPage: FC = () => {
 
 
         <InsertContentWrapper>
-          <CreateTitleBlock
+          <CreateHeadingBlock
             onClick={() => {
               setBlocks((prev) => [...prev, [{type:"heading", children: [{ text: "" }]}]]);
               setFocusedId(blocks.length);

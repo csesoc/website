@@ -1,16 +1,16 @@
 import React, { MouseEventHandler } from "react";
-import { StyledButton, buttonProps } from "./CreateTitleBlock-Styled";
+import { StyledButton, buttonProps } from "./CreateHeadingBlock-Styled";
 import { AiFillEdit } from "react-icons/ai";
 
 type Props = {
   onClick?: MouseEventHandler<HTMLDivElement>;
 } & buttonProps;
 
-export default function CreateTitleBlock({ onClick, ...styleProps }: Props) {
+export default function CreateHeadingBlock({ onClick, ...styleProps }: Props) {
   return (
     <StyledButton onClick={onClick} {...styleProps}>
       <AiFillEdit />
-      Insert Title Block
+      Insert Heading Block
     </StyledButton>
   );
 }
