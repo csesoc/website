@@ -1,0 +1,17 @@
+table1:
+  column1:
+    primary: true
+    type: int4
+  column2:
+    type: varchar
+  column3:
+    type: int4
+
+table2:
+  id:
+    primary: true
+    type: int4
+  name:
+    type: varchar
+  has_paid:
+    type: boolean

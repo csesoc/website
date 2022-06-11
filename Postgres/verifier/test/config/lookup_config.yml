@@ -1,0 +1,3 @@
+username: ${PG_USER}
+password: ${PG_PASSWORD}
+database: pytest

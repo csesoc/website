@@ -1,0 +1,8 @@
+foo:
+  id:
+    type: int4
+    primary: true
+  name:
+    type: varchar
+  burger:
+    type: int4

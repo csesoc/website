@@ -1,0 +1,3 @@
+username: ${TEST_USERNAME}
+password: ${TEST_PASSWORD}
+database: ${TEST_DATABASE}

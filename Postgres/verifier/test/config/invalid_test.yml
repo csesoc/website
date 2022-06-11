@@ -1,0 +1,4 @@
+# This file has a missing key - no `database` (we don't know which DB to test
+# against if we don't provide it)
+username: foo
+password: bar
