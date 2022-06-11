@@ -8,6 +8,10 @@ import EditorBoldButton from "./buttons/EditorBoldButton";
 import EditorItalicButton from "./buttons/EditorItalicButton";
 import EditorUnderlineButton from "./buttons/EditorUnderlineButton";
 import EditorSelectFont from './buttons/EditorSelectFont'
+import EditorCenterAlignButton from './buttons/EditorCenterAlignButton'
+import EditorLeftAlignButton from './buttons/EditorLeftAlignButton'
+import EditorRightAlignButton from './buttons/EditorRightAlignButton'
+
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
 import { toggleMark, handleKey } from "./buttons/buttonHelpers";
 import { getBlockContent } from "../state/helpers";
@@ -29,11 +33,13 @@ const Text = styled.span<{
   italic: boolean;
   underline: boolean;
   textSize: number;
+  align: string;
 }>`
   font-weight: ${(props) => (props.bold ? 600 : 400)};
   font-style: ${(props) => (props.italic ? "italic" : "normal")};
   font-size: ${(props) => (props.textSize)}px;
   text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
+  text-align: ${(props) => (props.align)};
 `;
 
 interface EditorBlockProps {
@@ -63,6 +69,7 @@ const EditorBlock: FC<EditorBlockProps> = ({
           italic={leaf.italic ?? false}
           underline={leaf.underline ?? false}
           textSize={leaf.textSize ?? 16}
+          align= {leaf.align ?? "left"}
           {...attributes}
         >
           {children}
@@ -93,6 +100,9 @@ const EditorBlock: FC<EditorBlockProps> = ({
           <EditorItalicButton />
           <EditorUnderlineButton />
           <EditorSelectFont />
+          <EditorLeftAlignButton />
+          <EditorCenterAlignButton />
+          <EditorRightAlignButton />
         </ToolbarContainer>
       )}
       <ContentBlock>
