@@ -18,7 +18,7 @@ const ToolbarContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  max-width: 440px;
+  max-width: 660px;
   margin: 5px;
 `;
 
@@ -93,7 +93,7 @@ const EditorBlock: FC<EditorBlockProps> = ({
         <Editable
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}
-          style={{ width: "100%", height: "100%" }}
+          style={{ width: "200%", height: "200%" }}
         />
       </ContentBlock>
     </Slate>
