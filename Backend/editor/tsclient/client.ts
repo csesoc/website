@@ -44,21 +44,24 @@ export default class Client {
 
     // public method that can be used to push 
     // data to a server document
-    public pushDocumentData(data: string) : void {
+    public async pushDocumentData(data: string) : Promise<void> {
         if (this.messageQueue.length == 0) {
             // push it straight down the websocket
-            this.sendToSocket(data)
+            await this.sendToSocket(data)
         } else {
             this.messageQueue.push(data)
         }
     }
 
-    private sendToSocket(data: string) : void {
+    private async sendToSocket(data: string) : Promise<void> {
         if (data === "") {
-            return
+            return new Promise((resolve, reject) => resolve())
         }
 
-        this.socket.send(data);
+        return new Promise((resolve, reject) => {
+            this.socket.send(data)
+            resolve()
+        });
     }
 
 
