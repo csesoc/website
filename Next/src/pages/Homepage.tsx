@@ -70,7 +70,7 @@ export default function Homepage({}: Props) {
         <ImageContainer>
           <Image src="/assets/WebsitesIcon.png" layout="fill" objectFit="contain" />
         </ImageContainer>
-        <Scroll>Scroll down >></Scroll>
+        <Scroll>Scroll down &gt;&gt;</Scroll>
       </Container>
       
     </>
