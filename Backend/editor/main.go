@@ -2,6 +2,7 @@ package editor
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"strconv"
 
@@ -12,20 +13,34 @@ import (
 // This is the main loop that the editor client will run
 func EditorClientLoop(requestedDocument int, fs repositories.IDockerUnpublishedFilesystemRepository, ws *websocket.Conn) error {
 	manager := getGlobalManagerInstance()
-	manager.startDocumentServer(requestedDocument)
+	err := manager.startDocumentServer(requestedDocument)
+	if err != nil {
+		terminateWs(ws, "locked")
+		return errors.New("Unable to open request document")
+	}
 
 	defer manager.closeDocumentServer(requestedDocument)
-	defer func() {
-		ws.WriteMessage(websocket.CloseMessage, []byte("Terminating."))
-		ws.Close()
-	}()
-
 	file, err := fs.GetFromVolumeTruncated(strconv.Itoa(requestedDocument))
 	if err != nil {
+		terminateWs(ws, "error")
 		return errors.New("Unable to open request document")
 	}
 
 	defer file.Close()
+
+	// Our communication protocol is rather simple...
+	// client starts:
+	//		-> sends websocket connection
+	// 		-> connection upgraded
+	//		-> we send the current state of the document
+	// 		-> client continues
+	//		-> client sends updated
+	//		-> we apply updated and send acknowledgement
+
+	// send the current state of the document
+	var buf = []byte{}
+	file.Read(buf)
+	ws.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf(`{"type": "init", "contents": "%s"}`, string(buf))))
 
 	for {
 		_, buf, err := ws.ReadMessage()
@@ -37,19 +52,19 @@ func EditorClientLoop(requestedDocument int, fs repositories.IDockerUnpublishedF
 		}
 
 		file.Truncate(0)
-		_, err = file.Seek(0, 0)
-		if err != nil {
-			return errors.New("something went wrong!")
-		}
-
-		_, err = file.Write(buf)
-		if err != nil {
-			return errors.New("failed to write to file")
-		}
+		file.Seek(0, 0)
+		file.Write(buf)
 
 		// send an acknowledgement to the client
-		ws.WriteMessage(websocket.TextMessage, []byte("acknowledged"))
+		ws.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf(`{"type": "acknowledged"}`)))
 	}
 
+	terminateWs(ws, "terminating")
 	return nil
+}
+
+// terminateWs is just a small util function thats called on termination
+func terminateWs(ws *websocket.Conn, reason string) {
+	ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseGoingAway, fmt.Sprintf(`"%s"`, reason)))
+	ws.Close()
 }
