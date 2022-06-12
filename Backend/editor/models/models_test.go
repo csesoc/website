@@ -1,17 +1,17 @@
 package models
 
-import "testing"
+import (
+	"log"
+	"reflect"
+	"testing"
 
-type TestDocument struct {
-	document_name string
-	document_id   string
-	content       []Component
-}
+	"github.com/stretchr/testify/assert"
+)
 
-var testObj *TestDocument
+var testObj *Document
 
 func TestMain(m *testing.M) {
-	testObj = &TestDocument{
+	testObj = &Document{
 		document_name: "morbed up",
 		document_id:   "M0R8",
 	}
@@ -37,4 +37,18 @@ func TestMain(m *testing.M) {
 	}
 	children[0] = image
 	children[1] = paragraph
+	testObj.content = children[:]
+}
+
+func TestGetFirstDepthField(t *testing.T) {
+	path := "content/0"
+	subpaths, err := pathParser(path)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	result := traverse(*testObj, subpaths)
+	assert := assert.New(t)
+	assert.Equal("Image", reflect.TypeOf(result).Name())
+	assert.Equal("m0rb", result.Field(0))
+	assert.Equal("big_morb.png", result.Field(1))
 }
