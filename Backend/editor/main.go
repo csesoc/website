@@ -1,39 +1,55 @@
 package editor
 
 import (
+	"errors"
 	"log"
-	"net/http"
+	"strconv"
 
-	"cms.csesoc.unsw.edu.au/editor/service"
+	"cms.csesoc.unsw.edu.au/database/repositories"
 	"github.com/gorilla/websocket"
 )
 
-// This file just defines some of the endpoints for the editor
-// and ties togher its various disparate components
-var broker = service.NewBroker()
-var Upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
-}
+// This is the main loop that the editor client will run
+func EditorClientLoop(requestedDocument int, fs repositories.IDockerUnpublishedFilesystemRepository, ws *websocket.Conn) error {
+	manager := getGlobalManagerInstance()
+	manager.startDocumentServer(requestedDocument)
 
-// Actual edit endpoint
-func EditEndpoint(w http.ResponseWriter, r *http.Request) {
-	requestedDocument, ok := r.URL.Query()["document"]
-	if !ok || len(requestedDocument[0]) < 1 {
-		w.WriteHeader(400)
-		return
-	}
-
-	ws, err := Upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err)
-	}
-
-	err = broker.ConnectOrOpenDocument(requestedDocument[0], ws)
-	if err != nil {
+	defer manager.closeDocumentServer(requestedDocument)
+	defer func() {
+		ws.WriteMessage(websocket.CloseMessage, []byte("Terminating."))
 		ws.Close()
+	}()
+
+	file, err := fs.GetFromVolumeTruncated(strconv.Itoa(requestedDocument))
+	if err != nil {
+		return errors.New("Unable to open request document")
 	}
+
+	defer file.Close()
+
+	for {
+		_, buf, err := ws.ReadMessage()
+		if err != nil {
+			if !websocket.IsCloseError(err, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
+				log.Printf("something went horribly wrong, terminating connection: %v\n", err)
+				break
+			}
+		}
+
+		file.Truncate(0)
+		_, err = file.Seek(0, 0)
+		if err != nil {
+			return errors.New("something went wrong!")
+		}
+
+		_, err = file.Write(buf)
+		if err != nil {
+			return errors.New("failed to write to file")
+		}
+
+		// send an acknowledgement to the client
+		ws.WriteMessage(websocket.TextMessage, []byte("acknowledged"))
+	}
+
+	return nil
 }
