@@ -24,6 +24,8 @@ const ImageContainer = styled.div`
   width: 550px;
   height: 400px;
   margin-left: 100px;
+  display: flex;
+  align-items: center;
 `
 
 const Text1 = styled.p`
@@ -45,6 +47,12 @@ const Text3 = styled.p`
   display:inline;
 `;
 
+const Scroll = styled.p`
+  transform: rotate(90deg);
+  position: absolute;
+  right: 0px;
+`;
+
 
 export default function Homepage({}: Props) {
   return (
@@ -62,7 +70,9 @@ export default function Homepage({}: Props) {
         <ImageContainer>
           <Image src="/assets/WebsitesIcon.png" layout="fill" objectFit="contain" />
         </ImageContainer>
+        <Scroll>Scroll down >></Scroll>
       </Container>
+      
     </>
   )
 }
