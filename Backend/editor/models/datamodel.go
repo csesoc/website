@@ -121,9 +121,40 @@ func (d Document) get(path string) (interface{}, error) {
 	return nil, errors.New("Didn't find")
 }
 
-// TODO
 // textEdit functions
+
+// Add update text field
+func (d Document) textEditUpdate(path string, start int, end int, data string) error {
+	return nil
+}
+
+// Remove text field
+func (d Document) textEditRemove(path string, start int, end int) error {
+	return nil
+}
 
 // keyEdit functions
 
+// Add data field
+func (d Document) keyEditInsert(path string, data interface{}) error {
+	return nil
+}
+
+// Remove data field
+func (d Document) keyEditRemove(path string) error {
+	return nil
+}
+
 // arrayEdit functions
+
+// TODO: do we want to maintain the length too to reduce time complexity?
+
+// Update element in array at "index" position
+func (d Document) arrayEditUpdate(path string, index int, data interface{}) error {
+	return nil
+}
+
+// Remove element in array at "index" position
+func (d Document) arrayEditRemove(path string, index int) error {
+	return nil
+}

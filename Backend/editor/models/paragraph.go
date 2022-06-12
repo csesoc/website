@@ -1,9 +1,11 @@
 package models
 
-import "reflect"
+import (
+	"errors"
+	"reflect"
+)
 
 // @implements Component
-// TODO: How do take in specific types words for ParagraphAlign?
 type Paragraph struct {
 	ParagraphID       string
 	ParagraphAlign    string
@@ -25,6 +27,11 @@ func (p Paragraph) Get(field string) (reflect.Value, error) {
 
 // Set sets a reflect.Value given a specific field
 func (p Paragraph) Set(field string, value reflect.Value) error {
+	inputType := value.Kind()
+	if field == "ParagraphAlign" &&
+		(inputType != reflect.String || value.String() == "left" || value.String() == "right" || value.String() == "center") {
+		return errors.New("ParagraphAlign data must be a string of 'left', 'right' or 'center'")
+	}
 	reflectionField := reflect.ValueOf(p).FieldByName(field)
 	reflectionField.Set(value)
 	return nil
