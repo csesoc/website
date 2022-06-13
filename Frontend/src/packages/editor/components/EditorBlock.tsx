@@ -93,7 +93,7 @@ const EditorBlock: FC<EditorBlockProps> = ({
         <Editable
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}
-          style={{ width: "200%", height: "200%" }}
+          style={{ width: "100%", height: "100%" }}
         />
       </ContentBlock>
     </Slate>
