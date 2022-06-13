@@ -18,5 +18,11 @@ var config = cmsjson.Configuration{
 			"image":     reflect.TypeOf(Image{}),
 			"paragraph": reflect.TypeOf(Paragraph{}),
 		},
+
+		reflect.TypeOf((*Payload)(nil)).Elem(): {
+			"textEdit":  reflect.TypeOf(TextEdit{}),
+			"keyEdit":   reflect.TypeOf(KeyEdit{}),
+			"arrayEdit": reflect.TypeOf(ArrayEdit{}),
+		},
 	},
 }
