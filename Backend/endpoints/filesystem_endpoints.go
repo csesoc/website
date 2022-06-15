@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"strconv"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/internal/logger"
@@ -73,7 +74,10 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactor
 	}
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
+	dfs := reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))
+
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+	dockerRepository := df.GetDependency(dfs).(repositories.IDockerPublishedFilesystemRepository)
 	log.Write([]byte("Acquired repository."))
 
 	entityToCreate := repositories.FilesystemEntry{
@@ -87,6 +91,9 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactor
 		log.Write([]byte("Failed request!"))
 		return http.StatusNotAcceptable, nil, err
 	} else {
+		// finally create a new entry in the docker filesystem
+		dockerRepository.AddToVolume(strconv.Itoa(e.EntityID))
+
 		log.Write([]byte(fmt.Sprintf("Created new entity %v.", entityToCreate)))
 		return http.StatusOK, struct {
 			NewID int
