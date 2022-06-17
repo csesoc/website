@@ -33,3 +33,10 @@ export const StyledButton = styled.div<buttonProps>`
 
   cursor: pointer;
 `;
+
+export const Text = styled.p`
+  word-wrap: initial;
+  display: flex;
+  align-items: bottom;
+
+`;
