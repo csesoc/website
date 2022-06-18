@@ -30,7 +30,7 @@ func SendResponse(w http.ResponseWriter, marshaledJson string) {
 		}`, marshaledJson)))
 }
 
-// ParseParamsToSchema expects the target to be a pointer
+// ParseParamsToSchema expects the target to be a pointer, and logs errors
 func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interface{}) int {
 	if acceptingMethod != r.Method {
 		return http.StatusMethodNotAllowed
@@ -38,6 +38,11 @@ func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interfa
 
 	err := r.ParseForm()
 	if err != nil {
+		return http.StatusBadRequest
+	}
+
+	// Parse multipart file, with max size of 10 MB
+	if err = r.ParseMultipartForm(10 << 20); err != nil {
 		return http.StatusBadRequest
 	}
 

@@ -219,14 +219,19 @@ func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, l
 	// Extract image and check for error
 	file, _, err := r.FormFile("Image")
 	if err != nil {
-		fmt.Println("Error retrieving the file")
+		log.Write([]byte("Error retrieving the file"))
 		return http.StatusBadRequest, nil, err
 	}
 	defer file.Close()
 
 	// Create entity in repository
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
+	dfs := reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))
+
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+	dockerRepository := df.GetDependency(dfs).(repositories.IDockerPublishedFilesystemRepository)
+	log.Write([]byte("Acquired repository."))
+
 	entityToCreate := repositories.FilesystemEntry{
 		LogicalName:  input.LogicalName,
 		ParentFileID: input.Parent,
@@ -234,27 +239,19 @@ func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, l
 		OwnerUserId:  input.OwnerGroup,
 	}
 
-	// // Create a temporary file
-	// tempFile, err := ioutil.TempFile("", "upload-*.png")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// defer tempFile.Close()
-
-	// // Write bytes to temporary file
-	// if fileBytes, err := ioutil.ReadAll(file); err != nil {
-	// 	fmt.Println(err)
-	// } else {
-	// 	tempFile.Write(fileBytes)
-	// }
-
 	if e, err := repository.CreateEntry(entityToCreate); err != nil {
-		return http.StatusNotAcceptable, nil, nil
+		log.Write([]byte("Failed request!"))
+		return http.StatusNotAcceptable, nil, err
 	} else {
+		// finally create a new entry in the docker filesystem
+		dockerRepository.AddToVolume(strconv.Itoa(e.EntityID))
+
+		log.Write([]byte(fmt.Sprintf("Created new entity %v.", entityToCreate)))
 		return http.StatusOK, struct {
 			NewID int
 		}{
 			NewID: e.EntityID,
 		}, nil
 	}
+
 }
