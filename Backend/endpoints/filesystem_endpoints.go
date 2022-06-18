@@ -203,3 +203,58 @@ func mapOver[T any, V any](input []T, mapFunction func(T) V) []V {
 	}
 	return output
 }
+
+type ValidImageUploadRequest struct {
+	Parent      int
+	LogicalName string `schema:"LogicalName,required"`
+	OwnerGroup  int    `schema:"OwnerGroup,required"`
+}
+
+func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
+	var input ValidImageUploadRequest
+	if status := ParseParamsToSchema(r, "POST", &input); status != http.StatusOK {
+		return status, nil, nil
+	}
+
+	// Extract image and check for error
+	file, _, err := r.FormFile("Image")
+	if err != nil {
+		fmt.Println("Error retrieving the file")
+		return http.StatusBadRequest, nil, err
+	}
+	defer file.Close()
+
+	// Create entity in repository
+	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
+	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+	entityToCreate := repositories.FilesystemEntry{
+		LogicalName:  input.LogicalName,
+		ParentFileID: input.Parent,
+		IsDocument:   false,
+		OwnerUserId:  input.OwnerGroup,
+	}
+
+	// // Create a temporary file
+	// tempFile, err := ioutil.TempFile("", "upload-*.png")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// defer tempFile.Close()
+
+	// // Write bytes to temporary file
+	// if fileBytes, err := ioutil.ReadAll(file); err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	tempFile.Write(fileBytes)
+	// }
+
+	if e, err := repository.CreateEntry(entityToCreate); err != nil {
+		return http.StatusNotAcceptable, nil, nil
+	} else {
+		return http.StatusOK, struct {
+			NewID int
+		}{
+			NewID: e.EntityID,
+		}, nil
+	}
+}
