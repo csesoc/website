@@ -16,3 +16,8 @@ func RegisterAuthenticationEndpoints(mux *http.ServeMux) {
 	mux.Handle("/login", handler(LoginHandler))
 	mux.Handle("/logout", handler(LogoutHandler)) // auth
 }
+
+// Registers the editor related endpoints
+func RegisterEditorEndpoints(mux *http.ServeMux) {
+	mux.Handle("/editor", handler(EditHandler)) // auth
+}

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { Breadcrumbs, Link } from "@mui/material";
 
 // local imports
 import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
 import Renderer from './components/FileRenderer/Renderer';
-import { initAction } from './state/folders/actions';
+import {initAction, traverseBackFolder} from './state/folders/actions';
 import ConfirmationWindow from './components/ConfirmationModal/ConfirmationWindow';
 import Directory from "./components/Directory";
 
@@ -31,7 +32,7 @@ export default function Dashboard() {
 
   return (
     <Container>
-      <SideBar setModalState={setModalState} />
+      <SideBar setModalState={setModalState} selectedFile={selectedFile}/>
       <Directory />
       <Renderer
         selectedFile={selectedFile}

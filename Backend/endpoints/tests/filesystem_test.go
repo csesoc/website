@@ -12,6 +12,7 @@ import (
 	repMocks "cms.csesoc.unsw.edu.au/database/repositories/mocks"
 	"cms.csesoc.unsw.edu.au/endpoints"
 	"cms.csesoc.unsw.edu.au/endpoints/mocks"
+	"cms.csesoc.unsw.edu.au/internal/logger"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -40,7 +41,7 @@ func TestEntityInfo(t *testing.T) {
 	req.URL.RawQuery = q.Encode()
 
 	// ==== test execution =====
-	status, result, err := endpoints.GetEntityInfo(nil, req, mockDepFactory)
+	status, result, err := endpoints.GetEntityInfo(nil, req, mockDepFactory, logger.OpenLog("new log"))
 	assert.Nil(err)
 	assert.Equal(status, http.StatusOK)
 	assert.Equal(result, endpoints.EntityInfo{
@@ -74,8 +75,12 @@ func TestCreateNewEntity(t *testing.T) {
 		ParentFileID: 1,
 	}, nil).Times(1)
 
+	mockDockerFileSystemRepo := repMocks.NewMockIDockerUnpublishedFilesystemRepository(controller)
+	mockDockerFileSystemRepo.EXPECT().AddToVolume("2").Return(nil).Times(1)
+
 	mockDepFactory := mocks.NewMockDependencyFactory(controller)
 	mockDepFactory.EXPECT().GetDependency(reflect.TypeOf((*repositories.IFilesystemRepository)(nil))).Return(mockFileRepo)
+	mockDepFactory.EXPECT().GetDependency(reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))).Return(mockDockerFileSystemRepo)
 
 	data := url.Values{}
 	data.Set("LogicalName", "random name")
@@ -92,7 +97,7 @@ func TestCreateNewEntity(t *testing.T) {
 	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
 
 	// ==== test execution =====
-	status, result, err := endpoints.CreateNewEntity(nil, req, mockDepFactory)
+	status, result, err := endpoints.CreateNewEntity(nil, req, mockDepFactory, logger.OpenLog("new log"))
 	assert.Nil(err)
 	assert.Equal(status, http.StatusOK)
 	assert.Equal(result, struct {
@@ -126,7 +131,7 @@ func TestDeleteFilesystemEntity(t *testing.T) {
 	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
 
 	// ==== test execution =====
-	status, result, err := endpoints.DeleteFilesystemEntity(nil, req, mockDepFactory)
+	status, result, err := endpoints.DeleteFilesystemEntity(nil, req, mockDepFactory, logger.OpenLog("new log"))
 	assert.Nil(err)
 	assert.Equal(status, http.StatusOK)
 	assert.Equal(result, nil, nil)
@@ -155,7 +160,7 @@ func TestGetChildren(t *testing.T) {
 	req.URL.RawQuery = q.Encode()
 
 	// ==== test execution =====
-	status, result, err := endpoints.GetChildren(nil, req, mockDepFactory)
+	status, result, err := endpoints.GetChildren(nil, req, mockDepFactory, logger.OpenLog("new log"))
 	assert.Nil(err)
 	assert.Equal(status, http.StatusOK)
 	assert.Equal(result, struct {

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
+import {useNavigate} from 'react-router-dom';
 
 const Container = styled.div`
   width: 250px;
@@ -29,14 +30,14 @@ const ButtonGroup = styled.div`
 `
 
 interface SideBarButtonProps {
-  bgColor: string;
+  bgcolor: string;
 }
 
 const SidebarButton = styled(Button) <SideBarButtonProps>`
   && {
     width: 160px;
     variant: contained;
-    background-color: ${props => props.bgColor};
+    background-color: ${props => props.bgcolor};
     border-radius: 20px;
     text-transform: none;
   }
@@ -44,10 +45,11 @@ const SidebarButton = styled(Button) <SideBarButtonProps>`
 
 type Props = {
   setModalState: (state: {open: boolean, type: string}) => void;
+  selectedFile: number | null;
 }
 
 // Wrapper component ${props => props.color}
-export default function SideBar ({ setModalState }: Props) {
+export default function SideBar ({ setModalState, selectedFile}: Props) {
 
   const handleNewFile = () => {
     setModalState({
@@ -63,6 +65,13 @@ export default function SideBar ({ setModalState }: Props) {
     });
   }
 
+  const navigate = useNavigate();
+  const handleEdit = () => {
+    if (selectedFile !== null) {
+      navigate('/editor/' + selectedFile, {replace: false}), [navigate]
+    }
+  };
+
   // TODO
   const handleRecycle = () => {
     return
@@ -75,23 +84,23 @@ export default function SideBar ({ setModalState }: Props) {
       </SidebarTitle>
       <ButtonFlex>
         <ButtonGroup>
-          <SidebarButton bgColor="#F88282">
+          <SidebarButton bgcolor="#F88282">
             Blog
           </SidebarButton>
-          <SidebarButton bgColor="#F88282">
+          <SidebarButton bgcolor="#F88282">
             Core pages
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
           <SidebarButton 
-            bgColor="#82A3F8"
+            bgcolor="#82A3F8"
             onClick={handleNewFile}
             data-anchor="NewPageButton"
           >
             New page
           </SidebarButton>
           <SidebarButton
-            bgColor="#82A3F8"
+            bgcolor="#82A3F8"
             onClick={handleNewFolder}
             data-anchor="NewFolderButton"
           >
@@ -99,13 +108,13 @@ export default function SideBar ({ setModalState }: Props) {
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
-          <SidebarButton bgColor="#B8E8E8">
-            Edit
+          <SidebarButton bgcolor="#B8E8E8" onClick={handleEdit}>
+              Edit
           </SidebarButton>
-          <SidebarButton bgColor="#B8E8E8">
+          <SidebarButton bgcolor="#B8E8E8">
             Feature
           </SidebarButton>
-          <SidebarButton bgColor="#B8E8E8" onClick={handleRecycle}>
+          <SidebarButton bgcolor="#B8E8E8" onClick={handleRecycle}>
             Recycle
           </SidebarButton>
         </ButtonGroup>

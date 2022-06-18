@@ -1,39 +1,70 @@
 package editor
 
 import (
+	"errors"
+	"fmt"
 	"log"
-	"net/http"
+	"strconv"
 
-	"cms.csesoc.unsw.edu.au/editor/service"
+	"cms.csesoc.unsw.edu.au/database/repositories"
 	"github.com/gorilla/websocket"
 )
 
-// This file just defines some of the endpoints for the editor
-// and ties togher its various disparate components
-var broker = service.NewBroker()
-var Upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
+// This is the main loop that the editor client will run
+func EditorClientLoop(requestedDocument int, fs repositories.IDockerUnpublishedFilesystemRepository, ws *websocket.Conn) error {
+	manager := getGlobalManagerInstance()
+	err := manager.startDocumentServer(requestedDocument)
+	if err != nil {
+		terminateWs(ws, "locked")
+		return errors.New("Unable to open request document")
+	}
+
+	defer manager.closeDocumentServer(requestedDocument)
+	file, err := fs.GetFromVolumeTruncated(strconv.Itoa(requestedDocument))
+	if err != nil {
+		terminateWs(ws, "error")
+		return errors.New("Unable to open request document")
+	}
+
+	defer file.Close()
+
+	// Our communication protocol is rather simple...
+	// client starts:
+	//		-> sends websocket connection
+	// 		-> connection upgraded
+	//		-> we send the current state of the document
+	// 		-> client continues
+	//		-> client sends updated
+	//		-> we apply updated and send acknowledgement
+
+	// send the current state of the document
+	var buf = []byte{}
+	file.Read(buf)
+	ws.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf(`{"type": "init", "contents": "%s"}`, string(buf))))
+
+	for {
+		_, buf, err := ws.ReadMessage()
+		if err != nil {
+			if !websocket.IsCloseError(err, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
+				log.Printf("something went horribly wrong, terminating connection: %v\n", err)
+				break
+			}
+		}
+
+		file.Truncate(0)
+		file.Seek(0, 0)
+		file.Write(buf)
+
+		// send an acknowledgement to the client
+		ws.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf(`{"type": "acknowledged"}`)))
+	}
+
+	terminateWs(ws, "terminating")
+	return nil
 }
 
-// Actual edit endpoint
-func EditEndpoint(w http.ResponseWriter, r *http.Request) {
-	requestedDocument, ok := r.URL.Query()["document"]
-	if !ok || len(requestedDocument[0]) < 1 {
-		w.WriteHeader(400)
-		return
-	}
-
-	ws, err := Upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err)
-	}
-
-	err = broker.ConnectOrOpenDocument(requestedDocument[0], ws)
-	if err != nil {
-		ws.Close()
-	}
+// terminateWs is just a small util function thats called on termination
+func terminateWs(ws *websocket.Conn, reason string) {
+	ws.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseGoingAway, fmt.Sprintf(`"%s"`, reason)))
+	ws.Close()
 }
