@@ -30,7 +30,7 @@ func SendResponse(w http.ResponseWriter, marshaledJson string) {
 		}`, marshaledJson)))
 }
 
-// ParseParamsToSchema expects the target to be a pointer, and logs errors
+// ParseParamsToSchema expects the target to be a pointer
 func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interface{}) int {
 	if acceptingMethod != r.Method {
 		return http.StatusMethodNotAllowed
