@@ -39,8 +39,10 @@ const Text = styled.span<{
   font-style: ${(props) => (props.italic ? "italic" : "normal")};
   font-size: ${(props) => (props.textSize)}px;
   text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
-  text-align: ${(props) => (props.align)};
+  text-align: ${(props) => (props.align)}; 
 `;
+
+const AlignedText = Text.withComponent('div')
 
 interface EditorBlockProps {
   update: UpdateHandler;
@@ -62,19 +64,33 @@ const EditorBlock: FC<EditorBlockProps> = ({
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
       return (
-        <Text
+        leaf.align == null ? 
+          <Text
+            // Nullish coalescing operator
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator
+            bold={leaf.bold ?? false}
+            italic={leaf.italic ?? false}
+            underline={leaf.underline ?? false}
+            textSize={leaf.textSize ?? 16}
+            align={leaf.align ?? "left"}
+            {...attributes}
+          >
+            {children}
+          </Text>
+      :
+        <AlignedText
           // Nullish coalescing operator
           // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator
           bold={leaf.bold ?? false}
           italic={leaf.italic ?? false}
           underline={leaf.underline ?? false}
           textSize={leaf.textSize ?? 16}
-          align= {leaf.align ?? "left"}
+          align={leaf.align ?? "left"}
           {...attributes}
         >
           {children}
-        </Text>
-      );
+        </AlignedText>
+      )
     },
     []
   );
@@ -109,7 +125,7 @@ const EditorBlock: FC<EditorBlockProps> = ({
         <Editable
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}
-          style={{ width: "100%", height: "100%" }}
+          style={{ width: "100%", height: "100%"}}
           onKeyDown={(event) => handleKey(event, editor)}
         />
       </ContentBlock>
