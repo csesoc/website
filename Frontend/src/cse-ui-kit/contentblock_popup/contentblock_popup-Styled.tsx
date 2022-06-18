@@ -6,10 +6,10 @@ export const StyledContainer = styled.div`
   background: #ffffff;
   color: #000000;
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 5px;
 `;
 
 export const StyledDottedContainer = styled.div`
