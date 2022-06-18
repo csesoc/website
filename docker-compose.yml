@@ -30,7 +30,8 @@ services:
       - db
     volumes:
       - './Backend:/go/src/cms.csesoc.unsw.edu.au'
-      - 'document_data:/var/lib/documents/data'
+      - 'unpublished_document_data:/var/lib/documents/unpublished/data'
+      - 'published_document_data:/var/lib/documents/published/data'
     ports:
       - 8080:8080
     environment:
@@ -65,8 +66,9 @@ services:
       - 1234:5432
     volumes:
       - './Postgres/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql'
-      - 'staging_data:/var/lib/postgresql/data'
+      - 'staging_pg_db:/var/lib/postgresql/data'
 volumes:
   pg_data:
-  staging_data:
-  document_data:
+  staging_pg_db:
+  unpublished_document_data:
+  published_document_data:
