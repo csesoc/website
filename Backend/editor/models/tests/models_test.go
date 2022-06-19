@@ -121,29 +121,6 @@ func TestStructField(t *testing.T) {
 	assert.Equal("big_morb.png", result.Field(1).String())
 }
 
-func TestMapField(t *testing.T) {
-	testObj := setupDocument()
-	path := "Content/3/Data/huh"
-	subpaths, err := models.PathParser(path)
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	result := models.Traverse(*testObj, subpaths)
-	assert := assert.New(t)
-	assert.Equal("map", result.Kind().String())
-	actual := result.Interface().(map[string]int)
-
-	expected := map[string]int{"huh": 231, "bruh": 309}
-
-	for elem, _ := range actual {
-		if val, found := expected[elem]; found {
-			assert.Equal(val, actual[elem])
-		} else {
-			log.Fatal("Couldn't find ", elem, " as a key in expected values.")
-		}
-	}
-}
-
 func TestNestedFields(t *testing.T) {
 	testObj := setupDocument()
 	path := "Content/1/ParagraphChildren/0/Bold"
@@ -159,4 +136,26 @@ func TestNestedFields(t *testing.T) {
 	assert.Equal(true, result.Field(2).Bool())
 	assert.Equal(true, result.Field(3).Bool())
 	assert.Equal(false, result.Field(4).Bool())
+}
+
+func TestGetFirstDepth(t *testing.T) {
+	testObj := setupDocument()
+	path := "Content/0/ImageDocumentID"
+	result, err := testObj.GetData(path)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	assert := assert.New(t)
+	assert.Equal("m0rb", result.String())
+}
+
+func TestGetNestedDepth(t *testing.T) {
+	testObj := setupDocument()
+	path := "Content/1/ParagraphChildren/0/Underline"
+	result, err := testObj.GetData(path)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	assert := assert.New(t)
+	assert.Equal(false, result.Bool())
 }

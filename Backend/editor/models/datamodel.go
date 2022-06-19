@@ -15,9 +15,9 @@ type Request struct {
 }
 
 type Document struct {
-	document_name string
-	document_id   string
-	content       []Component
+	Document_name string
+	Document_id   string
+	Content       []Component
 }
 
 // TODO:
@@ -43,11 +43,11 @@ func process(request string) (err error) {
 }
 
 // Parses a string path into the starting index of content, subpaths to reach said object
-func pathParser(path string) ([]string, error) {
+func PathParser(path string) ([]string, error) {
 	subpaths := strings.Split(path, "/")
 	// TODO: Maybe generalise this hardcoded check
-	if len(subpaths) < 1 || subpaths[0] != "content" {
-		return nil, errors.New("First subpath must be 'content'")
+	if len(subpaths) < 1 || subpaths[0] != "Content" {
+		return nil, errors.New("First subpath must be 'Content'")
 	}
 	return subpaths, nil
 }
@@ -88,37 +88,44 @@ func dataTypeEvaluator(dataStr string, dataType string) (data interface{}, err e
 }
 
 // TODO: Error check index logic
-func (d Document) get(path string) (interface{}, error) {
-	paths, err := pathParser(path)
+
+// Gets the target object at the end of the path
+func (d Document) GetData(path string) (reflect.Value, error) {
+	paths, err := PathParser(path)
 	if err != nil {
-		return nil, err
+		return reflect.Value{}, err
 	}
-	// We get the parent struct/array
+	parent := Traverse(d, paths)
+
+	// Last value in path is our target
 	target := paths[len(paths)-1]
-	var parentPointer reflect.Value
-	parentPointer = traverse(d, paths)
-	// Check if we are dealing with an array/slice
-	if parentPointer.Kind() == reflect.Array || parentPointer.Kind() == reflect.Slice {
-		// Target must thus be an index if len(paths) > 1
-		if len(paths) > 1 {
-			if index, err := strconv.ParseInt(target, 10, 32); err != nil {
-				return nil, err
-			} else {
-				return parentPointer.Elem().Index(int(index)), nil
+
+	// Unless it is "Content", we simply return it
+	if target == "Content" {
+		return parent, nil
+	}
+
+	switch parentType := parent.Kind(); parentType {
+	case reflect.Array, reflect.Slice:
+		index, _ := strconv.ParseInt(target, 10, 32)
+		if parentType == reflect.Slice {
+			return parent.Index(int(index)), nil
+		} else { // Array
+			return parent.Elem().Index(int(index)), nil
+		}
+	case reflect.Struct:
+		for i := 0; i < parent.NumField(); i++ {
+			field := parent.Field(i)
+			if parent.Type().Field(i).Name == target {
+				return field, nil
 			}
-		} else { // Edge case for a path "content" -> we return everything inside it
-			return parentPointer.Elem(), nil
 		}
+	default:
+		return reflect.Value{}, errors.New("Parent pointer was not an array, slice or struct")
 	}
-	// We are dealing with a struct
-	for i := 0; i < parentPointer.NumField(); i++ {
-		field := parentPointer.Field(i)
-		if field.Type().Field(i).Name == target {
-			return field.Elem(), nil
-		}
-	}
+
 	// Didn't find the key
-	return nil, errors.New("Didn't find")
+	return reflect.Value{}, errors.New("Path was invalid.")
 }
 
 // textEdit functions

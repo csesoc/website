@@ -13,20 +13,20 @@ type Paragraph struct {
 }
 
 type Text struct {
-	text      string
-	link      string
-	bold      bool
-	italic    bool
-	underline bool
+	Text      string
+	Link      string
+	Bold      bool
+	Italic    bool
+	Underline bool
 }
 
 // Get returns the reflect.Value corresponding to a specific field
-func (p Paragraph) Get(field string) (reflect.Value, error) {
+func (p *Paragraph) Get(field string) (reflect.Value, error) {
 	return reflect.ValueOf(p).FieldByName(field), nil
 }
 
 // Set sets a reflect.Value given a specific field
-func (p Paragraph) Set(field string, value reflect.Value) error {
+func (p *Paragraph) Set(field string, value reflect.Value) error {
 	inputType := value.Kind()
 	if field == "ParagraphAlign" &&
 		(inputType != reflect.String || value.String() == "left" || value.String() == "right" || value.String() == "center") {
