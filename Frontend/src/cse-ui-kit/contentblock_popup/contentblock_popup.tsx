@@ -1,16 +1,24 @@
 import React from 'react';
-import { StyledContainer, StyledDottedContainer, StyledContent, MainText, BoldText } from './contentblock_popup-Styled';
+import {
+  StyledContainer,
+  StyledDottedContainer,
+  StyledContent,
+  MainText,
+  BoldText
+} from './contentblock_popup-Styled';
 import { ReactComponent as ContentUpload } from 'src/cse-ui-kit/assets/upload-content.svg';
 
 type Props = {
   children?: React.ReactElement | any;
   onClick?: (...args: any) => void;
+  onDrop?: (...args: any) => void;
 };
 
-export default function ContentBlockPopup({ children, onClick, ...styleProps }: Props) {
+export default function ContentBlockPopup({ children, onClick, onDrop, ...styleProps }: Props) {
   return (
     <StyledContainer
       onClick={onClick}
+      onDrop={onDrop}
       {...styleProps}
     >
       <StyledDottedContainer>

@@ -15,10 +15,10 @@ export const StyledContainer = styled.div`
 export const StyledDottedContainer = styled.div`
   margin: 3vw 5vw;
   background: #ffffff;
-  color: #000000;
+  color: #a1a1a1;
   margin: 3vw 4vw;
   border-radius: 5px;
-  border-width: 2vw;
+  border-width: 1vw;
   outline-style: dashed;
 `;
 
