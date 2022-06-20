@@ -131,7 +131,7 @@ func TestGetFirstDepth(t *testing.T) {
 	assert.Equal("m0rb", result.String())
 }
 
-func TestGetNestedDepth(t *testing.T) {
+func TestGetNestedPrimitive(t *testing.T) {
 	testObj := setupDocument()
 	path := "Content/1/ParagraphChildren/0/Underline"
 	result, err := testObj.GetData(path)

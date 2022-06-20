@@ -30,7 +30,7 @@ func (p *Paragraph) Get(field string) (reflect.Value, error) {
 func (p *Paragraph) Set(field string, value reflect.Value) error {
 	inputType := value.Kind()
 	if field == "ParagraphAlign" &&
-		!(inputType != reflect.String || value.String() == "left" || value.String() == "right" || value.String() == "center") {
+		(inputType != reflect.String || value.String() != "left" || value.String() != "right" || value.String() != "center") {
 		return errors.New("ParagraphAlign data must be a string of 'left', 'right' or 'center'")
 	}
 	reflectionField := reflect.ValueOf(p).FieldByName(field)
