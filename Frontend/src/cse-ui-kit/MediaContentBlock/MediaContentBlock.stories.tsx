@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import MediaContentBlock from './media_content_block';
+import MediaContentBlock from './MediaContentBlock';
 
 export default {
   title: 'CSE-UIKIT/MediaContentBlock',
@@ -25,6 +25,3 @@ const Template: ComponentStory<typeof MediaContentBlock> = (args) =>
 )
 
 export const Primary = Template.bind({});
-Primary.args = {
-  background: "#90c2e7",
-}
