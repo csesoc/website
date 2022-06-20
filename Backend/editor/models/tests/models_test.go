@@ -22,19 +22,6 @@ func (a *arraysData) Set(field string, value reflect.Value) error {
 	return nil
 }
 
-// @implements Component
-type mapsData struct {
-	Data map[string]int
-}
-
-func (m *mapsData) Get(field string) (reflect.Value, error) {
-	return reflect.Value{}, nil
-}
-
-func (m *mapsData) Set(field string, value reflect.Value) error {
-	return nil
-}
-
 func setupDocument() *models.Document {
 	testObj := &models.Document{
 		Document_name: "morbed up",
@@ -69,14 +56,9 @@ func setupDocument() *models.Document {
 		Data: array,
 	}
 
-	mapData := &mapsData{
-		Data: map[string]int{"huh": 231, "bruh": 309},
-	}
-
 	testObj.Content[0] = image
 	testObj.Content[1] = paragraph
 	testObj.Content[2] = arrayData
-	testObj.Content[3] = mapData
 
 	return testObj
 }
