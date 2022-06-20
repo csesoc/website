@@ -6,14 +6,17 @@ type Props = {}
 
 const Container = styled.div`
   width: 100%;
+  height: 100vh;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 20vw;
 `;
 
 const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 0 100px;
 `;
 
 const ImageContainer = styled.div`
@@ -21,6 +24,8 @@ const ImageContainer = styled.div`
   width: 550px;
   height: 400px;
   margin-left: 100px;
+  display: flex;
+  align-items: center;
 `
 
 const Text1 = styled.p`
@@ -42,6 +47,13 @@ const Text3 = styled.p`
   display:inline;
 `;
 
+const Scroll = styled.p`
+  transform: rotate(90deg);
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+`;
+
 
 export default function Homepage({}: Props) {
   return (
@@ -59,7 +71,9 @@ export default function Homepage({}: Props) {
         <ImageContainer>
           <Image src="/assets/WebsitesIcon.png" layout="fill" objectFit="contain" />
         </ImageContainer>
+        <Scroll>Scroll down &gt;&gt;</Scroll>
       </Container>
+      
     </>
   )
 }

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"cms.csesoc.unsw.edu.au/editor/document"
+	"cms.csesoc.unsw.edu.au/editor/deprecated/document"
 	"github.com/gorilla/websocket"
 )
 

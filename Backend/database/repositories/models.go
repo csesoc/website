@@ -2,7 +2,10 @@ package repositories
 
 //go:generate mockgen -source=models.go -destination=mocks/models_mock.go -package=mocks
 
-import "time"
+import (
+	"os"
+	"time"
+)
 
 // filesystem model (model stored within database)
 type FilesystemEntry struct {
@@ -30,6 +33,22 @@ type IFilesystemRepository interface {
 	DeleteEntryWithID(ID int) error
 
 	RenameEntity(ID int, name string) error
+}
+
+// Repository interface representing an underlying connection
+// to a filesystem within a docker volume containing unpublished
+// data
+type IDockerUnpublishedFilesystemRepository interface {
+	AddToVolume(filename string) (err error)
+	GetFromVolume(filename string) (fp *os.File, err error)
+	GetFromVolumeTruncated(filename string) (fp *os.File, err error)
+	DeleteFromVolume(filename string) (err error)
+}
+
+// Repository interface representing a connection to
+// the published data docker voluem
+type IDockerPublishedFilesystemRepository interface {
+	IDockerUnpublishedFilesystemRepository
 }
 
 // Model for a user within the database

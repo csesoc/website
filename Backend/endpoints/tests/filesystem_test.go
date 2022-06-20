@@ -75,8 +75,12 @@ func TestCreateNewEntity(t *testing.T) {
 		ParentFileID: 1,
 	}, nil).Times(1)
 
+	mockDockerFileSystemRepo := repMocks.NewMockIDockerUnpublishedFilesystemRepository(controller)
+	mockDockerFileSystemRepo.EXPECT().AddToVolume("2").Return(nil).Times(1)
+
 	mockDepFactory := mocks.NewMockDependencyFactory(controller)
 	mockDepFactory.EXPECT().GetDependency(reflect.TypeOf((*repositories.IFilesystemRepository)(nil))).Return(mockFileRepo)
+	mockDepFactory.EXPECT().GetDependency(reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))).Return(mockDockerFileSystemRepo)
 
 	data := url.Values{}
 	data.Set("LogicalName", "random name")
