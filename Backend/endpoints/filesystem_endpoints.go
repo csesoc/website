@@ -216,6 +216,11 @@ func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, l
 		return status, nil, nil
 	}
 
+	// Parse multipart file, with max size of 10 MB
+	var maxUploadSize int64 = 10 << 20
+	if err := r.ParseMultipartForm(maxUploadSize); err != nil {
+		return http.StatusBadRequest, nil, err
+	}
 	// Extract image and check for error
 	file, _, err := r.FormFile("Image")
 	if err != nil {

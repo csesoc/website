@@ -41,11 +41,6 @@ func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interfa
 		return http.StatusBadRequest
 	}
 
-	// Parse multipart file, with max size of 10 MB
-	if err = r.ParseMultipartForm(10 << 20); err != nil {
-		return http.StatusBadRequest
-	}
-
 	decoder := schema.NewDecoder()
 	if r.Method != "POST" {
 		err = decoder.Decode(target, r.Form)
