@@ -24,9 +24,9 @@ func (a *arraysData) Set(field string, value reflect.Value) error {
 
 func setupDocument() *models.Document {
 	testObj := &models.Document{
-		Document_name: "morbed up",
-		Document_id:   "M0R8",
-		Content:       make([]models.Component, 4),
+		DocumentName: "morbed up",
+		DocumentId:   "M0R8",
+		Content:      make([]models.Component, 4),
 	}
 
 	image := &models.Image{
@@ -66,11 +66,14 @@ func setupDocument() *models.Document {
 func TestSliceField(t *testing.T) {
 	testObj := setupDocument()
 	path := "Content/0"
-	subpaths, err := models.PathParser(path)
+	subpaths, err := models.ParsePath(path)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result := models.Traverse(*testObj, subpaths)
+	result, err := models.Traverse(*testObj, subpaths)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 	assert := assert.New(t)
 	assert.Equal("slice", result.Kind().String())
 	assert.Equal(4, result.Len())
@@ -79,11 +82,14 @@ func TestSliceField(t *testing.T) {
 func TestArrayField(t *testing.T) {
 	testObj := setupDocument()
 	path := "Content/2/Data/0"
-	subpaths, err := models.PathParser(path)
+	subpaths, err := models.ParsePath(path)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result := models.Traverse(*testObj, subpaths)
+	result, err := models.Traverse(*testObj, subpaths)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 	assert := assert.New(t)
 	assert.Equal("array", result.Kind().String())
 	assert.Equal(3, result.Len())
@@ -92,11 +98,14 @@ func TestArrayField(t *testing.T) {
 func TestStructField(t *testing.T) {
 	testObj := setupDocument()
 	path := "Content/0/ImageDocumentID"
-	subpaths, err := models.PathParser(path)
+	subpaths, err := models.ParsePath(path)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result := models.Traverse(*testObj, subpaths)
+	result, err := models.Traverse(*testObj, subpaths)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 	assert := assert.New(t)
 	assert.Equal("Image", result.Type().Name())
 	assert.Equal("m0rb", result.Field(0).String())
@@ -106,11 +115,14 @@ func TestStructField(t *testing.T) {
 func TestNestedFields(t *testing.T) {
 	testObj := setupDocument()
 	path := "Content/1/ParagraphChildren/0/Bold"
-	subpaths, err := models.PathParser(path)
+	subpaths, err := models.ParsePath(path)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result := models.Traverse(*testObj, subpaths)
+	result, err := models.Traverse(*testObj, subpaths)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 	assert := assert.New(t)
 	assert.Equal("Text", result.Type().Name())
 	assert.Equal("why morb is important", result.Field(0).String())

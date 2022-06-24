@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -15,16 +16,16 @@ type Request struct {
 }
 
 type Document struct {
-	Document_name string
-	Document_id   string
-	Content       []Component
+	DocumentName string
+	DocumentId   string
+	Content      []Component
 }
 
 // TODO:
 // - Add error checking for the paths as we traverse, e.g missing an index when traversing an array (assuming we didn't reach the end)
 // - Make sure the item we are adding keeps the validity of the object
 
-func process(request string) (err error) {
+func process(request string) error {
 	requestObject := Request{}
 	if err := json.Unmarshal([]byte(request), &requestObject); err != nil {
 		return errors.New("Invalid request format")
@@ -43,7 +44,7 @@ func process(request string) (err error) {
 }
 
 // Parses a string path into the starting index of content, subpaths to reach said object
-func PathParser(path string) ([]string, error) {
+func ParsePath(path string) ([]string, error) {
 	subpaths := strings.Split(path, "/")
 	// TODO: Maybe generalise this hardcoded check
 	if len(subpaths) < 1 || subpaths[0] != "Content" {
@@ -53,52 +54,42 @@ func PathParser(path string) ([]string, error) {
 }
 
 // Converts the data string into the correct data type
-func dataTypeEvaluator(dataStr string, dataType string) (data interface{}, err error) {
+func dataTypeEvaluator(dataStr string, dataType string) (interface{}, error) {
+	var result interface{}
+	var err error
+
 	switch dataType {
 	case "integer":
-		if result, err := strconv.ParseInt(dataStr, 10, 32); err != nil {
-			return nil, errors.New("Data is not an integer")
-		} else {
-			return result, nil
-		}
+		result, err = strconv.ParseInt(dataStr, 10, 32)
 	case "boolean":
-		if result, err := strconv.ParseBool(dataStr); err != nil {
-			return nil, errors.New("Data is not a boolean")
-		} else {
-			return result, nil
-		}
+		result, err = strconv.ParseBool(dataStr)
 	case "float":
-		if result, err := strconv.ParseFloat(dataStr, 64); err != nil {
-			return nil, errors.New("Data is not a float")
-		} else {
-			return result, nil
-		}
+		result, err = strconv.ParseFloat(dataStr, 64)
 	case "string":
 		return dataStr, nil
 	case "component":
-		var result Component
-		if err := config.Unmarshall([]byte(dataStr), &result); err != nil {
-			return nil, err
-		} else {
-			return result, nil
-		}
-	default:
-		return nil, errors.New("Incompatible data type")
+		err = config.Unmarshall([]byte(dataStr), &result)
 	}
-}
 
-// TODO: Error check index logic
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("Data is not a %s", dataType))
+	}
+	return result, nil
+}
 
 // Gets the target object at the end of the path
 func (d Document) GetData(path string) (reflect.Value, error) {
-	paths, err := PathParser(path)
+	subpaths, err := ParsePath(path)
 	if err != nil {
 		return reflect.Value{}, err
 	}
-	parent := Traverse(d, paths)
+	parent, err := Traverse(d, subpaths)
+	if err != nil {
+		return reflect.Value{}, err
+	}
 
 	// Last value in path is our target
-	target := paths[len(paths)-1]
+	target := subpaths[len(subpaths)-1]
 
 	// Unless it is "Content", we simply return it
 	if target == "Content" {
@@ -108,6 +99,9 @@ func (d Document) GetData(path string) (reflect.Value, error) {
 	switch parentType := parent.Kind(); parentType {
 	case reflect.Array, reflect.Slice:
 		index, _ := strconv.ParseInt(target, 10, 32)
+		if int(index) >= parent.Len() || int(index) < 0 {
+			return reflect.Value{}, errors.New("Invalid target index")
+		}
 		if parentType == reflect.Slice {
 			return parent.Index(int(index)), nil
 		} else { // Array
