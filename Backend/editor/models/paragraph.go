@@ -22,16 +22,20 @@ type Text struct {
 }
 
 // Get returns the reflect.Value corresponding to a specific field
-func (p *Paragraph) Get(field string) (reflect.Value, error) {
+func (p Paragraph) Get(field string) (reflect.Value, error) {
 	return reflect.ValueOf(p).FieldByName(field), nil
 }
 
 // Set sets a reflect.Value given a specific field
-func (p *Paragraph) Set(field string, value reflect.Value) error {
+func (p Paragraph) Set(field string, value reflect.Value) error {
 	inputType := value.Kind()
-	if field == "ParagraphAlign" &&
-		(inputType != reflect.String || value.String() != "left" || value.String() != "right" || value.String() != "center") {
-		return errors.New("ParagraphAlign data must be a string of 'left', 'right' or 'center'")
+	if field == "ParagraphAlign" {
+		fieldValue := value.String()
+		isValidAllignment := inputType == reflect.String &&
+			(fieldValue == "left" || fieldValue == "right" || fieldValue == "center")
+		if !isValidAllignment {
+			return errors.New("ParagraphAlign data must be a string of 'left', 'right' or 'center'")
+		}
 	}
 	reflectionField := reflect.ValueOf(p).FieldByName(field)
 	reflectionField.Set(value)

@@ -43,10 +43,10 @@ func Traverse(d Document, subpaths []string) (reflect.Value, error) {
 						}
 					}
 				}
-				// Reflection returns "structs" as wrapped like: interface -> ptr -> struct
+				// Reflection returns "structs" as wrapped like: interface -> struct
 				// Thus we must dereference them before leaving
 				if curr.Kind() == reflect.Interface {
-					curr = curr.Elem().Elem()
+					curr = curr.Elem()
 				}
 				found = true
 				break

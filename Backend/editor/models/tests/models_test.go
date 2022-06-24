@@ -14,27 +14,27 @@ type arraysData struct {
 	Data [3]int
 }
 
-func (a *arraysData) Get(field string) (reflect.Value, error) {
+func (a arraysData) Get(field string) (reflect.Value, error) {
 	return reflect.Value{}, nil
 }
 
-func (a *arraysData) Set(field string, value reflect.Value) error {
+func (a arraysData) Set(field string, value reflect.Value) error {
 	return nil
 }
 
-func setupDocument() *models.Document {
-	testObj := &models.Document{
+func setupDocument() models.Document {
+	testObj := models.Document{
 		DocumentName: "morbed up",
 		DocumentId:   "M0R8",
 		Content:      make([]models.Component, 4),
 	}
 
-	image := &models.Image{
+	image := models.Image{
 		ImageDocumentID: "m0rb",
 		ImageSource:     "big_morb.png",
 	}
 
-	paragraph := &models.Paragraph{
+	paragraph := models.Paragraph{
 		ParagraphID:    "the morb",
 		ParagraphAlign: "center",
 		ParagraphChildren: []models.Text{
@@ -52,7 +52,7 @@ func setupDocument() *models.Document {
 	array[0] = 1
 	array[1] = -10
 	array[2] = 213
-	arrayData := &arraysData{
+	arrayData := arraysData{
 		Data: array,
 	}
 
@@ -70,7 +70,7 @@ func TestSliceField(t *testing.T) {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result, err := models.Traverse(*testObj, subpaths)
+	result, err := models.Traverse(testObj, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -86,7 +86,7 @@ func TestArrayField(t *testing.T) {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result, err := models.Traverse(*testObj, subpaths)
+	result, err := models.Traverse(testObj, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -102,7 +102,7 @@ func TestStructField(t *testing.T) {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result, err := models.Traverse(*testObj, subpaths)
+	result, err := models.Traverse(testObj, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -119,7 +119,7 @@ func TestNestedFields(t *testing.T) {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result, err := models.Traverse(*testObj, subpaths)
+	result, err := models.Traverse(testObj, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
