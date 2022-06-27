@@ -17,7 +17,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEntityInfo(t *testing.T) {
+func TestValidEntityInfo(t *testing.T) {
 	controller := gomock.NewController(t)
 	assert := assert.New(t)
 	defer controller.Finish()
@@ -53,7 +53,7 @@ func TestEntityInfo(t *testing.T) {
 	})
 }
 
-func TestCreateNewEntity(t *testing.T) {
+func TestValidCreateNewEntity(t *testing.T) {
 	controller := gomock.NewController(t)
 	assert := assert.New(t)
 	defer controller.Finish()
@@ -107,7 +107,7 @@ func TestCreateNewEntity(t *testing.T) {
 	}, nil)
 }
 
-func TestDeleteFilesystemEntity(t *testing.T) {
+func TestValidDeleteFilesystemEntity(t *testing.T) {
 	controller := gomock.NewController(t)
 	assert := assert.New(t)
 	defer controller.Finish()
@@ -137,7 +137,7 @@ func TestDeleteFilesystemEntity(t *testing.T) {
 	assert.Equal(result, nil, nil)
 }
 
-func TestGetChildren(t *testing.T) {
+func TestValidGetChildren(t *testing.T) {
 	controller := gomock.NewController(t)
 	assert := assert.New(t)
 	defer controller.Finish()

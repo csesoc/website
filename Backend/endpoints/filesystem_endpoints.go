@@ -2,6 +2,7 @@ package endpoints
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -222,12 +223,12 @@ func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, l
 		return http.StatusBadRequest, nil, err
 	}
 	// Extract image and check for error
-	file, _, err := r.FormFile("Image")
+	uploadedFile, _, err := r.FormFile("Image")
 	if err != nil {
 		log.Write([]byte("Error retrieving the file"))
 		return http.StatusBadRequest, nil, err
 	}
-	defer file.Close()
+	defer uploadedFile.Close()
 
 	// Create entity in repository
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
@@ -244,19 +245,30 @@ func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, l
 		OwnerUserId:  input.OwnerGroup,
 	}
 
-	if e, err := repository.CreateEntry(entityToCreate); err != nil {
+	e, err := repository.CreateEntry(entityToCreate)
+	if err != nil {
 		log.Write([]byte("Failed request!"))
 		return http.StatusNotAcceptable, nil, err
-	} else {
-		// finally create a new entry in the docker filesystem
-		dockerRepository.AddToVolume(strconv.Itoa(e.EntityID))
-
-		log.Write([]byte(fmt.Sprintf("Created new entity %v.", entityToCreate)))
-		return http.StatusOK, struct {
-			NewID int
-		}{
-			NewID: e.EntityID,
-		}, nil
 	}
+
+	// Create and get a new entry in docker file system
+	dockerRepository.AddToVolume(strconv.Itoa(e.EntityID))
+	log.Write([]byte(fmt.Sprintf("Created new entity %v.", entityToCreate)))
+	dockerFile, err := dockerRepository.GetFromVolume(strconv.Itoa(e.EntityID))
+	if err != nil {
+		log.Write([]byte("Unable to get docker file"))
+		return http.StatusInternalServerError, nil, err
+	}
+
+	if _, err := io.Copy(dockerFile, uploadedFile); err != nil {
+		log.Write([]byte("Error copying uploaded image to local file"))
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, struct {
+		NewID int
+	}{
+		NewID: e.EntityID,
+	}, nil
 
 }
