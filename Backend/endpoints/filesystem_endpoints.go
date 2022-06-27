@@ -213,15 +213,11 @@ type ValidImageUploadRequest struct {
 
 func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
 	var input ValidImageUploadRequest
-	if status := ParseParamsToSchema(r, "POST", &input); status != http.StatusOK {
+	if status := ParseMultiPartFormToSchema(r, "POST", &input); status != http.StatusOK {
 		return status, nil, nil
 	}
 
 	// Parse multipart file, with max size of 10 MB
-	var maxUploadSize int64 = 10 << 20
-	if err := r.ParseMultipartForm(maxUploadSize); err != nil {
-		return http.StatusBadRequest, nil, err
-	}
 	// Extract image and check for error
 	uploadedFile, _, err := r.FormFile("Image")
 	if err != nil {
