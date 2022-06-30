@@ -36,7 +36,7 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory,
 	log.Write([]byte("Acquired repository."))
 
 	if entity, err := repository.GetEntryWithID(input.EntityID); err == nil {
-		log.Write([]byte(fmt.Sprintf("Retreived entity: %v", entity)))
+		log.Write([]byte(fmt.Sprintf("Retreived entity: %v.", entity)))
 		// Return a final structure with the children array mapped over as well
 		return http.StatusOK, EntityInfo{
 			EntityID:   entity.EntityID,
@@ -120,7 +120,7 @@ func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request, df Dependenc
 		log.Write([]byte("Failed request!"))
 		return http.StatusNotAcceptable, nil, err
 	} else {
-		log.Write([]byte(fmt.Sprintf("Deleted entity wity ID: %d", input.EntityID)))
+		log.Write([]byte(fmt.Sprintf("Deleted entity wity ID: %d.", input.EntityID)))
 		return http.StatusOK, nil, nil
 	}
 }
@@ -140,7 +140,7 @@ func GetChildren(w http.ResponseWriter, r *http.Request, df DependencyFactory, l
 		log.Write([]byte("Failed request!"))
 		return http.StatusNotFound, nil, nil
 	} else {
-		log.Write([]byte(fmt.Sprintf("Fetched children for %d, got %v", input.EntityID, fileInfo.ChildrenIDs)))
+		log.Write([]byte(fmt.Sprintf("Fetched children for %d, got %v.", input.EntityID, fileInfo.ChildrenIDs)))
 		return http.StatusOK, struct {
 			Children []int
 		}{
@@ -191,7 +191,7 @@ func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request, df Dependenc
 		log.Write([]byte("Failed request!"))
 		return http.StatusNotAcceptable, nil, nil
 	} else {
-		log.Write([]byte(fmt.Sprintf("Renamed %d's name to %s", input.EntityID, input.NewName)))
+		log.Write([]byte(fmt.Sprintf("Renamed %d's name to %s.", input.EntityID, input.NewName)))
 		return http.StatusOK, nil, nil
 	}
 }
@@ -252,12 +252,12 @@ func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, l
 	log.Write([]byte(fmt.Sprintf("Created new entity %v.", entityToCreate)))
 	dockerFile, err := dockerRepository.GetFromVolume(strconv.Itoa(e.EntityID))
 	if err != nil {
-		log.Write([]byte("Unable to get docker file"))
+		log.Write([]byte("Unable to get docker file."))
 		return http.StatusInternalServerError, nil, err
 	}
 
 	if _, err := io.Copy(dockerFile, uploadedFile); err != nil {
-		log.Write([]byte("Error copying uploaded image to local file"))
+		log.Write([]byte("Error copying uploaded image to local file."))
 		return http.StatusInternalServerError, nil, err
 	}
 
