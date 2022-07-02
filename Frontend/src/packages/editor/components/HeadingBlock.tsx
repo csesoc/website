@@ -13,6 +13,8 @@ import { getBlockContent } from "../state/helpers";
 import { useDispatch } from "react-redux";
 import {updateContent} from "../state/actions";
 
+const defaultTextSize = 24;
+
 const ToolbarContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -50,7 +52,7 @@ const HeadingBlock: FC<HeadingBlockProps> = ({
         <Text
           // Nullish coalescing operator
           // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator
-          textSize={leaf.textSize ?? 24}
+          textSize={leaf.textSize ?? defaultTextSize}
           {...attributes}
         >
           {children}
