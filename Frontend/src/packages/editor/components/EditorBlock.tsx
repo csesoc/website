@@ -20,11 +20,13 @@ import { getBlockContent } from "../state/helpers";
 import { useDispatch } from "react-redux";
 import {updateContent} from "../state/actions";
 
+const defaultTextSize = 16;
+
 const ToolbarContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  max-width: 440px;
+  max-width: 660px;
   margin: 5px;
 `;
 
@@ -84,8 +86,8 @@ const EditorBlock: FC<EditorBlockProps> = ({
           bold={leaf.bold ?? false}
           italic={leaf.italic ?? false}
           underline={leaf.underline ?? false}
-          textSize={leaf.textSize ?? 16}
           align={leaf.align ?? "left"}
+          textSize={leaf.textSize ?? defaultTextSize}
           {...attributes}
         >
           {children}

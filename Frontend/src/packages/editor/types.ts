@@ -12,7 +12,10 @@ type CustomText = {
   italic?: boolean;
   underline?: boolean;
   type?: string;
+<<<<<<< HEAD
   align?: string;
+=======
+>>>>>>> b64c8fc33642d727366f7d42bfce1de2c472fa3d
 };
 
 declare module "slate" {

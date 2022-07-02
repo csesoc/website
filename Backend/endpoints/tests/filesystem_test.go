@@ -1,8 +1,13 @@
 package tests
 
 import (
+	"bytes"
+	"encoding/base64"
+	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/url"
+	"os"
 	"reflect"
 	"strconv"
 	"strings"
@@ -17,7 +22,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEntityInfo(t *testing.T) {
+func TestValidEntityInfo(t *testing.T) {
 	controller := gomock.NewController(t)
 	assert := assert.New(t)
 	defer controller.Finish()
@@ -53,7 +58,7 @@ func TestEntityInfo(t *testing.T) {
 	})
 }
 
-func TestCreateNewEntity(t *testing.T) {
+func TestValidCreateNewEntity(t *testing.T) {
 	controller := gomock.NewController(t)
 	assert := assert.New(t)
 	defer controller.Finish()
@@ -107,7 +112,7 @@ func TestCreateNewEntity(t *testing.T) {
 	}, nil)
 }
 
-func TestDeleteFilesystemEntity(t *testing.T) {
+func TestValidDeleteFilesystemEntity(t *testing.T) {
 	controller := gomock.NewController(t)
 	assert := assert.New(t)
 	defer controller.Finish()
@@ -137,7 +142,7 @@ func TestDeleteFilesystemEntity(t *testing.T) {
 	assert.Equal(result, nil, nil)
 }
 
-func TestGetChildren(t *testing.T) {
+func TestValidGetChildren(t *testing.T) {
 	controller := gomock.NewController(t)
 	assert := assert.New(t)
 	defer controller.Finish()
@@ -168,4 +173,74 @@ func TestGetChildren(t *testing.T) {
 	}{
 		Children: []int{2},
 	})
+}
+
+func TestValidUploadImage(t *testing.T) {
+	controller := gomock.NewController(t)
+	assert := assert.New(t)
+	defer controller.Finish()
+
+	// ==== test setup =====
+	entityToCreate := repositories.FilesystemEntry{
+		LogicalName:  "a.png",
+		ParentFileID: 1,
+		IsDocument:   false,
+		OwnerUserId:  1,
+	}
+
+	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
+	mockFileRepo.EXPECT().CreateEntry(entityToCreate).Return(repositories.FilesystemEntry{
+		EntityID:     2,
+		LogicalName:  "a.png",
+		IsDocument:   false,
+		ChildrenIDs:  []int{},
+		ParentFileID: 1,
+	}, nil).Times(1)
+
+	tempFile, err := ioutil.TempFile("", "")
+	assert.Nil(err)
+	defer os.Remove(tempFile.Name())
+
+	mockDockerFileSystemRepo := repMocks.NewMockIDockerUnpublishedFilesystemRepository(controller)
+	mockDockerFileSystemRepo.EXPECT().AddToVolume("2").Return(nil).Times(1)
+	mockDockerFileSystemRepo.EXPECT().GetFromVolume("2").Return(tempFile, nil).Times(1)
+
+	mockDepFactory := mocks.NewMockDependencyFactory(controller)
+	mockDepFactory.EXPECT().GetDependency(reflect.TypeOf((*repositories.IFilesystemRepository)(nil))).Return(mockFileRepo)
+	mockDepFactory.EXPECT().GetDependency(reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))).Return(mockDockerFileSystemRepo)
+
+	// Create request
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
+
+	// Add image
+	part, err := writer.CreateFormFile("Image", "a.png")
+	assert.Nil(err)
+	base64Png := "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+	pngBytes, err := base64.StdEncoding.DecodeString(base64Png)
+	assert.Nil(err)
+	part.Write(pngBytes)
+
+	// Add params
+	writer.WriteField("LogicalName", "a.png")
+	writer.WriteField("Parent", "1")
+	writer.WriteField("OwnerGroup", "1")
+	writer.Close()
+	req, err := http.NewRequest("POST", "/filesystem/image-upload", body)
+	assert.Nil(err)
+
+	req.Header.Add("Content-Type", writer.FormDataContentType())
+
+	// ==== test execution =====
+	status, result, err := endpoints.UploadImage(nil, req, mockDepFactory, logger.OpenLog("new log"))
+	assert.Nil(err)
+	assert.Equal(http.StatusOK, status)
+	assert.Equal(result, struct {
+		NewID int
+	}{
+		NewID: 2,
+	}, nil)
+	content, err := os.ReadFile(tempFile.Name())
+	assert.Nil(err)
+	assert.Equal(pngBytes, content)
 }
