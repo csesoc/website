@@ -1,5 +1,7 @@
 import styled from "styled-components";
-import React, { useState, FC } from "react";
+import React, { useState, FC, useRef, useEffect } from "react";
+
+import Client from "./websocketClient";
 
 import EditorBlock from "./components/EditorBlock";
 import { BlockData, UpdateHandler } from "./types";
@@ -11,7 +13,6 @@ import { defaultContent } from "./state/helpers";
 // Redux
 import { useDispatch } from "react-redux";
 
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -20,6 +21,7 @@ const Container = styled.div`
 
 const EditorPage: FC = () => {
   const dispatch = useDispatch();
+  const wsClient = useRef<Client | null>(null);
 
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [focusedId, setFocusedId] = useState<number>(0);
@@ -30,6 +32,10 @@ const EditorPage: FC = () => {
       prev.map((block, i) => (i === idx ? updatedBlock : block))
     );
   };
+
+  useEffect(() => {
+    wsClient.current = new Client(0);
+  }, []);
 
   return (
     <div style={{ height: "100%" }}>
@@ -50,10 +56,12 @@ const EditorPage: FC = () => {
             setFocusedId(blocks.length);
 
             // create the initial state of the content block to Redux
-            dispatch(addContentBlock({
-              id: blocks.length,
-              data: defaultContent
-            }))
+            dispatch(
+              addContentBlock({
+                id: blocks.length,
+                data: defaultContent,
+              })
+            );
           }}
         />
       </Container>
