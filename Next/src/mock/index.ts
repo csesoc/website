@@ -1,4 +1,5 @@
 import { Element } from "../components/blog/types";
+import { BlogElement } from "../components/container/types";
 
 export const data: Element[] = [
   {
@@ -45,3 +46,28 @@ export const data: Element[] = [
     ],
   },
 ];
+
+export const blogdata: BlogElement[] = [
+  {
+    type: "image",
+    url: "https://media.csesoc.org.au/content/images/size/w2000/2022/03/studyTips-01-1.png",
+  },
+  {
+    type: "title",
+    children: [
+      {text: "ARTICLES"}
+    ]
+  },
+  {
+    type: "headline",
+    children: [
+      {text: "Optimise Your Study Life:Study Apps", bold: true}
+    ]
+  },
+  {
+    type: "paragraph",
+    children: [
+      {text: "In the second part of the series, Alex Xu walks us through study apps you can use to boost your productivity!"}
+    ]
+  }
+]

@@ -8,7 +8,8 @@ import Events from './Events'
 import AboutUs from './AboutUs';
 import HomepageCurve from "../svgs/HomepageCurve";
 import RectangleCurve from "../svgs/RectangleCurve";
-
+// import BlogPage from "./blog/index";
+import BlogPage from "./container/index";
 type CurveContainerProps = {
   offset: number;
 }
@@ -63,6 +64,7 @@ const Home: NextPage = () => {
         <Homepage />
         <AboutUs />
         <Events />
+        <BlogPage/>
       </main>
       <footer></footer>
     </PageContainer>
