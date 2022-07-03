@@ -2,6 +2,7 @@ package endpoints
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -35,7 +36,7 @@ func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory,
 	log.Write([]byte("Acquired repository."))
 
 	if entity, err := repository.GetEntryWithID(input.EntityID); err == nil {
-		log.Write([]byte(fmt.Sprintf("Retreived entity: %v", entity)))
+		log.Write([]byte(fmt.Sprintf("Retreived entity: %v.", entity)))
 		// Return a final structure with the children array mapped over as well
 		return http.StatusOK, EntityInfo{
 			EntityID:   entity.EntityID,
@@ -119,7 +120,7 @@ func DeleteFilesystemEntity(w http.ResponseWriter, r *http.Request, df Dependenc
 		log.Write([]byte("Failed request!"))
 		return http.StatusNotAcceptable, nil, err
 	} else {
-		log.Write([]byte(fmt.Sprintf("Deleted entity wity ID: %d", input.EntityID)))
+		log.Write([]byte(fmt.Sprintf("Deleted entity wity ID: %d.", input.EntityID)))
 		return http.StatusOK, nil, nil
 	}
 }
@@ -139,7 +140,7 @@ func GetChildren(w http.ResponseWriter, r *http.Request, df DependencyFactory, l
 		log.Write([]byte("Failed request!"))
 		return http.StatusNotFound, nil, nil
 	} else {
-		log.Write([]byte(fmt.Sprintf("Fetched children for %d, got %v", input.EntityID, fileInfo.ChildrenIDs)))
+		log.Write([]byte(fmt.Sprintf("Fetched children for %d, got %v.", input.EntityID, fileInfo.ChildrenIDs)))
 		return http.StatusOK, struct {
 			Children []int
 		}{
@@ -190,7 +191,7 @@ func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request, df Dependenc
 		log.Write([]byte("Failed request!"))
 		return http.StatusNotAcceptable, nil, nil
 	} else {
-		log.Write([]byte(fmt.Sprintf("Renamed %d's name to %s", input.EntityID, input.NewName)))
+		log.Write([]byte(fmt.Sprintf("Renamed %d's name to %s.", input.EntityID, input.NewName)))
 		return http.StatusOK, nil, nil
 	}
 }
@@ -202,4 +203,68 @@ func mapOver[T any, V any](input []T, mapFunction func(T) V) []V {
 		output = append(output, mapFunction(i))
 	}
 	return output
+}
+
+type ValidImageUploadRequest struct {
+	Parent      int
+	LogicalName string `schema:"LogicalName,required"`
+	OwnerGroup  int    `schema:"OwnerGroup,required"`
+}
+
+func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
+	var input ValidImageUploadRequest
+	if status := ParseMultiPartFormToSchema(r, "POST", &input); status != http.StatusOK {
+		return status, nil, nil
+	}
+
+	// Parse multipart file, with max size of 10 MB
+	// Extract image and check for error
+	uploadedFile, _, err := r.FormFile("Image")
+	if err != nil {
+		log.Write([]byte("Error retrieving the file"))
+		return http.StatusBadRequest, nil, err
+	}
+	defer uploadedFile.Close()
+
+	// Create entity in repository
+	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
+	dfs := reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))
+
+	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+	dockerRepository := df.GetDependency(dfs).(repositories.IDockerPublishedFilesystemRepository)
+	log.Write([]byte("Acquired repository."))
+
+	entityToCreate := repositories.FilesystemEntry{
+		LogicalName:  input.LogicalName,
+		ParentFileID: input.Parent,
+		IsDocument:   false,
+		OwnerUserId:  input.OwnerGroup,
+	}
+
+	e, err := repository.CreateEntry(entityToCreate)
+	if err != nil {
+		log.Write([]byte("Failed request!"))
+		return http.StatusNotAcceptable, nil, err
+	}
+
+	// Create and get a new entry in docker file system
+	dockerRepository.AddToVolume(strconv.Itoa(e.EntityID))
+	log.Write([]byte(fmt.Sprintf("Created new entity %v.", entityToCreate)))
+	dockerFile, err := dockerRepository.GetFromVolume(strconv.Itoa(e.EntityID))
+	if err != nil {
+		log.Write([]byte("Unable to get docker file."))
+		return http.StatusInternalServerError, nil, err
+	}
+
+	if _, err := io.Copy(dockerFile, uploadedFile); err != nil {
+		log.Write([]byte("Error copying uploaded image to local file."))
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, struct {
+		NewID int
+	}{
+		NewID: e.EntityID,
+	}, nil
+
 }
