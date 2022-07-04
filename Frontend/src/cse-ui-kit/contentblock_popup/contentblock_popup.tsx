@@ -10,17 +10,11 @@ import { ReactComponent as ContentUpload } from 'src/cse-ui-kit/assets/upload-co
 
 type Props = {
   children?: React.ReactElement | any;
-  onClick?: (...args: any) => void;
-  onDrop?: (...args: any) => void;
 };
 
-export default function ContentBlockPopup({ children, onClick, onDrop, ...styleProps }: Props) {
+export default function ContentBlockPopup({ children }: Props) {
   return (
-    <StyledContainer
-      onClick={onClick}
-      onDrop={onDrop}
-      {...styleProps}
-    >
+    <StyledContainer>
       <StyledDottedContainer>
         <StyledContent>
           <ContentUpload
@@ -34,6 +28,7 @@ export default function ContentBlockPopup({ children, onClick, onDrop, ...styleP
           <MainText>
             to upload your image
           </MainText>
+          {children}
         </StyledContent>
       </StyledDottedContainer>
     </StyledContainer>
