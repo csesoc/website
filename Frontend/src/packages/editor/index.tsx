@@ -40,7 +40,15 @@ const EditorPage: FC = () => {
   };
 
   useEffect(() => {
-    wsClient.current = new Client(0);
+    wsClient.current = new Client(
+      7,
+      (data) => {
+        console.log(data);
+      },
+      () => {
+        return;
+      }
+    );
   }, []);
 
   return (

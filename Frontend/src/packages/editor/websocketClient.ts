@@ -11,7 +11,7 @@ export default class Client {
   ) {
     this.documentID = documentID;
     this.socket = new WebSocket(
-      `ws://localhost:8080/edit?DocumentID=${documentID}`
+      `ws://localhost:8080/editor?DocumentID=${documentID}`
     );
     this.messageQueue = [];
     // setup handler functions
