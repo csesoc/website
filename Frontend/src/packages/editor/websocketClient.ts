@@ -21,7 +21,10 @@ export default class Client {
       const data: payload = JSON.parse(message.data) as payload;
       switch (data.type) {
         case "init":
-          if (data.contents != null) initCallback(data.contents);
+          console.log(data); // for testing
+          if (data.contents != null) {
+            initCallback(data.contents);
+          }
           break;
         case "acknowledged":
           this.handleAcknowledgement();

@@ -33,7 +33,7 @@ const EditorPage: FC = () => {
   const [focusedId, setFocusedId] = useState<number>(0);
 
   const updateValues: UpdateHandler = (idx, updatedBlock) => {
-    if (JSON.stringify(blocks[idx]) !== JSON.stringify(updateValues)) return;
+    if (JSON.stringify(blocks[idx]) === JSON.stringify(updateValues)) return;
     setBlocks((prev) =>
       prev.map((block, i) => (i === idx ? updatedBlock : block))
     );
@@ -41,12 +41,12 @@ const EditorPage: FC = () => {
 
   useEffect(() => {
     wsClient.current = new Client(
-      7,
+      5, // for testing, documentID=5 and docuemntID=7 should exist
       (data) => {
         console.log(data);
       },
-      () => {
-        return;
+      (reason) => {
+        console.log(reason);
       }
     );
   }, []);
@@ -110,6 +110,16 @@ const EditorPage: FC = () => {
               );
             }}
           />
+          <button
+            onClick={() => {
+              if (wsClient.current?.socket.readyState === WebSocket.OPEN) {
+                console.log(JSON.stringify(blocks));
+                wsClient.current?.pushDocumentData(JSON.stringify(blocks));
+              }
+            }}
+          >
+            Publish Content
+          </button>
         </InsertContentWrapper>
       </Container>
     </div>
