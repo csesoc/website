@@ -8,7 +8,7 @@ const selectFont = () => {
     return (
         <select name="fonts" id="fontDropdown" onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
             const val = event.currentTarget?.value;
-            if(!val) return;
+            if (typeof val === "string") return;
             Editor.addMark(editor, "textSize", val)
         }}>
             <option value="16">16</option>
