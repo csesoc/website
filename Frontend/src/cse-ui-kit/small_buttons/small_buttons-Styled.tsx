@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const scaleRate = {
-  smallButtonRate: 0.8,
+  smallButtonRate: 0.4,
   underlineRate: 0.6,
 };
 
