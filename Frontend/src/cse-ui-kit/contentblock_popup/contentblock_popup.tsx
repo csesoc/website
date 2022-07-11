@@ -23,7 +23,11 @@ export default function ContentBlockPopup({ children }: Props) {
             fill={"#808080"}
           />
           <MainText>
-            <BoldText>Drag and Drop</BoldText> or <BoldText>click here</BoldText>
+            <BoldText>
+              Drag and Drop
+            </BoldText> or <BoldText>
+              click here
+            </BoldText>
           </MainText>
           <MainText>
             to upload your image
