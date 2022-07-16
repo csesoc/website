@@ -1,6 +1,7 @@
 package editor
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"log"
@@ -20,7 +21,7 @@ func EditorClientLoop(requestedDocument int, fs repositories.IDockerUnpublishedF
 	}
 
 	defer manager.closeDocumentServer(requestedDocument)
-	file, err := fs.GetFromVolumeTruncated(strconv.Itoa(requestedDocument))
+	file, err := fs.GetFromVolume(strconv.Itoa(requestedDocument))
 	if err != nil {
 		terminateWs(ws, "error")
 		return errors.New("Unable to open request document")
@@ -38,9 +39,19 @@ func EditorClientLoop(requestedDocument int, fs repositories.IDockerUnpublishedF
 	//		-> we apply updated and send acknowledgement
 
 	// send the current state of the document
-	var buf = []byte{}
-	file.Read(buf)
-	ws.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf(`{"type": "init", "contents": "%s"}`, string(buf))))
+	buf := &bytes.Buffer{}
+	bytes, err := buf.ReadFrom(file)
+
+	if err != nil {
+		return errors.New("Unable to read request document")
+	}
+
+	// Empty file
+	if bytes == 0 {
+		buf.WriteString("[]")
+	}
+
+	ws.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf(`{"type": "init", "contents": %s}`, buf.String())))
 
 	for {
 		_, buf, err := ws.ReadMessage()
