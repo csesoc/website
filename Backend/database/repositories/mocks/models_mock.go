@@ -175,6 +175,20 @@ func (mr *MockIDockerUnpublishedFilesystemRepositoryMockRecorder) AddToVolume(fi
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddToVolume", reflect.TypeOf((*MockIDockerUnpublishedFilesystemRepository)(nil).AddToVolume), filename)
 }
 
+// CopyToVolume mocks base method.
+func (m *MockIDockerUnpublishedFilesystemRepository) CopyToVolume(src *os.File, filename string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CopyToVolume", src, filename)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CopyToVolume indicates an expected call of CopyToVolume.
+func (mr *MockIDockerUnpublishedFilesystemRepositoryMockRecorder) CopyToVolume(src, filename interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyToVolume", reflect.TypeOf((*MockIDockerUnpublishedFilesystemRepository)(nil).CopyToVolume), src, filename)
+}
+
 // DeleteFromVolume mocks base method.
 func (m *MockIDockerUnpublishedFilesystemRepository) DeleteFromVolume(filename string) error {
 	m.ctrl.T.Helper()
@@ -254,6 +268,20 @@ func (m *MockIDockerPublishedFilesystemRepository) AddToVolume(filename string) 
 func (mr *MockIDockerPublishedFilesystemRepositoryMockRecorder) AddToVolume(filename interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddToVolume", reflect.TypeOf((*MockIDockerPublishedFilesystemRepository)(nil).AddToVolume), filename)
+}
+
+// CopyToVolume mocks base method.
+func (m *MockIDockerPublishedFilesystemRepository) CopyToVolume(src *os.File, filename string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CopyToVolume", src, filename)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CopyToVolume indicates an expected call of CopyToVolume.
+func (mr *MockIDockerPublishedFilesystemRepositoryMockRecorder) CopyToVolume(src, filename interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyToVolume", reflect.TypeOf((*MockIDockerPublishedFilesystemRepository)(nil).CopyToVolume), src, filename)
 }
 
 // DeleteFromVolume mocks base method.
