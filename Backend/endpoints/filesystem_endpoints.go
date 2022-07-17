@@ -268,3 +268,7 @@ func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, l
 	}, nil
 
 }
+
+func PublishDocument(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
+	
+}
