@@ -269,6 +269,18 @@ func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, l
 
 }
 
+// Takes in DocumentID and transfers the document from unpublished to published volume if it exists
 func PublishDocument(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
-	
+	var input ValidPublishDocumentRequest
+	if status := ParseMultiPartFormToSchema(r, "POST", &input); status != http.StatusOK {
+		return status, nil, nil
+	}
+
+	unpublishedFS := reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))
+	publishedFS := reflect.TypeOf((*repositories.IDockerPublishedFilesystemRepository)(nil))
+
+	unpublishedDockerRepo := df.GetDependency(dfs).(repositories.IDockerUnpublishedFilesystemRepository)
+	publishedDockerRepo := df.GetDependency(dfs).(repositories.IDockerPublishedFilesystemRepository)
+	log.Write([]byte("Acquired repository."))
+
 }
