@@ -1,6 +1,8 @@
 package endpoints
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -267,4 +269,76 @@ func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, l
 		NewID: e.EntityID,
 	}, nil
 
+}
+
+type ValidPublishDocumentRequest struct {
+	DocumentID int `schema:"DocumentID,required"`
+}
+
+// Takes in DocumentID and transfers the document from unpublished to published volume if it exists
+func PublishDocument(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
+	var input ValidPublishDocumentRequest
+	if status := ParseMultiPartFormToSchema(r, "POST", &input); status != http.StatusOK {
+		return status, nil, nil
+	}
+
+	unpublishedFS := reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))
+	publishedFS := reflect.TypeOf((*repositories.IDockerPublishedFilesystemRepository)(nil))
+
+	unpublishedDockerRepo := df.GetDependency(unpublishedFS).(repositories.IDockerUnpublishedFilesystemRepository)
+	publishedDockerRepo := df.GetDependency(publishedFS).(repositories.IDockerPublishedFilesystemRepository)
+
+	filename := strconv.Itoa(input.DocumentID)
+	// Get the file from the unpublished volume
+	file, err := unpublishedDockerRepo.GetFromVolume(filename)
+	if err != nil {
+		return http.StatusInternalServerError, nil, errors.New("Requested document doesn't exist or is invalid")
+	}
+	// CopyToVolume will create or copy source file into published volume
+	err = publishedDockerRepo.CopyToVolume(file, filename)
+	if err != nil {
+		return http.StatusInternalServerError, nil, errors.New("Couldn't copy file to published volume")
+	}
+	return http.StatusOK, struct{}{}, nil
+}
+
+type ValidGetPublishedDocumentRequest struct {
+	DocumentID int `schema:"DocumentID,required"`
+}
+
+func GetPublishedDocument(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
+	var input ValidGetPublishedDocumentRequest
+	if status := ParseMultiPartFormToSchema(r, "GET", &input); status != http.StatusOK {
+		return status, nil, nil
+	}
+
+	publishedFS := reflect.TypeOf((*repositories.IDockerPublishedFilesystemRepository)(nil))
+	publishedDockerRepo := df.GetDependency(publishedFS).(repositories.IDockerPublishedFilesystemRepository)
+
+	// Get file from published volume
+	file, err := publishedDockerRepo.GetFromVolume(strconv.Itoa(input.DocumentID))
+	if err != nil {
+		return http.StatusInternalServerError, nil, errors.New("Requested document doesn't exist or is invalid")
+	}
+
+	defer file.Close()
+
+	// send the current state of the document
+	buf := &bytes.Buffer{}
+	bytes, err := buf.ReadFrom(file)
+
+	if err != nil {
+		return http.StatusInternalServerError, nil, errors.New("Unable to read request document")
+	}
+
+	// Empty file
+	if bytes == 0 {
+		buf.WriteString("[]")
+	}
+
+	return http.StatusOK, struct {
+		Contents string
+	}{
+		Contents: buf.String(),
+	}, nil
 }
