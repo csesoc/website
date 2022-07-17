@@ -11,6 +11,7 @@ func RegisterFilesystemEndpoints(mux *http.ServeMux) {
 	mux.Handle("/api/filesystem/children", handler(GetChildren))
 	mux.Handle("/api/filesystem/upload-image", handler(UploadImage)) // auth
 	mux.Handle("/api/filesystem/publish", handler(PublishDocument))
+	mux.Handle("/api/filesystem/publish", handler(GetPublishedDocument))
 }
 
 // Registers the authentication based endpoints
