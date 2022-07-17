@@ -10,6 +10,7 @@ import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
 import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import { addContentBlock } from "./state/actions";
+import { useParams } from "react-router-dom";
 import { defaultContent, headingContent } from "./state/helpers";
 
 // Redux
@@ -27,6 +28,7 @@ const InsertContentWrapper = styled.div`
 
 const EditorPage: FC = () => {
   const dispatch = useDispatch();
+  const { id } = useParams();
   const wsClient = useRef<Client | null>(null);
 
   const [blocks, setBlocks] = useState<BlockData[]>([]);
@@ -41,9 +43,9 @@ const EditorPage: FC = () => {
 
   useEffect(() => {
     wsClient.current = new Client(
-      5, // for testing, documentID=5 and docuemntID=7 should exist
+      parseInt(id as string), // for testing, documentID=5 and docuemntID=7 should exist
       (data) => {
-        console.log(data);
+        setBlocks(data as BlockData[]);
       },
       (reason) => {
         console.log(reason);
@@ -60,6 +62,7 @@ const EditorPage: FC = () => {
             <EditorBlock
               id={idx}
               key={idx}
+              initialValue={block}
               update={updateValues}
               showToolBar={focusedId === idx}
               onEditorClick={() => setFocusedId(idx)}

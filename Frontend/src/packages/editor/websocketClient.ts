@@ -6,7 +6,7 @@
 export default class Client {
   constructor(
     documentID: number,
-    initCallback: (arg: string) => void,
+    initCallback: (arg: any[]) => void,
     terminatingCallbck: (arg: TerminationReason) => void
   ) {
     this.documentID = documentID;
@@ -82,5 +82,5 @@ export type TerminationReason = "locked" | "terminating" | "error";
 
 interface payload {
   type: "init" | "terminating" | "acknowledged";
-  contents?: string;
+  contents?: any[];
 }
