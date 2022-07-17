@@ -72,7 +72,7 @@ func (c *dockerFileSystemRepositoryCore) AddToVolume(filename string) (err error
 	defer src.Close()
 	// Create/update destination file and check it is valid
 	filepath := filepath.Join(c.volumePath, filename)
-	moved, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	moved, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		return errors.New("Couldn't read/create the destination file")
 	}
@@ -93,8 +93,7 @@ func (c *dockerFileSystemRepositoryCore) AddToVolume(filename string) (err error
 // Get file from volume. Returns a valid file pointer
 func (c *dockerFileSystemRepositoryCore) GetFromVolume(filename string) (fp *os.File, err error) {
 	// Concatenate volume path with file name
-	fp, err = os.Open(filepath.Join(c.volumePath, filename))
-	return
+	return os.OpenFile(filepath.Join(c.volumePath, filename), os.O_RDWR|os.O_CREATE, 0755)
 }
 
 // Get file from volume in truncated mode
