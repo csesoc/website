@@ -63,7 +63,7 @@ func (fn handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	} else {
 		out, _ := json.Marshal(Response{
 			Status:  http.StatusInternalServerError,
-			Message: "something went wrong",
+			Message: err.Error(),
 		})
 
 		log.Write([]byte(fmt.Sprintf("Something went wrong! returning %s", out)))
