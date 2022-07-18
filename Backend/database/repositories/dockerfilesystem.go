@@ -26,7 +26,7 @@ type DockerPublishedFileSystemRepository struct {
 }
 
 // create new instances of the corresponding repository types
-func NewDockerPublishedFileSystemRepository() (dockerFS *DockerPublishedFileSystemRepository, err error) {
+func NewDockerPublishedFileSystemRepository() (*DockerPublishedFileSystemRepository, error) {
 	inner, err := newDockerFilesystemRespositoryCore(publishedVolumePath)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func NewDockerPublishedFileSystemRepository() (dockerFS *DockerPublishedFileSyst
 }
 
 // create new instances of the corresponding repository types
-func NewDockerUnpublishedFileSystemRepository() (dockerFS *DockerUnpublishedFileSystemRepository, err error) {
+func NewDockerUnpublishedFileSystemRepository() (*DockerUnpublishedFileSystemRepository, error) {
 	inner, err := newDockerFilesystemRespositoryCore(unpublishedVolumePath)
 	if err != nil {
 		return nil, err
@@ -50,20 +50,19 @@ func NewDockerUnpublishedFileSystemRepository() (dockerFS *DockerUnpublishedFile
 }
 
 // Create instance of DockerFileSystemRepository struct
-func newDockerFilesystemRespositoryCore(volumePath string) (dockerFS *dockerFileSystemRepositoryCore, err error) {
-	fs := dockerFileSystemRepositoryCore{
-		volumePath: volumePath,
-	}
-
-	dockerFS.dockerCli, err = client.NewClientWithOpts(client.FromEnv)
-	if err != nil {
+func newDockerFilesystemRespositoryCore(volumePath string) (*dockerFileSystemRepositoryCore, error) {
+	if dockerCli, err := client.NewClientWithOpts(client.FromEnv); err == nil {
+		return &dockerFileSystemRepositoryCore{
+			volumePath: volumePath,
+			dockerCli:  dockerCli,
+		}, nil
+	} else {
 		return nil, err
 	}
-	return &fs, nil
 }
 
-// Add file to volume or update if exists
-func (c *dockerFileSystemRepositoryCore) AddToVolume(filename string) (err error) {
+// Add file to volume or update if exists. Source file is deleted.
+func (c *dockerFileSystemRepositoryCore) AddToVolume(filename string) error {
 	// Check if source file is valid
 	src, err := os.Open(filename)
 	if err != nil {
@@ -72,7 +71,7 @@ func (c *dockerFileSystemRepositoryCore) AddToVolume(filename string) (err error
 	defer src.Close()
 	// Create/update destination file and check it is valid
 	filepath := filepath.Join(c.volumePath, filename)
-	moved, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	moved, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		return errors.New("Couldn't read/create the destination file")
 	}
@@ -90,22 +89,38 @@ func (c *dockerFileSystemRepositoryCore) AddToVolume(filename string) (err error
 	return nil
 }
 
+// Copy file to docker volume, creates file if it doesn't exist. Source file is not deleted.
+func (c *dockerFileSystemRepositoryCore) CopyToVolume(src *os.File, filename string) error {
+	defer src.Close()
+	// Create/update destination file and check it is valid
+	filepath := filepath.Join(c.volumePath, filename)
+	copied, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0755)
+	if err != nil {
+		return errors.New("Couldn't read/create the destination file")
+	}
+	defer copied.Close()
+	// Copy source to destination
+	_, err = io.Copy(copied, src)
+	if err != nil {
+		return errors.New("File couldn't be copied to destination")
+	}
+	return nil
+}
+
 // Get file from volume. Returns a valid file pointer
-func (c *dockerFileSystemRepositoryCore) GetFromVolume(filename string) (fp *os.File, err error) {
+func (c *dockerFileSystemRepositoryCore) GetFromVolume(filename string) (*os.File, error) {
 	// Concatenate volume path with file name
-	fp, err = os.Open(filepath.Join(c.volumePath, filename))
-	return
+	return os.OpenFile(filepath.Join(c.volumePath, filename), os.O_RDWR, 0755)
 }
 
 // Get file from volume in truncated mode
-func (c *dockerFileSystemRepositoryCore) GetFromVolumeTruncated(filename string) (fp *os.File, err error) {
+func (c *dockerFileSystemRepositoryCore) GetFromVolumeTruncated(filename string) (*os.File, error) {
 	// Concatenate volume path with file name
-	fp, err = os.OpenFile(filepath.Join(c.volumePath, filename), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
-	return
+	return os.OpenFile(filepath.Join(c.volumePath, filename), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 }
 
 // Delete file from volume
-func (c *dockerFileSystemRepositoryCore) DeleteFromVolume(filename string) (err error) {
+func (c *dockerFileSystemRepositoryCore) DeleteFromVolume(filename string) error {
 	filepath := filepath.Join(c.volumePath, filename)
 	file, err := os.Open(filepath)
 	if err != nil {

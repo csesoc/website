@@ -65,14 +65,14 @@
     ]
   },
   "devDependencies": {
-    "@storybook/addon-actions": "6.4.19",
-    "@storybook/addon-essentials": "6.4.19",
-    "@storybook/addon-links": "6.4.19",
-    "@storybook/builder-webpack5": "6.4.19",
-    "@storybook/manager-webpack5": "6.4.19",
-    "@storybook/node-logger": "6.4.19",
-    "@storybook/preset-create-react-app": "4.0.1",
-    "@storybook/react": "6.4.19",
+    "@storybook/addon-actions": "6.5.9",
+    "@storybook/addon-essentials": "6.5.9",
+    "@storybook/addon-links": "6.5.9",
+    "@storybook/builder-webpack5": "6.5.9",
+    "@storybook/manager-webpack5": "6.5.9",
+    "@storybook/node-logger": "6.5.9",
+    "@storybook/preset-create-react-app": "4.1.2",
+    "@storybook/react": "6.5.9",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "11.2.7",
     "@testing-library/user-event": "12.8.3",
@@ -87,8 +87,11 @@
     "@typescript-eslint/parser": "4.33.0",
     "eslint": "7.32.0",
     "eslint-plugin-react": "7.29.4",
-    "eslint-plugin-storybook": "0.5.11",
+    "eslint-plugin-storybook": "0.5.12",
     "typescript": "4.6.2",
     "webpack": "5.70.0"
+  },
+  "overrides": {
+    "react-refresh": "0.11.0"
   }
 }
