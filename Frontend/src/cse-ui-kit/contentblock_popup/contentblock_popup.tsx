@@ -1,4 +1,6 @@
+/* eslint-disable */
 import React from 'react';
+
 import {
   StyledContainer,
   StyledDottedContainer,
