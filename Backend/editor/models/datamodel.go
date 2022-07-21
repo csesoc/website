@@ -19,6 +19,7 @@ type Document struct {
 	DocumentName string
 	DocumentId   string
 	Content      []Component
+	tlb          map[string][]int
 }
 
 // TODO:
@@ -158,4 +159,57 @@ func (d Document) arrayEditUpdate(path string, index int, data interface{}) erro
 // Remove element in array at "index" position
 func (d Document) arrayEditRemove(path string, index int) error {
 	return nil
+}
+
+// Given a string path return the numerical list version of the path
+func (d Document) GetNumericalIndex(path string) ([]int, error) {
+	if d.tlb == nil {
+		d.tlb = make(map[string][]int)
+	}
+	if val, ok := d.tlb[path]; ok {
+		return val, nil
+	}
+	subpaths := strings.Split(path, "/")
+	numericalPath := make([]int, len(subpaths))
+	curr := reflect.ValueOf(d)
+
+	// Loop through the subpaths and get numerical indexes
+	for i := 0; i < len(subpaths)-1; i++ {
+		subpath := subpaths[i]
+		foundField := false
+		for j := 0; j < curr.NumField(); j++ {
+			field := curr.Field(j)
+			if curr.Type().Field(j).Name == subpath {
+				curr = field
+				switch fieldType := field.Kind(); fieldType {
+				case reflect.Array, reflect.Slice:
+					if i < len(subpaths)-2 {
+						index, _ := strconv.Atoi(subpaths[i])
+						if index >= field.Len() || index < 0 {
+							return nil, errors.New("invalid target index")
+						}
+						if fieldType == reflect.Slice {
+							curr = field.Index(index)
+						} else {
+							curr = field.Elem().Index(index)
+						}
+						numericalPath[i] = index
+						i++
+					}
+				}
+				if curr.Kind() == reflect.Interface {
+					curr = curr.Elem()
+				}
+				numericalPath[i] = j
+				foundField = true
+				break
+			}
+		}
+		if !foundField {
+			return nil, errors.New("invalid path, couldn't find subpath " + subpath)
+		}
+
+	}
+	d.tlb[path] = numericalPath
+	return numericalPath, nil
 }

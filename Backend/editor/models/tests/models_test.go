@@ -48,12 +48,8 @@ func setupDocument() models.Document {
 		},
 	}
 
-	var array [3]int
-	array[0] = 1
-	array[1] = -10
-	array[2] = 213
 	arrayData := arraysData{
-		Data: array,
+		Data: [3]int{1, -10, 213},
 	}
 
 	testObj.Content[0] = image
@@ -152,4 +148,15 @@ func TestGetNestedPrimitive(t *testing.T) {
 	}
 	assert := assert.New(t)
 	assert.Equal(false, result.Bool())
+}
+
+func TestGetNumericalIndexValidPath(t *testing.T) {
+	testObj := setupDocument()
+	path := "Content/0/ImageDocumentID"
+	result, err := testObj.GetNumericalIndex(path)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	assert := assert.New(t)
+	assert.Equal([]int{0, 2, 0}, result)
 }
