@@ -25,6 +25,10 @@ const CurveContainer = styled.div<CurveContainerProps>`
   position: absolute;
   top: ${props => props.offset}px;
   right: 0;
+  z-index: -1;  
+`;
+
+const Background = styled.div`
 `;
 
 
@@ -51,15 +55,17 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <CurveContainer offset={0}>
-          <HomepageCurve width={400} height={1000}/>
-        </CurveContainer>
-        <CurveContainer offset={1000}>
-          <RectangleCurve
-            height={1000}
-            dontPreserveAspectRatio
-          />
-        </CurveContainer>
+        <Background>
+          <CurveContainer offset={0}>
+            <HomepageCurve width={400} height={1000}/>
+          </CurveContainer>
+          <CurveContainer offset={1200}>
+            <RectangleCurve
+              height={2000}
+              dontPreserveAspectRatio
+            />
+          </CurveContainer>
+        </Background>
         <Homepage />
         <AboutUs />
         <Events />
