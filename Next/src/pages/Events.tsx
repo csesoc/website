@@ -7,7 +7,7 @@ const Container = styled.div`
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    /* margin-top: 22vh; */
+    margin-top: 23vh; 
 `
 
 const ColumnContainer = styled.div`

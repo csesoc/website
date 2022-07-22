@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const AboutUsPage = styled.div`
     position: relative;
-    top: -210px;
+    top: -50px;
     height: 100vh;
     display: flex;
     justify-content: center;
