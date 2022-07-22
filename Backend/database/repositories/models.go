@@ -40,6 +40,7 @@ type IFilesystemRepository interface {
 // data
 type IDockerUnpublishedFilesystemRepository interface {
 	AddToVolume(filename string) (err error)
+	CopyToVolume(src *os.File, filename string) (err error)
 	GetFromVolume(filename string) (fp *os.File, err error)
 	GetFromVolumeTruncated(filename string) (fp *os.File, err error)
 	DeleteFromVolume(filename string) (err error)

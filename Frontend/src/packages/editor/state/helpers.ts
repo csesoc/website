@@ -8,6 +8,13 @@ export const defaultContent: Descendant[] = [
   },
 ];
 
+export const headingContent: Descendant[] = [
+  {
+    type: "heading",
+    children: [{ text: "" }],
+  },
+];
+
 export const getBlockContent = (id: number) => {
   const contents = getContents();
 
