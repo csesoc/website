@@ -3,12 +3,11 @@ import styled from "styled-components";
 import ClearLayeredGlass from "../components/eventspage/ClearLayeredGlassContainer";
 
 const Container = styled.div`
-    min-height: 100vh;
-    background-color: #A09FE3;
+    /* background-color: #A09FE3; */
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    margin-top: 22vh;
+    /* margin-top: 22vh; */
 `
 
 const ColumnContainer = styled.div`
@@ -18,7 +17,7 @@ const ColumnContainer = styled.div`
 `
 
 const EventsText = styled.div`
-    color: #FAFCFF;
+    color: white;
     font-family: 'Raleway';
     font-weight: 800;
     font-size: 3.5vw;
@@ -28,6 +27,7 @@ const EventsText = styled.div`
 `
 
 const BodyText = styled.div`
+    color: white;
     font-weight: 200;
     font-size: 1.9vw;
     line-height: 2.5vw;
