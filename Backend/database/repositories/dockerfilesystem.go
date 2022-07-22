@@ -89,6 +89,24 @@ func (c *dockerFileSystemRepositoryCore) AddToVolume(filename string) error {
 	return nil
 }
 
+// Copy file to docker volume, creates file if it doesn't exist. Source file is not deleted.
+func (c *dockerFileSystemRepositoryCore) CopyToVolume(src *os.File, filename string) error {
+	defer src.Close()
+	// Create/update destination file and check it is valid
+	filepath := filepath.Join(c.volumePath, filename)
+	copied, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0755)
+	if err != nil {
+		return errors.New("Couldn't read/create the destination file")
+	}
+	defer copied.Close()
+	// Copy source to destination
+	_, err = io.Copy(copied, src)
+	if err != nil {
+		return errors.New("File couldn't be copied to destination")
+	}
+	return nil
+}
+
 // Get file from volume. Returns a valid file pointer
 func (c *dockerFileSystemRepositoryCore) GetFromVolume(filename string) (*os.File, error) {
 	// Concatenate volume path with file name
