@@ -3,7 +3,8 @@ SERVICE := go-hotreload
 dev:
 	docker-compose \
 	--env-file=./Config/.env.dev \
-	up
+	up \
+	-d
 
 dev-build:
 	docker-compose \
