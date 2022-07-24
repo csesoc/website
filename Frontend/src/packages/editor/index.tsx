@@ -121,6 +121,18 @@ const EditorPage: FC = () => {
               }
             }}
           >
+            Sync Document
+          </button>
+          <button
+            onClick={() => {
+              const data = new FormData();
+              data.append("DocumentID", `${id}`);
+              fetch("/api/filesystem/publish-document", {
+                method: "POST",
+                body: data,
+              });
+            }}
+          >
             Publish Content
           </button>
         </InsertContentWrapper>

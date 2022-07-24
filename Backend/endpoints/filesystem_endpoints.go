@@ -308,7 +308,7 @@ type ValidGetPublishedDocumentRequest struct {
 
 func GetPublishedDocument(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
 	var input ValidGetPublishedDocumentRequest
-	if status := ParseMultiPartFormToSchema(r, "GET", &input); status != http.StatusOK {
+	if status := ParseParamsToSchema(r, "GET", &input); status != http.StatusOK {
 		return status, nil, nil
 	}
 
