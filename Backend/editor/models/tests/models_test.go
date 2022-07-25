@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"reflect"
 	"testing"
@@ -46,7 +47,7 @@ func setupDocument() models.Document {
 	return models.Document{
 		DocumentName: "morbed up",
 		DocumentId:   "M0R8",
-		Content:      []models.Component{image, paragraph, arrayData, nil},
+		Content:      []models.Component{image, paragraph, arrayData},
 	}
 }
 
@@ -63,7 +64,7 @@ func TestValidSliceField(t *testing.T) {
 	}
 	assert := assert.New(t)
 	assert.Equal("slice", result.Kind().String())
-	assert.Equal(4, result.Len())
+	assert.Equal(3, result.Len())
 }
 
 func TestInvalidFieldName(t *testing.T) {
@@ -177,21 +178,57 @@ func TestValidGetNestedPrimitive(t *testing.T) {
 	assert.False(result.Bool())
 }
 
-// func TestValidGetNumericalIndexValidPath(t *testing.T) {
-// 	testObj := setupDocument()
-// 	path := "Content/0/ImageSource"
-// 	result, err := testObj.GetNumericalIndex(path)
-// 	if err != nil {
-// 		log.Fatalf(err.Error())
-// 	}
-// 	assert := assert.New(t)
-// 	assert.Equal([]int{2, 0, 1}, result)
-// }
+func TestValidGetNumericalPath(t *testing.T) {
+	testObj := setupDocument()
+	path := "Content/0/ImageSource"
+	result, err := testObj.GetNumericalPath(path)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	assert := assert.New(t)
+	assert.Equal([]int{2, 0, 1}, result)
+}
 
-// func TestInValidGetNumericalIndexValidPath(t *testing.T) {
-// 	testObj := setupDocument()
-// 	path := "Content/100/ImageDocumentID"
-// 	_, err := testObj.GetNumericalIndex(path)
-// 	assert := assert.New(t)
-// 	assert.True(err != nil)
-// }
+func TestValidCachedPathGetNumericalPath(t *testing.T) {
+	assert := assert.New(t)
+	testObj := setupDocument()
+	path := "Content/1/ParagraphChildren"
+	result, err := testObj.GetNumericalPath(path)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	assert.Equal([]int{2, 1, 2}, result)
+	fmt.Printf("%+v\n", testObj.GetTLB())
+	// Check that getting a value already cached should work
+	result, err = testObj.GetNumericalPath(path)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	assert.Equal([]int{2, 1, 2}, result)
+}
+
+func TestValidCachedSubpathGetNumericalPath(t *testing.T) {
+	testObj := setupDocument()
+	path := "Content/0"
+	result, err := testObj.GetNumericalPath(path)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	assert := assert.New(t)
+	assert.Equal([]int{2, 0}, result)
+	// Check that getting a value with subpath cached should work
+	path = path + "/ImageSource"
+	result, err = testObj.GetNumericalPath(path)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	assert.Equal([]int{2, 0, 1}, result)
+}
+
+func TestInValidGetNumericalIndexValidPath(t *testing.T) {
+	testObj := setupDocument()
+	path := "Content/100/ImageDocumentID"
+	_, err := testObj.GetNumericalPath(path)
+	assert := assert.New(t)
+	assert.True(err != nil)
+}

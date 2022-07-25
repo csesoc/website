@@ -162,30 +162,43 @@ func (d Document) arrayEditRemove(path string, index int) error {
 }
 
 // Given a string path return the numerical list version of the path
-func (d Document) getNumericalIndex(path string) ([]int, error) {
-	if d.tlb == nil {
+func (d Document) GetNumericalPath(path string) ([]int, error) {
+	fmt.Printf("TLB at start: %v\n", d.tlb)
+	if len(d.tlb) == 0 {
+		fmt.Printf("Reinitialise map\n")
 		d.tlb = make(map[string][]int)
 	}
+	fmt.Printf("cache: %v\n", d.tlb)
 	if val, ok := d.tlb[path]; ok {
+		fmt.Print("Found from cache\n")
 		return val, nil
+	} else {
+		fmt.Printf("Not found from cache %v %t, %s %v\n", val, ok, path, d.tlb[path])
 	}
 	subpaths := strings.Split(path, "/")
 	numericalPath := make([]int, len(subpaths))
 	curr := reflect.ValueOf(d)
 
+	// Exact as much of the subpath as we can from the cache
+	i := 0
+	subpath := subpaths[i]
+	for subNumericalPath, ok := d.tlb[subpath]; ok; {
+		numericalPath[i] = subNumericalPath[i]
+		curr = curr.Field(subNumericalPath[i])
+		i++
+		subpath = subpath + "/" + subpaths[i]
+	}
 	// Loop through the subpaths and get numerical indexes
-	for i := 0; i < len(subpaths); i++ {
-		subpath := subpaths[i]
+	for ; i < len(subpaths); i++ {
 		found := false
 		for j := 0; j < curr.NumField(); j++ {
-			// fmt.Printf("%s %s i=%d j=%d\n", curr.Type().Field(j).Name, subpath, i, j)
 			field := curr.Field(j)
-			if curr.Type().Field(j).Name == subpath {
+			if curr.Type().Field(j).Name == subpaths[i] {
 				numericalPath[i] = j
 				curr = field
 				switch fieldType := field.Kind(); fieldType {
 				case reflect.Array, reflect.Slice:
-					if i < len(subpaths)-2 {
+					if i < len(subpaths)-1 {
 						i++
 						index, err := strconv.Atoi(subpaths[i])
 						if err != nil || index >= field.Len() || index < 0 {
@@ -205,11 +218,17 @@ func (d Document) getNumericalIndex(path string) ([]int, error) {
 				found = true
 				break
 			}
+			// fmt.Printf("hi, i=%d, j=%d, curr=%+v\n", i, j, curr)
 		}
 		if !found {
-			return nil, errors.New("invalid path, couldn't find subpath " + subpath)
+			return nil, errors.New("invalid path, couldn't find subpath " + subpaths[i])
 		}
 	}
 	d.tlb[path] = numericalPath
-	return numericalPath, nil
+	fmt.Printf("Cache after: %+v\n\n", d.tlb)
+	return d.tlb[path], nil
+}
+
+func (d Document) GetTLB() map[string][]int {
+	return d.tlb
 }
