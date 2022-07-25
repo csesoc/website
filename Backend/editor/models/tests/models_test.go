@@ -73,8 +73,7 @@ func TestInvalidFieldName(t *testing.T) {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result, err := models.Traverse(testObj, subpaths)
-	_ = result // Stop go from complaining about unused variable
+	_, err = models.Traverse(testObj, subpaths)
 	assert.NotNil(t, err)
 }
 
@@ -101,8 +100,7 @@ func TestNonIntegerArrayIndex(t *testing.T) {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result, err := models.Traverse(testObj, subpaths)
-	_ = result // Stop go from complaining about unused variable
+	result, err = models.Traverse(testObj, subpaths)
 	assert.NotNil(t, err)
 }
 
@@ -113,8 +111,7 @@ func TestOutOfBoundsArrayIndex(t *testing.T) {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result, err := models.Traverse(testObj, subpaths)
-	_ = result // Stop go from complaining about unused variable
+	_, err = models.Traverse(testObj, subpaths)
 	assert.NotNil(t, err)
 }
 
