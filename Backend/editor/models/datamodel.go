@@ -182,7 +182,7 @@ func (d *Document) GetNumericalPath(path string) ([]int, error) {
 		numericalPath[i] = subNumericalPath[i]
 		curr = getValueFromIndex(curr, numericalPath[i])
 		i++
-		subpath = subpath + "/" + subpaths[i]
+		subpath += "/" + subpaths[i]
 		subNumericalPath, hasSubpath = d.tlb[subpath]
 	}
 
@@ -210,6 +210,7 @@ func (d *Document) GetNumericalPath(path string) ([]int, error) {
 		curr = getValueFromIndex(curr, index)
 		numericalPath[i] = index
 		d.tlb[subpath] = numericalPath[:i+1]
+		subpath += "/" + subpaths[i]
 	}
 	d.tlb[path] = numericalPath
 	return d.tlb[path], nil

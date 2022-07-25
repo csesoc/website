@@ -73,8 +73,7 @@ func TestInvalidFieldName(t *testing.T) {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result, err := models.Traverse(testObj, subpaths)
-	_ = result // Stop go from complaining about unused variable
+	_, err = models.Traverse(testObj, subpaths)
 	assert.NotNil(t, err)
 }
 
@@ -101,8 +100,7 @@ func TestNonIntegerArrayIndex(t *testing.T) {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result, err := models.Traverse(testObj, subpaths)
-	_ = result // Stop go from complaining about unused variable
+	_, err = models.Traverse(testObj, subpaths)
 	assert.NotNil(t, err)
 }
 
@@ -113,8 +111,7 @@ func TestOutOfBoundsArrayIndex(t *testing.T) {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result, err := models.Traverse(testObj, subpaths)
-	_ = result // Stop go from complaining about unused variable
+	_, err = models.Traverse(testObj, subpaths)
 	assert.NotNil(t, err)
 }
 
@@ -188,6 +185,14 @@ func TestValidGetNumericalPath(t *testing.T) {
 	assert.Equal([]int{2, 0, 1}, result)
 }
 
+func TestInValidGetNumericalIndex(t *testing.T) {
+	testObj := setupDocument()
+	path := "Content/100/ImageDocumentID"
+	_, err := testObj.GetNumericalPath(path)
+	assert := assert.New(t)
+	assert.True(err != nil)
+}
+
 func TestValidCachedPathGetNumericalPath(t *testing.T) {
 	assert := assert.New(t)
 	testObj := setupDocument()
@@ -228,12 +233,4 @@ func TestValidCachedSubpathGetNumericalPath(t *testing.T) {
 		log.Fatalf(err.Error())
 	}
 	assert.Equal([]int{2, 1, 2, 0, 1}, result)
-}
-
-func TestInValidGetNumericalIndexValidPath(t *testing.T) {
-	testObj := setupDocument()
-	path := "Content/100/ImageDocumentID"
-	_, err := testObj.GetNumericalPath(path)
-	assert := assert.New(t)
-	assert.True(err != nil)
 }
