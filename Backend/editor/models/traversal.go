@@ -23,23 +23,20 @@ func Traverse(d Document, subpaths []string) (reflect.Value, error) {
 				// that the next iteration of the for loop will have a struct since
 				// .NumField() must be available. Thus we must lookahead for indices
 				// to enforce this.
-
 				curr = field
-
 				switch fieldType := field.Kind(); fieldType {
 				case reflect.Array, reflect.Slice:
 					// If we are not at the end of the paths, then grab the index
-					// TODO: Add an error check here to see its actually an int
 					if i < length-1 {
 						i++
-						index, _ := strconv.ParseInt(subpaths[i], 10, 32)
-						if int(index) >= field.Len() || int(index) < 0 {
-							return reflect.Value{}, errors.New("Invalid target index")
+						index, err := strconv.Atoi(subpaths[i])
+						if err != nil || index >= field.Len() || index < 0 {
+							return reflect.Value{}, errors.New("invalid target index")
 						}
 						if fieldType == reflect.Slice {
-							curr = field.Index(int(index))
+							curr = field.Index(index)
 						} else {
-							curr = field.Elem().Index(int(index))
+							curr = field.Elem().Index(index)
 						}
 					}
 				}
@@ -54,7 +51,7 @@ func Traverse(d Document, subpaths []string) (reflect.Value, error) {
 		}
 		// Path content should always be found
 		if !found {
-			return reflect.Value{}, errors.New("Invalid path, couldn't find subpath " + subpath)
+			return reflect.Value{}, errors.New("invalid path, couldn't find subpath " + subpath)
 		}
 		found = false
 	}

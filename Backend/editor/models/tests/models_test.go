@@ -23,17 +23,10 @@ func (a arraysData) Set(field string, value reflect.Value) error {
 }
 
 func setupDocument() models.Document {
-	testObj := models.Document{
-		DocumentName: "morbed up",
-		DocumentId:   "M0R8",
-		Content:      make([]models.Component, 4),
-	}
-
 	image := models.Image{
 		ImageDocumentID: "m0rb",
 		ImageSource:     "big_morb.png",
 	}
-
 	paragraph := models.Paragraph{
 		ParagraphID:    "the morb",
 		ParagraphAlign: "center",
@@ -47,23 +40,17 @@ func setupDocument() models.Document {
 			},
 		},
 	}
-
-	var array [3]int
-	array[0] = 1
-	array[1] = -10
-	array[2] = 213
 	arrayData := arraysData{
-		Data: array,
+		Data: [3]int{1, -10, 213},
 	}
-
-	testObj.Content[0] = image
-	testObj.Content[1] = paragraph
-	testObj.Content[2] = arrayData
-
-	return testObj
+	return models.Document{
+		DocumentName: "morbed up",
+		DocumentId:   "M0R8",
+		Content:      []models.Component{image, paragraph, arrayData},
+	}
 }
 
-func TestSliceField(t *testing.T) {
+func TestValidSliceField(t *testing.T) {
 	testObj := setupDocument()
 	path := "Content/0"
 	subpaths, err := models.ParsePath(path)
@@ -76,10 +63,21 @@ func TestSliceField(t *testing.T) {
 	}
 	assert := assert.New(t)
 	assert.Equal("slice", result.Kind().String())
-	assert.Equal(4, result.Len())
+	assert.Equal(3, result.Len())
 }
 
-func TestArrayField(t *testing.T) {
+func TestInvalidFieldName(t *testing.T) {
+	testObj := setupDocument()
+	path := "Content/0/InvalidFieldName/0"
+	subpaths, err := models.ParsePath(path)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	_, err = models.Traverse(testObj, subpaths)
+	assert.NotNil(t, err)
+}
+
+func TestValidArrayField(t *testing.T) {
 	testObj := setupDocument()
 	path := "Content/2/Data/0"
 	subpaths, err := models.ParsePath(path)
@@ -95,7 +93,29 @@ func TestArrayField(t *testing.T) {
 	assert.Equal(3, result.Len())
 }
 
-func TestStructField(t *testing.T) {
+func TestNonIntegerArrayIndex(t *testing.T) {
+	testObj := setupDocument()
+	path := "Content/asdf/Data"
+	subpaths, err := models.ParsePath(path)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	result, err = models.Traverse(testObj, subpaths)
+	assert.NotNil(t, err)
+}
+
+func TestOutOfBoundsArrayIndex(t *testing.T) {
+	testObj := setupDocument()
+	path := "Content/4/Data"
+	subpaths, err := models.ParsePath(path)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	_, err = models.Traverse(testObj, subpaths)
+	assert.NotNil(t, err)
+}
+
+func TestValidStructField(t *testing.T) {
 	testObj := setupDocument()
 	path := "Content/0/ImageDocumentID"
 	subpaths, err := models.ParsePath(path)
@@ -112,7 +132,7 @@ func TestStructField(t *testing.T) {
 	assert.Equal("big_morb.png", result.Field(1).String())
 }
 
-func TestNestedFields(t *testing.T) {
+func TestValidNestedFields(t *testing.T) {
 	testObj := setupDocument()
 	path := "Content/1/ParagraphChildren/0/Bold"
 	subpaths, err := models.ParsePath(path)
@@ -132,7 +152,7 @@ func TestNestedFields(t *testing.T) {
 	assert.Equal(false, result.Field(4).Bool())
 }
 
-func TestGetFirstDepth(t *testing.T) {
+func TestValidGetFirstDepth(t *testing.T) {
 	testObj := setupDocument()
 	path := "Content/0/ImageDocumentID"
 	result, err := testObj.GetData(path)
@@ -143,7 +163,7 @@ func TestGetFirstDepth(t *testing.T) {
 	assert.Equal("m0rb", result.String())
 }
 
-func TestGetNestedPrimitive(t *testing.T) {
+func TestValidGetNestedPrimitive(t *testing.T) {
 	testObj := setupDocument()
 	path := "Content/1/ParagraphChildren/0/Underline"
 	result, err := testObj.GetData(path)
@@ -151,5 +171,5 @@ func TestGetNestedPrimitive(t *testing.T) {
 		log.Fatalf(err.Error())
 	}
 	assert := assert.New(t)
-	assert.Equal(false, result.Bool())
+	assert.False(result.Bool())
 }
