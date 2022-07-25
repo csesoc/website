@@ -46,7 +46,7 @@ func setupDocument() models.Document {
 	return models.Document{
 		DocumentName: "morbed up",
 		DocumentId:   "M0R8",
-		Content:      []models.Component{image, paragraph, arrayData, nil},
+		Content:      []models.Component{image, paragraph, arrayData},
 	}
 }
 
@@ -63,7 +63,7 @@ func TestValidSliceField(t *testing.T) {
 	}
 	assert := assert.New(t)
 	assert.Equal("slice", result.Kind().String())
-	assert.Equal(4, result.Len())
+	assert.Equal(3, result.Len())
 }
 
 func TestInvalidFieldName(t *testing.T) {
