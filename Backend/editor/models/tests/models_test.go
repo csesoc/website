@@ -150,13 +150,21 @@ func TestGetNestedPrimitive(t *testing.T) {
 	assert.Equal(false, result.Bool())
 }
 
-func TestGetNumericalIndexValidPath(t *testing.T) {
-	testObj := setupDocument()
-	path := "Content/0/ImageDocumentID"
-	result, err := testObj.GetNumericalIndex(path)
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	assert := assert.New(t)
-	assert.Equal([]int{0, 2, 0}, result)
-}
+// func TestValidGetNumericalIndexValidPath(t *testing.T) {
+// 	testObj := setupDocument()
+// 	path := "Content/0/ImageSource"
+// 	result, err := testObj.GetNumericalIndex(path)
+// 	if err != nil {
+// 		log.Fatalf(err.Error())
+// 	}
+// 	assert := assert.New(t)
+// 	assert.Equal([]int{2, 0, 1}, result)
+// }
+
+// func TestInValidGetNumericalIndexValidPath(t *testing.T) {
+// 	testObj := setupDocument()
+// 	path := "Content/100/ImageDocumentID"
+// 	_, err := testObj.GetNumericalIndex(path)
+// 	assert := assert.New(t)
+// 	assert.True(err != nil)
+// }
