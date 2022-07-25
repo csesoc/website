@@ -100,7 +100,7 @@ func TestNonIntegerArrayIndex(t *testing.T) {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	result, err = models.Traverse(testObj, subpaths)
+	_, err = models.Traverse(testObj, subpaths)
 	assert.NotNil(t, err)
 }
 
