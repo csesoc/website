@@ -162,39 +162,62 @@ func (d Document) arrayEditRemove(path string, index int) error {
 }
 
 // Given a string path return the numerical list version of the path
-func (d Document) GetNumericalPath(path string) ([]int, error) {
-	fmt.Printf("TLB at start: %v\n", d.tlb)
-	if len(d.tlb) == 0 {
-		fmt.Printf("Reinitialise map\n")
+func (d *Document) GetNumericalPath(path string) ([]int, error) {
+	if d.tlb == nil {
 		d.tlb = make(map[string][]int)
 	}
-	fmt.Printf("cache: %v\n", d.tlb)
 	if val, ok := d.tlb[path]; ok {
-		fmt.Print("Found from cache\n")
 		return val, nil
-	} else {
-		fmt.Printf("Not found from cache %v %t, %s %v\n", val, ok, path, d.tlb[path])
 	}
+
 	subpaths := strings.Split(path, "/")
 	numericalPath := make([]int, len(subpaths))
-	curr := reflect.ValueOf(d)
+	curr := reflect.ValueOf(*d)
 
 	// Exact as much of the subpath as we can from the cache
 	i := 0
 	subpath := subpaths[i]
-	for subNumericalPath, ok := d.tlb[subpath]; ok; {
+	subNumericalPath, hasSubpath := d.tlb[subpath]
+	for hasSubpath {
 		numericalPath[i] = subNumericalPath[i]
-		curr = curr.Field(subNumericalPath[i])
+
+		// Update curr
+		if curr.Kind() == reflect.Array || curr.Kind() == reflect.Slice {
+			curr = getValueFromIndex(curr, subNumericalPath[i])
+		} else {
+			curr = curr.Field(subNumericalPath[i])
+		}
+		if curr.Kind() == reflect.Interface {
+			curr = curr.Elem()
+		}
+		// Increment index and subpath
 		i++
 		subpath = subpath + "/" + subpaths[i]
+		subNumericalPath, hasSubpath = d.tlb[subpath]
 	}
+
+	// Handle case where we've traversed up to a slice or array in the cache
+	if curr.Kind() == reflect.Array || curr.Kind() == reflect.Slice {
+		index, err := strconv.Atoi(subpaths[i])
+		if err != nil || index >= curr.Len() || index < 0 {
+			return nil, errors.New("invalid target index")
+		}
+		curr = getValueFromIndex(curr, index)
+		numericalPath[i] = index
+		subpath := subpath + "/" + subpaths[i]
+		d.tlb[subpath] = numericalPath[:i+1]
+		i++
+	}
+
 	// Loop through the subpaths and get numerical indexes
 	for ; i < len(subpaths); i++ {
 		found := false
+		// Loop through fields of current struct
 		for j := 0; j < curr.NumField(); j++ {
 			field := curr.Field(j)
 			if curr.Type().Field(j).Name == subpaths[i] {
 				numericalPath[i] = j
+				d.tlb[subpath] = numericalPath[:i+1]
 				curr = field
 				switch fieldType := field.Kind(); fieldType {
 				case reflect.Array, reflect.Slice:
@@ -204,12 +227,10 @@ func (d Document) GetNumericalPath(path string) ([]int, error) {
 						if err != nil || index >= field.Len() || index < 0 {
 							return nil, errors.New("invalid target index")
 						}
-						if fieldType == reflect.Slice {
-							curr = field.Index(index)
-						} else {
-							curr = field.Elem().Index(index)
-						}
+						curr = getValueFromIndex(curr, index)
 						numericalPath[i] = index
+						subpath := subpath + "/" + subpaths[i]
+						d.tlb[subpath] = numericalPath[:i+1]
 					}
 				}
 				if curr.Kind() == reflect.Interface {
@@ -218,17 +239,20 @@ func (d Document) GetNumericalPath(path string) ([]int, error) {
 				found = true
 				break
 			}
-			// fmt.Printf("hi, i=%d, j=%d, curr=%+v\n", i, j, curr)
 		}
 		if !found {
 			return nil, errors.New("invalid path, couldn't find subpath " + subpaths[i])
 		}
 	}
 	d.tlb[path] = numericalPath
-	fmt.Printf("Cache after: %+v\n\n", d.tlb)
 	return d.tlb[path], nil
 }
 
-func (d Document) GetTLB() map[string][]int {
-	return d.tlb
+// Given an array or slice return the value at that index
+func getValueFromIndex(curr reflect.Value, index int) reflect.Value {
+	if curr.Kind() == reflect.Array {
+		return curr.Elem().Index(index)
+	} else if curr.Kind() == reflect.Slice {
+		return curr.Index(index)
+	}
 }

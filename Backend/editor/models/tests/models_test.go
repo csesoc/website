@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"log"
 	"reflect"
 	"testing"
@@ -198,7 +197,6 @@ func TestValidCachedPathGetNumericalPath(t *testing.T) {
 		log.Fatalf(err.Error())
 	}
 	assert.Equal([]int{2, 1, 2}, result)
-	fmt.Printf("%+v\n", testObj.GetTLB())
 	// Check that getting a value already cached should work
 	result, err = testObj.GetNumericalPath(path)
 	if err != nil {
@@ -209,20 +207,27 @@ func TestValidCachedPathGetNumericalPath(t *testing.T) {
 
 func TestValidCachedSubpathGetNumericalPath(t *testing.T) {
 	testObj := setupDocument()
-	path := "Content/0"
+	path := "Content/1"
 	result, err := testObj.GetNumericalPath(path)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 	assert := assert.New(t)
-	assert.Equal([]int{2, 0}, result)
+	assert.Equal([]int{2, 1}, result)
 	// Check that getting a value with subpath cached should work
-	path = path + "/ImageSource"
+	path = path + "/ParagraphChildren"
 	result, err = testObj.GetNumericalPath(path)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	assert.Equal([]int{2, 0, 1}, result)
+	assert.Equal([]int{2, 1, 2}, result)
+	// Check that getting a value with subpath up to a slice / array should work
+	path = path + "/0/Link"
+	result, err = testObj.GetNumericalPath(path)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	assert.Equal([]int{2, 1, 2, 0, 1}, result)
 }
 
 func TestInValidGetNumericalIndexValidPath(t *testing.T) {
