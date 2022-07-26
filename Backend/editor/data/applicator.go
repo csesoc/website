@@ -14,7 +14,7 @@ import (
 // - Make sure the item we are adding keeps the validity of the object
 
 // ApplyRequest takes a datamodel (as defined in the datamodels folder) and a request, it then proceeds to apply the request
-// to the model, note that this assumes that the oepration in the request has been appropriately transformed
+// to the model, note that this assumes that the operation in the request has been appropriately transformed
 func ApplyRequest(model datamodels.DataModel, request Request) error {
 	_, err := GetOperationTargetSite(model, request.path)
 	if err != nil {
