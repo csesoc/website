@@ -12,7 +12,7 @@ import (
 // models contains all the data models for the editor
 // this is the configuration required for the cmsjson module
 // cmsjson is a custom marshaller/unmarshaller that supports interface types
-// cmsjson works with arbtirary schemas so this model can be changed on a whim
+// cmsjson works with arbitrary schemas so this model can be changed on a whim
 // note that cmsjson does not check that the provided types implement the interface
 // so please check that everything works prior to running the CMS
 var cmsJsonConf = cmsjson.Configuration{
