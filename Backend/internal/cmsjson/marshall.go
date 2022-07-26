@@ -107,13 +107,14 @@ func (c Configuration) marshallPrimitive(field reflect.Value) []byte {
 func (c Configuration) marshallCore(source reflect.Value) []byte {
 	underlyingType := resolveType(source.Type())
 
-	if underlyingType == _primitive {
+	switch underlyingType {
+	case _primitive:
 		return c.marshallPrimitive(source)
-	} else if underlyingType == _array || underlyingType == _slice {
+	case _array, _slice:
 		return c.marshallArray(source)
-	} else if underlyingType == _struct {
+	case _struct:
 		return c.marshallStruct(source)
-	} else if underlyingType == _interface {
+	case _interface:
 		return c.marshallInterface(source)
 	}
 

@@ -1,4 +1,4 @@
-package models
+package cmsmodel
 
 import "reflect"
 
