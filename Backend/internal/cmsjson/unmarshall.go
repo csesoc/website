@@ -99,9 +99,7 @@ func (c Configuration) parsePrimitive(result gjson.Result, expected reflect.Type
 		value = result.String()
 	case reflect.Int:
 		value = result.Int()
-	case reflect.Float32:
-		fallthrough
-	case reflect.Float64:
+	case reflect.Float32, reflect.Float64:
 		value = result.Float()
 	default:
 		value = nil
