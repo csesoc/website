@@ -1,7 +1,7 @@
 package data
 
 import (
-	"errors"
+	"fmt"
 	"reflect"
 	"strconv"
 
@@ -13,48 +13,63 @@ func Traverse(document datamodels.DataModel, subpaths []string) (reflect.Value, 
 	prev := reflect.Value{}
 	curr := reflect.ValueOf(document)
 
-	for i := 0; i < len(subpaths); i++ {
-		var err error = nil
-		subpath := subpaths[i]
-		field := curr.FieldByName(subpath)
+	for len(subpaths) > 0 {
+		prev, curr, subpaths = consumeField(prev, curr, subpaths)
+		prev, curr, subpaths = tryConsumeArrayElement(prev, curr, subpaths)
 
-		if field.IsValid() {
-			prev = curr
-			curr = field
-
-			endOfPath := i == len(subpaths)-1
-			canConsumeArrayIndex := !endOfPath && (field.Kind() == reflect.Array || field.Kind() == reflect.Slice)
-
-			if canConsumeArrayIndex {
-				targetIndex := subpaths[i+1]
-				prev = field
-				curr, err = getValueAtIndex(field, targetIndex)
-				// Skip the next subpath as we just consumed that index
-				i += 1
-			}
-
-			curr = dereference(curr)
-		} else {
-			err = errors.New("invalid path, couldn't find subpath " + subpath)
-		}
-
-		if err != nil {
-			return reflect.Value{}, reflect.Value{}, err
+		if !prev.IsValid() || !curr.IsValid() {
+			return reflect.Value{}, reflect.Value{}, fmt.Errorf("invalid path, couldn't find subpath %s", subpaths[0])
 		}
 	}
 
 	return prev, curr, nil
 }
 
-// getValueAtIndex fetches the value at the provided index in the array pointed at by reflect.Value, note it is assumed that index
-// is a string
-func getValueAtIndex(array reflect.Value, i string) (reflect.Value, error) {
-	index, err := strconv.Atoi(i)
-	if err != nil || index >= array.Len() || index < 0 {
-		return reflect.Value{}, errors.New("invalid target index")
+// tryConsumeArrayElement attempts to consume the head of the path, the assumption is that the current value is an
+// array value, if this is not the case then the function returns the prev, current and path uncahnged, if it was capable
+// of consuming the head then it returns the subpath minus the head
+func tryConsumeArrayElement(prev, curr reflect.Value, path []string) (reflect.Value, reflect.Value, []string) {
+	// If we are at an array, we attempt to "index" into that array directly, this implies consuming the next element of our path
+	// which should be a regular array index
+	atEndOfPath := len(path) < 1
+	canConsumeArrayIndex := !atEndOfPath &&
+		curr.IsValid() &&
+		(curr.Kind() == reflect.Array || curr.Kind() == reflect.Slice)
+
+	if canConsumeArrayIndex {
+		targetIndex := path[0]
+		field := getValueAtIndex(curr, targetIndex)
+		if !field.IsValid() {
+			return curr, reflect.Value{}, path
+		}
+
+		return curr, dereference(field), path[1:]
 	}
 
-	return array.Index(index), nil
+	// Looks like we couldn't consume an array but thats ok :D
+	return prev, curr, path
+}
+
+// consumeField consumes a regular field from a path, it pops the head off the path slice and if it was able
+// to consume something then it retuns the path minus the head :D
+func consumeField(prev, curr reflect.Value, path []string) (reflect.Value, reflect.Value, []string) {
+	field := curr.FieldByName(path[0])
+	if curr.IsValid() {
+		return curr, dereference(field), path[1:]
+	}
+
+	return prev, reflect.Value{}, path
+}
+
+// getValueAtIndex fetches the value at the provided index in the array pointed at by reflect.Value
+// note it is assumed that index is a string
+func getValueAtIndex(array reflect.Value, i string) reflect.Value {
+	index, err := strconv.Atoi(i)
+	if err != nil || index >= array.Len() || index < 0 {
+		return reflect.Value{}
+	}
+
+	return array.Index(index)
 }
 
 // dereference unpacks a reflect.Value that points to an interface, it returns the inner struct, this is because
