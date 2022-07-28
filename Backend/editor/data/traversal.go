@@ -61,7 +61,7 @@ func consumeField(prev, curr reflect.Value, path []string) (reflect.Value, refle
 	return prev, reflect.Value{}, path
 }
 
-// getValueAtIndex fetches the value at the provided index in the array pointed at by reflect.Value
+// getValueAtIndex fetches the value at the provided index in the array or slice pointed at by reflect.Value
 // note it is assumed that index is a string
 func getValueAtIndex(array reflect.Value, i string) reflect.Value {
 	index, err := strconv.Atoi(i)
