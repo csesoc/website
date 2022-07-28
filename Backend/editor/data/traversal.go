@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"cms.csesoc.unsw.edu.au/editor/data/datamodels"
 )
@@ -12,13 +13,15 @@ import (
 func Traverse(document datamodels.DataModel, subpaths []string) (reflect.Value, reflect.Value, error) {
 	prev := reflect.Value{}
 	curr := reflect.ValueOf(document)
+	fullPath := subpaths
 
 	for len(subpaths) > 0 {
 		prev, curr, subpaths = consumeField(prev, curr, subpaths)
 		prev, curr, subpaths = tryConsumeArrayElement(prev, curr, subpaths)
 
 		if !prev.IsValid() || !curr.IsValid() {
-			return reflect.Value{}, reflect.Value{}, fmt.Errorf("invalid path, couldn't find subpath %s", subpaths[0])
+			consumedPath := fullPath[:len(fullPath)-len(subpaths)]
+			return reflect.Value{}, reflect.Value{}, fmt.Errorf("invalid path, couldn't find subpath %s", strings.Join(consumedPath, "/"))
 		}
 	}
 
