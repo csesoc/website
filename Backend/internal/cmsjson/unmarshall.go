@@ -75,15 +75,16 @@ func (c Configuration) parseInterface(root gjson.Result, primitiveType reflect.T
 func (c Configuration) parseCore(result gjson.Result, primitiveType reflect.Type, output *reflect.Value) {
 	underlyingType := resolveType(primitiveType)
 
-	if underlyingType == _primitive {
+	switch underlyingType {
+	case _primitive:
 		*output = c.parsePrimitive(result, primitiveType)
-	} else if underlyingType == _array || underlyingType == _slice {
+	case _array, _slice:
 		*output = c.parseArray(result, primitiveType.Elem(), underlyingType == _slice)
-	} else if underlyingType == _struct {
+	case _struct:
 		out := reflect.New(primitiveType)
 		c.parseStruct(result, primitiveType, out.Elem())
 		*output = out.Elem()
-	} else if underlyingType == _interface {
+	case _interface:
 		var out reflect.Value
 		c.parseInterface(result, primitiveType, &out)
 		*output = out.Elem()
@@ -98,9 +99,7 @@ func (c Configuration) parsePrimitive(result gjson.Result, expected reflect.Type
 		value = result.String()
 	case reflect.Int:
 		value = result.Int()
-	case reflect.Float32:
-		fallthrough
-	case reflect.Float64:
+	case reflect.Float32, reflect.Float64:
 		value = result.Float()
 	default:
 		value = nil

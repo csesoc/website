@@ -3,6 +3,7 @@ package cmsjson
 import (
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 // Marshall can potentially be a rather expensive operation
@@ -10,52 +11,64 @@ import (
 // a string each invocation ends up allocation a new string on the heap
 // resulting in GC overhead :P
 func (c Configuration) Marshall(source interface{}) string {
-	return string(c.marshallStruct(reflect.ValueOf(source)))
+	return c.marshallStruct(reflect.ValueOf(source))
 }
 
 // marshallStruct takes a struct and marshalls it into a string
-func (c Configuration) marshallStruct(v reflect.Value) []byte {
+func (c Configuration) marshallStruct(v reflect.Value) string {
 	// iterate over each field
-	result := []byte{'{'}
+	marshalledString := strings.Builder{}
+	marshalledString.WriteByte('{')
+
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Field(i)
 		underlyingType := resolveType(field.Type())
+		isNestedField := underlyingType != _primitive
 
-		if underlyingType == _primitive {
-			result = append(result, c.marshallKeyValuePair(field, v.Type().Field(i))...)
+		if !isNestedField {
+			marshalledString.WriteString(c.marshallKeyValuePair(field, v.Type().Field(i)))
 		} else {
-			result = append(result, fmt.Sprintf(`"%s": %s`, v.Type().Field(i).Name, c.marshallCore(field))...)
+			marshalledString.WriteString(
+				fmt.Sprintf(
+					`"%s": %s`,
+					v.Type().Field(i).Name,
+					c.marshallCore(field),
+				),
+			)
 		}
 
 		// if this isnt the last field we require a comma deliminater
 		if i != v.NumField()-1 {
-			result = append(result, ',')
+			marshalledString.WriteByte(',')
 		}
 	}
 
-	return append(result, '}')
+	marshalledString.WriteByte('}')
+	return marshalledString.String()
 }
 
 // marshallArray takes an array and marshalls it into a string
-func (c Configuration) marshallArray(source reflect.Value) []byte {
-	result := []byte{'['}
+func (c Configuration) marshallArray(source reflect.Value) string {
+	marshalledString := strings.Builder{}
+	marshalledString.WriteByte('[')
 
 	for i := 0; i < source.Len(); i++ {
 		elementValue := source.Index(i)
-		result = append(result, c.marshallCore(elementValue)...)
+		marshalledString.WriteString(c.marshallCore(elementValue))
 
 		// if this isnt the last field we require a comma delimiter
 		if i != source.Len()-1 {
-			result = append(result, ',')
+			marshalledString.WriteByte(',')
 		}
 	}
 
-	return append(result, ']')
+	marshalledString.WriteByte(']')
+	return marshalledString.String()
 }
 
 // marshallInterface takes an interface, resolves the types and marshalls it into a
 // string
-func (c Configuration) marshallInterface(source reflect.Value) []byte {
+func (c Configuration) marshallInterface(source reflect.Value) string {
 	typeMappings := c.RegisteredTypes[source.Type()]
 	implementingType := source.Elem().Type()
 	var typeName string = ""
@@ -72,50 +85,58 @@ func (c Configuration) marshallInterface(source reflect.Value) []byte {
 	generatedJson := c.marshallStruct(source.Elem())
 	generatedJson = generatedJson[1:]
 
-	return []byte(fmt.Sprintf(`{"$type": "%s", %s`, typeName, generatedJson))
+	return fmt.Sprintf(`{"$type": "%s", %s`, typeName, generatedJson)
 }
 
+// Helper type constants just to make conversion a little cleaner
+var (
+	toFloat  = func(v reflect.Value) float64 { return v.Convert(reflect.TypeOf(float64(0.3))).Float() }
+	toInt    = func(v reflect.Value) int64 { return v.Convert(reflect.TypeOf(int64(0))).Int() }
+	toString = func(v reflect.Value) string { return v.Convert(reflect.TypeOf("string")).String() }
+)
+
 // marshallKeyValuePair parses a key value pair within a struct
-func (c Configuration) marshallKeyValuePair(field reflect.Value, structEntry reflect.StructField) []byte {
-	if field.Type().Kind() == reflect.Int {
-		return []byte(fmt.Sprintf(`"%s": %d`, structEntry.Name,
-			field.Convert(reflect.TypeOf(3)).Int()))
-	} else if field.Type().Kind() == reflect.Float32 || field.Type().Kind() == reflect.Float64 {
-		return []byte(fmt.Sprintf(`"%s": %f`, structEntry.Name,
-			field.Convert(reflect.TypeOf(float64(0.3))).Float()))
-	} else if field.Type().Kind() == reflect.String {
-		return []byte(fmt.Sprintf(`"%s": "%s"`, structEntry.Name,
-			field.Convert(reflect.TypeOf("string")).String()))
+func (c Configuration) marshallKeyValuePair(field reflect.Value, structEntry reflect.StructField) string {
+	switch field.Type().Kind() {
+	case reflect.Int:
+		return fmt.Sprintf(`"%s": %d`, structEntry.Name, toInt(field))
+	case reflect.Float32, reflect.Float64:
+		return fmt.Sprintf(`"%s": %f`, structEntry.Name, toFloat(field))
+	case reflect.String:
+		return fmt.Sprintf(`"%s": "%s"`, structEntry.Name, toString(field))
+	default:
+		return ""
 	}
-	return nil
 }
 
 // parsePrimitive just parses a lone primitive
 // parseKeyValuePair parses a key value pair within a struct
-func (c Configuration) marshallPrimitive(field reflect.Value) []byte {
-	if field.Type().Kind() == reflect.Int {
-		return []byte(fmt.Sprintf(`%d`, field.Convert(reflect.TypeOf(3)).Int()))
-	} else if field.Type().Kind() == reflect.Float32 || field.Type().Kind() == reflect.Float64 {
-		return []byte(fmt.Sprintf(`%f`, field.Convert(reflect.TypeOf(float64(0.3))).Float()))
-	} else if field.Type().Kind() == reflect.String {
-		return []byte(fmt.Sprintf(`"%s"`, field.Convert(reflect.TypeOf("string")).String()))
+func (c Configuration) marshallPrimitive(field reflect.Value) string {
+	switch field.Type().Kind() {
+	case reflect.Int:
+		return fmt.Sprintf(`%d`, toInt(field))
+	case reflect.Float32, reflect.Float64:
+		return fmt.Sprintf(`%f`, toFloat(field))
+	case reflect.String:
+		return fmt.Sprintf(`"%s"`, toString(field))
+	default:
+		return ""
 	}
-	return nil
 }
 
 // marshallCore marshalls the value within source
-func (c Configuration) marshallCore(source reflect.Value) []byte {
+func (c Configuration) marshallCore(source reflect.Value) string {
 	underlyingType := resolveType(source.Type())
-
-	if underlyingType == _primitive {
+	switch underlyingType {
+	case _primitive:
 		return c.marshallPrimitive(source)
-	} else if underlyingType == _array || underlyingType == _slice {
+	case _array, _slice:
 		return c.marshallArray(source)
-	} else if underlyingType == _struct {
+	case _struct:
 		return c.marshallStruct(source)
-	} else if underlyingType == _interface {
+	case _interface:
 		return c.marshallInterface(source)
+	default:
+		return ""
 	}
-
-	return nil
 }
