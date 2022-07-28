@@ -26,7 +26,7 @@ func Traverse(document datamodels.DataModel, subpaths []string) (reflect.Value, 
 }
 
 // tryConsumeArrayElement attempts to consume the head of the path, the assumption is that the current value is an
-// array value, if this is not the case then the function returns the prev, current and path uncahnged, if it was capable
+// array value, if this is not the case then the function returns the prev, current and path unchanged, if it was capable
 // of consuming the head then it returns the subpath minus the head
 func tryConsumeArrayElement(prev, curr reflect.Value, path []string) (reflect.Value, reflect.Value, []string) {
 	// If we are at an array, we attempt to "index" into that array directly, this implies consuming the next element of our path
