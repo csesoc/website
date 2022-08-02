@@ -1,6 +1,6 @@
-import React, { MouseEventHandler } from "react";
-import { StyledButton, buttonProps, scaleRate } from "./small_buttons-Styled";
-import { ReactComponent as Bold } from "../../assets/bold-button.svg";
+import React, { MouseEventHandler } from 'react';
+import { StyledButton, buttonProps, scaleRate } from './small_buttons-Styled';
+import { ReactComponent as Bold } from 'src/cse-ui-kit/assets/bold-button.svg';
 
 type Props = {
   onClick?: MouseEventHandler<HTMLDivElement>;

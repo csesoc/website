@@ -2,6 +2,7 @@
   "name": "next",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://backend:8080",
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",

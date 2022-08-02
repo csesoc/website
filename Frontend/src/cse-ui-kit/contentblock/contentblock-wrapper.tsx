@@ -13,6 +13,7 @@ export default function MoveableContentBlock({ children, onClick, ...styleProps 
     <StyledContent
       onClick={onClick}
       {...styleProps}
+      data-anchor="ContentBlockWrapper"
     >
       <div
         style={{

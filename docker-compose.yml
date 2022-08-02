@@ -5,35 +5,33 @@ services:
     container_name: Next
     build:
       context: ./Next
-      args:
-        BACKEND_URI: ${BACKEND_URI}
+      dockerfile: ./Dockerfile.development
     volumes:
-      - '/next/node_modules'
       - './Next:/next'
     stdin_open: true
     ports:
       - 3001:3001
   frontend:
     container_name: Frontend
-    build: 
+    build:
       context: ./Frontend
-      args: 
-        BACKEND_URI: ${BACKEND_URI}
+      dockerfile: ./Dockerfile.development
     volumes:
-      # Note must include node_modules as a seperate volume
-      - '/app/node_modules'
       - './Frontend:/app'
     stdin_open: true
     ports:
       - 3000:3000
   backend:
     container_name: go_backend
-    build: ./Backend
+    build:
+      context: ./Backend
+      dockerfile: ./Dockerfile.development
     depends_on:
       - db
     volumes:
       - './Backend:/go/src/cms.csesoc.unsw.edu.au'
-      - './Backend/go.mod:/go/src/cms.csesoc.unsw.edu.au/go.mod'
+      - 'unpublished_document_data:/var/lib/documents/unpublished/data'
+      - 'published_document_data:/var/lib/documents/published/data'
     ports:
       - 8080:8080
     environment:
@@ -42,7 +40,7 @@ services:
       - POSTGRES_PASSWORD=${PG_PASSWORD}
       - POSTGRES_DB=${PG_DB}
       - POSTGRES_PORT=${PG_PORT}
-
+      - POSTGRES_HOST=${PG_HOST}
   db:
     container_name: pg_container
     image: postgres
@@ -68,7 +66,9 @@ services:
       - 1234:5432
     volumes:
       - './Postgres/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql'
-      - 'staging_data:/var/lib/postgresql/data'
+      - 'staging_pg_db:/var/lib/postgresql/data'
 volumes:
   pg_data:
-  staging_data:
+  staging_pg_db:
+  unpublished_document_data:
+  published_document_data:

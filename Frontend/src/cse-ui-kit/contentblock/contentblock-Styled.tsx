@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const StyledContent = styled.div`
   width: 100%;
-  max-width: 400px;
+  max-width: 600px;
   background: #ffffff;
   color: #000000;
   box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.25);

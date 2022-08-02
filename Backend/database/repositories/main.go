@@ -8,6 +8,8 @@ var context contexts.DatabaseContext = nil
 // enum of repositories
 const (
 	FILESYSTEM = iota
+	DOCKER_PUBLISHED_FILESYSTEM
+	DOCKER_UNPUBLISHED_FILESYSTEM
 	PERSON
 	GROUPS
 )
@@ -34,6 +36,12 @@ func GetRepository(repo int) interface{} {
 		return GroupsRepository{
 			embeddedContext{context},
 		}
+	case DOCKER_PUBLISHED_FILESYSTEM:
+		fs, _ := NewDockerPublishedFileSystemRepository()
+		return fs
+	case DOCKER_UNPUBLISHED_FILESYSTEM:
+		fs, _ := NewDockerUnpublishedFileSystemRepository()
+		return fs
 	default:
 		return nil
 	}
