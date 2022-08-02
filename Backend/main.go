@@ -1,11 +1,11 @@
 package main
 
 import (
-	"cms.csesoc.unsw.edu.au/endpoints"
-	"cms.csesoc.unsw.edu.au/environment"
-
 	"log"
 	"net/http"
+
+	"cms.csesoc.unsw.edu.au/endpoints"
+	"cms.csesoc.unsw.edu.au/environment"
 
 	"github.com/rs/cors"
 )
@@ -15,10 +15,10 @@ func main() {
 
 	endpoints.RegisterFilesystemEndpoints(mux)
 	endpoints.RegisterAuthenticationEndpoints(mux)
-	mux.Handle("/", http.FileServer(http.Dir("./editor/html")))
+	endpoints.RegisterEditorEndpoints(mux)
 
 	// whitelisted URLs
-	var frontend_URI = environment.GetFrontendURI()
+	frontend_URI := environment.GetFrontendURI()
 
 	// CORS middleware added
 	c := cors.New(cors.Options{

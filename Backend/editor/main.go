@@ -1,8 +1,9 @@
 package editor
 
 import (
-	"log"
+	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -26,9 +27,11 @@ func EditEndpoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ws, err := Upgrader.Upgrade(w, r, nil)
+	defer manager.closeDocumentServer(requestedDocument)
+	file, err := fs.GetFromVolume(strconv.Itoa(requestedDocument))
 	if err != nil {
-		log.Println(err)
+		terminateWs(ws, "error")
+		return errors.New("Unable to open request document")
 	}
 
 	wsClient := newClient(ws)

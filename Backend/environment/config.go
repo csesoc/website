@@ -8,11 +8,12 @@ func GetFrontendURI() string {
 	return os.Getenv("FRONTEND_URI")
 }
 
-// having a hard time dealing with environment variable injection
-// into the docker container
-// so hard coding it
 func GetDBUser() string {
 	return os.Getenv("POSTGRES_USER")
+}
+
+func GetDBHost() string {
+	return os.Getenv("POSTGRES_HOST")
 }
 
 func GetDBPassword() string {

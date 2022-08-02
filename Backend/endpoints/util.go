@@ -31,14 +31,14 @@ func SendResponse(w http.ResponseWriter, marshaledJson string) {
 }
 
 // ParseParamsToSchema expects the target to be a pointer
-func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interface{}) bool {
-	err := r.ParseForm()
-	if err != nil {
-		return false
+func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interface{}) int {
+	if acceptingMethod != r.Method {
+		return http.StatusMethodNotAllowed
 	}
 
-	if acceptingMethod != r.Method {
-		return false
+	err := r.ParseForm()
+	if err != nil {
+		return http.StatusBadRequest
 	}
 
 	decoder := schema.NewDecoder()
@@ -48,8 +48,32 @@ func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interfa
 		err = decoder.Decode(target, r.PostForm)
 	}
 	if err != nil {
-		return false
+		return http.StatusBadRequest
 	}
 
-	return true
+	return http.StatusOK
+}
+
+func ParseMultiPartFormToSchema(r *http.Request, acceptingMethod string, target interface{}) int {
+	if acceptingMethod != r.Method {
+		return http.StatusMethodNotAllowed
+	}
+
+	var maxUploadSize int64 = 10 << 20
+	err := r.ParseMultipartForm(maxUploadSize)
+	if err != nil {
+		fmt.Print(err.Error())
+		return http.StatusBadRequest
+	}
+
+	decoder := schema.NewDecoder()
+	if r.Method != "POST" {
+		err = decoder.Decode(target, r.Form)
+	} else {
+		err = decoder.Decode(target, r.PostForm)
+	}
+	if err != nil {
+		return http.StatusBadRequest
+	}
+	return http.StatusOK
 }

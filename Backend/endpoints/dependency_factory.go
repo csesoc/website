@@ -26,6 +26,10 @@ func (DependencyProvider) GetDependency(t reflect.Type) interface{} {
 		return repositories.GetRepository(repositories.GROUPS)
 	case reflect.TypeOf((*repositories.IPersonRepository)(nil)):
 		return repositories.GetRepository(repositories.PERSON)
+	case reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil)):
+		return repositories.GetRepository(repositories.DOCKER_UNPUBLISHED_FILESYSTEM)
+	case reflect.TypeOf((*repositories.IDockerPublishedFilesystemRepository)(nil)):
+		return repositories.GetRepository(repositories.DOCKER_PUBLISHED_FILESYSTEM)
 	default:
 		panic("unsupported dependency requested")
 	}

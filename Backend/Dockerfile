@@ -1,30 +1,15 @@
-FROM golang:1.17-alpine as build-env
-
-# make current working directory /app
-WORKDIR /go/src/cms.csesoc.unsw.edu.au
-
-# copy go.mod and go.sum
-COPY go.mod go.sum ./
-
+FROM golang:1.18-alpine as app-builder
+WORKDIR /go/src/app
 COPY . .
+RUN apk add git
+# Static build required so that we can safely copy the binary over.
+# `-tags timetzdata` embeds zone info from the "time/tzdata" package.
+RUN CGO_ENABLED=0 go install -ldflags '-extldflags "-static"' -tags timetzdata
 
-
-# downloding dependencies
-RUN go mod download
-RUN apk add --update npm
-RUN go get github.com/githubnemo/CompileDaemon
-
-WORKDIR editor/html
-RUN npm install
-WORKDIR ../../
-
-
-EXPOSE 8080
-
-# export environment variable for gopath
-ENV GOPATH /go
-
-# might start the app
-#CMD ["go", "run", "main.go"]
-
-ENTRYPOINT CompileDaemon --build="go build main.go" --command="./main"
+FROM scratch
+# the test program:
+COPY --from=app-builder /go/bin/cms.csesoc.unsw.edu.au /cms.csesoc.unsw.edu.au
+# the tls certificates:
+# NB: this pulls directly from the upstream image, which already has ca-certificates:
+COPY --from=alpine:latest /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+ENTRYPOINT ["/cms.csesoc.unsw.edu.au"]
