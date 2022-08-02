@@ -104,7 +104,6 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactor
 			NewID: e.EntityID,
 		}, nil
 	}
-
 }
 
 // Handler for deleting filesystem entities
@@ -268,7 +267,6 @@ func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, l
 	}{
 		NewID: e.EntityID,
 	}, nil
-
 }
 
 type ValidPublishDocumentRequest struct {
@@ -292,12 +290,12 @@ func PublishDocument(w http.ResponseWriter, r *http.Request, df DependencyFactor
 	// Get the file from the unpublished volume
 	file, err := unpublishedDockerRepo.GetFromVolume(filename)
 	if err != nil {
-		return http.StatusInternalServerError, nil, errors.New("Requested document doesn't exist or is invalid")
+		return http.StatusInternalServerError, nil, errors.New("requested document doesn't exist or is invalid")
 	}
 	// CopyToVolume will create or copy source file into published volume
 	err = publishedDockerRepo.CopyToVolume(file, filename)
 	if err != nil {
-		return http.StatusInternalServerError, nil, errors.New("Couldn't copy file to published volume")
+		return http.StatusInternalServerError, nil, errors.New("couldn't copy file to published volume")
 	}
 	return http.StatusOK, struct{}{}, nil
 }
@@ -318,7 +316,7 @@ func GetPublishedDocument(w http.ResponseWriter, r *http.Request, df DependencyF
 	// Get file from published volume
 	file, err := publishedDockerRepo.GetFromVolume(strconv.Itoa(input.DocumentID))
 	if err != nil {
-		return http.StatusInternalServerError, nil, errors.New("Requested document doesn't exist or is invalid")
+		return http.StatusInternalServerError, nil, errors.New("requested document doesn't exist or is invalid")
 	}
 
 	defer file.Close()
@@ -326,9 +324,8 @@ func GetPublishedDocument(w http.ResponseWriter, r *http.Request, df DependencyF
 	// send the current state of the document
 	buf := &bytes.Buffer{}
 	bytes, err := buf.ReadFrom(file)
-
 	if err != nil {
-		return http.StatusInternalServerError, nil, errors.New("Unable to read request document")
+		return http.StatusInternalServerError, nil, errors.New("unable to read request document")
 	}
 
 	// Empty file

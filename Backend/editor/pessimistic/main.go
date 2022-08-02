@@ -41,7 +41,6 @@ func EditorClientLoop(requestedDocument int, fs repositories.IDockerUnpublishedF
 	// send the current state of the document
 	buf := &bytes.Buffer{}
 	bytes, err := buf.ReadFrom(file)
-
 	if err != nil {
 		return errors.New("Unable to read request document")
 	}
