@@ -13,8 +13,10 @@ type manager struct {
 	openDocumentsLock sync.Mutex
 }
 
-var globalManagerInstance *manager
-var managerLock sync.Mutex = sync.Mutex{}
+var (
+	globalManagerInstance *manager
+	managerLock           sync.Mutex = sync.Mutex{}
+)
 
 // getManagerInstance returns the singleton instance of the document manager
 func getGlobalManagerInstance() *manager {

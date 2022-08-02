@@ -1,6 +1,6 @@
 package data
 
-import "cms.csesoc.unsw.edu.au/editor/data/datamodels"
+import "cms.csesoc.unsw.edu.au/editor/OT/data/datamodels"
 
 // File contains all the atomic operations we can apply to a datamodel
 

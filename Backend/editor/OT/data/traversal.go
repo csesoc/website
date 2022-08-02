@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"cms.csesoc.unsw.edu.au/editor/data/datamodels"
+	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels"
 )
 
 // Traverse returns the second last value and the last value pointed at by a specific path
