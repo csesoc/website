@@ -4,13 +4,14 @@ import (
 	"log"
 	"net/http"
 
-	"cms.csesoc.unsw.edu.au/editor/deprecated/service"
+	"cms.csesoc.unsw.edu.au/editor/diffSync/service"
 	"github.com/gorilla/websocket"
 )
 
 // This file just defines some of the endpoints for the editor
 // and ties togher its various disparate components
 var broker = service.NewBroker()
+
 var Upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,

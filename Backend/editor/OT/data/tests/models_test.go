@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"cms.csesoc.unsw.edu.au/editor/data"
-	"cms.csesoc.unsw.edu.au/editor/data/datamodels/cmsmodel"
+	"cms.csesoc.unsw.edu.au/editor/OT/data"
+	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels/cmsmodel"
 	"github.com/stretchr/testify/assert"
 )
 
