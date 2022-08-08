@@ -51,7 +51,7 @@ const Scroll = styled.p`
   transform: rotate(90deg);
   position: absolute;
   right: 0px;
-  bottom: 0px;
+  bottom: 10%;
 `;
 
 

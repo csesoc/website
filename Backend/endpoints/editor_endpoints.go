@@ -6,7 +6,7 @@ import (
 	"reflect"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
-	"cms.csesoc.unsw.edu.au/editor"
+	editor "cms.csesoc.unsw.edu.au/editor/pessimistic"
 	"cms.csesoc.unsw.edu.au/internal/logger"
 	"github.com/gorilla/websocket"
 )

@@ -4,13 +4,12 @@ import (
 	"log"
 	"net/http"
 
-	"cms.csesoc.unsw.edu.au/editor/deprecated/service"
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
 // This file just defines some of the endpoints for the editor
-// and ties togher its various disparate components
-var broker = service.NewBroker()
+// and ties together its various disparate components
 var Upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
@@ -32,8 +31,9 @@ func EditEndpoint(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	err = broker.ConnectOrOpenDocument(requestedDocument[0], ws)
-	if err != nil {
-		ws.Close()
-	}
+	wsClient := newClient(ws)
+	targetServer := GetDocumentServerFactoryInstance().FetchDocumentServer(uuid.MustParse(requestedDocument[0]))
+	commPipe, terminatePipe := targetServer.connectClient(wsClient)
+
+	go wsClient.run(commPipe, terminatePipe)
 }
