@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Backdrop from '@mui/material/Backdrop';
 import Fade from '@mui/material/Fade';
-import ContentBlockPopup from './contentblock_popup';
+import ContentBlockPopup from './contentBlockPopup';
 
 export default {
   title: 'CSE-UIKIT/UploadContentPopup',
