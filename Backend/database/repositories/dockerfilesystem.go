@@ -61,7 +61,7 @@ func newDockerFilesystemRespositoryCore(volumePath string) (*dockerFileSystemRep
 	}
 }
 
-// Add file to volume or update if exists. Source file is deleted.
+// Add file to volume or update if exists
 func (c *dockerFileSystemRepositoryCore) AddToVolume(filename string) error {
 	// Check if source file is valid
 	src, err := os.Open(filename)
@@ -110,7 +110,7 @@ func (c *dockerFileSystemRepositoryCore) CopyToVolume(src *os.File, filename str
 // Get file from volume. Returns a valid file pointer
 func (c *dockerFileSystemRepositoryCore) GetFromVolume(filename string) (*os.File, error) {
 	// Concatenate volume path with file name
-	return os.OpenFile(filepath.Join(c.volumePath, filename), os.O_RDWR, 0755)
+	return os.OpenFile(filepath.Join(c.volumePath, filename), os.O_RDWR|os.O_CREATE, 0755)
 }
 
 // Get file from volume in truncated mode
