@@ -26,39 +26,44 @@ type ValidInfoRequest struct {
 }
 
 // Defines endpoints consumable via the API
-func GetEntityInfo(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
-	var input ValidInfoRequest
-	if status := ParseParamsToSchema(r, "GET", &input); status != http.StatusOK {
-		return status, nil, nil
+func GetEntityInfo(form ValidInfoRequest, df DependencyFactory) handlerResponse[EntityInfo] {
+	log := getDependency[logger.Log](df)
+	fsRepo := getDependency[repositories.FilesystemRepository](df)
+
+	// Query the repository for an existing entity with the given ID
+	entity, err := fsRepo.GetEntryWithID(form.EntityID)
+	if err != nil {
+		return handlerResponse[EntityInfo]{
+			Status:   http.StatusNotFound,
+			Response: EntityInfo{},
+		}
 	}
 
-	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
-	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
+	log.Write([]byte(fmt.Sprintf("retrieved entity: %v.", entity)))
 
-	log.Write([]byte("Acquired repository."))
+	return handlerResponse[EntityInfo]{
+		Status:   http.StatusOK,
+		Response: fsEntryToEntityInfo(entity, fsRepo, true),
+	}
+}
 
-	if entity, err := repository.GetEntryWithID(input.EntityID); err == nil {
-		log.Write([]byte(fmt.Sprintf("Retreived entity: %v.", entity)))
-		// Return a final structure with the children array mapped over as well
-		return http.StatusOK, EntityInfo{
-			EntityID:   entity.EntityID,
-			EntityName: entity.LogicalName,
-			IsDocument: entity.IsDocument,
-			Parent:     entity.ParentFileID,
-			Children: mapOver(entity.ChildrenIDs, func(id int) EntityInfo {
-				x, _ := repository.GetEntryWithID(id)
-				return EntityInfo{
-					EntityID:   id,
-					EntityName: x.LogicalName,
-					IsDocument: x.IsDocument,
-					Parent:     x.ParentFileID,
-					Children:   nil,
-				}
-			}),
-		}, nil
-	} else {
-		log.Write([]byte("Failed request!"))
-		return http.StatusNotFound, nil, nil
+// fsEntryToEntityInfo just converts an instance of an FS entry to an instance of an entityInfo object
+// entityInfo objects are what is actually displayed to the end user
+func fsEntryToEntityInfo(entity repositories.FilesystemEntry, fsRepo repositories.FilesystemRepository, expandChildren bool) EntityInfo {
+	children := []EntityInfo{}
+	if expandChildren {
+		for _, childId := range entity.ChildrenIDs {
+			child, _ := fsRepo.GetEntryWithID(childId)
+			children = append(children, fsEntryToEntityInfo(child, fsRepo, false))
+		}
+	}
+
+	return EntityInfo{
+		EntityID:   entity.EntityID,
+		EntityName: entity.LogicalName,
+		IsDocument: entity.IsDocument,
+		Parent:     entity.ParentFileID,
+		Children:   children,
 	}
 }
 
@@ -197,7 +202,7 @@ func RenameFilesystemEntity(w http.ResponseWriter, r *http.Request, df Dependenc
 	}
 }
 
-// generalised map function to make code a little cleaner
+// generalized map function to make code a little cleaner
 func mapOver[T any, V any](input []T, mapFunction func(T) V) []V {
 	output := []V{}
 	for _, i := range input {

@@ -4,7 +4,7 @@ import "net/http"
 
 // Registers the correct decorators for the endpoints too
 func RegisterFilesystemEndpoints(mux *http.ServeMux) {
-	mux.Handle("/api/filesystem/info", handler(GetEntityInfo))
+	mux.Handle("/api/filesystem/info", handler[ValidInfoRequest, EntityInfo]{FormType: "GET", Handler: GetEntityInfo})
 	mux.Handle("/api/filesystem/create", handler(CreateNewEntity))        // auth
 	mux.Handle("/api/filesystem/delete", handler(DeleteFilesystemEntity)) // auth
 	mux.Handle("/api/filesystem/rename", handler(RenameFilesystemEntity)) // auth
