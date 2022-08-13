@@ -77,10 +77,10 @@ func CreateNewEntity(w http.ResponseWriter, r *http.Request, df DependencyFactor
 	}
 
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
-	dfs := reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))
+	dfs := reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil))
 
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
-	dockerRepository := df.GetDependency(dfs).(repositories.IDockerPublishedFilesystemRepository)
+	dockerRepository := df.GetDependency(dfs).(repositories.IPublishedVolumeRepository)
 	log.Write([]byte("Acquired repository."))
 
 	entityToCreate := repositories.FilesystemEntry{
@@ -229,10 +229,10 @@ func UploadImage(w http.ResponseWriter, r *http.Request, df DependencyFactory, l
 
 	// Create entity in repository
 	fs := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
-	dfs := reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))
+	dfs := reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil))
 
 	repository := df.GetDependency(fs).(repositories.IFilesystemRepository)
-	dockerRepository := df.GetDependency(dfs).(repositories.IDockerPublishedFilesystemRepository)
+	dockerRepository := df.GetDependency(dfs).(repositories.IPublishedVolumeRepository)
 	log.Write([]byte("Acquired repository."))
 
 	entityToCreate := repositories.FilesystemEntry{
@@ -280,11 +280,11 @@ func PublishDocument(w http.ResponseWriter, r *http.Request, df DependencyFactor
 		return status, nil, nil
 	}
 
-	unpublishedFS := reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))
-	publishedFS := reflect.TypeOf((*repositories.IDockerPublishedFilesystemRepository)(nil))
+	unpublishedFS := reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil))
+	publishedFS := reflect.TypeOf((*repositories.IPublishedVolumeRepository)(nil))
 
-	unpublishedDockerRepo := df.GetDependency(unpublishedFS).(repositories.IDockerUnpublishedFilesystemRepository)
-	publishedDockerRepo := df.GetDependency(publishedFS).(repositories.IDockerPublishedFilesystemRepository)
+	unpublishedDockerRepo := df.GetDependency(unpublishedFS).(repositories.IUnpublishedVolumeRepository)
+	publishedDockerRepo := df.GetDependency(publishedFS).(repositories.IPublishedVolumeRepository)
 
 	filename := strconv.Itoa(input.DocumentID)
 	// Get the file from the unpublished volume
@@ -310,8 +310,8 @@ func GetPublishedDocument(w http.ResponseWriter, r *http.Request, df DependencyF
 		return status, nil, nil
 	}
 
-	publishedFS := reflect.TypeOf((*repositories.IDockerPublishedFilesystemRepository)(nil))
-	publishedDockerRepo := df.GetDependency(publishedFS).(repositories.IDockerPublishedFilesystemRepository)
+	publishedFS := reflect.TypeOf((*repositories.IPublishedVolumeRepository)(nil))
+	publishedDockerRepo := df.GetDependency(publishedFS).(repositories.IPublishedVolumeRepository)
 
 	// Get file from published volume
 	file, err := publishedDockerRepo.GetFromVolume(strconv.Itoa(input.DocumentID))

@@ -3,7 +3,6 @@ package endpoints
 import (
 	"errors"
 	"net/http"
-	"reflect"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	editor "cms.csesoc.unsw.edu.au/editor/pessimistic"
@@ -27,17 +26,14 @@ type ValidEditRequest struct {
 
 // TODO: wrap in permission checks later
 // EditHandler is the HTTP handler responsible for dealing with incoming requests to edit a document
-// for the most part this is pased over to the editor package
+// for the most part this is passed over to the editor package
 func EditHandler(w http.ResponseWriter, r *http.Request, df DependencyFactory, log *logger.Log) (int, interface{}, error) {
 	var input ValidEditRequest
 	if status := ParseParamsToSchema(r, "GET", &input); status != http.StatusOK {
 		return status, nil, nil
 	}
 
-	// fetch the docker repository
-	dockerFsRepo := reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))
-	dockerRepo := df.GetDependency(dockerFsRepo).(repositories.IDockerUnpublishedFilesystemRepository)
-	log.Write([]byte("Acquired the docker filesystem repository."))
+	dockerRepo := df.GetDependency(UnpublishedVolumeRepository).(repositories.IUnpublishedVolumeRepository)
 
 	ws, err := Upgrader.Upgrade(w, r, nil)
 	if err != nil {

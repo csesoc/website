@@ -85,7 +85,7 @@ func TestValidCreateNewEntity(t *testing.T) {
 
 	mockDepFactory := mocks.NewMockDependencyFactory(controller)
 	mockDepFactory.EXPECT().GetDependency(reflect.TypeOf((*repositories.IFilesystemRepository)(nil))).Return(mockFileRepo)
-	mockDepFactory.EXPECT().GetDependency(reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))).Return(mockDockerFileSystemRepo)
+	mockDepFactory.EXPECT().GetDependency(reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil))).Return(mockDockerFileSystemRepo)
 
 	data := url.Values{}
 	data.Set("LogicalName", "random name")
@@ -207,7 +207,7 @@ func TestValidUploadImage(t *testing.T) {
 
 	mockDepFactory := mocks.NewMockDependencyFactory(controller)
 	mockDepFactory.EXPECT().GetDependency(reflect.TypeOf((*repositories.IFilesystemRepository)(nil))).Return(mockFileRepo)
-	mockDepFactory.EXPECT().GetDependency(reflect.TypeOf((*repositories.IDockerUnpublishedFilesystemRepository)(nil))).Return(mockDockerFileSystemRepo)
+	mockDepFactory.EXPECT().GetDependency(reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil))).Return(mockDockerFileSystemRepo)
 
 	// Create request
 	body := new(bytes.Buffer)

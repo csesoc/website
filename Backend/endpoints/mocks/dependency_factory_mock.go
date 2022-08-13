@@ -7,6 +7,7 @@ package mocks
 import (
 	reflect "reflect"
 
+	endpoints "cms.csesoc.unsw.edu.au/endpoints"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -34,15 +35,15 @@ func (m *MockDependencyFactory) EXPECT() *MockDependencyFactoryMockRecorder {
 }
 
 // GetDependency mocks base method.
-func (m *MockDependencyFactory) GetDependency(t reflect.Type) interface{} {
+func (m *MockDependencyFactory) GetDependency(depType endpoints.Dependency) interface{} {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetDependency", t)
+	ret := m.ctrl.Call(m, "GetDependency", depType)
 	ret0, _ := ret[0].(interface{})
 	return ret0
 }
 
 // GetDependency indicates an expected call of GetDependency.
-func (mr *MockDependencyFactoryMockRecorder) GetDependency(t interface{}) *gomock.Call {
+func (mr *MockDependencyFactoryMockRecorder) GetDependency(depType interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDependency", reflect.TypeOf((*MockDependencyFactory)(nil).GetDependency), t)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDependency", reflect.TypeOf((*MockDependencyFactory)(nil).GetDependency), depType)
 }

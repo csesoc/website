@@ -12,7 +12,7 @@ import (
 )
 
 // This is the main loop that the editor client will run
-func EditorClientLoop(requestedDocument int, fs repositories.IDockerUnpublishedFilesystemRepository, ws *websocket.Conn) error {
+func EditorClientLoop(requestedDocument int, fs repositories.IUnpublishedVolumeRepository, ws *websocket.Conn) error {
 	manager := getGlobalManagerInstance()
 	err := manager.startDocumentServer(requestedDocument)
 	if err != nil {
