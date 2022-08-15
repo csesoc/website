@@ -1,13 +1,15 @@
 package logger
 
 import (
+	"fmt"
 	"log"
+	"strings"
 	"sync"
 )
 
 type Log struct {
 	startingMessage string
-	logBuffer       [][]byte
+	logBuffer       strings.Builder
 	logLock         sync.Mutex
 }
 
@@ -16,15 +18,16 @@ type Log struct {
 func OpenLog(startingMessage string) *Log {
 	return &Log{
 		startingMessage: startingMessage,
-		logBuffer:       [][]byte{},
+		logBuffer:       strings.Builder{},
 		logLock:         sync.Mutex{},
 	}
 }
 
 // Write writes to an open log
-func (l *Log) Write(log []byte) {
+func (l *Log) Write(log string) {
 	l.logLock.Lock()
-	l.logBuffer = append(l.logBuffer, log)
+	// TODO: investigate if this is slower than just maintaining an array of byte buffers
+	l.logBuffer.WriteString(fmt.Sprintf("	%s\n", log))
 	l.logLock.Unlock()
 }
 
@@ -32,9 +35,7 @@ func (l *Log) Write(log []byte) {
 func (l *Log) Flush() {
 	l.logLock.Lock()
 	log.Printf("== %s ==\n", l.startingMessage)
-	for _, line := range l.logBuffer {
-		log.Printf("	%s", line)
-	}
+	log.Print(l.logBuffer.String())
 	l.logLock.Unlock()
 }
 

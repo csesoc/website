@@ -7,12 +7,12 @@ import (
 )
 
 // Implements IRepositoryInterface
-type FilesystemRepository struct {
+type filesystemRepository struct {
 	embeddedContext
 }
 
 // We really should use an ORM jesus this is ugly
-func (rep FilesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
+func (rep filesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
 	entity := FilesystemEntry{}
 	children := []int{}
 
@@ -44,7 +44,7 @@ func (rep FilesystemRepository) query(query string, input ...interface{}) (Files
 }
 
 // Returns: entry struct containing the entity that was just created
-func (rep FilesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEntry, error) {
+func (rep filesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEntry, error) {
 	if file.ParentFileID == FILESYSTEM_ROOT_ID {
 		// determine root ID
 		root, err := rep.GetRoot()
@@ -63,7 +63,7 @@ func (rep FilesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEnt
 	return rep.GetEntryWithID(newID)
 }
 
-func (rep FilesystemRepository) GetEntryWithID(ID int) (FilesystemEntry, error) {
+func (rep filesystemRepository) GetEntryWithID(ID int) (FilesystemEntry, error) {
 	if ID == FILESYSTEM_ROOT_ID {
 		return rep.GetRoot()
 	}
@@ -72,16 +72,16 @@ func (rep FilesystemRepository) GetEntryWithID(ID int) (FilesystemEntry, error) 
 	return result, err
 }
 
-func (rep FilesystemRepository) GetRoot() (FilesystemEntry, error) {
+func (rep filesystemRepository) GetRoot() (FilesystemEntry, error) {
 	// Root is currently set to ID 1
 	return rep.query("SELECT * FROM filesystem WHERE Parent = 1")
 }
 
-func (rep FilesystemRepository) GetEntryWithParentID(ID int) (FilesystemEntry, error) {
+func (rep filesystemRepository) GetEntryWithParentID(ID int) (FilesystemEntry, error) {
 	return rep.query("SELECT * FROM filesystem WHERE Parent = $1", ID)
 }
 
-func (rep FilesystemRepository) GetIDWithPath(path string) (int, error) {
+func (rep filesystemRepository) GetIDWithPath(path string) (int, error) {
 	// I could do this with one query, where I query the repository for all files in parentNames and process that here
 	parentNames := strings.Split(path, "/")
 	if parentNames[0] != "" {
@@ -106,10 +106,10 @@ func (rep FilesystemRepository) GetIDWithPath(path string) (int, error) {
 	return parent.EntityID, err
 }
 
-func (rep FilesystemRepository) DeleteEntryWithID(ID int) error {
+func (rep filesystemRepository) DeleteEntryWithID(ID int) error {
 	return rep.ctx.Exec("SELECT delete_entity($1)", []interface{}{ID})
 }
 
-func (rep FilesystemRepository) RenameEntity(ID int, name string) error {
-	return rep.ctx.Exec("UPDATE filesystem SET logicalname = ($1) WHERE entityid = ($2)", []interface{}{name, ID})
+func (rep filesystemRepository) RenameEntity(ID int, name string) error {
+	return rep.ctx.Exec("UPDATE filesystem SET LogicalName = ($1) WHERE EntityId = ($2)", []interface{}{name, ID})
 }

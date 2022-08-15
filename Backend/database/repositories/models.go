@@ -5,6 +5,8 @@ package repositories
 import (
 	"os"
 	"time"
+
+	"cms.csesoc.unsw.edu.au/database/contexts"
 )
 
 // filesystem model (model stored within database)
@@ -33,12 +35,14 @@ type IFilesystemRepository interface {
 	DeleteEntryWithID(ID int) error
 
 	RenameEntity(ID int, name string) error
+
+	GetContext() contexts.DatabaseContext
 }
 
 // Repository interface representing an underlying connection
 // to a filesystem within a docker volume containing unpublished
 // data
-type IDockerUnpublishedFilesystemRepository interface {
+type IUnpublishedVolumeRepository interface {
 	AddToVolume(filename string) (err error)
 	CopyToVolume(src *os.File, filename string) (err error)
 	GetFromVolume(filename string) (fp *os.File, err error)
@@ -47,9 +51,9 @@ type IDockerUnpublishedFilesystemRepository interface {
 }
 
 // Repository interface representing a connection to
-// the published data docker voluem
-type IDockerPublishedFilesystemRepository interface {
-	IDockerUnpublishedFilesystemRepository
+// the published data docker volume
+type IPublishedVolumeRepository interface {
+	IUnpublishedVolumeRepository
 }
 
 // Model for a user within the database

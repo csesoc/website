@@ -9,11 +9,11 @@ import (
 )
 
 // Implements IPersonRepository
-type PersonRepository struct {
+type personRepository struct {
 	embeddedContext
 }
 
-func (rep PersonRepository) PersonExists(p Person) bool {
+func (rep personRepository) PersonExists(p Person) bool {
 	var result int
 	err := rep.ctx.Query("SELECT count(*) from person where email = $1 and password = $2;", []interface{}{p.Email, p.Password}, &result)
 	if err != nil {
@@ -23,7 +23,7 @@ func (rep PersonRepository) PersonExists(p Person) bool {
 	return result == 1
 }
 
-func (rep PersonRepository) GetPersonWithDetails(p Person) Person {
+func (rep personRepository) GetPersonWithDetails(p Person) Person {
 	var result Person
 	err := rep.ctx.Query("SELECT * from person where email = $1 and password = $2;", []interface{}{p.Email, p.Password},
 		&result.UID, &result.Email, &result.FirstName, &result.Password, &result.GroupID)
