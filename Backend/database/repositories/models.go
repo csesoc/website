@@ -5,6 +5,8 @@ package repositories
 import (
 	"os"
 	"time"
+
+	"cms.csesoc.unsw.edu.au/database/contexts"
 )
 
 // filesystem model (model stored within database)
@@ -33,6 +35,8 @@ type IFilesystemRepository interface {
 	DeleteEntryWithID(ID int) error
 
 	RenameEntity(ID int, name string) error
+
+	GetContext() contexts.DatabaseContext
 }
 
 // Repository interface representing an underlying connection

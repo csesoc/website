@@ -6,14 +6,17 @@ import (
 	"os"
 	"testing"
 
+	"cms.csesoc.unsw.edu.au/database/contexts"
 	"cms.csesoc.unsw.edu.au/database/repositories"
 
 	"github.com/jackc/pgx/v4"
 	"github.com/stretchr/testify/assert"
 )
 
-var repo = repositories.GetRepository(repositories.FILESYSTEM).(repositories.FilesystemRepository)
-var testContext = repo.GetTestContext()
+var (
+	repo        = repositories.GetRepository(repositories.FILESYSTEM).(repositories.IFilesystemRepository)
+	testContext = repo.GetContext().(*contexts.TestingContext)
+)
 
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())
@@ -40,13 +43,15 @@ func TestRootInsert(t *testing.T) {
 
 		newDir, _ := repo.CreateEntry(repositories.FilesystemEntry{
 			LogicalName: "test_directory", ParentFileID: repositories.FILESYSTEM_ROOT_ID,
-			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: false})
+			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: false,
+		})
 
 		newDoc, _ := repo.CreateEntry(repositories.FilesystemEntry{
 			LogicalName: "test_doc", ParentFileID: newDir.EntityID,
-			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: true})
+			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: true,
+		})
 
-		// === assertations ====
+		// === Assertions ====
 		var docCount int
 		var dirCount int
 
@@ -77,9 +82,9 @@ func TestDocumentInfoRetrieval(t *testing.T) {
 		// ==== Setup ====
 		newDoc, err := repo.CreateEntry(repositories.FilesystemEntry{
 			LogicalName: "test_doc", ParentFileID: repositories.FILESYSTEM_ROOT_ID,
-			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: true})
-
-		// ==== Assertations ====
+			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: true,
+		})
+		// ==== Assertions ====
 		if err != nil {
 			log.Fatalf(err.Error())
 		}
@@ -110,7 +115,7 @@ func TestEntityDeletion(t *testing.T) {
 			ParentFileID: newDir.EntityID, IsDocument: true,
 		})
 
-		// ====== Assertations ======
+		// ====== Assertions ======
 		assert.True(testContext.WillFail(func() error { return repo.DeleteEntryWithID(root.EntityID) }))
 		assert.True(testContext.WillFail(func() error { return repo.DeleteEntryWithID(newDir.EntityID) }))
 
@@ -138,7 +143,7 @@ func TestEntityDeletion(t *testing.T) {
 			ParentFileID: nestedDirectory.EntityID, IsDocument: false,
 		})
 
-		// ====== Secondary Assertations ======
+		// ====== Secondary Assertions ======
 		assert.True(testContext.WillFail(func() error { return repo.DeleteEntryWithID(nestedDirectory.EntityID) }))
 		assert.Nil(repo.DeleteEntryWithID(file.EntityID))
 		assert.Nil(repo.DeleteEntryWithID(nestedDirectory.EntityID))
@@ -168,7 +173,7 @@ func TestEntityRename(t *testing.T) {
 		newDoc1, _ := repo.CreateEntry(getEntity("cool_doc1", repositories.GROUPS_ADMIN, newDir.EntityID, false))
 		newDoc2, _ := repo.CreateEntry(getEntity("cool_doc2", repositories.GROUPS_ADMIN, newDir.EntityID, false))
 
-		// ===== Assertations ======
+		// ===== Assertions ======
 		assert.True(testContext.WillFail(func() error { return repo.RenameEntity(newDoc.EntityID, "cool_doc2") }))
 		assert.True(testContext.WillFail(func() error { return repo.RenameEntity(newDoc1.EntityID, "cool_doc2") }))
 		assert.True(testContext.WillFail(func() error { return repo.RenameEntity(newDoc2.EntityID, "cool_doc1") }))
@@ -256,7 +261,6 @@ func TestGetIDWithPath(t *testing.T) {
 		assert.True(child1.EntityID == child2.ParentFileID)
 		assert.True(dir1.EntityID == child1.ParentFileID)
 	})
-
 }
 
 func contains(s []int, e int) bool {

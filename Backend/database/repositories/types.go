@@ -23,10 +23,8 @@ func (ni nullableID) Scan(src interface{}) error {
 	switch v := src.(type) {
 	case int:
 		*ni.ID = v
-		break
 	case nil:
 		*ni.ID = -1
-		break
 	default:
 		break
 	}
@@ -34,17 +32,17 @@ func (ni nullableID) Scan(src interface{}) error {
 	return nil
 }
 
-// small struct that can be embedded into repository implmentations
-// contains somet methods for exposing a test context
+// small struct that can be embedded into repository implementations
+// contains some methods for exposing a test context
 type embeddedContext struct {
 	ctx contexts.DatabaseContext
 }
 
 // utility function for testing
-func (rep embeddedContext) GetTestContext() *contexts.TestingContext {
+func (rep embeddedContext) GetContext() contexts.DatabaseContext {
 	if !environment.IsTestingEnvironment() {
 		panic("not in a testing environment")
 	}
 
-	return rep.ctx.(*contexts.TestingContext)
+	return rep.ctx
 }

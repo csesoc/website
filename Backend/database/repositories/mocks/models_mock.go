@@ -8,6 +8,7 @@ import (
 	os "os"
 	reflect "reflect"
 
+	contexts "cms.csesoc.unsw.edu.au/database/contexts"
 	repositories "cms.csesoc.unsw.edu.au/database/repositories"
 	gomock "github.com/golang/mock/gomock"
 )
@@ -62,6 +63,20 @@ func (m *MockIFilesystemRepository) DeleteEntryWithID(ID int) error {
 func (mr *MockIFilesystemRepositoryMockRecorder) DeleteEntryWithID(ID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteEntryWithID", reflect.TypeOf((*MockIFilesystemRepository)(nil).DeleteEntryWithID), ID)
+}
+
+// GetContext mocks base method.
+func (m *MockIFilesystemRepository) GetContext() contexts.DatabaseContext {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetContext")
+	ret0, _ := ret[0].(contexts.DatabaseContext)
+	return ret0
+}
+
+// GetContext indicates an expected call of GetContext.
+func (mr *MockIFilesystemRepositoryMockRecorder) GetContext() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContext", reflect.TypeOf((*MockIFilesystemRepository)(nil).GetContext))
 }
 
 // GetEntryWithID mocks base method.
@@ -138,31 +153,31 @@ func (mr *MockIFilesystemRepositoryMockRecorder) RenameEntity(ID, name interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenameEntity", reflect.TypeOf((*MockIFilesystemRepository)(nil).RenameEntity), ID, name)
 }
 
-// MockIDockerUnpublishedFilesystemRepository is a mock of IDockerUnpublishedFilesystemRepository interface.
-type MockIDockerUnpublishedFilesystemRepository struct {
+// MockIUnpublishedVolumeRepository is a mock of IUnpublishedVolumeRepository interface.
+type MockIUnpublishedVolumeRepository struct {
 	ctrl     *gomock.Controller
-	recorder *MockIDockerUnpublishedFilesystemRepositoryMockRecorder
+	recorder *MockIUnpublishedVolumeRepositoryMockRecorder
 }
 
-// MockIDockerUnpublishedFilesystemRepositoryMockRecorder is the mock recorder for MockIDockerUnpublishedFilesystemRepository.
-type MockIDockerUnpublishedFilesystemRepositoryMockRecorder struct {
-	mock *MockIDockerUnpublishedFilesystemRepository
+// MockIUnpublishedVolumeRepositoryMockRecorder is the mock recorder for MockIUnpublishedVolumeRepository.
+type MockIUnpublishedVolumeRepositoryMockRecorder struct {
+	mock *MockIUnpublishedVolumeRepository
 }
 
-// NewMockIDockerUnpublishedFilesystemRepository creates a new mock instance.
-func NewMockIDockerUnpublishedFilesystemRepository(ctrl *gomock.Controller) *MockIDockerUnpublishedFilesystemRepository {
-	mock := &MockIDockerUnpublishedFilesystemRepository{ctrl: ctrl}
-	mock.recorder = &MockIDockerUnpublishedFilesystemRepositoryMockRecorder{mock}
+// NewMockIUnpublishedVolumeRepository creates a new mock instance.
+func NewMockIUnpublishedVolumeRepository(ctrl *gomock.Controller) *MockIUnpublishedVolumeRepository {
+	mock := &MockIUnpublishedVolumeRepository{ctrl: ctrl}
+	mock.recorder = &MockIUnpublishedVolumeRepositoryMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockIDockerUnpublishedFilesystemRepository) EXPECT() *MockIDockerUnpublishedFilesystemRepositoryMockRecorder {
+func (m *MockIUnpublishedVolumeRepository) EXPECT() *MockIUnpublishedVolumeRepositoryMockRecorder {
 	return m.recorder
 }
 
 // AddToVolume mocks base method.
-func (m *MockIDockerUnpublishedFilesystemRepository) AddToVolume(filename string) error {
+func (m *MockIUnpublishedVolumeRepository) AddToVolume(filename string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddToVolume", filename)
 	ret0, _ := ret[0].(error)
@@ -170,13 +185,13 @@ func (m *MockIDockerUnpublishedFilesystemRepository) AddToVolume(filename string
 }
 
 // AddToVolume indicates an expected call of AddToVolume.
-func (mr *MockIDockerUnpublishedFilesystemRepositoryMockRecorder) AddToVolume(filename interface{}) *gomock.Call {
+func (mr *MockIUnpublishedVolumeRepositoryMockRecorder) AddToVolume(filename interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddToVolume", reflect.TypeOf((*MockIDockerUnpublishedFilesystemRepository)(nil).AddToVolume), filename)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddToVolume", reflect.TypeOf((*MockIUnpublishedVolumeRepository)(nil).AddToVolume), filename)
 }
 
 // CopyToVolume mocks base method.
-func (m *MockIDockerUnpublishedFilesystemRepository) CopyToVolume(src *os.File, filename string) error {
+func (m *MockIUnpublishedVolumeRepository) CopyToVolume(src *os.File, filename string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CopyToVolume", src, filename)
 	ret0, _ := ret[0].(error)
@@ -184,13 +199,13 @@ func (m *MockIDockerUnpublishedFilesystemRepository) CopyToVolume(src *os.File, 
 }
 
 // CopyToVolume indicates an expected call of CopyToVolume.
-func (mr *MockIDockerUnpublishedFilesystemRepositoryMockRecorder) CopyToVolume(src, filename interface{}) *gomock.Call {
+func (mr *MockIUnpublishedVolumeRepositoryMockRecorder) CopyToVolume(src, filename interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyToVolume", reflect.TypeOf((*MockIDockerUnpublishedFilesystemRepository)(nil).CopyToVolume), src, filename)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyToVolume", reflect.TypeOf((*MockIUnpublishedVolumeRepository)(nil).CopyToVolume), src, filename)
 }
 
 // DeleteFromVolume mocks base method.
-func (m *MockIDockerUnpublishedFilesystemRepository) DeleteFromVolume(filename string) error {
+func (m *MockIUnpublishedVolumeRepository) DeleteFromVolume(filename string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteFromVolume", filename)
 	ret0, _ := ret[0].(error)
@@ -198,13 +213,13 @@ func (m *MockIDockerUnpublishedFilesystemRepository) DeleteFromVolume(filename s
 }
 
 // DeleteFromVolume indicates an expected call of DeleteFromVolume.
-func (mr *MockIDockerUnpublishedFilesystemRepositoryMockRecorder) DeleteFromVolume(filename interface{}) *gomock.Call {
+func (mr *MockIUnpublishedVolumeRepositoryMockRecorder) DeleteFromVolume(filename interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFromVolume", reflect.TypeOf((*MockIDockerUnpublishedFilesystemRepository)(nil).DeleteFromVolume), filename)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFromVolume", reflect.TypeOf((*MockIUnpublishedVolumeRepository)(nil).DeleteFromVolume), filename)
 }
 
 // GetFromVolume mocks base method.
-func (m *MockIDockerUnpublishedFilesystemRepository) GetFromVolume(filename string) (*os.File, error) {
+func (m *MockIUnpublishedVolumeRepository) GetFromVolume(filename string) (*os.File, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetFromVolume", filename)
 	ret0, _ := ret[0].(*os.File)
@@ -213,13 +228,13 @@ func (m *MockIDockerUnpublishedFilesystemRepository) GetFromVolume(filename stri
 }
 
 // GetFromVolume indicates an expected call of GetFromVolume.
-func (mr *MockIDockerUnpublishedFilesystemRepositoryMockRecorder) GetFromVolume(filename interface{}) *gomock.Call {
+func (mr *MockIUnpublishedVolumeRepositoryMockRecorder) GetFromVolume(filename interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFromVolume", reflect.TypeOf((*MockIDockerUnpublishedFilesystemRepository)(nil).GetFromVolume), filename)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFromVolume", reflect.TypeOf((*MockIUnpublishedVolumeRepository)(nil).GetFromVolume), filename)
 }
 
 // GetFromVolumeTruncated mocks base method.
-func (m *MockIDockerUnpublishedFilesystemRepository) GetFromVolumeTruncated(filename string) (*os.File, error) {
+func (m *MockIUnpublishedVolumeRepository) GetFromVolumeTruncated(filename string) (*os.File, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetFromVolumeTruncated", filename)
 	ret0, _ := ret[0].(*os.File)
@@ -228,36 +243,36 @@ func (m *MockIDockerUnpublishedFilesystemRepository) GetFromVolumeTruncated(file
 }
 
 // GetFromVolumeTruncated indicates an expected call of GetFromVolumeTruncated.
-func (mr *MockIDockerUnpublishedFilesystemRepositoryMockRecorder) GetFromVolumeTruncated(filename interface{}) *gomock.Call {
+func (mr *MockIUnpublishedVolumeRepositoryMockRecorder) GetFromVolumeTruncated(filename interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFromVolumeTruncated", reflect.TypeOf((*MockIDockerUnpublishedFilesystemRepository)(nil).GetFromVolumeTruncated), filename)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFromVolumeTruncated", reflect.TypeOf((*MockIUnpublishedVolumeRepository)(nil).GetFromVolumeTruncated), filename)
 }
 
-// MockIDockerPublishedFilesystemRepository is a mock of IDockerPublishedFilesystemRepository interface.
-type MockIDockerPublishedFilesystemRepository struct {
+// MockIPublishedVolumeRepository is a mock of IPublishedVolumeRepository interface.
+type MockIPublishedVolumeRepository struct {
 	ctrl     *gomock.Controller
-	recorder *MockIDockerPublishedFilesystemRepositoryMockRecorder
+	recorder *MockIPublishedVolumeRepositoryMockRecorder
 }
 
-// MockIDockerPublishedFilesystemRepositoryMockRecorder is the mock recorder for MockIDockerPublishedFilesystemRepository.
-type MockIDockerPublishedFilesystemRepositoryMockRecorder struct {
-	mock *MockIDockerPublishedFilesystemRepository
+// MockIPublishedVolumeRepositoryMockRecorder is the mock recorder for MockIPublishedVolumeRepository.
+type MockIPublishedVolumeRepositoryMockRecorder struct {
+	mock *MockIPublishedVolumeRepository
 }
 
-// NewMockIDockerPublishedFilesystemRepository creates a new mock instance.
-func NewMockIDockerPublishedFilesystemRepository(ctrl *gomock.Controller) *MockIDockerPublishedFilesystemRepository {
-	mock := &MockIDockerPublishedFilesystemRepository{ctrl: ctrl}
-	mock.recorder = &MockIDockerPublishedFilesystemRepositoryMockRecorder{mock}
+// NewMockIPublishedVolumeRepository creates a new mock instance.
+func NewMockIPublishedVolumeRepository(ctrl *gomock.Controller) *MockIPublishedVolumeRepository {
+	mock := &MockIPublishedVolumeRepository{ctrl: ctrl}
+	mock.recorder = &MockIPublishedVolumeRepositoryMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockIDockerPublishedFilesystemRepository) EXPECT() *MockIDockerPublishedFilesystemRepositoryMockRecorder {
+func (m *MockIPublishedVolumeRepository) EXPECT() *MockIPublishedVolumeRepositoryMockRecorder {
 	return m.recorder
 }
 
 // AddToVolume mocks base method.
-func (m *MockIDockerPublishedFilesystemRepository) AddToVolume(filename string) error {
+func (m *MockIPublishedVolumeRepository) AddToVolume(filename string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddToVolume", filename)
 	ret0, _ := ret[0].(error)
@@ -265,13 +280,13 @@ func (m *MockIDockerPublishedFilesystemRepository) AddToVolume(filename string) 
 }
 
 // AddToVolume indicates an expected call of AddToVolume.
-func (mr *MockIDockerPublishedFilesystemRepositoryMockRecorder) AddToVolume(filename interface{}) *gomock.Call {
+func (mr *MockIPublishedVolumeRepositoryMockRecorder) AddToVolume(filename interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddToVolume", reflect.TypeOf((*MockIDockerPublishedFilesystemRepository)(nil).AddToVolume), filename)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddToVolume", reflect.TypeOf((*MockIPublishedVolumeRepository)(nil).AddToVolume), filename)
 }
 
 // CopyToVolume mocks base method.
-func (m *MockIDockerPublishedFilesystemRepository) CopyToVolume(src *os.File, filename string) error {
+func (m *MockIPublishedVolumeRepository) CopyToVolume(src *os.File, filename string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CopyToVolume", src, filename)
 	ret0, _ := ret[0].(error)
@@ -279,13 +294,13 @@ func (m *MockIDockerPublishedFilesystemRepository) CopyToVolume(src *os.File, fi
 }
 
 // CopyToVolume indicates an expected call of CopyToVolume.
-func (mr *MockIDockerPublishedFilesystemRepositoryMockRecorder) CopyToVolume(src, filename interface{}) *gomock.Call {
+func (mr *MockIPublishedVolumeRepositoryMockRecorder) CopyToVolume(src, filename interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyToVolume", reflect.TypeOf((*MockIDockerPublishedFilesystemRepository)(nil).CopyToVolume), src, filename)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyToVolume", reflect.TypeOf((*MockIPublishedVolumeRepository)(nil).CopyToVolume), src, filename)
 }
 
 // DeleteFromVolume mocks base method.
-func (m *MockIDockerPublishedFilesystemRepository) DeleteFromVolume(filename string) error {
+func (m *MockIPublishedVolumeRepository) DeleteFromVolume(filename string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteFromVolume", filename)
 	ret0, _ := ret[0].(error)
@@ -293,13 +308,13 @@ func (m *MockIDockerPublishedFilesystemRepository) DeleteFromVolume(filename str
 }
 
 // DeleteFromVolume indicates an expected call of DeleteFromVolume.
-func (mr *MockIDockerPublishedFilesystemRepositoryMockRecorder) DeleteFromVolume(filename interface{}) *gomock.Call {
+func (mr *MockIPublishedVolumeRepositoryMockRecorder) DeleteFromVolume(filename interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFromVolume", reflect.TypeOf((*MockIDockerPublishedFilesystemRepository)(nil).DeleteFromVolume), filename)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFromVolume", reflect.TypeOf((*MockIPublishedVolumeRepository)(nil).DeleteFromVolume), filename)
 }
 
 // GetFromVolume mocks base method.
-func (m *MockIDockerPublishedFilesystemRepository) GetFromVolume(filename string) (*os.File, error) {
+func (m *MockIPublishedVolumeRepository) GetFromVolume(filename string) (*os.File, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetFromVolume", filename)
 	ret0, _ := ret[0].(*os.File)
@@ -308,13 +323,13 @@ func (m *MockIDockerPublishedFilesystemRepository) GetFromVolume(filename string
 }
 
 // GetFromVolume indicates an expected call of GetFromVolume.
-func (mr *MockIDockerPublishedFilesystemRepositoryMockRecorder) GetFromVolume(filename interface{}) *gomock.Call {
+func (mr *MockIPublishedVolumeRepositoryMockRecorder) GetFromVolume(filename interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFromVolume", reflect.TypeOf((*MockIDockerPublishedFilesystemRepository)(nil).GetFromVolume), filename)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFromVolume", reflect.TypeOf((*MockIPublishedVolumeRepository)(nil).GetFromVolume), filename)
 }
 
 // GetFromVolumeTruncated mocks base method.
-func (m *MockIDockerPublishedFilesystemRepository) GetFromVolumeTruncated(filename string) (*os.File, error) {
+func (m *MockIPublishedVolumeRepository) GetFromVolumeTruncated(filename string) (*os.File, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetFromVolumeTruncated", filename)
 	ret0, _ := ret[0].(*os.File)
@@ -323,9 +338,9 @@ func (m *MockIDockerPublishedFilesystemRepository) GetFromVolumeTruncated(filena
 }
 
 // GetFromVolumeTruncated indicates an expected call of GetFromVolumeTruncated.
-func (mr *MockIDockerPublishedFilesystemRepositoryMockRecorder) GetFromVolumeTruncated(filename interface{}) *gomock.Call {
+func (mr *MockIPublishedVolumeRepositoryMockRecorder) GetFromVolumeTruncated(filename interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFromVolumeTruncated", reflect.TypeOf((*MockIDockerPublishedFilesystemRepository)(nil).GetFromVolumeTruncated), filename)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFromVolumeTruncated", reflect.TypeOf((*MockIPublishedVolumeRepository)(nil).GetFromVolumeTruncated), filename)
 }
 
 // MockIPersonRepository is a mock of IPersonRepository interface.

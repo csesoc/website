@@ -17,14 +17,14 @@ func EditorClientLoop(requestedDocument int, fs repositories.IUnpublishedVolumeR
 	err := manager.startDocumentServer(requestedDocument)
 	if err != nil {
 		terminateWs(ws, "locked")
-		return errors.New("Unable to open request document")
+		return errors.New("unable to open request document")
 	}
 
 	defer manager.closeDocumentServer(requestedDocument)
 	file, err := fs.GetFromVolume(strconv.Itoa(requestedDocument))
 	if err != nil {
 		terminateWs(ws, "error")
-		return errors.New("Unable to open request document")
+		return errors.New("unable to open request document")
 	}
 
 	defer file.Close()
@@ -42,7 +42,7 @@ func EditorClientLoop(requestedDocument int, fs repositories.IUnpublishedVolumeR
 	buf := &bytes.Buffer{}
 	bytes, err := buf.ReadFrom(file)
 	if err != nil {
-		return errors.New("Unable to read request document")
+		return errors.New("unable to read request document")
 	}
 
 	// Empty file
@@ -66,7 +66,7 @@ func EditorClientLoop(requestedDocument int, fs repositories.IUnpublishedVolumeR
 		file.Write(buf)
 
 		// send an acknowledgement to the client
-		ws.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf(`{"type": "acknowledged"}`)))
+		ws.WriteMessage(websocket.TextMessage, []byte(`{"type": "acknowledged"}`))
 	}
 
 	terminateWs(ws, "terminating")

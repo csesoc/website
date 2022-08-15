@@ -9,48 +9,50 @@ import (
 	"github.com/docker/docker/client"
 )
 
-const publishedVolumePath = "/var/lib/documents/published/data"
-const unpublishedVolumePath = "/var/lib/documents/unpublished/data"
+const (
+	publishedVolumePath   = "/var/lib/documents/published/data"
+	unpublishedVolumePath = "/var/lib/documents/unpublished/data"
+)
 
 type dockerFileSystemRepositoryCore struct {
 	dockerCli  *client.Client
 	volumePath string
 }
 
-type DockerUnpublishedFileSystemRepository struct {
+type dockerUnpublishedFileSystemRepository struct {
 	dockerFileSystemRepositoryCore
 }
 
-type DockerPublishedFileSystemRepository struct {
+type dockerPublishedFileSystemRepository struct {
 	dockerFileSystemRepositoryCore
 }
 
 // create new instances of the corresponding repository types
-func NewDockerPublishedFileSystemRepository() (*DockerPublishedFileSystemRepository, error) {
-	inner, err := newDockerFilesystemRespositoryCore(publishedVolumePath)
+func NewDockerPublishedFileSystemRepository() (*dockerPublishedFileSystemRepository, error) {
+	inner, err := newDockerFilesystemRepositoryCore(publishedVolumePath)
 	if err != nil {
 		return nil, err
 	}
 
-	return &DockerPublishedFileSystemRepository{
+	return &dockerPublishedFileSystemRepository{
 		*inner,
 	}, nil
 }
 
 // create new instances of the corresponding repository types
-func NewDockerUnpublishedFileSystemRepository() (*DockerUnpublishedFileSystemRepository, error) {
-	inner, err := newDockerFilesystemRespositoryCore(unpublishedVolumePath)
+func NewDockerUnpublishedFileSystemRepository() (*dockerUnpublishedFileSystemRepository, error) {
+	inner, err := newDockerFilesystemRepositoryCore(unpublishedVolumePath)
 	if err != nil {
 		return nil, err
 	}
 
-	return &DockerUnpublishedFileSystemRepository{
+	return &dockerUnpublishedFileSystemRepository{
 		*inner,
 	}, nil
 }
 
 // Create instance of DockerFileSystemRepository struct
-func newDockerFilesystemRespositoryCore(volumePath string) (*dockerFileSystemRepositoryCore, error) {
+func newDockerFilesystemRepositoryCore(volumePath string) (*dockerFileSystemRepositoryCore, error) {
 	if dockerCli, err := client.NewClientWithOpts(client.FromEnv); err == nil {
 		return &dockerFileSystemRepositoryCore{
 			volumePath: volumePath,
@@ -71,7 +73,7 @@ func (c *dockerFileSystemRepositoryCore) AddToVolume(filename string) error {
 	defer src.Close()
 	// Create/update destination file and check it is valid
 	filepath := filepath.Join(c.volumePath, filename)
-	moved, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0755)
+	moved, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0o755)
 	if err != nil {
 		return errors.New("Couldn't read/create the destination file")
 	}
@@ -94,7 +96,7 @@ func (c *dockerFileSystemRepositoryCore) CopyToVolume(src *os.File, filename str
 	defer src.Close()
 	// Create/update destination file and check it is valid
 	filepath := filepath.Join(c.volumePath, filename)
-	copied, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0755)
+	copied, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0o755)
 	if err != nil {
 		return errors.New("Couldn't read/create the destination file")
 	}
@@ -110,13 +112,13 @@ func (c *dockerFileSystemRepositoryCore) CopyToVolume(src *os.File, filename str
 // Get file from volume. Returns a valid file pointer
 func (c *dockerFileSystemRepositoryCore) GetFromVolume(filename string) (*os.File, error) {
 	// Concatenate volume path with file name
-	return os.OpenFile(filepath.Join(c.volumePath, filename), os.O_RDWR, 0755)
+	return os.OpenFile(filepath.Join(c.volumePath, filename), os.O_RDWR, 0o755)
 }
 
 // Get file from volume in truncated mode
 func (c *dockerFileSystemRepositoryCore) GetFromVolumeTruncated(filename string) (*os.File, error) {
 	// Concatenate volume path with file name
-	return os.OpenFile(filepath.Join(c.volumePath, filename), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	return os.OpenFile(filepath.Join(c.volumePath, filename), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755)
 }
 
 // Delete file from volume

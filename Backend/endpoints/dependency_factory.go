@@ -69,7 +69,7 @@ func (dp DependencyProvider) GetDependency(depType Dependency) interface{} {
 
 func (dp DependencyProvider) GetDepFromType(t reflect.Type) Dependency {
 	depTypeMappings := baseTypeDependencyMappings
-	depTypeMappings[reflect.TypeOf((*logger.Log)(nil))] = Log
+	depTypeMappings[reflect.TypeOf((**logger.Log)(nil))] = Log
 
 	return depTypeMappings[t]
 }

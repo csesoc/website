@@ -34,6 +34,20 @@ func (m *MockDependencyFactory) EXPECT() *MockDependencyFactoryMockRecorder {
 	return m.recorder
 }
 
+// GetDepFromType mocks base method.
+func (m *MockDependencyFactory) GetDepFromType(arg0 reflect.Type) endpoints.Dependency {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDepFromType", arg0)
+	ret0, _ := ret[0].(endpoints.Dependency)
+	return ret0
+}
+
+// GetDepFromType indicates an expected call of GetDepFromType.
+func (mr *MockDependencyFactoryMockRecorder) GetDepFromType(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDepFromType", reflect.TypeOf((*MockDependencyFactory)(nil).GetDepFromType), arg0)
+}
+
 // GetDependency mocks base method.
 func (m *MockDependencyFactory) GetDependency(depType endpoints.Dependency) interface{} {
 	m.ctrl.T.Helper()

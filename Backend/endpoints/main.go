@@ -13,28 +13,34 @@ import (
 type (
 	empty struct{}
 
+	// handlerResponse is a special response type only returned by HTTP Handlers
+	handlerResponse[V any] struct {
+		Status   int
+		Response V
+	}
+
 	// APIResponse is the public response type that is marshalled and presented to consumers of the API
 	APIResponse[V any] struct {
 		Status   int
 		Message  string
 		Response V
 	}
-
-	// handlerResponse is a special response type only returned by HTTP Handlers
-	handlerResponse[V any] struct {
-		Status   int
-		Response V
-	}
 )
-
-// This file contains a series of types defined to make writing http handlers
-// a bit easier and less messy
 
 type (
 	handler[T, V any] struct {
 		FormType    string
 		Handler     func(form T, dependencyFactory DependencyFactory) (response handlerResponse[V])
 		IsMultipart bool
+	}
+
+	// rawHandler is a handler that expect the incoming w and r request objects
+	// note: raw handles REQUIRE authentication
+	rawHandler[T, V any] struct {
+		FormType    string
+		Handler     func(form T, w http.ResponseWriter, r *http.Request, dependencyFactory DependencyFactory) (response handlerResponse[V])
+		IsMultipart bool
+		NeedsAuth   bool
 	}
 
 	// authenticatedHandler is basically a regular http handler the only difference is that
@@ -84,6 +90,19 @@ func (fn authenticatedHandler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Re
 	handler[T, V](fn).ServeHTTP(w, r)
 }
 
+// ServeHTTP is an overloaded implementation on the http.HttpHandler interface, it acts specifically on raw handlers
+func (fn rawHandler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	handlerWrapper := func(form T, dependencyFactory DependencyFactory) handlerResponse[V] {
+		return fn.Handler(form, w, r, dependencyFactory)
+	}
+
+	if fn.NeedsAuth {
+		authenticatedHandler[T, V]{Handler: handlerWrapper, FormType: fn.FormType, IsMultipart: false}.ServeHTTP(w, r)
+	} else {
+		handler[T, V]{Handler: handlerWrapper, FormType: fn.FormType, IsMultipart: false}.ServeHTTP(w, r)
+	}
+}
+
 // getMessageFromStatus fetches the message corresponding to a given status code
 func getMessageFromStatus(statusCode int) string {
 	statusMappings := map[int]string{
@@ -104,15 +123,30 @@ func getMessageFromStatus(statusCode int) string {
 
 // writeResponse is a small helper function to write out a received handler response to the response writer
 func writeResponse[V any](dest http.ResponseWriter, response handlerResponse[V]) {
-	out := APIResponse[V]{
-		Status:   response.Status,
-		Response: response.Response,
-		Message:  getMessageFromStatus(response.Status),
+	var out interface{}
+
+	if response.Status != http.StatusOK {
+		out = getErrorResponse(response)
+	} else {
+		out = APIResponse[V]{
+			Status:   response.Status,
+			Response: response.Response,
+			Message:  getMessageFromStatus(response.Status),
+		}
 	}
 
 	dest.Header().Set("Content-Type", "application/json")
 	re, _ := json.Marshal(out)
 	dest.Write(re)
+}
+
+// getErrorResponse does the exact same thing as write response except it's specific to errors
+func getErrorResponse[V any](response handlerResponse[V]) APIResponse[empty] {
+	return APIResponse[empty]{
+		Status:   response.Status,
+		Response: empty{},
+		Message:  getMessageFromStatus(response.Status),
+	}
 }
 
 // buildLogger instantiates a logger instance given a method / endpoint of the handler
@@ -124,9 +158,9 @@ func buildLogger(method string, endpoint string) *logger.Log {
 func logResponse[V any](logger *logger.Log, response handlerResponse[V]) {
 	switch response.Status {
 	case http.StatusOK:
-		logger.Write([]byte("successfully handled request"))
+		logger.Write("successfully handled request")
 	default:
-		logger.Write([]byte(fmt.Sprintf("failed to handle request! status: %d \nresponse %v", response.Status, response.Response)))
+		logger.Write(fmt.Sprintf("failed to handle request! status: %d \nresponse %v", response.Status, response.Response))
 	}
 }
 
