@@ -1,11 +1,13 @@
+/* eslint-disable */
 import React from 'react';
+
 import {
   StyledContainer,
   StyledDottedContainer,
   StyledContent,
   MainText,
   BoldText
-} from './contentblock_popup-Styled';
+} from './contentBlockPopup-Styled';
 import { ReactComponent as ContentUpload } from 'src/cse-ui-kit/assets/upload-content.svg';
 
 type Props = {

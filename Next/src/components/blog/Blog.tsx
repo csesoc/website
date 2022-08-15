@@ -34,10 +34,10 @@ const Block = ({ element }: { element: Element }) => {
   );
 };
 
-const Blog = ({ elements }: { elements: Element[] }) => {
+const Blog = ({ elements }: { elements: Element[][] }) => {
   return (
     <BlogContainer>
-      {elements.map((element, idx) => (
+      {elements.flat().map((element, idx) => (
         <Block key={idx} element={element} />
       ))}
     </BlogContainer>
