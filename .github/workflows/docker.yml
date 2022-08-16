@@ -9,13 +9,13 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        component: [Backend, Frontend, Next]
+        component: [backend, frontend, next]
         include:
-          - component: Backend
+          - component: backend
             name: cms-backend
-          - component: Frontend
+          - component: frontend
             name: cms-frontend
-          - component: Next
+          - component: next
             name: website-frontend
     permissions:
       contents: read
