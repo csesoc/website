@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>ghost_exporter</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fleece" Version="0.10.0" />
+    <PackageReference Include="Fleece.NewtonsoftJson" Version="0.10.0" />
+    <PackageReference Include="FSharpPlus" Version="1.2.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="GhostJson/GhostSyntax.fs" />
+    <Compile Include="Main.fs" />
+  </ItemGroup>
+
+
+</Project>
