@@ -27,7 +27,6 @@ module Markups =
                 | (JString "em")        :: [] -> Decode.Success Emphasis
                 | (JString "strong")    :: [] -> Decode.Success Strong
                 | _ -> Decode.Fail.invalidValue json "failed to parse into markup"
-
             | _ -> Decode.Fail.arrExpected json
 
 module Cards = 
