@@ -3,7 +3,6 @@ module GhostSyntax
 // Note to the reader?:
 //  - For documentation on the <!> and <*> operators see the FSharpPlus documentation on monads
 //  - map is also from FSharpPlus
-// I'm so sorry, this file is a hacky mess....
 
 open Fleece
 open Fleece.Newtonsoft
@@ -86,9 +85,8 @@ module Sections =
     | Paragraph
     | Heading
 
-    // This is horrible and i'm sorry but I couldn't find an alternative in this stupid library....
-    // if this stack overflows.... optimise this to be tail call recursive or find a better way of doing this using functions from FSharpPlus
     // Specialised parsers since this library doesn't seem to give us any :(((((((
+    // Might stack overflow on large lists but I dont see us ever having to deal with that, if stack overflows are an issue just optimise to be tail call recursive
     let rec parseListInner (parser: Encoding -> Result<'a, DecodeError>) arr : Result<'a list, DecodeError> =
         match arr with
         | x :: xs -> match parseListInner parser xs with
