@@ -54,3 +54,5 @@ bin
 !.paket/paket.bootstrapper.exe
 .ionide/
 .fake
+.paket/*
+paket-files/*
