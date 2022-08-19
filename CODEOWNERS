@@ -1,3 +1,5 @@
-Frontend/*   @csesoc/Websites-Frontend
-Backend/*    @csesoc/Websites-Backend
-Postgres/*   @csesoc/Websites-Backend
+frontend/*   @csesoc/Websites-Frontend
+next/*       @csesoc/Websites-Frontend
+scripts/*    @csesoc/Websites-Backend
+backend/*    @csesoc/Websites-Backend
+postgres/*   @csesoc/Websites-Backend
