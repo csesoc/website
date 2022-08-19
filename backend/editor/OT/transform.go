@@ -24,7 +24,7 @@ func transformPipeline(x data.OperationRequest, y data.OperationRequest) (data.O
 func transformPaths(pathX, pathY []int, xEditType, yEditType data.EditType) ([]int, []int) {
 	transformationPoint := TransformPoint(pathX, pathY)
 
-	if transformationPoint != -1 && !EffectIndependent(pathX, pathY, transformationPoint) {
+	if !EffectIndependent(pathX, pathY, transformationPoint) {
 		if xEditType == data.Insert && yEditType == data.Insert {
 			pathX, pathY = TransformInserts(pathX, pathY, transformationPoint)
 		} else if xEditType == data.Delete && yEditType == data.Delete {
@@ -66,23 +66,22 @@ func TransformInserts(pos_x []int, pos_y []int, TP int) ([]int, []int) {
 }
 
 // Function takes two delete access paths and returns the transformed access paths
-func TransformDeletes(pos_x []int, pos_y []int, TP int) ([]int, []int) {
-	if pos_x[TP] > pos_y[TP] {
-		return Update(pos_x, TP, -1), pos_y
-	} else if pos_x[TP] < pos_y[TP] {
-		return pos_x, Update(pos_y, TP, -1)
-	} else if pos_x[TP] == pos_y[TP] {
-		if len(pos_x) > len(pos_y) {
-			return nil, pos_y
-		} else if len(pos_x) < len(pos_y) {
-			return pos_x, nil
-		} else if pathEqual(pos_x, pos_y) {
+func TransformDeletes(pathX []int, pathY []int, transformationPoint int) ([]int, []int) {
+	if pathX[transformationPoint] > pathY[transformationPoint] {
+		return Update(pathX, transformationPoint, -1), pathY
+	} else if pathX[transformationPoint] < pathY[transformationPoint] {
+		return pathX, Update(pathY, transformationPoint, -1)
+	} else {
+		if len(pathX) > len(pathY) {
+			return nil, pathY
+		} else if len(pathX) < len(pathY) {
+			return pathX, nil
+		} else if pathEqual(pathX, pathY) {
 			return nil, nil
 		}
 	}
 
-	// TODO: not this.
-	panic("unreachable!")
+	return pathX, pathY
 }
 
 // TransformInsertDelete takes two access paths, first insert and second delete, and returns the transformed access paths
@@ -107,13 +106,14 @@ func TransformInsertDelete(insertPos []int, deletePos []int, TP int) ([]int, []i
 // TransformPoint determines the transform point of two access paths
 // the transform point is simply just the first location in which the paths differ
 func TransformPoint(pathX []int, pathY []int) int {
-	for i := 0; i < len(pathX) && i < len(pathY); i++ {
+	end := min(len(pathX), len(pathY))
+	for i := 0; i < end; i++ {
 		if pathX[i] != pathY[i] {
 			return i
 		}
 	}
 
-	return -1
+	return end - 1
 }
 
 // EffectIndependent determines if the two access paths are independent
@@ -133,7 +133,16 @@ func pathEqual(a []int, b []int) bool {
 		}
 	}
 
-	return false
+	return true
+}
+
+// min is just a simple minimum utility, computes the minimum of two numbers
+func min(a, b int) int {
+	if a > b {
+		return b
+	}
+
+	return a
 }
 
 // normaliseOperation converts operations containing nil invalid paths to no-operations
