@@ -4,7 +4,7 @@ import (
 	"cms.csesoc.unsw.edu.au/editor/OT/data"
 )
 
-// takes an operation and transforms it
+// transformPipeline takes an operation and transforms it according to our transformation specification
 // todo: state should not be a string, am assuming that I'm taking a struct that contains operation, pos and
 func transformPipeline(x data.OperationRequest, y data.OperationRequest) (data.OperationRequest, data.OperationRequest) {
 	xOpType := x.OperationPayload.GetType()
@@ -20,6 +20,7 @@ func transformPipeline(x data.OperationRequest, y data.OperationRequest) (data.O
 	return normaliseOperation(x), normaliseOperation(y)
 }
 
+// transformPaths takes two paths and transforms it according to the paper's tree OT specification
 func transformPaths(pathX, pathY []int, xEditType, yEditType data.EditType) ([]int, []int) {
 	transformationPoint := TransformPoint(pathX, pathY)
 
@@ -80,10 +81,12 @@ func TransformDeletes(pos_x []int, pos_y []int, TP int) ([]int, []int) {
 		}
 	}
 
+	// TODO: not this.
 	panic("unreachable!")
 }
 
-// Function takes two access paths, first insert and second delete, and returns the transformed access paths
+// TransformInsertDelete takes two access paths, first insert and second delete, and returns the transformed access paths
+// note that this is a direct implementation of the code in the paper
 func TransformInsertDelete(insertPos []int, deletePos []int, TP int) ([]int, []int) {
 	if insertPos[TP] > deletePos[TP] {
 		return Update(insertPos, TP, -1), deletePos
@@ -97,15 +100,15 @@ func TransformInsertDelete(insertPos []int, deletePos []int, TP int) ([]int, []i
 		}
 	}
 
+	// TODO: not this.
 	panic("unreachable!")
 }
 
-// Determines the transform point of two access paths
-func TransformPoint(pos_x []int, pos_y []int) int {
-	pos_xlen := len(pos_x)
-	pos_ylen := len(pos_y)
-	for i := 0; i < pos_xlen && i < pos_ylen; i++ {
-		if pos_x[i] != pos_y[i] {
+// TransformPoint determines the transform point of two access paths
+// the transform point is simply just the first location in which the paths differ
+func TransformPoint(pathX []int, pathY []int) int {
+	for i := 0; i < len(pathX) && i < len(pathY); i++ {
+		if pathX[i] != pathY[i] {
 			return i
 		}
 	}
@@ -113,24 +116,14 @@ func TransformPoint(pos_x []int, pos_y []int) int {
 	return -1
 }
 
-// Determines if the two access paths are independent
-func EffectIndependent(pos_x []int, pos_y []int, TP int) bool {
-	pos_xlen := len(pos_x)
-	pos_ylen := len(pos_y)
-	// Translate pseudocode to code
-	if pos_xlen > (TP+1) && pos_ylen > (TP+1) {
-		return true
-	}
-	if pos_x[TP] > pos_y[TP] && pos_xlen < pos_ylen {
-		return true
-	}
-	if pos_x[TP] < pos_y[TP] && pos_xlen > pos_ylen {
-		return true
-	}
-	return false
+// EffectIndependent determines if the two access paths are independent
+func EffectIndependent(pathX []int, pathY []int, transformationPoint int) bool {
+	return (len(pathX) > (transformationPoint+1) && len(pathY) > (transformationPoint+1)) ||
+		(pathX[transformationPoint] > pathY[transformationPoint] && len(pathX) < len(pathY)) ||
+		(pathX[transformationPoint] < pathY[transformationPoint] && len(pathX) > len(pathY))
 }
 
-// pathEqual is an equality check on arrays
+// pathEqual is an equality check on paths
 func pathEqual(a []int, b []int) bool {
 	if len(a) == len(b) {
 		for i := range a {
@@ -143,6 +136,8 @@ func pathEqual(a []int, b []int) bool {
 	return false
 }
 
+// normaliseOperation converts operations containing nil invalid paths to no-operations
+// no-operations are not applied by the rest of the system to the document :D
 func normaliseOperation(x data.OperationRequest) data.OperationRequest {
 	// Make sure to detect for no-ops, internally this is represented by a nil ActualPath
 	if x.ActualPath == nil {

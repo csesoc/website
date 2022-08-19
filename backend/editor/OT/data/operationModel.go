@@ -27,6 +27,8 @@ type (
 		ActualPath       []int
 		EditType         EditType `json:"op"`
 		OperationPayload Payload  `json:"payload"`
+
+		IsNoOp bool
 	}
 
 	// Payload is the actual data contained within the request
@@ -59,7 +61,7 @@ type (
 )
 
 // NoOperation is a special constant that signifies an operation that does nothing
-var NoOperation = OperationRequest{}
+var NoOperation = OperationRequest{IsNoOp: true}
 
 // Interface implementations
 func (t TextEdit) GetType() OperationType  { return TextEditType }

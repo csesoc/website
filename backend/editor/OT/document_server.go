@@ -104,6 +104,11 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 		// to deal with this incoming operation we need to push
 		// data to the worker assigned to this clientView
 		workerWorkHandle <- func() {
+			defer func() {
+				clientState.canSendOps = true
+				thisClient.sendAcknowledgement <- empty{}
+			}()
+
 			clientState.canSendOps = false
 
 			// apply op to clientView states
@@ -113,6 +118,10 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 			fmt.Print(thisClient)
 			transformedOperation, _ := transformPipeline(op, s.lastAppliedOperation)
 			s.stateLock.Unlock()
+
+			if transformedOperation.IsNoOp {
+				return
+			}
 
 			// propagate updates to all connected clients except this one
 			// if we send it to this clientView then we may deadlock the server and clientView
@@ -126,9 +135,6 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 				connectedClient.clientView.sendOp <- transformedOperation
 			}
 			s.clientsLock.Unlock()
-
-			clientState.canSendOps = true
-			thisClient.sendAcknowledgement <- empty{}
 		}
 	}
 }
