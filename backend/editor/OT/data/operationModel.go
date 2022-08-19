@@ -2,53 +2,78 @@ package data
 
 import "errors"
 
-// Request is the model for the structure of data coming from the client
-type Request struct {
-	path    []string `json:"path"`
-	op      string   `json:"op"`
-	payload Payload  `json:"payload"`
-}
+type (
+	OperationType int
+	EditType      int
+)
 
-// Payload is the actual data contained within the request
-// there are 3 possible payload values, KeyEdit, ArrayEdit and ValuEdit
-type Payload interface {
-	GetType() string
-}
+const (
+	TextEditType OperationType = iota
+	KeyEditType
+	ArrayEditType
+)
 
-// TextEdit @implements Payload, it represents an edit
-// of some underlying text
-type TextEdit struct {
-	value string
-	start int
-	end   int
-}
+const (
+	Insert EditType = iota
+	Delete
+)
 
-func (t TextEdit) GetType() string { return "TextEdit" }
+type (
+	// OperationRequest is the model for the structure of data coming from the client
+	OperationRequest struct {
+		// for compatibility reasons we maintain "actualPath" until path is replaced
+		// just rename actualPath to path once we transition from string paths to integer paths
+		Path             []string `json:"path"`
+		ActualPath       []int
+		EditType         EditType `json:"op"`
+		OperationPayload Payload  `json:"payload"`
 
-// KeyEdit @implements Payload, it represents the editing of a value
-// at a specific key
-type KeyEdit struct {
-	valueType string
-	newValue  string
-}
+		IsNoOp bool
+	}
 
-func (k KeyEdit) GetType() string { return "KeyEdit" }
+	// Payload is the actual data contained within the request
+	// there are 3 possible payload values, KeyEdit, ArrayEdit and ValueEdit
+	Payload interface {
+		GetType() OperationType
+	}
 
-// ArrayEdit @implements Payload, it represents an editing of a specific
-// array index
-type ArrayEdit struct {
-	valueType string
-	newValue  string
-}
+	// TextEdit @implements Payload, it represents an edit
+	// of some underlying text
+	TextEdit struct {
+		value string
+		start int
+		end   int
+	}
 
-func (a ArrayEdit) GetType() string { return "ArrayEdit" }
+	// KeyEdit @implements Payload, it represents the editing of a value
+	// at a specific key
+	KeyEdit struct {
+		valueType string
+		newValue  string
+	}
+
+	// ArrayEdit @implements Payload, it represents an editing of a specific
+	// array index
+	ArrayEdit struct {
+		valueType string
+		newValue  string
+	}
+)
+
+// NoOperation is a special constant that signifies an operation that does nothing
+var NoOperation = OperationRequest{IsNoOp: true}
+
+// Interface implementations
+func (t TextEdit) GetType() OperationType  { return TextEditType }
+func (k KeyEdit) GetType() OperationType   { return KeyEditType }
+func (a ArrayEdit) GetType() OperationType { return ArrayEditType }
 
 // Parse is a utility function that takes a JSON stream and parses the input into
 // a Request object
-func Parse(request string) (Request, error) {
-	requestObject := Request{}
+func Parse(request string) (OperationRequest, error) {
+	requestObject := OperationRequest{}
 	if err := cmsJsonConf.Unmarshall([]byte(request), &requestObject); err != nil {
-		return Request{}, errors.New("invalid request format")
+		return OperationRequest{}, errors.New("invalid request format")
 	}
 
 	return requestObject, nil

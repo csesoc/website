@@ -1,6 +1,7 @@
 package editor
 
 import (
+	"cms.csesoc.unsw.edu.au/editor/OT/data"
 	"github.com/gorilla/websocket"
 )
 
@@ -13,27 +14,15 @@ import (
 type clientView struct {
 	socket *websocket.Conn
 
-	sendOp              chan op
+	sendOp              chan data.OperationRequest
 	sendAcknowledgement chan empty
 	sendTerminateSignal chan empty
-}
-
-// models an operation a client can propagte to the documentServer
-type op struct {
-	data     string
-	location int
-	// todo: add more metadata
-}
-
-type opRequest struct {
-	requestType string
-	operation   op
 }
 
 func newClient(socket *websocket.Conn) *clientView {
 	return &clientView{
 		socket:              socket,
-		sendOp:              make(chan op),
+		sendOp:              make(chan data.OperationRequest),
 		sendAcknowledgement: make(chan empty),
 		sendTerminateSignal: make(chan empty),
 	}
@@ -52,7 +41,7 @@ func (c *clientView) run(serverPipe pipe, terminatePipe alertLeaving) {
 			break
 
 		case <-c.sendAcknowledgement:
-			// push the acknowlegement down the websocket
+			// push the acknowledgement down the websocket
 			break
 
 		case <-c.sendTerminateSignal:
@@ -62,7 +51,7 @@ func (c *clientView) run(serverPipe pipe, terminatePipe alertLeaving) {
 			return
 
 		default:
-			request := opRequest{}
+			request := data.OperationRequest{}
 
 			err := c.socket.ReadJSON(&request)
 			if err != nil {
@@ -72,7 +61,7 @@ func (c *clientView) run(serverPipe pipe, terminatePipe alertLeaving) {
 			}
 
 			// push the update to the documentServer
-			serverPipe(request.operation)
+			serverPipe(request)
 		}
 	}
 }

@@ -15,16 +15,16 @@ import (
 
 // ApplyRequest takes a datamodel (as defined in the datamodels folder) and a request, it then proceeds to apply the request
 // to the model, note that this assumes that the operation in the request has been appropriately transformed
-func ApplyRequest(model datamodels.DataModel, request Request) error {
-	_, err := GetOperationTargetSite(model, request.path)
+func ApplyRequest(model datamodels.DataModel, request OperationRequest) error {
+	_, err := GetOperationTargetSite(model, request.Path)
 	if err != nil {
 		return err
 	}
 
-	switch editType := request.payload.GetType(); editType {
-	case "textEdit":
-	case "keyEdit":
-	case "arrayEdit":
+	switch editType := request.OperationPayload.GetType(); editType {
+	case TextEditType:
+	case KeyEditType:
+	case ArrayEditType:
 	default:
 		return errors.New("invalid edit type")
 	}

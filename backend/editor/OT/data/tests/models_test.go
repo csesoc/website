@@ -1,4 +1,4 @@
-package models
+package tests
 
 import (
 	"errors"

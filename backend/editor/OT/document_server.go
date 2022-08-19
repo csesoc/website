@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 
+	"cms.csesoc.unsw.edu.au/editor/OT/data"
 	"github.com/google/uuid"
 )
 
@@ -14,10 +15,12 @@ type documentServer struct {
 	// state management
 	ID        uuid.UUID
 	state     string
-	statelock sync.Mutex
+	stateLock sync.Mutex
 
 	clients     map[int]*clientState
 	clientsLock sync.Mutex
+
+	lastAppliedOperation data.OperationRequest
 }
 
 type clientState struct {
@@ -30,7 +33,7 @@ func newDocumentServer() *documentServer {
 	// any update requires the allocation + copy of a new string in memory
 	return &documentServer{
 		state:       "amongus!!!",
-		statelock:   sync.Mutex{},
+		stateLock:   sync.Mutex{},
 		clients:     make(map[int]*clientState),
 		clientsLock: sync.Mutex{},
 	}
@@ -38,7 +41,7 @@ func newDocumentServer() *documentServer {
 
 // a pipe is a closure that the clientView can use to communicate
 // with the server, it wraps its internal clientView ID for security reasons
-type pipe = func(operation op)
+type pipe = func(op data.OperationRequest)
 
 // alertLeaving is like a pipe except a client uses it to tell a document
 // that it is leaving
@@ -83,8 +86,8 @@ func (s *documentServer) disconnectClient(clientID int) {
 // buildClientPipe is a function that returns the "pipe" for a clientView
 // this pipe contains all the necessary code that the clientView needs to communicate with the documentServer
 // when the clientView wishes to send data to the documentServer they simply just call this pipe with the operation
-func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan func(), workerKillHandle chan empty) func(op) {
-	return func(operation op) {
+func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan func(), workerKillHandle chan empty) func(data.OperationRequest) {
+	return func(op data.OperationRequest) {
 		// this could also just be captured from the outer func
 		clientState := s.clients[clientID]
 		thisClient := clientState.clientView
@@ -101,15 +104,24 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 		// to deal with this incoming operation we need to push
 		// data to the worker assigned to this clientView
 		workerWorkHandle <- func() {
+			defer func() {
+				clientState.canSendOps = true
+				thisClient.sendAcknowledgement <- empty{}
+			}()
+
 			clientState.canSendOps = false
 
 			// apply op to clientView states
-			s.statelock.Lock()
+			s.stateLock.Lock()
 			// todo: do stuff with the incoming data
 			// replace the print with something else
 			fmt.Print(thisClient)
-			transformedOperation := transformPipeline(operation, s.state)
-			s.statelock.Unlock()
+			transformedOperation, _ := transformPipeline(op, s.lastAppliedOperation)
+			s.stateLock.Unlock()
+
+			if transformedOperation.IsNoOp {
+				return
+			}
 
 			// propagate updates to all connected clients except this one
 			// if we send it to this clientView then we may deadlock the server and clientView
@@ -123,9 +135,6 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 				connectedClient.clientView.sendOp <- transformedOperation
 			}
 			s.clientsLock.Unlock()
-
-			clientState.canSendOps = true
-			thisClient.sendAcknowledgement <- empty{}
 		}
 	}
 }
@@ -133,7 +142,7 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 // buildAlertLeavingSignal builds a leaving signal for the client view
 // to use when it wants to tell the document server that it is leaving
 func (s *documentServer) buildAlertLeavingSignal(clientID int, workerKillHandle chan empty) func() {
-	// go doesnt have currying :(
+	// go doesn't have currying :(
 	return func() {
 		workerKillHandle <- empty{}
 		s.disconnectClient(clientID)
