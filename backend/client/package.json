@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "socket.io": "^4.5.1",
-    "socket.io-client": "^4.5.1"
+    "socket.io": "4.5.1",
+    "socket.io-client": "4.5.1"
   },
   "devDependencies": {
     "@types/socket.io": "^3.0.2",
