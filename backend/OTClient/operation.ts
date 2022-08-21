@@ -10,9 +10,7 @@ export const noop: Operation = { path: [], editType: "noop" };
 // transform takes in two operations and returns their transformed ops
 export const transform = (a: Operation, b: Operation): [Operation, Operation] => {
 	const transformedPaths = transformPaths(a, b);
-
-	a.path = transformedPaths[0];
-	b.path = transformedPaths[1];
+	[a.path, b.path] = transformedPaths;
 
 	return [normalise(a), normalise(b)];
 }
