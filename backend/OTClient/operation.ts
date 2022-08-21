@@ -61,9 +61,9 @@ const transformInserts = (
     default:
       return a.length > b.length
         ? [update(a, tp, 1), b]
-        : a.length < b.length
-        ? [a, update(b, tp, 1)]
-        : [a, b];
+        : (a.length < b.length
+          ? [a, update(b, tp, 1)]
+          : [a, b]);
   }
 };
 
@@ -83,9 +83,9 @@ const transformDeletes = (
     default:
       return a.length > b.length
         ? [[], b]
-        : a.length < b.length
-        ? [a, []]
-        : [[], []];
+        : (a.length < b.length
+          ? [a, []]
+          : [[], []]);
   }
 };
 
@@ -121,9 +121,9 @@ const update = (pos: number[], toChange: number, change: number) => {
  * Takes in two paths and computes their transformation point
  */
 const transformationPoint = (a: number[], b: number[]): number =>
-  [...Array(Math.max(a.length, b.length)).keys()].find(
-    (i) => (a[i] ?? -1) != (b[i] ?? -1)
-  ) ?? Math.max(a.length, b.length) - 1;
+  [...Array(Math.min(a.length, b.length)).keys()].find(
+    (i) => a[i] != b[i]
+  ) ?? Math.min(a.length, b.length);
 
 /**
  * Takes two paths and determines if their effect is independent or not
