@@ -1,7 +1,6 @@
 package editor
 
 import (
-	"fmt"
 	"sync"
 
 	"cms.csesoc.unsw.edu.au/editor/OT/data"
@@ -20,7 +19,7 @@ type documentServer struct {
 	clients     map[int]*clientState
 	clientsLock sync.Mutex
 
-	lastAppliedOperation data.OperationRequest
+	operationHistory []data.OperationRequest
 }
 
 type clientState struct {
@@ -113,10 +112,11 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 
 			// apply op to clientView states
 			s.stateLock.Lock()
-			// todo: do stuff with the incoming data
-			// replace the print with something else
-			fmt.Print(thisClient)
-			transformedOperation, _ := transformPipeline(op, s.lastAppliedOperation)
+
+			// apply the operation locally and log the new operation
+			transformedOperation := s.transformOperation(op)
+			s.operationHistory = append(s.operationHistory, transformedOperation)
+
 			s.stateLock.Unlock()
 
 			if transformedOperation.IsNoOp {
@@ -132,11 +132,21 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 				}
 
 				// push update
-				connectedClient.clientView.sendOp <- transformedOperation
+				connectedClient.sendOp <- transformedOperation
 			}
 			s.clientsLock.Unlock()
 		}
 	}
+}
+
+// transformOperation transforms an incoming client operation against the history of applied server operations
+// 		note: the baseOpIndex indicates what operation to start applying against
+func (s *documentServer) transformOperation(incomingOp data.OperationRequest) data.OperationRequest {
+	for _, op := range s.operationHistory[incomingOp.AcknowledgedServerOps:] {
+		_, incomingOp = transformPipeline(incomingOp, op)
+	}
+
+	return incomingOp
 }
 
 // buildAlertLeavingSignal builds a leaving signal for the client view
