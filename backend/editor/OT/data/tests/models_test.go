@@ -25,6 +25,8 @@ func (a arraysData) Set(field string, value reflect.Value) error {
 	return nil
 }
 
+func (a arraysData) SetField(field int, value reflect.Value) {}
+
 func setupDocument() cmsmodel.Document {
 	image := cmsmodel.Image{
 		ImageDocumentID: "m0rb",
@@ -52,7 +54,7 @@ func setupDocument() cmsmodel.Document {
 	return cmsmodel.Document{
 		DocumentName: "morbed up",
 		DocumentId:   "M0R8",
-		Content:      []cmsmodel.Component{image, paragraph, arrayData},
+		Content:      []cmsmodel.Component{&image, &paragraph, arrayData},
 	}
 }
 

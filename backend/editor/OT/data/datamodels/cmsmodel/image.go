@@ -26,3 +26,12 @@ func (i Image) Set(field string, value reflect.Value) error {
 
 	return errors.New("invalid field provided")
 }
+
+func (i *Image) SetField(fieldIdx int, value reflect.Value) {
+	switch fieldIdx {
+	case 0:
+		i.ImageDocumentID = value.String()
+	case 1:
+		i.ImageSource = value.String()
+	}
+}

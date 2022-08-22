@@ -4,6 +4,7 @@ import (
 	"reflect"
 
 	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels"
+	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels/cmsmodel"
 	"github.com/pkg/errors"
 )
 
@@ -11,7 +12,7 @@ import (
 
 // Add update text field
 func TextEditUpdate(model datamodels.DataModel, path []int, start int, end int, data string) error {
-	result, err := GetOperationTargetSite(model, path)
+	parent, result, err := Traverse(model, path)
 	if err != nil {
 		return err
 	}
@@ -20,7 +21,11 @@ func TextEditUpdate(model datamodels.DataModel, path []int, start int, end int, 
 		return errors.Errorf("Target is not of text type.")
 	}
 	target := result.Interface().(string)
-	result.Set(reflect.ValueOf(target[:start] + data + target[end:]))
+	updatedText := target[:start] + data + target[end:]
+	err = cmsmodel.FieldSetter(parent, path[len(path)-1], reflect.ValueOf(updatedText))
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -79,7 +79,7 @@ func getValueAtIndex(array reflect.Value, index int) reflect.Value {
 // thus we must dereference them before leaving
 func dereference(curr reflect.Value) reflect.Value {
 	if curr.Kind() == reflect.Interface && curr.IsValid() {
-		curr = curr.Elem()
+		curr = curr.Elem().Elem()
 	}
 
 	return curr

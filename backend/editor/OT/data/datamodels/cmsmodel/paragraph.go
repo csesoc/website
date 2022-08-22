@@ -41,3 +41,11 @@ func (p Paragraph) Set(field string, value reflect.Value) error {
 	reflectionField.Set(value)
 	return nil
 }
+
+func (p *Paragraph) SetField(fieldIdx int, value reflect.Value) {
+	switch fieldIdx {
+	case 0:
+		p.ParagraphID = value.String()
+		// etc
+	}
+}
