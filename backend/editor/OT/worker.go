@@ -2,10 +2,10 @@ package editor
 
 // worker is a single goroutine that listens for work to execute, it also optionally listens for a termination
 // signal the reason we have this is because we spin up a goroutine for each incoming keystroke from the client
-// so my suspicion is that the overhead of allocating a stack and then deallocating it on each keystroke
+// so my suspicion is that the overhead of allocating a stack and then de-allocating it on each keystroke
 // is rather costly (despite goroutines being rather lightweight)
 // TODO: in the future benchmark the actual impact of just spinning a goroutine on each keystroke
-// 		and remove this if it isnt actually as bad as suspected
+// 		and remove this if it isn't actually as bad as suspected
 // NOTE: each client is allocated one worker they can push work to :D
 
 type empty struct{}

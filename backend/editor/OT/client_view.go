@@ -38,6 +38,7 @@ func (c *clientView) run(serverPipe pipe, terminatePipe alertLeaving) {
 		select {
 		case <-c.sendOp:
 			// push the operation down the websocket
+			// send an acknowledgement
 			break
 
 		case <-c.sendAcknowledgement:

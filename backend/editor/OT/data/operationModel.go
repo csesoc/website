@@ -28,7 +28,8 @@ type (
 		EditType         EditType `json:"op"`
 		OperationPayload Payload  `json:"payload"`
 
-		IsNoOp bool
+		IsNoOp                bool
+		AcknowledgedServerOps int
 	}
 
 	// Payload is the actual data contained within the request
