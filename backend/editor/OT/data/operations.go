@@ -36,4 +36,5 @@ func ArrayEditUpdate(model datamodels.DataModel, path []int, index int, data int
 // Remove element in array at "index" position
 func ArrayEditRemove(model datamodels.DataModel, path []int, index int) error {
 	return nil
+
 }
