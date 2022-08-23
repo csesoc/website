@@ -9,14 +9,10 @@ import (
 	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels"
 )
 
-// TODO:
-// - Add error checking for the paths as we traverse, e.g missing an index when traversing an array (assuming we didn't reach the end)
-// - Make sure the item we are adding keeps the validity of the object
-
 // ApplyRequest takes a datamodel (as defined in the datamodels folder) and a request, it then proceeds to apply the request
 // to the model, note that this assumes that the operation in the request has been appropriately transformed
 func ApplyRequest(model datamodels.DataModel, request OperationRequest) error {
-	// TODO: Use Gary's code here
+	// TODO: Use Gary's code here to get the indice path
 	_, err := GetOperationTargetSite(model, []int{})
 	if err != nil {
 		return err

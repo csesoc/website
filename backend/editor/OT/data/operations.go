@@ -1,31 +1,13 @@
 package data
 
 import (
-	"reflect"
-
 	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels"
-	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels/cmsmodel"
-	"github.com/pkg/errors"
 )
 
 // File contains all the atomic operations we can apply to a datamodel
 
 // Add update text field
 func TextEditUpdate(model datamodels.DataModel, path []int, start int, end int, data string) error {
-	parent, result, err := Traverse(model, path)
-	if err != nil {
-		return err
-	}
-	// Target must be a string (text)
-	if result.Type().Kind() != reflect.String {
-		return errors.Errorf("Target is not of text type.")
-	}
-	target := result.Interface().(string)
-	updatedText := target[:start] + data + target[end:]
-	err = cmsmodel.FieldSetter(parent, path[len(path)-1], reflect.ValueOf(updatedText))
-	if err != nil {
-		return err
-	}
 	return nil
 }
 

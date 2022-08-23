@@ -54,7 +54,7 @@ func setupDocument() cmsmodel.Document {
 	return cmsmodel.Document{
 		DocumentName: "morbed up",
 		DocumentId:   "M0R8",
-		Content:      []cmsmodel.Component{&image, &paragraph, arrayData},
+		Content:      []cmsmodel.Component{image, paragraph, arrayData},
 	}
 }
 
@@ -194,27 +194,28 @@ func TestValidGetNestedPrimitive(t *testing.T) {
 	assert.False(result.Bool())
 }
 
-func TestTextEditUpdate(t *testing.T) {
-	testObj := setupDocument()
-	// Content/0/ImageDocumentID
-	subpaths := []int{2, 0, 0}
+// func TestTextEditUpdate(t *testing.T) {
+// 	testObj := setupDocument()
+// 	// Content/0/ImageDocumentID
+// 	subpaths := []int{2, 0, 0}
 
-	err := data.TextEditUpdate(testObj, subpaths, 1, 1, "o")
+// 	err := data.TextEditUpdate(testObj, subpaths, 1, 1, "o")
 
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+// 	if err != nil {
+// 		log.Fatalf(err.Error())
+// 	}
 
-	result, err := data.GetOperationTargetSite(testObj, subpaths)
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+// 	result, err := data.GetOperationTargetSite(testObj, subpaths)
+// 	if err != nil {
+// 		log.Fatalf(err.Error())
+// 	}
 
-	assert := assert.New(t)
-	assert.Equal("morb", result.String())
+// 	assert := assert.New(t)
+// 	assert.Equal("morb", result.String())
 
-}
+// }
 
+// TODO: When TLB stuff is done, remove this and replace above with TLB code
 func placeholder(datamodels.DataModel) ([]int, error) {
 	return nil, fmt.Errorf("Invalid")
 }
