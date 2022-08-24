@@ -30,12 +30,29 @@ node_modules
 # nextjs bundled files
 .next
 
-# ignore compiled main go file
-Backend/main
+# ignore compiled main go file and compiled typescript
+backend/main
+backend/dist
 
 
 # ignore .env files
-Config/.env.dev
+config/.env.dev
 
 # System files
 .DS_Store
+
+### fsharp ###
+lib/debug
+lib/release
+Debug
+*.suo
+*.user
+obj
+bin
+/build/
+*.exe
+!.paket/paket.bootstrapper.exe
+.ionide/
+.fake
+.paket/*
+paket-files/*
