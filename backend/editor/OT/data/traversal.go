@@ -3,14 +3,13 @@ package data
 import (
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 
 	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels"
 )
 
 // Traverse returns the second last value and the last value pointed at by a specific path
-func Traverse(document datamodels.DataModel, subpaths []string) (reflect.Value, reflect.Value, error) {
+func Traverse(document datamodels.DataModel, subpaths []int) (reflect.Value, reflect.Value, error) {
 	prev := reflect.Value{}
 	curr := reflect.ValueOf(document)
 	fullPath := subpaths
@@ -21,7 +20,8 @@ func Traverse(document datamodels.DataModel, subpaths []string) (reflect.Value, 
 
 		if !prev.IsValid() || !curr.IsValid() {
 			consumedPath := fullPath[:len(fullPath)-len(subpaths)]
-			return reflect.Value{}, reflect.Value{}, fmt.Errorf("invalid path, couldn't find subpath %s", strings.Join(consumedPath, "/"))
+
+			return reflect.Value{}, reflect.Value{}, fmt.Errorf("invalid path, couldn't find subpath %s", strings.Trim(strings.Join(strings.Fields(fmt.Sprint(consumedPath)), "/"), "[]"))
 		}
 	}
 
@@ -31,7 +31,7 @@ func Traverse(document datamodels.DataModel, subpaths []string) (reflect.Value, 
 // tryConsumeArrayElement attempts to consume the head of the path, the assumption is that the current value is an
 // array value, if this is not the case then the function returns the prev, current and path unchanged, if it was capable
 // of consuming the head then it returns the subpath minus the head
-func tryConsumeArrayElement(prev, curr reflect.Value, path []string) (reflect.Value, reflect.Value, []string) {
+func tryConsumeArrayElement(prev, curr reflect.Value, path []int) (reflect.Value, reflect.Value, []int) {
 	// If we are at an array, we attempt to "index" into that array directly, this implies consuming the next element of our path
 	// which should be a regular array index
 	atEndOfPath := len(path) < 1
@@ -55,8 +55,8 @@ func tryConsumeArrayElement(prev, curr reflect.Value, path []string) (reflect.Va
 
 // consumeField consumes a regular field from a path, it pops the head off the path slice and if it was able
 // to consume something then it retuns the path minus the head :D
-func consumeField(prev, curr reflect.Value, path []string) (reflect.Value, reflect.Value, []string) {
-	field := curr.FieldByName(path[0])
+func consumeField(prev, curr reflect.Value, path []int) (reflect.Value, reflect.Value, []int) {
+	field := curr.FieldByIndex([]int{path[0]})
 	if curr.IsValid() {
 		return curr, dereference(field), path[1:]
 	}
@@ -66,9 +66,8 @@ func consumeField(prev, curr reflect.Value, path []string) (reflect.Value, refle
 
 // getValueAtIndex fetches the value at the provided index in the array or slice pointed at by reflect.Value
 // note it is assumed that index is a string
-func getValueAtIndex(array reflect.Value, i string) reflect.Value {
-	index, err := strconv.Atoi(i)
-	if err != nil || index >= array.Len() || index < 0 {
+func getValueAtIndex(array reflect.Value, index int) reflect.Value {
+	if index >= array.Len() || index < 0 {
 		return reflect.Value{}
 	}
 

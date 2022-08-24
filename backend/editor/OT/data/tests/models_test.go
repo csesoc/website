@@ -1,13 +1,13 @@
 package tests
 
 import (
-	"errors"
+	"fmt"
 	"log"
 	"reflect"
-	"strings"
 	"testing"
 
 	"cms.csesoc.unsw.edu.au/editor/OT/data"
+	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels"
 	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels/cmsmodel"
 	"github.com/stretchr/testify/assert"
 )
@@ -24,6 +24,8 @@ func (a arraysData) Get(field string) (reflect.Value, error) {
 func (a arraysData) Set(field string, value reflect.Value) error {
 	return nil
 }
+
+func (a arraysData) SetField(field int, value reflect.Value) {}
 
 func setupDocument() cmsmodel.Document {
 	image := cmsmodel.Image{
@@ -58,12 +60,8 @@ func setupDocument() cmsmodel.Document {
 
 func TestValidSliceField(t *testing.T) {
 	testObj := setupDocument()
-	path := "Content/0"
-
-	subpaths, err := ParsePath(path)
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	// Content/0
+	subpaths := []int{2, 0}
 
 	prev, result, err := data.Traverse(testObj, subpaths)
 	if err != nil {
@@ -83,25 +81,16 @@ func TestValidSliceField(t *testing.T) {
 
 func TestInvalidFieldName(t *testing.T) {
 	testObj := setupDocument()
-	path := "Content/0/InvalidFieldName/0"
-
-	subpaths, err := ParsePath(path)
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	_, _, err = data.Traverse(testObj, subpaths)
-	assert.NotNil(t, err)
+	// Content/0/InvalidFieldName/0
+	_, err := placeholder(testObj)
+	expectedErrorMsg := "Invalid"
+	assert.EqualErrorf(t, err, expectedErrorMsg, "Error should be: %v, got: %v", expectedErrorMsg, err)
 }
 
 func TestValidArrayField(t *testing.T) {
 	testObj := setupDocument()
-	path := "Content/2/Data/0"
-
-	subpaths, err := ParsePath(path)
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	// Content/2/Data/0
+	subpaths := []int{2, 2, 0, 0}
 
 	prev, result, err := data.Traverse(testObj, subpaths)
 	if err != nil {
@@ -119,38 +108,24 @@ func TestValidArrayField(t *testing.T) {
 
 func TestNonIntegerArrayIndex(t *testing.T) {
 	testObj := setupDocument()
-	path := "Content/asdf/Data"
-
-	subpaths, err := ParsePath(path)
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	_, _, err = data.Traverse(testObj, subpaths)
-	assert.NotNil(t, err)
+	// Content/asdf/Data
+	_, err := placeholder(testObj)
+	expectedErrorMsg := "Invalid"
+	assert.EqualErrorf(t, err, expectedErrorMsg, "Error should be: %v, got: %v", expectedErrorMsg, err)
 }
 
 func TestOutOfBoundsArrayIndex(t *testing.T) {
 	testObj := setupDocument()
-	path := "Content/4/Data"
-
-	subpaths, err := ParsePath(path)
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-
-	_, _, err = data.Traverse(testObj, subpaths)
-	assert.NotNil(t, err)
+	// Content/4/Data
+	_, err := placeholder(testObj)
+	expectedErrorMsg := "Invalid"
+	assert.EqualErrorf(t, err, expectedErrorMsg, "Error should be: %v, got: %v", expectedErrorMsg, err)
 }
 
 func TestValidStructField(t *testing.T) {
 	testObj := setupDocument()
-	path := "Content/0/ImageDocumentID"
-
-	subpaths, err := ParsePath(path)
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	// Content/0/ImageDocumentID
+	subpaths := []int{2, 0, 0}
 
 	prev, result, err := data.Traverse(testObj, subpaths)
 	if err != nil {
@@ -161,20 +136,16 @@ func TestValidStructField(t *testing.T) {
 
 	assert.Equal(reflect.String, result.Type().Kind())
 	assert.Equal("m0rb", result.String())
-
 	assert.Equal("Image", prev.Type().Name())
 	assert.Equal("m0rb", prev.Field(0).String())
 	assert.Equal("big_morb.png", prev.Field(1).String())
+
 }
 
 func TestValidNestedFields(t *testing.T) {
 	testObj := setupDocument()
-	path := "Content/1/ParagraphChildren/0/Bold"
-
-	subpaths, err := ParsePath(path)
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	// Content/1/ParagraphChildren/0/Bold
+	subpaths := []int{2, 1, 2, 0, 2}
 
 	prev, result, err := data.Traverse(testObj, subpaths)
 	if err != nil {
@@ -197,10 +168,10 @@ func TestValidNestedFields(t *testing.T) {
 
 func TestValidGetFirstDepth(t *testing.T) {
 	testObj := setupDocument()
-	path := "Content/0/ImageDocumentID"
-	pathArr, _ := ParsePath(path)
+	// Content/0/ImageDocumentID
+	subpaths := []int{2, 0, 0}
 
-	result, err := data.GetOperationTargetSite(testObj, pathArr)
+	result, err := data.GetOperationTargetSite(testObj, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -211,10 +182,10 @@ func TestValidGetFirstDepth(t *testing.T) {
 
 func TestValidGetNestedPrimitive(t *testing.T) {
 	testObj := setupDocument()
-	path := "Content/1/ParagraphChildren/0/Underline"
-	pathArr, _ := ParsePath(path)
+	// Content/1/ParagraphChildren/0/Underline
+	subpaths := []int{2, 1, 2, 0, 4}
 
-	result, err := data.GetOperationTargetSite(testObj, pathArr)
+	result, err := data.GetOperationTargetSite(testObj, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -223,10 +194,28 @@ func TestValidGetNestedPrimitive(t *testing.T) {
 	assert.False(result.Bool())
 }
 
-func ParsePath(path string) ([]string, error) {
-	subpaths := strings.Split(path, "/")
-	if len(subpaths) < 1 || subpaths[0] != "Content" {
-		return nil, errors.New("First subpath must be 'Content'")
-	}
-	return subpaths, nil
+// func TestTextEditUpdate(t *testing.T) {
+// 	testObj := setupDocument()
+// 	// Content/0/ImageDocumentID
+// 	subpaths := []int{2, 0, 0}
+
+// 	err := data.TextEditUpdate(testObj, subpaths, 1, 1, "o")
+
+// 	if err != nil {
+// 		log.Fatalf(err.Error())
+// 	}
+
+// 	result, err := data.GetOperationTargetSite(testObj, subpaths)
+// 	if err != nil {
+// 		log.Fatalf(err.Error())
+// 	}
+
+// 	assert := assert.New(t)
+// 	assert.Equal("morb", result.String())
+
+// }
+
+// TODO: When TLB stuff is done, remove this and replace above with TLB code
+func placeholder(datamodels.DataModel) ([]int, error) {
+	return nil, fmt.Errorf("Invalid")
 }
