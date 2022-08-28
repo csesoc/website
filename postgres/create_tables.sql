@@ -1,4 +1,5 @@
 CREATE EXTENSION hstore;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 SET timezone = 'Australia/Sydney';
 
 CREATE TYPE permissions_enum as ENUM ('read', 'write', 'delete');
@@ -49,7 +50,7 @@ SELECT create_normal_user('jane.doe@gmail.com', 'jane', 'password');
 
 DROP TABLE IF EXISTS filesystem;
 CREATE TABLE filesystem (
-  EntityID      SERIAL PRIMARY KEY,
+  EntityID      uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   LogicalName   VARCHAR(50) NOT NULL,
   
   IsDocument    BOOLEAN DEFAULT false,
@@ -58,7 +59,7 @@ CREATE TABLE filesystem (
 
   OwnedBy       INT,
   /* Pain */
-  Parent        INT REFERENCES filesystem(EntityID) DEFAULT 1,
+  Parent        uuid REFERENCES filesystem(EntityID) DEFAULT NULL,
 
   /* FK Constraint */
   CONSTRAINT fk_owner FOREIGN KEY (OwnedBy) 
@@ -74,24 +75,23 @@ DECLARE
   randomGroup groups.UID%type;
   rootID      filesystem.EntityID%type;
 BEGIN
-  /* Root root :) */
   SELECT groups.UID INTO randomGroup FROM groups WHERE Name = 'admin'::VARCHAR;
-  INSERT INTO filesystem (LogicalName, IsDocument, IsPublished, OwnedBy, Parent)
-    VALUES ('rootroot', true, true, randomGroup, NULL);
   /* Insert the root directory */
-  INSERT INTO filesystem (LogicalName, OwnedBy)
-    VALUES ('root', randomGroup);
+  INSERT INTO filesystem (EntityID, LogicalName, OwnedBy)
+    VALUES (uuid_nil(), 'root', randomGroup);
   SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE LogicalName = 'root'::VARCHAR;
+  /* Set parent to uuid_nil() because postgres driver has issue supporting NULL values */
+  UPDATE filesystem SET Parent = uuid_nil() WHERE EntityID = rootID;
 
   /* insert "has parent" constraint*/
   EXECUTE 'ALTER TABLE filesystem 
-    ADD CONSTRAINT has_parent CHECK (Parent != 1 OR EntityID = '||rootID||')';
+    ADD CONSTRAINT has_parent CHECK (Parent != NULL)';
 END $$;
 
 
 /* Utility procedure :) */
 DROP FUNCTION IF EXISTS new_entity;
-CREATE OR REPLACE FUNCTION new_entity (parentP INT, logicalNameP VARCHAR, ownedByP INT, isDocumentP BOOLEAN DEFAULT false) RETURNS INT
+CREATE OR REPLACE FUNCTION new_entity (parentP uuid, logicalNameP VARCHAR, ownedByP INT, isDocumentP BOOLEAN DEFAULT false) RETURNS uuid
 LANGUAGE plpgsql
 AS $$
 DECLARE
@@ -114,7 +114,7 @@ END $$;
 
 /* Another utility procedure */
 DROP FUNCTION IF EXISTS delete_entity;
-CREATE OR REPLACE FUNCTION delete_entity (entityIDP INT) RETURNS void
+CREATE OR REPLACE FUNCTION delete_entity (entityIDP uuid) RETURNS void
 LANGUAGE plpgsql
 AS $$
 DECLARE
@@ -145,13 +145,13 @@ DECLARE
   wasPopping    filesystem.EntityID%type;
   oldEntity     filesystem.EntityID%type;
 BEGIN
-  SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE Parent = 0;
+  SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE EntityID = uuid_nil();
   
-  newEntity := (SELECT new_entity(2, 'downloads'::VARCHAR, 1, false));
-  oldEntity := (SELECT new_entity(2, 'documents'::VARCHAR, 1, false));
+  newEntity := (SELECT new_entity(rootID, 'downloads'::VARCHAR, 1, false));
+  oldEntity := (SELECT new_entity(rootID, 'documents'::VARCHAR, 1, false));
 
-  wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document'::VARCHAR, 1, true));
-  wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document_round_2'::VARCHAR, 1, true));
-  PERFORM delete_entity(wasPopping::INT);
-  wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document_round_2'::VARCHAR, 1, true));
+  wasPopping := (SELECT new_entity(oldEntity, 'cool_document'::VARCHAR, 1, true));
+  wasPopping := (SELECT new_entity(oldEntity, 'cool_document_round_2'::VARCHAR, 1, true));
+  PERFORM delete_entity(wasPopping);
+  wasPopping := (SELECT new_entity(oldEntity, 'cool_document_round_2'::VARCHAR, 1, true));
 END $$;
