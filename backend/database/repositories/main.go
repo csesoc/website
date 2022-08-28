@@ -15,7 +15,7 @@ const (
 )
 
 // The ID for root, set this as the ID in a specified request
-const FILESYSTEM_ROOT_ID = 0
+const FILESYSTEM_ROOT_ID string = "00000000-0000-0000-0000-000000000000"
 
 // small factory for setting up and returning a repository
 func GetRepository(repo int) interface{} {

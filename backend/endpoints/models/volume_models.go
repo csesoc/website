@@ -6,7 +6,7 @@ import "mime/multipart"
 type (
 	// ValidImageUploadRequest is the request model for an handler that uploads an IMAGE to a docker volume
 	ValidImageUploadRequest struct {
-		Parent      int
+		Parent      string
 		LogicalName string `schema:"LogicalName,required"`
 		OwnerGroup  int    `schema:"OwnerGroup,required"`
 		Image       multipart.File
@@ -14,13 +14,13 @@ type (
 
 	// ValidPublishDocumentRequest is the request model for any handler that publishes a document
 	ValidPublishDocumentRequest struct {
-		DocumentID int `schema:"DocumentID,required"`
+		DocumentID string `schema:"DocumentID,required"`
 	}
 
 	// ValidGetPublishedDocumentRequest is the response model for any handler that fetches information from
 	// the published volume
 	ValidGetPublishedDocumentRequest struct {
-		DocumentID int `schema:"DocumentID,required"`
+		DocumentID string `schema:"DocumentID,required"`
 	}
 )
 

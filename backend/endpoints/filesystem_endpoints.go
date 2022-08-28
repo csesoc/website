@@ -3,7 +3,6 @@ package endpoints
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	. "cms.csesoc.unsw.edu.au/endpoints/models"
@@ -47,7 +46,7 @@ func CreateNewEntity(form ValidEntityCreationRequest, df DependencyFactory) hand
 	}
 
 	log.Write(fmt.Sprintf("created new entity %v.", entityToCreate))
-	pubRepo.AddToVolume(strconv.Itoa(newEntity.EntityID))
+	pubRepo.AddToVolume(newEntity.EntityID)
 	return handlerResponse[NewEntityResponse]{
 		Status:   http.StatusOK,
 		Response: NewEntityResponse{NewID: newEntity.EntityID},
@@ -66,7 +65,7 @@ func DeleteFilesystemEntity(form ValidInfoRequest, df DependencyFactory) handler
 		}
 	}
 
-	log.Write(fmt.Sprintf("deleted entity with ID: %d", form.EntityID))
+	log.Write(fmt.Sprintf("deleted entity with ID: %s", form.EntityID))
 	return handlerResponse[empty]{
 		Status: http.StatusOK,
 	}
@@ -84,7 +83,7 @@ func GetChildren(form ValidInfoRequest, df DependencyFactory) handlerResponse[Ch
 		}
 	}
 
-	log.Write(fmt.Sprintf("fetched children for %d, got %v.", form.EntityID, fileInfo.ChildrenIDs))
+	log.Write(fmt.Sprintf("fetched children for %s, got %v.", form.EntityID, fileInfo.ChildrenIDs))
 	return handlerResponse[ChildrenRequestResponse]{
 		Status: http.StatusOK,
 		Response: ChildrenRequestResponse{
@@ -93,19 +92,19 @@ func GetChildren(form ValidInfoRequest, df DependencyFactory) handlerResponse[Ch
 	}
 }
 
-func GetIDWithPath(form ValidPathRequest, df DependencyFactory) handlerResponse[int] {
+func GetIDWithPath(form ValidPathRequest, df DependencyFactory) handlerResponse[string] {
 	repository := getDependency[repositories.IFilesystemRepository](df)
 	log := getDependency[*logger.Log](df)
 
 	entityID, err := repository.GetIDWithPath(form.Path)
 	if err != nil {
-		return handlerResponse[int]{
+		return handlerResponse[string]{
 			Status: http.StatusNotFound,
 		}
 	}
 
-	log.Write(fmt.Sprintf("got ID %d for %s", entityID, form.Path))
-	return handlerResponse[int]{
+	log.Write(fmt.Sprintf("got ID %s for %s", entityID, form.Path))
+	return handlerResponse[string]{
 		Status: http.StatusOK, Response: entityID,
 	}
 }

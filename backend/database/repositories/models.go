@@ -11,7 +11,7 @@ import (
 
 // filesystem model (model stored within database)
 type FilesystemEntry struct {
-	EntityID    int
+	EntityID    string
 	LogicalName string
 
 	IsDocument  bool
@@ -19,22 +19,22 @@ type FilesystemEntry struct {
 	CreatedAt   time.Time
 
 	OwnerUserId  int
-	ParentFileID int
-	ChildrenIDs  []int
+	ParentFileID string
+	ChildrenIDs  []string
 }
 
 // Repository interface that all valid filesystem repositories
 // mocked/real should implement
 type IFilesystemRepository interface {
-	GetEntryWithID(ID int) (FilesystemEntry, error)
+	GetEntryWithID(ID string) (FilesystemEntry, error)
 	GetRoot() (FilesystemEntry, error)
-	GetEntryWithParentID(ID int) (FilesystemEntry, error)
-	GetIDWithPath(path string) (int, error)
+	GetEntryWithParentID(ID string) (FilesystemEntry, error)
+	GetIDWithPath(path string) (string, error)
 
 	CreateEntry(file FilesystemEntry) (FilesystemEntry, error)
-	DeleteEntryWithID(ID int) error
+	DeleteEntryWithID(ID string) error
 
-	RenameEntity(ID int, name string) error
+	RenameEntity(ID string, name string) error
 
 	GetContext() contexts.DatabaseContext
 }

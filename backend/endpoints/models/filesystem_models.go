@@ -6,12 +6,12 @@ import "cms.csesoc.unsw.edu.au/database/repositories"
 type (
 	// ValidInfoRequest is the model accepted by handlers that return information regarding an entity
 	ValidInfoRequest struct {
-		EntityID int `schema:"EntityID"`
+		EntityID string `schema:"EntityID"`
 	}
 
 	// ValidEntityCreationRequest is the model accepted by handlers that will ever create a FS entity
 	ValidEntityCreationRequest struct {
-		Parent      int
+		Parent      string
 		LogicalName string `schema:"LogicalName,required"`
 		OwnerGroup  int    `schema:"OwnerGroup,required"`
 		IsDocument  bool   `schema:"IsDocument,required"`
@@ -24,7 +24,7 @@ type (
 
 	// ValidRenameRequest is the request model accepted by handlers that rename entities
 	ValidRenameRequest struct {
-		EntityID int    `schema:"EntityID,required"`
+		EntityID string `schema:"EntityID,required"`
 		NewName  string `schema:"NewName,required"`
 	}
 )
@@ -33,20 +33,20 @@ type (
 type (
 	// NewEntityResponse is the response model for any handler that returns a new entity
 	NewEntityResponse struct {
-		NewID int
+		NewID string
 	}
 
 	// ChildrenRequestResponse is the response model for any handler that will return the children of an entity
 	ChildrenRequestResponse struct {
-		Children []int
+		Children []string
 	}
 
 	// EntityInfoResponse is the response model of any handler that returns information regarding an entity
 	EntityInfoResponse struct {
-		EntityID   int
+		EntityID   string
 		EntityName string
 		IsDocument bool
-		Parent     int
+		Parent     string
 		Children   []EntityInfoResponse
 	}
 )

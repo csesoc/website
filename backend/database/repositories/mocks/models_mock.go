@@ -52,7 +52,7 @@ func (mr *MockIFilesystemRepositoryMockRecorder) CreateEntry(file interface{}) *
 }
 
 // DeleteEntryWithID mocks base method.
-func (m *MockIFilesystemRepository) DeleteEntryWithID(ID int) error {
+func (m *MockIFilesystemRepository) DeleteEntryWithID(ID string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteEntryWithID", ID)
 	ret0, _ := ret[0].(error)
@@ -80,7 +80,7 @@ func (mr *MockIFilesystemRepositoryMockRecorder) GetContext() *gomock.Call {
 }
 
 // GetEntryWithID mocks base method.
-func (m *MockIFilesystemRepository) GetEntryWithID(ID int) (repositories.FilesystemEntry, error) {
+func (m *MockIFilesystemRepository) GetEntryWithID(ID string) (repositories.FilesystemEntry, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetEntryWithID", ID)
 	ret0, _ := ret[0].(repositories.FilesystemEntry)
@@ -95,7 +95,7 @@ func (mr *MockIFilesystemRepositoryMockRecorder) GetEntryWithID(ID interface{}) 
 }
 
 // GetEntryWithParentID mocks base method.
-func (m *MockIFilesystemRepository) GetEntryWithParentID(ID int) (repositories.FilesystemEntry, error) {
+func (m *MockIFilesystemRepository) GetEntryWithParentID(ID string) (repositories.FilesystemEntry, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetEntryWithParentID", ID)
 	ret0, _ := ret[0].(repositories.FilesystemEntry)
@@ -110,10 +110,10 @@ func (mr *MockIFilesystemRepositoryMockRecorder) GetEntryWithParentID(ID interfa
 }
 
 // GetIDWithPath mocks base method.
-func (m *MockIFilesystemRepository) GetIDWithPath(path string) (int, error) {
+func (m *MockIFilesystemRepository) GetIDWithPath(path string) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetIDWithPath", path)
-	ret0, _ := ret[0].(int)
+	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -140,7 +140,7 @@ func (mr *MockIFilesystemRepositoryMockRecorder) GetRoot() *gomock.Call {
 }
 
 // RenameEntity mocks base method.
-func (m *MockIFilesystemRepository) RenameEntity(ID int, name string) error {
+func (m *MockIFilesystemRepository) RenameEntity(ID string, name string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RenameEntity", ID, name)
 	ret0, _ := ret[0].(error)

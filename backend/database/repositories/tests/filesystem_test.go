@@ -64,12 +64,12 @@ func TestRootInsert(t *testing.T) {
 		}
 
 		if rows, err := testContext.QueryRow("SELECT EntityID FROM filesystem WHERE Parent = $1", []interface{}{root.EntityID}); assert.Nil(err) {
-			childrenArr := scanIntArray(rows)
+			childrenArr := scanArray[string](rows)
 			assert.Contains(childrenArr, newDir.EntityID)
 		}
 
 		if rows, err := testContext.QueryRow("SELECT EntityID FROM filesystem WHERE Parent = $1", []interface{}{newDir.EntityID}); assert.Nil(err) {
-			childrenArr := scanIntArray(rows)
+			childrenArr := scanArray[string](rows)
 			assert.Contains(childrenArr, newDoc.EntityID)
 		}
 	})
@@ -157,7 +157,7 @@ func TestEntityDeletion(t *testing.T) {
 func TestEntityRename(t *testing.T) {
 	assert := assert.New(t)
 
-	getEntity := func(name string, permissions int, parent int, isDocument bool) repositories.FilesystemEntry {
+	getEntity := func(name string, permissions int, parent string, isDocument bool) repositories.FilesystemEntry {
 		return repositories.FilesystemEntry{
 			LogicalName:  name,
 			OwnerUserId:  permissions,
@@ -185,7 +185,7 @@ func TestEntityRename(t *testing.T) {
 
 func TestEntityChildren(t *testing.T) {
 	assert := assert.New(t)
-	getEntity := func(name string, permissions int, isDocument bool, parent int) repositories.FilesystemEntry {
+	getEntity := func(name string, permissions int, isDocument bool, parent string) repositories.FilesystemEntry {
 		return repositories.FilesystemEntry{
 			LogicalName:  name,
 			OwnerUserId:  permissions,
@@ -231,7 +231,7 @@ func TestEntityChildren(t *testing.T) {
 
 func TestGetIDWithPath(t *testing.T) {
 	assert := assert.New(t)
-	getEntity := func(name string, permissions int, isDocument bool, parent int) repositories.FilesystemEntry {
+	getEntity := func(name string, permissions int, isDocument bool, parent string) repositories.FilesystemEntry {
 		return repositories.FilesystemEntry{
 			LogicalName:  name,
 			OwnerUserId:  permissions,
@@ -263,22 +263,12 @@ func TestGetIDWithPath(t *testing.T) {
 	})
 }
 
-func contains(s []int, e int) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}
-
-func scanIntArray(rows pgx.Rows) []int {
-	arr := []int{}
+func scanArray[T any](rows pgx.Rows) []T {
+	arr := []T{}
 	for rows.Next() {
-		var x int
+		var x T
 		rows.Scan(&x)
 		arr = append(arr, x)
 	}
-
 	return arr
 }

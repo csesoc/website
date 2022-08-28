@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strconv"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	. "cms.csesoc.unsw.edu.au/endpoints/models"
@@ -35,8 +34,8 @@ func UploadImage(form ValidImageUploadRequest, df DependencyFactory) handlerResp
 	}
 
 	// Create and get a new entry in docker file system
-	dockerRepository.AddToVolume(strconv.Itoa(e.EntityID))
-	if dockerFile, err := dockerRepository.GetFromVolume(strconv.Itoa(e.EntityID)); err != nil {
+	dockerRepository.AddToVolume(e.EntityID)
+	if dockerFile, err := dockerRepository.GetFromVolume(e.EntityID); err != nil {
 		return handlerResponse[NewEntityResponse]{Status: http.StatusInternalServerError}
 	} else {
 		_, err := io.Copy(dockerFile, form.Image)
@@ -61,7 +60,7 @@ func PublishDocument(form ValidPublishDocumentRequest, df DependencyFactory) han
 	publishedVol := getDependency[repositories.IPublishedVolumeRepository](df)
 
 	// fetch the target file form the unpublished volume
-	filename := strconv.Itoa(form.DocumentID)
+	filename := form.DocumentID
 	file, err := unpublishedVol.GetFromVolume(filename)
 	if err != nil {
 		return handlerResponse[empty]{
@@ -87,7 +86,7 @@ func GetPublishedDocument(form ValidGetPublishedDocumentRequest, df DependencyFa
 	log := getDependency[*logger.Log](df)
 
 	// Get file from published volume
-	file, err := publishedVol.GetFromVolume(strconv.Itoa(form.DocumentID))
+	file, err := publishedVol.GetFromVolume(form.DocumentID)
 	if err != nil {
 		return handlerResponse[DocumentRetrievalResponse]{
 			Status: http.StatusNotFound,

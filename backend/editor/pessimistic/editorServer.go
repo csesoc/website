@@ -9,7 +9,7 @@ import (
 type manager struct {
 	// openDocuments is a set of currently open documents
 	// perhaps a global lock is a slight bottleneck
-	openDocuments     map[int]struct{}
+	openDocuments     map[string]struct{}
 	openDocumentsLock sync.Mutex
 }
 
@@ -25,7 +25,7 @@ func getGlobalManagerInstance() *manager {
 
 	if globalManagerInstance == nil {
 		globalManagerInstance = &manager{
-			openDocuments:     make(map[int]struct{}),
+			openDocuments:     make(map[string]struct{}),
 			openDocumentsLock: sync.Mutex{},
 		}
 	}
@@ -34,7 +34,7 @@ func getGlobalManagerInstance() *manager {
 }
 
 // startDocumentServer creates a new document server given an FS repo and a websocket conn
-func (m *manager) startDocumentServer(documentID int) error {
+func (m *manager) startDocumentServer(documentID string) error {
 	m.openDocumentsLock.Lock()
 	defer m.openDocumentsLock.Unlock()
 
@@ -48,7 +48,7 @@ func (m *manager) startDocumentServer(documentID int) error {
 
 // closeDocumentServer closes a document server and de-registers it from the manager
 // it assumes the underlying websocket connection is also closed
-func (m *manager) closeDocumentServer(documentID int) error {
+func (m *manager) closeDocumentServer(documentID string) error {
 	m.openDocumentsLock.Lock()
 	defer m.openDocumentsLock.Unlock()
 
