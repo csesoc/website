@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels/cmsmodel"
-	"cms.csesoc.unsw.edu.au/internal/cmsjson"
+	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
 )
 
 // models contains all the data models for the editor
@@ -44,12 +44,8 @@ func parseDataGivenType(dataStr string, dataType string) (interface{}, error) {
 	case "string":
 		return dataStr, nil
 	case "component":
-		var result interface{}
-		if err := cmsJsonConf.Unmarshall([]byte(dataStr), &result); err != nil {
-			return nil, err
-		}
-
-		return result, nil
+		// todo: later
+		return nil, nil
 	}
 	return nil, errors.New("unable to parse data type")
 }
