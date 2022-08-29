@@ -1,6 +1,10 @@
 package data
 
-import "errors"
+import (
+	"errors"
+
+	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
+)
 
 type (
 	OperationType int
@@ -72,10 +76,9 @@ func (a ArrayEdit) GetType() OperationType { return ArrayEditType }
 // Parse is a utility function that takes a JSON stream and parses the input into
 // a Request object
 func Parse(request string) (OperationRequest, error) {
-	requestObject := OperationRequest{}
-	if err := cmsJsonConf.Unmarshall([]byte(request), &requestObject); err != nil {
+	if operation, err := cmsjson.Unmarshall[OperationRequest](cmsJsonConf, []byte(request)); err != nil {
 		return OperationRequest{}, errors.New("invalid request format")
+	} else {
+		return *operation, nil
 	}
-
-	return requestObject, nil
 }
