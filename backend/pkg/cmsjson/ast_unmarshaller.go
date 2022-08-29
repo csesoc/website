@@ -117,4 +117,6 @@ func (c Configuration) parseASTCore(result gjson.Result, key string, primitiveTy
 	case _interface:
 		return c.visitInterfaceAST(result, key, primitiveType)
 	}
+
+	return nil, fmt.Errorf("failed to parse node %v into %v, unidentified primitive type", result, primitiveType)
 }
