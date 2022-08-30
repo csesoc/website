@@ -24,11 +24,11 @@ var cmsJsonConf = cmsjson.Configuration{
 			"paragraph": reflect.TypeOf(cmsmodel.Paragraph{}),
 		},
 
-		reflect.TypeOf((*Payload)(nil)).Elem(): {
-			"textEdit":  reflect.TypeOf(TextEdit{}),
-			"keyEdit":   reflect.TypeOf(KeyEdit{}),
-			"arrayEdit": reflect.TypeOf(ArrayEdit{}),
-		},
+		// reflect.TypeOf((*Payload)(nil)).Elem(): {
+		// "textEdit":  reflect.TypeOf(TextEdit{}),
+		// "keyEdit":   reflect.TypeOf(KeyEdit{}),
+		// "arrayEdit": reflect.TypeOf(ArrayEdit{}),
+		// },
 	},
 }
 

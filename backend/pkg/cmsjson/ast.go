@@ -16,13 +16,12 @@ type (
 	//	- All implementations of AstNode must conform to this specification (there is no way within the Go type system to enforce this unfortunately :( )
 	//	- Note that the reflect.Type returned by JsonArray is the type of the array, ie if it was an array of integers then the reflect.type is an integer
 	//  - Note that jsonNode implements AstNode (indirectly), AstNode is of the form:
-	// AstNode interface {
-	// 		GetKey() string
-	//
-	// 		JsonPrimitive() (interface{}, reflect.Type)
-	//		JsonObject() ([]AstNode, reflect.Type)
-	// 		JsonArray() ([]AstNode, reflect.Type)
-	// }
+	AstNode interface {
+		GetKey() string
+		// JsonPrimitive() (interface{}, reflect.Type)
+		// JsonObject() ([]AstNode, reflect.Type)
+		// JsonArray() ([]AstNode, reflect.Type)
+	}
 	jsonNode struct {
 		// key could be nil (according to the AstNode definition)
 		key string
