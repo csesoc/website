@@ -4,6 +4,29 @@ SET timezone = 'Australia/Sydney';
 INSERT INTO groups (Name, Permission) VALUES ('admin', 'delete');
 INSERT INTO groups (name, Permission) VALUES ('user', 'write');
 
+/* Setup FS table and modify constraints */
+/* Insert root directory and then add our constraints */
+DO $$
+DECLARE 
+  randomGroup groups.UID%type;
+  rootID      filesystem.EntityID%type;
+BEGIN
+  /* Root root :) */
+  SELECT groups.UID INTO randomGroup FROM groups WHERE Name = 'admin'::VARCHAR;
+  INSERT INTO filesystem (LogicalName, IsDocument, IsPublished, OwnedBy, Parent)
+    VALUES ('rootroot', true, true, randomGroup, NULL);
+  /* Insert the root directory */
+  INSERT INTO filesystem (LogicalName, OwnedBy)
+    VALUES ('root', randomGroup);
+  SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE LogicalName = 'root'::VARCHAR;
+
+  /* insert "has parent" constraint*/
+  EXECUTE 'ALTER TABLE filesystem 
+    ADD CONSTRAINT has_parent CHECK (Parent != 1 OR EntityID = '||rootID||')';
+END $$;
+
+
+
 /* create a dummy frontend */
 INSERT INTO frontend (FrontendURL) VALUES ('http://localhost:8080'::VARCHAR);
 
