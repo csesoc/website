@@ -37,25 +37,26 @@ CREATE TABLE person (
 /* front end url to id */ 
 DROP TABLE IF EXISTS frontend;
 CREATE TABLE frontend (
-  frontendid INT PRIMARY KEY,
-  frontendurl SERIAL,
+  frontendid serial PRIMARY KEY,
+  frontendurl,
 )
 
 /* create user function plpgsql */
 DROP FUNCTION IF EXISTS create_normal_user;
-CREATE OR REPLACE FUNCTION create_normal_user (email VARCHAR, name VARCHAR, password VARCHAR) RETURNS void
+CREATE OR REPLACE FUNCTION create_normal_user (email VARCHAR, name VARCHAR, password VARCHAR, frontendid INT) RETURNS void
 LANGUAGE plpgsql
 AS $$
 DECLARE
 BEGIN
-  INSERT INTO person (Email, First_name, Password, isOfGroup)
+  INSERT INTO person (Email, First_name, Password, isOfGroup, frontendid)
+    VALUES (email, name, password, 2, 1);
   VALUES (email, name, encode(sha256(password::BYTEA), 'hex'), 2);
 END $$;
 
 /* inserting two accounts into db */
-SELECT create_normal_user('z0000000@ad.unsw.edu.au', 'adam', 'password');
-SELECT create_normal_user('john.smith@gmail.com', 'john', 'password');
-SELECT create_normal_user('jane.doe@gmail.com', 'jane', 'password');
+SELECT create_normal_user('z0000000@ad.unsw.edu.au', 'adam', 'password', 1);
+SELECT create_normal_user('john.smith@gmail.com', 'john', 'password', 1);
+SELECT create_normal_user('jane.doe@gmail.com', 'jane', 'password', 1);
 
 
 DROP TABLE IF EXISTS filesystem;
