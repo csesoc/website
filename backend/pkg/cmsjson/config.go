@@ -22,11 +22,16 @@ const (
 	_struct
 	_array
 	_slice
+	_astRequest
 )
 
 // resolveType takes a reflection field and determines what "type category" it falls into
 // we have differing logic for differing type categories
 func resolveType(t reflect.Type) typeCategory {
+	if t == reflect.TypeOf((*jsonNode)(nil)) {
+		return _astRequest
+	}
+
 	switch t.Kind() {
 	case reflect.Struct:
 		return _struct

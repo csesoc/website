@@ -76,7 +76,7 @@ func TestUnmarshallsProperly(t *testing.T) {
 		},
 	}
 
-	var config = Configuration{
+	config := Configuration{
 		RegisteredTypes: map[reflect.Type]map[string]reflect.Type{
 			reflect.TypeOf((*DummyInterface)(nil)).Elem(): {
 				"NestedStruct":   reflect.TypeOf(NestedStruct{}),
@@ -85,9 +85,8 @@ func TestUnmarshallsProperly(t *testing.T) {
 		},
 	}
 
-	var result TestJson
-	config.Unmarshall([]byte(json), &result)
-	assert.Equal(expected, result)
+	result, _ := Unmarshall[TestJson](config, []byte(json))
+	assert.Equal(expected, *result)
 }
 
 func TestMarshallsProperly(t *testing.T) {
@@ -111,7 +110,7 @@ func TestMarshallsProperly(t *testing.T) {
 		},
 	}
 
-	var config = Configuration{
+	config := Configuration{
 		RegisteredTypes: map[reflect.Type]map[string]reflect.Type{
 			reflect.TypeOf((*DummyInterface)(nil)).Elem(): {
 				"NestedStruct":   reflect.TypeOf(NestedStruct{}),
