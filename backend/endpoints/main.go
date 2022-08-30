@@ -67,7 +67,7 @@ func (fn handler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// construct a dependency factory for this request, which implies instantiating a logger
 	logger := buildLogger(r.Method, r.URL.Path)
 	var frontendid int
-	err := rep.ctx.Query("SELECT frontendid from frontend where frontendurl = $1;", []interface{}{r.URL.PATH}, &frontendid)
+	err := rep.ctx.Query("SELECT frontendid from frontend where frontendurl = $1;", []interface{}{r.URL.Path}, &frontendid)
 	if err != nil {
 		log.Println("frontend doesn't exist", err.Error())
 	}
