@@ -3,6 +3,7 @@ package endpoints
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"cms.csesoc.unsw.edu.au/internal/logger"
@@ -65,7 +66,12 @@ func (fn handler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// construct a dependency factory for this request, which implies instantiating a logger
 	logger := buildLogger(r.Method, r.URL.Path)
-	dependencyFactory := DependencyProvider{Log: logger}
+	var frontendid int
+	err := rep.ctx.Query("SELECT frontendid from frontend where frontendurl = $1;", []interface{}{r.URL.PATH}, &frontendid)
+	if err != nil {
+		log.Println("frontend doesn't exist", err.Error())
+	}
+	dependencyFactory := DependencyProvider{Log: logger, FrontEndID: frontendid}
 	response := fn.Handler(*parsedForm, dependencyFactory)
 
 	// Record and write out any useful information

@@ -1,6 +1,8 @@
 package repositories
 
-import "cms.csesoc.unsw.edu.au/database/contexts"
+import ( 
+	"cms.csesoc.unsw.edu.au/database/contexts"
+)
 
 // Start up a database connection with a provided context
 var context contexts.DatabaseContext = nil
@@ -28,10 +30,6 @@ func GetRepository(repo int) interface{} {
 		return filesystemRepository{
 			embeddedContext{context},
 		}
-	case PERSON:
-		return personRepository{
-			embeddedContext{context},
-		}
 	case GROUPS:
 		return GroupsRepository{
 			embeddedContext{context},
@@ -44,5 +42,16 @@ func GetRepository(repo int) interface{} {
 		return fs
 	default:
 		return nil
+	}
+}
+
+func PersonRepository(frontendid int) interface{} {
+	if context == nil {
+		context = contexts.GetDatabaseContext()
+	}
+
+	return personRepository{
+		embeddedContext{context},
+		frontendid,
 	}
 }

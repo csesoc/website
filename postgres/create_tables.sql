@@ -22,13 +22,24 @@ CREATE TABLE person (
   First_name VARCHAR(50) NOT NULL,
   Password CHAR(64) NOT NULL,
   isOfGroup INT,
+  frontendid INT, 
 
   CONSTRAINT fk_AccessLevel FOREIGN KEY (isOfGroup)
     REFERENCES groups(UID),
 
+  CONSTRAINT fk_AccessFrontend FOREIGN KEY (frontendid)
+    REFERENCES frontend(UID)
+
   /* non duplicate email and password constraints */
   CONSTRAINT no_dupes UNIQUE (Email, Password)
 );
+
+/* front end url to id */ 
+DROP TABLE IF EXISTS frontend;
+CREATE TABLE frontend (
+  frontendid INT PRIMARY KEY,
+  frontendurl SERIAL,
+)
 
 /* create user function plpgsql */
 DROP FUNCTION IF EXISTS create_normal_user;

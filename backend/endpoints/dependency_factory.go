@@ -54,7 +54,8 @@ type (
 
 	// DependencyProvider is a simple implementation of the dependency factory that supports the injection of "dynamic" dependencies
 	DependencyProvider struct {
-		Log *logger.Log
+		Log        *logger.Log
+		FrontEndID int
 	}
 )
 
@@ -63,6 +64,7 @@ func (dp DependencyProvider) GetDependency(depType Dependency) interface{} {
 	// setup a dependency mapping by first taking the base dependencies and adding handler specific ones
 	dependencies := baseDependencyMappings
 	dependencies[Log] = func() interface{} { return dp.Log }
+	dependencies[PersonRepository] = func() interface{} { return repositories.PersonRepository(dp.FrontEndID) }
 
 	return dependencies[depType]()
 }
@@ -79,4 +81,9 @@ func getDependency[T any](factory DependencyFactory) T {
 	typeMapping := reflect.TypeOf((*T)(nil))
 
 	return factory.GetDependency(factory.GetDepFromType(typeMapping)).(T)
+}
+
+func setFrontEndID(id int, df interface{}) {
+	stype := reflect.ValueOf(df).Elem()
+	stype.FieldByName("FrontEndID").SetInt(int64(id))
 }

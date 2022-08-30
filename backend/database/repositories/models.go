@@ -64,6 +64,7 @@ type Person struct {
 	// Hashed >:D
 	Password string
 	GroupID  int
+	FrontEndID int
 }
 
 // Note: only exists Email and Password
