@@ -18,10 +18,12 @@ type (
 	//  - Note that jsonNode implements AstNode (indirectly), AstNode is of the form:
 	AstNode interface {
 		GetKey() string
-		// JsonPrimitive() (interface{}, reflect.Type)
-		// JsonObject() ([]AstNode, reflect.Type)
-		// JsonArray() ([]AstNode, reflect.Type)
+
+		JsonPrimitive() (interface{}, reflect.Type)
+		JsonObject() ([]AstNode, reflect.Type)
+		JsonArray() ([]AstNode, reflect.Type)
 	}
+
 	jsonNode struct {
 		// key could be nil (according to the AstNode definition)
 		key string
@@ -48,7 +50,7 @@ func (node *jsonNode) GetKey() string { return node.key }
 
 // JsonPrimitive returns the underlying primitive value in a jsonNode, it either returns the value or nil in accordance with the
 // definition of the AstNode
-func (node *jsonNode) GetPrimitive() (interface{}, reflect.Type) {
+func (node *jsonNode) JsonPrimitive() (interface{}, reflect.Type) {
 	node.validateNode()
 	if node.value != nil {
 		return node.value, node.underlyingType
@@ -59,10 +61,10 @@ func (node *jsonNode) GetPrimitive() (interface{}, reflect.Type) {
 
 // JsonObject returns the underlying json object in a jsonNode, it either returns the value or nil in accordance with the
 // definition of the AstNode
-func (node *jsonNode) JsonObject() ([]*jsonNode, reflect.Type) {
+func (node *jsonNode) JsonObject() ([]AstNode, reflect.Type) {
 	node.validateNode()
 	if node.children != nil && node.isObject {
-		return node.children, node.underlyingType
+		return astArrFromNodes(node.children), node.underlyingType
 	}
 
 	return nil, nil
@@ -70,10 +72,10 @@ func (node *jsonNode) JsonObject() ([]*jsonNode, reflect.Type) {
 
 // JsonArray returns the underlying json array in a jsonNode, it either returns the value or nil in accordance with the
 // definition of the AstNode
-func (node *jsonNode) JsonArray() ([]*jsonNode, reflect.Type) {
+func (node *jsonNode) JsonArray() ([]AstNode, reflect.Type) {
 	node.validateNode()
 	if node.children != nil && !node.isObject {
-		return node.children, node.underlyingType
+		return astArrFromNodes(node.children), node.underlyingType
 	}
 
 	return nil, nil
@@ -171,4 +173,16 @@ func getStructFieldType(structType reflect.Type, index int) reflect.Type {
 	}
 
 	return structType.FieldByIndex([]int{index}).Type
+}
+
+// astArrFromNodes exists to convert an array of jsonNodes to an array of AstNodes
+// because Go's sub-typing rules are weird
+func astArrFromNodes(nodes []*jsonNode) []AstNode {
+	astNodes := []AstNode{}
+
+	for _, jsonNode := range nodes {
+		astNodes = append(astNodes, AstNode(jsonNode))
+	}
+
+	return astNodes
 }
