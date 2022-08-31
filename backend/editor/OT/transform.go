@@ -6,16 +6,8 @@ import (
 
 // transformPipeline takes an operation and transforms it according to our transformation specification
 // todo: state should not be a string, am assuming that I'm taking a struct that contains operation, pos and
-func transformPipeline(x data.OperationRequest, y data.OperationRequest) (data.OperationRequest, data.OperationRequest) {
-	xOpType := x.OperationPayload.GetType()
-	yOpType := y.OperationPayload.GetType()
-	morphsDocumentTree := (xOpType == data.KeyEditType || xOpType == data.ArrayEditType) &&
-		(yOpType == data.KeyEditType || yOpType == data.ArrayEditType)
-
-	if morphsDocumentTree {
-		x.ActualPath, y.ActualPath = transformPaths(x.ActualPath, y.ActualPath, x.EditType, y.EditType)
-	}
-
+func transformPipeline(x data.Operation, y data.Operation) (data.Operation, data.Operation) {
+	x.Path, y.Path = transformPaths(x.Path, y.Path, x.OperationType, y.OperationType)
 	// Finally normalise the operations to account for no-op return values
 	return normaliseOperation(x), normaliseOperation(y)
 }
@@ -147,9 +139,9 @@ func min(a, b int) int {
 
 // normaliseOperation converts operations containing nil invalid paths to no-operations
 // no-operations are not applied by the rest of the system to the document :D
-func normaliseOperation(x data.OperationRequest) data.OperationRequest {
+func normaliseOperation(x data.Operation) data.Operation {
 	// Make sure to detect for no-ops, internally this is represented by a nil ActualPath
-	if x.ActualPath == nil {
+	if x.Path == nil {
 		return data.NoOperation
 	}
 

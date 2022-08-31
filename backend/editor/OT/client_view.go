@@ -14,7 +14,7 @@ import (
 type clientView struct {
 	socket *websocket.Conn
 
-	sendOp              chan data.OperationRequest
+	sendOp              chan data.Operation
 	sendAcknowledgement chan empty
 	sendTerminateSignal chan empty
 }
@@ -22,7 +22,7 @@ type clientView struct {
 func newClient(socket *websocket.Conn) *clientView {
 	return &clientView{
 		socket:              socket,
-		sendOp:              make(chan data.OperationRequest),
+		sendOp:              make(chan data.Operation),
 		sendAcknowledgement: make(chan empty),
 		sendTerminateSignal: make(chan empty),
 	}
@@ -52,7 +52,7 @@ func (c *clientView) run(serverPipe pipe, terminatePipe alertLeaving) {
 			return
 
 		default:
-			request := data.OperationRequest{}
+			request := data.Operation{}
 
 			err := c.socket.ReadJSON(&request)
 			if err != nil {
