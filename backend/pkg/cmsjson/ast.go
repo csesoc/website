@@ -30,6 +30,8 @@ type (
 		UpdatePrimitive(AstNode) error
 		UpdateArray(int, AstNode) error
 		UpdateObject(int, AstNode) error
+
+		RemoveArrayElement(int) error
 	}
 
 	jsonNode struct {
@@ -128,6 +130,19 @@ func (node *jsonNode) UpdateArray(index int, newValue AstNode) error {
 	asJsonNode.key = strconv.Itoa(index)
 	node.children = append(append(node.children[:index], asJsonNode), node.children[index:]...)
 
+	return nil
+}
+
+// RemoveArrayElement removes an array element given its index, it shrinks the array accordingly
+func (node *jsonNode) RemoveArrayElement(index int) error {
+	switch {
+	case node.children == nil || node.isObject:
+		return errors.New("ast node is not an array")
+	case len(node.children) > index:
+		return errors.New("cannot insert past the existing size of the array")
+	}
+
+	node.children = append(node.children[:index], node.children[index+1:]...)
 	return nil
 }
 
