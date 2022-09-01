@@ -1,13 +1,14 @@
 import React from "react";
 import { Breadcrumbs } from "@mui/material";
-import Chip from '@mui/material/Chip';
-import { emphasize, styled as customStyle } from '@mui/material/styles';
-import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import Chip from "@mui/material/Chip";
+import { emphasize, styled as customStyle } from "@mui/material/styles";
+import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import { traverseBackFolder } from "../state/folders/actions";
 import { getFolderState } from "../api/helpers";
-
 
 const DirectoryFlex = styled.div`
   display: flex;
@@ -17,11 +18,11 @@ const DirectoryFlex = styled.div`
   justify-content: flex-start;
   margin: 10px 20px;
   height: fit-content;
-`
+`;
 
 const BreadcrumbItem = customStyle(Chip)(({ theme }) => {
   const backgroundColor =
-    theme.palette.mode === 'light'
+    theme.palette.mode === "light"
       ? theme.palette.grey[100]
       : theme.palette.grey[800];
   return {
@@ -29,16 +30,15 @@ const BreadcrumbItem = customStyle(Chip)(({ theme }) => {
     height: theme.spacing(3),
     color: theme.palette.text.primary,
     fontWeight: theme.typography.fontWeightRegular,
-    '&:hover, &:focus': {
+    "&:hover, &:focus": {
       backgroundColor: emphasize(backgroundColor, 0.06),
     },
-    '&:active': {
+    "&:active": {
       boxShadow: theme.shadows[1],
       backgroundColor: emphasize(backgroundColor, 0.12),
     },
   };
 });
-
 
 export default function Directory() {
   const dispatch = useDispatch();
@@ -50,19 +50,16 @@ export default function Directory() {
 
   return (
     <DirectoryFlex>
-      <button onClick={ () => handleClick()}>go back</button>
+      <IconButton aria-label="back" onClick={() => handleClick()}>
+        <ArrowBackIcon fontSize="inherit" />
+      </IconButton>
       <Breadcrumbs aria-label="breadcrumb">
-        {
-          getFolderState().path.split("/").map((folder, i) => {
-            return (
-              <BreadcrumbItem
-                key={i}
-                label={folder}
-              />
-            )
-          })
-        }
+        {getFolderState()
+          .path.split("/")
+          .map((folder, i) => {
+            return <BreadcrumbItem key={i} label={folder} />;
+          })}
       </Breadcrumbs>
     </DirectoryFlex>
-  )
+  );
 }
