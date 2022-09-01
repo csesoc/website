@@ -2,35 +2,36 @@ version: "3.8"
 
 services:
   next:
-    container_name: Next
+    container_name: next
     build:
-      context: ./Next
+      context: ./next
       dockerfile: ./Dockerfile.development
     volumes:
-      - './Next:/next'
+      - './next:/next'
     stdin_open: true
     ports:
       - 3001:3001
   frontend:
-    container_name: Frontend
+    container_name: frontend
     build:
-      context: ./Frontend
+      context: ./frontend
       dockerfile: ./Dockerfile.development
     volumes:
-      - './Frontend:/app'
+      - './frontend:/app'
     stdin_open: true
     ports:
       - 3000:3000
   backend:
     container_name: go_backend
     build:
-      context: ./Backend
+      context: ./backend
       dockerfile: ./Dockerfile.development
     depends_on:
       - db
     volumes:
-      - './Backend:/go/src/cms.csesoc.unsw.edu.au'
-      - 'document_data:/var/lib/documents/data'
+      - './backend:/go/src/cms.csesoc.unsw.edu.au'
+      - 'unpublished_document_data:/var/lib/documents/unpublished/data'
+      - 'published_document_data:/var/lib/documents/published/data'
     ports:
       - 8080:8080
     environment:
@@ -51,7 +52,7 @@ services:
     ports:
       - ${PG_PORT}:5432
     volumes:
-      - './Postgres/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql'
+      - './postgres/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql'
       - 'pg_data:/var/lib/postgresql/data'
   staging_db:
     container_name: pg_container_testing
@@ -64,9 +65,10 @@ services:
     ports:
       - 1234:5432
     volumes:
-      - './Postgres/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql'
-      - 'staging_data:/var/lib/postgresql/data'
+      - './postgres/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql'
+      - 'staging_pg_db:/var/lib/postgresql/data'
 volumes:
   pg_data:
-  staging_data:
-  document_data:
+  staging_pg_db:
+  unpublished_document_data:
+  published_document_data:

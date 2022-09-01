@@ -1,0 +1,15 @@
+STORAGE: NONE
+RESTRICTION: || (== net5.0) (== netstandard2.0) (== netstandard2.1)
+NUGET
+  remote: https://api.nuget.org/v3/index.json
+    Fleece (0.10)
+      FSharp.Core (>= 5.0.2)
+      FSharpPlus (>= 1.2.4)
+    Fleece.NewtonsoftJson (0.10)
+      Fleece (>= 0.10)
+      FSharp.Core (>= 5.0.2)
+      Newtonsoft.Json (>= 10.0.2)
+    FSharp.Core (6.0.5) - content: none
+    FSharpPlus (1.2.4)
+      FSharp.Core (>= 4.6.2)
+    Newtonsoft.Json (13.0.1)

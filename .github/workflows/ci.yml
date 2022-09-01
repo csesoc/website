@@ -26,12 +26,12 @@ jobs:
         run: GO_MOD=go.mod docker-compose up -d --build
       - name: Golang Tests
         run: go test -v ./...
-        working-directory: ./Backend
+        working-directory: ./backend
   frontend_testing:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: type check
-        run: cd Frontend && npm install && npm run types
+        run: cd frontend && npm install && npm run types
       - name: react tests
-        run: cd Frontend && npm test
+        run: cd frontend && npm test
