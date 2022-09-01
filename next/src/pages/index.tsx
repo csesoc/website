@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from 'next/image';
+import { useState, useEffect } from "react";
 
 import styled from "styled-components";
 
@@ -10,6 +11,8 @@ import Events from './Events'
 import AboutUs from './AboutUs';
 import HomepageCurve from "../svgs/HomepageCurve";
 import RectangleCurve from "../svgs/RectangleCurve";
+import { device } from '../styles/device'
+
 
 type CurveContainerProps = {
   offset: number;
@@ -47,7 +50,21 @@ const Background = styled.div`
 //   height: 44px;
 // `;
 
-const Home: NextPage = () => {
+const Index: NextPage = () => {
+  const [width, setWidth]   = useState<undefined|number>();
+  const [height, setHeight] = useState<undefined|number>();
+  const updateDimensions = () => {
+      setWidth(window?.innerWidth);
+      setHeight(window?.innerHeight);
+  }
+  useEffect(() => {
+      window.addEventListener("resize", updateDimensions);
+      return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
+
+  useEffect(() => {
+
+  }, [width])
 
   return (
     <PageContainer>
