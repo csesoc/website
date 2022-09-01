@@ -1,5 +1,10 @@
 import styled from "styled-components";
-import Image from "next/image";
+import Image from 'next/image';
+import Navbar from "../components/navbar/Navbar";
+import { NavbarOpenHandler } from "../components/navbar/types";
+import HamburgerMenu from "../components/navbar/HamburgerMenu";
+import { device } from "../styles/device"
+import { useState } from "react";
 
 type Props = {};
 
@@ -10,18 +15,29 @@ const HomepageContainer = styled.div`
 	width: 100%;
 `;
 const Container = styled.div`
-	width: 100%;
-	height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	grid-gap: 20vw;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  @media ${device.laptop} {
+    flex-direction: row;
+  }
 `;
 
 const ColumnContainer = styled.div`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  @media ${device.desktop} {
+    padding: 0 10vw;
+  }
+
+  @media ${device.laptop} {
+
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -60,28 +76,24 @@ const Scroll = styled.p`
 `;
 
 export default function Homepage({}: Props) {
-	return (
-		<>
-			<HomepageContainer>
-				<Container>
-					<ColumnContainer>
-						<Image src="/assets/logo.svg" width="362" height="84" />
-						<Text1>
-							Empowering
-							<Text3> future</Text3>
-							<Text2>Technological Leaders</Text2>
-						</Text1>
-					</ColumnContainer>
-					{/* <Button>Visit on Blog</Button> */}
-					<ImageContainer>
-						<Image
-							src="/assets/WebsitesIcon.png"
-							layout="fill"
-							objectFit="contain"
-						/>
-					</ImageContainer>
-				</Container>
-			</HomepageContainer> 
-		</>
-	);
+  return (
+    <>
+      <HomepageContainer>
+        <Container>
+          <ColumnContainer>
+            <Image src="/assets/logo.svg" width="600px" height="300px"/>
+            <Text1>
+              Empowering
+              <Text3> future</Text3>
+              <Text2>Technological Leaders</Text2>
+            </Text1>
+          </ColumnContainer>
+          {/* <Button>Visit on Blog</Button> */}
+          <ImageContainer>
+            <Image src="/assets/WebsitesIcon.png" layout="fill" objectFit="contain" />
+          </ImageContainer>
+        </Container>
+      </HomepageContainer>
+    </>
+  )
 }

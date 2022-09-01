@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
+import Image from 'next/image';
 
 import styled from "styled-components";
 
@@ -15,17 +15,23 @@ import Events from "./MiniEvents";
 import AboutUs from "./MiniAboutUs";
 import HomepageCurve from "../svgs/HomepageCurve";
 import RectangleCurve from "../svgs/RectangleCurve";
+import Footer from "../components/footer/Footer";
+import { device } from '../styles/device'
+
 
 type CurveContainerProps = {
 	offset: number;
 };
 
 const PageContainer = styled.div`
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	padding-left: 2rem;
-	padding-right: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Main = styled.main`
+  padding-left: 2rem;
+  padding-right: 2rem;
 `;
 
 const CurveContainer = styled.div<CurveContainerProps>`
@@ -50,34 +56,55 @@ const Background = styled.div``;
 //   height: 44px;
 // `;
 
-const Home: NextPage = () => {
-	const [navbarOpen, setNavbarOpen] = useState(false);
+const Index: NextPage = () => {
+  const [width, setWidth]   = useState<undefined|number>();
+  const [height, setHeight] = useState<undefined|number>();
+  const [navbarOpen, setNavbarOpen] = useState(false);
+
 	const handleToggle: NavbarOpenHandler = () => {
 		setNavbarOpen(!navbarOpen);
 	};
 
-	return (
-		<PageContainer> 
-			<Head>
-				<title>CSESoc</title>
-				<meta name="description" content="CSESoc Website Homepage" />
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
-			<main>
-				<Background>
-					<CurveContainer offset={0}>
-						<HomepageCurve width={400} height={1000} />
-					</CurveContainer>
-					<CurveContainer offset={1200}>
-						<RectangleCurve height={2000} dontPreserveAspectRatio />
-					</CurveContainer>
-				</Background>
-				{navbarOpen ? (
+  const updateDimensions = () => {
+      setWidth(window?.innerWidth);
+      setHeight(window?.innerHeight);
+  }
+
+  useEffect(() => {
+      window.addEventListener("resize", updateDimensions);
+      return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
+
+  useEffect(() => {
+
+  }, [width])
+
+  return (
+    <PageContainer>
+      <Head>
+        <title>CSESoc</title>
+        <meta name="description" content="CSESoc Website Homepage" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <Main>
+        <Background>
+          <CurveContainer offset={0}>
+            <HomepageCurve width={400} height={1000} />
+          </CurveContainer>
+          <CurveContainer offset={1200}>
+            <RectangleCurve height={2000} dontPreserveAspectRatio />
+          </CurveContainer>
+        </Background>
+
+        {navbarOpen ? (
 					<HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} />
 				) : (
 					<></>
 				)}
+
 				<Navbar open={navbarOpen} setNavbarOpen={handleToggle} />
+        
 				<a id="homepage">
 					<Homepage />
 				</a>
@@ -87,10 +114,11 @@ const Home: NextPage = () => {
 				<a id="events">
 					<Events />
 				</a>
-			</main>
-			<footer></footer>
-		</PageContainer>
-	);
+      </Main>
+
+      <Footer />
+    </PageContainer>
+  );
 };
 
-export default Home;
+export default Index;
