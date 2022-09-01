@@ -3,7 +3,6 @@ package repositories
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 )
 
@@ -22,7 +21,6 @@ func (rep filesystemRepository) query(query string, input ...interface{}) (Files
 		&entity.EntityID, &entity.LogicalName, &entity.IsDocument, &entity.IsPublished,
 		&entity.CreatedAt, &entity.OwnerUserId, &entity.ParentFileID)
 	if err != nil {
-		fmt.Print(err.Error())
 		return FilesystemEntry{}, err
 	}
 

@@ -3,10 +3,9 @@ package endpoints
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
-	"cms.csesoc.unsw.edu.au/database/contexts"
+	"cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/internal/logger"
 	"cms.csesoc.unsw.edu.au/internal/session"
 )
@@ -65,15 +64,20 @@ func (fn handler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// acquire the frontend ID and error out if the client isn't registered to use the CMS
+	frontendId := getFrontendId(r)
+	if frontendId == repositories.InvalidFrontend {
+		writeResponse(w, handlerResponse[empty]{
+			Status:   http.StatusUnauthorized,
+			Response: empty{},
+		})
+
+		return
+	}
+
 	// construct a dependency factory for this request, which implies instantiating a logger
 	logger := buildLogger(r.Method, r.URL.Path)
-	var frontendid int
-	ctx := contexts.GetDatabaseContext()
-	err := ctx.Query("SELECT frontendid from frontend where frontendurl = $1;", []interface{}{r.URL.Path}, &frontendid)
-	if err != nil {
-		log.Println("frontend doesn't exist", err.Error())
-	}
-	dependencyFactory := DependencyProvider{Log: logger, FrontEndID: frontendid}
+	dependencyFactory := DependencyProvider{Log: logger, FrontEndID: frontendId}
 	response := fn.Handler(*parsedForm, dependencyFactory)
 
 	// Record and write out any useful information
@@ -109,6 +113,12 @@ func (fn rawHandler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	} else {
 		handler[T, V]{Handler: handlerWrapper, FormType: fn.FormType, IsMultipart: false}.ServeHTTP(w, r)
 	}
+}
+
+// getFrontendID gets the frontend id for an incoming http request
+func getFrontendId(r *http.Request) int {
+	frontendRepo := repositories.GetRepository(repositories.FRONTENDS).(repositories.IFrontendsRepository)
+	return frontendRepo.GetFrontendFromURL(r.URL.Host)
 }
 
 // getMessageFromStatus fetches the message corresponding to a given status code

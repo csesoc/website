@@ -10,13 +10,13 @@ import (
 
 // Implements IPersonRepository
 type personRepository struct {
+	frontEndID int
 	embeddedContext
-	FrontEndID int
 }
 
 func (rep personRepository) PersonExists(p Person) bool {
 	var result int
-	err := rep.ctx.Query("SELECT count(*) from person where email = $1 and frontendid = $2 and password = $3;", []interface{}{p.Email, rep.FrontEndID, p.Password}, &result)
+	err := rep.ctx.Query("SELECT count(*) from person where email = $1 and frontendid = $2 and password = $3;", []interface{}{p.Email, rep.frontEndID, p.Password}, &result)
 	if err != nil {
 		log.Println("credentials match err", err.Error())
 	}
@@ -26,7 +26,7 @@ func (rep personRepository) PersonExists(p Person) bool {
 
 func (rep personRepository) GetPersonWithDetails(p Person) Person {
 	var result Person
-	err := rep.ctx.Query("SELECT * from person where email = $1 and frontendid = $2 and password = $3;", []interface{}{p.Email, rep.FrontEndID, p.Password},
+	err := rep.ctx.Query("SELECT * from person where email = $1 and frontendid = $2 and password = $3;", []interface{}{p.Email, rep.frontEndID, p.Password},
 		&result.UID, &result.Email, &result.FirstName, &result.Password, &result.GroupID, &result.FrontEndID)
 	if err != nil {
 		log.Print("get permissions error", err.Error())

@@ -16,6 +16,7 @@ const (
 	FileSystemRepository Dependency = iota
 	GroupsRepository
 	PersonRepository
+	FrontEndRepository
 
 	UnpublishedVolumeRepository
 	PublishedVolumeRepository
@@ -26,9 +27,10 @@ const (
 // baseDependencyMappings contains all the mappings that are non-specific to the execution of a handler and are instead global
 // an example of a non-baseDependencyMapping is a logger dependency (as each function maintains its own log)
 var baseDependencyMappings = map[Dependency]func() interface{}{
-	FileSystemRepository:        func() interface{} { return repositories.GetRepository(repositories.FILESYSTEM) },
-	GroupsRepository:            func() interface{} { return repositories.GetRepository(repositories.GROUPS) },
-	PersonRepository:            func() interface{} { return repositories.GetRepository(repositories.PERSON) },
+	FileSystemRepository: func() interface{} { return repositories.GetRepository(repositories.FILESYSTEM) },
+	GroupsRepository:     func() interface{} { return repositories.GetRepository(repositories.GROUPS) },
+	FrontEndRepository:   func() interface{} { return repositories.GetRepository(repositories.FRONTENDS) },
+
 	UnpublishedVolumeRepository: func() interface{} { return repositories.GetRepository(repositories.DOCKER_UNPUBLISHED_FILESYSTEM) },
 	PublishedVolumeRepository:   func() interface{} { return repositories.GetRepository(repositories.DOCKER_PUBLISHED_FILESYSTEM) },
 }
@@ -38,6 +40,7 @@ var baseTypeDependencyMappings = map[reflect.Type]Dependency{
 	reflect.TypeOf((*repositories.IFilesystemRepository)(nil)): FileSystemRepository,
 	reflect.TypeOf((*repositories.IGroupsRepository)(nil)):     GroupsRepository,
 	reflect.TypeOf((*repositories.IPersonRepository)(nil)):     PersonRepository,
+	reflect.TypeOf((*repositories.IFrontendsRepository)(nil)):  FrontEndRepository,
 
 	reflect.TypeOf((*repositories.IPublishedVolumeRepository)(nil)):   PublishedVolumeRepository,
 	reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil)): UnpublishedVolumeRepository,
@@ -81,9 +84,4 @@ func getDependency[T any](factory DependencyFactory) T {
 	typeMapping := reflect.TypeOf((*T)(nil))
 
 	return factory.GetDependency(factory.GetDepFromType(typeMapping)).(T)
-}
-
-func setFrontEndID(id int, df interface{}) {
-	stype := reflect.ValueOf(df).Elem()
-	stype.FieldByName("FrontEndID").SetInt(int64(id))
 }

@@ -1,6 +1,6 @@
 package repositories
 
-import ( 
+import (
 	"cms.csesoc.unsw.edu.au/database/contexts"
 )
 
@@ -14,6 +14,7 @@ const (
 	DOCKER_UNPUBLISHED_FILESYSTEM
 	PERSON
 	GROUPS
+	FRONTENDS
 )
 
 // The ID for root, set this as the ID in a specified request
@@ -31,7 +32,11 @@ func GetRepository(repo int) interface{} {
 			embeddedContext{context},
 		}
 	case GROUPS:
-		return GroupsRepository{
+		return groupsRepository{
+			embeddedContext{context},
+		}
+	case FRONTENDS:
+		return frontendsRepository{
 			embeddedContext{context},
 		}
 	case DOCKER_PUBLISHED_FILESYSTEM:
@@ -45,13 +50,13 @@ func GetRepository(repo int) interface{} {
 	}
 }
 
-func PersonRepository(frontendid int) interface{} {
+func PersonRepository(frontendId int) interface{} {
 	if context == nil {
 		context = contexts.GetDatabaseContext()
 	}
 
 	return personRepository{
+		frontendId,
 		embeddedContext{context},
-		frontendid,
 	}
 }
