@@ -39,9 +39,10 @@ var NoOperation = Operation{IsNoOp: true, Operation: Noop{}}
 // Parse is a utility function that takes a JSON stream and parses the input into
 // a Request object
 func ParseOperation(request string) (Operation, error) {
-	if operation, err := cmsjson.Unmarshall[Operation](cmsJsonConf, []byte(request)); err != nil {
+	var operation Operation
+	if err := cmsjson.Unmarshall[Operation](cmsJsonConf, &operation, []byte(request)); err != nil {
 		return Operation{}, errors.New("invalid request format")
 	} else {
-		return *operation, nil
+		return operation, nil
 	}
 }

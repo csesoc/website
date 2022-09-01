@@ -54,7 +54,7 @@ func tryConsumeArrayElement(prev, curr reflect.Value, path []int) (reflect.Value
 }
 
 // consumeField consumes a regular field from a path, it pops the head off the path slice and if it was able
-// to consume something then it retuns the path minus the head :D
+// to consume something then it returns the path minus the head :D
 func consumeField(prev, curr reflect.Value, path []int) (reflect.Value, reflect.Value, []int) {
 	field := curr.FieldByIndex([]int{path[0]})
 	if curr.IsValid() {
