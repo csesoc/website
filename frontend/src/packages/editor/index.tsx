@@ -8,6 +8,8 @@ import EditorBlock from "./components/EditorBlock";
 import { BlockData, UpdateHandler } from "./types";
 import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
 import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
+import SyncContent from "src/cse-ui-kit/SyncContent_button";
+import PublishContent from "src/cse-ui-kit/PublichCentent_button";
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import { addContentBlock } from "./state/actions";
 import { useParams } from "react-router-dom";
@@ -20,6 +22,13 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+const TopButtonGroup = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem;
 `;
 
 const InsertContentWrapper = styled.div`
@@ -57,6 +66,28 @@ const EditorPage: FC = () => {
     <div style={{ height: "100%" }}>
       <EditorHeader />
       <Container>
+        <TopButtonGroup>
+          <SyncContent
+            onClick={() => {
+              if (wsClient.current?.socket.readyState === WebSocket.OPEN) {
+                console.log(JSON.stringify(blocks));
+                wsClient.current?.pushDocumentData(JSON.stringify(blocks));
+              }
+            }}
+          />
+
+          <PublishContent
+            onClick={() => {
+              const data = new FormData();
+              data.append("DocumentID", `${id}`);
+              console.log(id);
+              fetch("/api/filesystem/publish-document", {
+                method: "POST",
+                body: data,
+              });
+            }}
+          />
+        </TopButtonGroup>
         {blocks.map((block, idx) =>
           block[0].type === "paragraph" ? (
             <EditorBlock
@@ -113,28 +144,6 @@ const EditorPage: FC = () => {
               );
             }}
           />
-          <button
-            onClick={() => {
-              if (wsClient.current?.socket.readyState === WebSocket.OPEN) {
-                console.log(JSON.stringify(blocks));
-                wsClient.current?.pushDocumentData(JSON.stringify(blocks));
-              }
-            }}
-          >
-            Sync Document
-          </button>
-          <button
-            onClick={() => {
-              const data = new FormData();
-              data.append("DocumentID", `${id}`);
-              fetch("/api/filesystem/publish-document", {
-                method: "POST",
-                body: data,
-              });
-            }}
-          >
-            Publish Content
-          </button>
         </InsertContentWrapper>
       </Container>
     </div>

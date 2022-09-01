@@ -57,11 +57,16 @@ func UploadImage(form ValidImageUploadRequest, df DependencyFactory) handlerResp
 
 // PublishDocument takes in DocumentID and transfers the document from unpublished to published volume if it exists
 func PublishDocument(form ValidPublishDocumentRequest, df DependencyFactory) handlerResponse[empty] {
+	log := getDependency[*logger.Log](df)
+	log.Write("sdhfkjsdfjlasjfldjlasld")
+
 	unpublishedVol := getDependency[repositories.IUnpublishedVolumeRepository](df)
 	publishedVol := getDependency[repositories.IPublishedVolumeRepository](df)
 
 	// fetch the target file form the unpublished volume
 	filename := strconv.Itoa(form.DocumentID)
+	log.Write("filename")
+	log.Write(filename)
 	file, err := unpublishedVol.GetFromVolume(filename)
 	if err != nil {
 		return handlerResponse[empty]{
