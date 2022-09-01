@@ -5,12 +5,15 @@ import { useState, useEffect } from "react";
 
 import styled from "styled-components";
 
+import HomePageCurve from "../svgs/HPCurve.svg"
+import TopRect from "../svgs/TopRect.svg"
+import BottomRect from "../svgs/BottomRect.svg"
+
 // local
 import Homepage from "./Homepage";
 import Events from './Events'
 import AboutUs from './AboutUs';
-import HomepageCurve from "../svgs/HomepageCurve";
-import RectangleCurve from "../svgs/RectangleCurve";
+
 import { device } from '../styles/device'
 
 
@@ -33,6 +36,14 @@ const CurveContainer = styled.div<CurveContainerProps>`
   z-index: -1;  
 `;
 
+const PurpleBlock = styled.div`
+  background: #BEB8EA;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  // top: -10px;
+`
+
 const Background = styled.div`
 `;
 
@@ -50,21 +61,25 @@ const Background = styled.div`
 //   height: 44px;
 // `;
 
-const Index: NextPage = () => {
+const Home: NextPage = () => {
   const [width, setWidth]   = useState<undefined|number>();
   const [height, setHeight] = useState<undefined|number>();
+  const [loaded, setLoaded] = useState(false);
+
   const updateDimensions = () => {
       setWidth(window?.innerWidth);
       setHeight(window?.innerHeight);
   }
   useEffect(() => {
       window.addEventListener("resize", updateDimensions);
+      setLoaded(true)
       return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
   useEffect(() => {
-
-  }, [width])
+    setHeight(window?.innerHeight);
+    setWidth(window?.innerWidth)
+  },[])
 
   return (
     <PageContainer>
@@ -74,20 +89,33 @@ const Index: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Background>
-          <CurveContainer offset={0}>
-            <HomepageCurve width={400} height={1000}/>
-          </CurveContainer>
-          <CurveContainer offset={1200}>
-            <RectangleCurve
-              height={2000}
-              dontPreserveAspectRatio
-            />
-          </CurveContainer>
-        </Background>
-        <Homepage />
-        <AboutUs />
-        <Events />
+        { (loaded && height && width) && (
+          <>
+          {console.log(height)}
+          <Background>
+            {/* <CurveContainer offset={0}>
+              <HomepageCurve width={400} height={height}/>
+            </CurveContainer>
+            <CurveContainer offset={height + 500}>
+              <RectangleCurve
+                height={2000}
+                dontPreserveAspectRatio
+              />
+            </CurveContainer> */}
+            <CurveContainer offset={0}>
+              <Image src={HomePageCurve}/>
+            </CurveContainer>
+            <CurveContainer offset={height+300}>
+              <Image src={TopRect}/>
+              <PurpleBlock/>
+              <Image src={BottomRect}/>
+            </CurveContainer>
+          </Background>
+          <Homepage />
+          <AboutUs />
+          <Events />
+          </>
+        )}
       </main>
       <footer></footer>
     </PageContainer>
