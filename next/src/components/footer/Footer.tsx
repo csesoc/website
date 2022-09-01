@@ -13,10 +13,7 @@ const FooterComponent = styled.footer`
 
 const Logo = styled.div`
   width: 75%;
-`;
-
-const LogoImage = styled(Image)`
-  vertical-align: middle;
+  display: flex;
 `;
 
 const Details = styled.div`
@@ -29,7 +26,7 @@ const Footer: React.FC<{}> = () => {
   return (
     <FooterComponent>
       <Logo>
-        <LogoImage src={CSESocLogo} alt="CSESoc" />
+        <Image src={CSESocLogo} alt="CSESoc" />
       </Logo>
       <Details>
         <p>
