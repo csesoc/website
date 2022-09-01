@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Navbar from "../components/navbar/Navbar";
 import { NavbarOpenHandler } from "../components/navbar/types";
 import HamburgerMenu from "../components/navbar/HamburgerMenu";
+import { device } from "../styles/device"
 
 type Props = {}
 
@@ -17,15 +18,26 @@ const Container = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  grid-gap: 20vw;
+
+  @media ${device.laptop} {
+    flex-direction: row;
+  }
 `;
 
 const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  @media ${device.desktop} {
+    padding: 0 10vw;
+  }
+
+  @media ${device.laptop} {
+
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -77,7 +89,7 @@ export default function Homepage({}: Props) {
         <Navbar open={navbarOpen} setNavbarOpen={handleToggle} />
         <Container>
           <ColumnContainer>
-            <Image src="/assets/logo.svg" width="362" height="84" />
+            <Image src="/assets/logo.svg" width="600px" height="300px"/>
             <Text1>
               Empowering
               <Text3> future</Text3>

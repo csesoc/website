@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from 'next/image';
+import { useState, useEffect } from "react";
 
 import styled from "styled-components";
 
@@ -11,6 +12,8 @@ import AboutUs from './AboutUs';
 import HomepageCurve from "../svgs/HomepageCurve";
 import RectangleCurve from "../svgs/RectangleCurve";
 import Footer from "../components/footer/Footer";
+import { device } from '../styles/device'
+
 
 type CurveContainerProps = {
   offset: number;
@@ -51,7 +54,22 @@ const Background = styled.div`
 //   height: 44px;
 // `;
 
-const Home: NextPage = () => {
+const Index: NextPage = () => {
+  const [width, setWidth]   = useState<undefined|number>();
+  const [height, setHeight] = useState<undefined|number>();
+  const updateDimensions = () => {
+      setWidth(window?.innerWidth);
+      setHeight(window?.innerHeight);
+  }
+  useEffect(() => {
+      window.addEventListener("resize", updateDimensions);
+      return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
+
+  useEffect(() => {
+
+  }, [width])
+
   return (
     <PageContainer>
       <Head>
@@ -59,7 +77,7 @@ const Home: NextPage = () => {
         <meta name="description" content="CSESoc Website Homepage" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
+
       <Main>
         <Background>
           <CurveContainer offset={0}>
@@ -82,4 +100,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Index;
