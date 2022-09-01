@@ -43,9 +43,11 @@ const SidebarButton = styled(Button) <SideBarButtonProps>`
     text-transform: none;
     &:hover {
     transform: scale(1.04);
+    background-color: darkgrey;
     }
     &:active {
       transform: scale(0.96);
+      background-color: darkgrey;
     }
   }
 `

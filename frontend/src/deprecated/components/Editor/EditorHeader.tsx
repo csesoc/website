@@ -53,10 +53,10 @@ const EditorHeader: React.FC = () => {
         </ButtonGroup>
         <EditorTitle>
           Session identifier
-        </EditorTitle> */}
+        </EditorTitle>
         <EditorTitle>
           Preview and text
-        </EditorTitle>
+        </EditorTitle> */}
       </HeaderFlex>
     </Container>
   );
