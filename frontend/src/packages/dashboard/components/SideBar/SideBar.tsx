@@ -2,11 +2,26 @@ import React from 'react';
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import {useNavigate} from 'react-router-dom';
+import {useState} from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const Container = styled.div`
+  position: relative;
   width: 250px;
-  background: lightgrey;
+  background: #a695ea;
   height: 100vh;
+  transition: left 0.3s ease-in-out;
+  margin-right: 25px;
+`
+
+const ToggleButton = styled.div`
+  position: absolute;
+  margin-top: 2rem;
+  right: -30px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
 `
 
 const SidebarTitle = styled.div`
@@ -40,16 +55,19 @@ const SidebarButton = styled(Button) <SideBarButtonProps>`
     background-color: ${props => props.bgcolor};
     border-radius: 20px;
     text-transform: none;
+    color: black;
   }
 `
 
 type Props = {
   setModalState: (state: {open: boolean, type: string}) => void;
   selectedFile: number | null;
+  isOpen: boolean;
+  setOpen: (state: boolean) => void;
 }
 
 // Wrapper component ${props => props.color}
-export default function SideBar ({ setModalState, selectedFile}: Props) {
+export default function SideBar ({ setModalState, selectedFile, isOpen, setOpen}: Props) {
 
   const handleNewFile = () => {
     setModalState({
@@ -78,29 +96,36 @@ export default function SideBar ({ setModalState, selectedFile}: Props) {
   }
 
   return (
-    <Container>
+    <Container style={{ left: isOpen ? '0px' : '-250px' }}>
+      <ToggleButton onClick={() => setOpen(!isOpen)}>
+        {isOpen ?
+          <CloseIcon /> 
+          :
+          <MenuIcon />
+        }
+      </ToggleButton>
       <SidebarTitle>
         Welcome \name\
       </SidebarTitle>
       <ButtonFlex>
-        <ButtonGroup>
+        {/* <ButtonGroup>
           <SidebarButton bgcolor="#F88282">
             Blog
           </SidebarButton>
           <SidebarButton bgcolor="#F88282">
             Core pages
           </SidebarButton>
-        </ButtonGroup>
+        </ButtonGroup> */}
         <ButtonGroup>
           <SidebarButton 
-            bgcolor="#82A3F8"
+            bgcolor="#b4c6ff"
             onClick={handleNewFile}
             data-anchor="NewPageButton"
           >
             New page
           </SidebarButton>
           <SidebarButton
-            bgcolor="#82A3F8"
+            bgcolor="#b4c6ff"
             onClick={handleNewFolder}
             data-anchor="NewFolderButton"
           >
@@ -108,15 +133,15 @@ export default function SideBar ({ setModalState, selectedFile}: Props) {
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
-          <SidebarButton bgcolor="#B8E8E8" onClick={handleEdit}>
+          <SidebarButton bgcolor="white" onClick={handleEdit}>
               Edit
           </SidebarButton>
-          <SidebarButton bgcolor="#B8E8E8">
+          {/* <SidebarButton bgcolor="#B8E8E8">
             Feature
           </SidebarButton>
           <SidebarButton bgcolor="#B8E8E8" onClick={handleRecycle}>
             Recycle
-          </SidebarButton>
+          </SidebarButton> */}
         </ButtonGroup>
       </ButtonFlex>
     </Container>

@@ -15,7 +15,16 @@ const Container = styled.div`
   flex-direction: row;
 `;
 
+const FlexWrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: left 0.3s ease-in-out;
+`
+
 export default function Dashboard() {
+  const [isOpen, setOpen] = useState(true)
+
   const [modalState, setModalState] = useState<{ open: boolean, type: string }>({
     open: false,
     type: "",
@@ -32,12 +41,14 @@ export default function Dashboard() {
 
   return (
     <Container>
-      <SideBar setModalState={setModalState} selectedFile={selectedFile}/>
-      <Directory />
-      <Renderer
-        selectedFile={selectedFile}
-        setSelectedFile={setSelectedFile}
-      />
+      <SideBar setModalState={setModalState} selectedFile={selectedFile} isOpen={isOpen} setOpen={setOpen}/>
+      <FlexWrapper style={{ left: isOpen ? '0px' : '-250px' }}>
+        <Directory />
+        <Renderer
+          selectedFile={selectedFile}
+          setSelectedFile={setSelectedFile}
+        />
+      </FlexWrapper>
       <ConfirmationWindow
         open={modalState.open}
         modalState={modalState}
