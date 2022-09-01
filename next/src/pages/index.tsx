@@ -10,6 +10,7 @@ import Events from './Events'
 import AboutUs from './AboutUs';
 import HomepageCurve from "../svgs/HomepageCurve";
 import RectangleCurve from "../svgs/RectangleCurve";
+import Footer from "../components/footer/Footer";
 
 type CurveContainerProps = {
   offset: number;
@@ -19,6 +20,9 @@ const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+`;
+
+const Main = styled.main`
   padding-left: 2rem;
   padding-right: 2rem;
 `;
@@ -48,7 +52,6 @@ const Background = styled.div`
 // `;
 
 const Home: NextPage = () => {
-
   return (
     <PageContainer>
       <Head>
@@ -56,7 +59,8 @@ const Home: NextPage = () => {
         <meta name="description" content="CSESoc Website Homepage" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      
+      <Main>
         <Background>
           <CurveContainer offset={0}>
             <HomepageCurve width={400} height={1000}/>
@@ -71,8 +75,9 @@ const Home: NextPage = () => {
         <Homepage />
         <AboutUs />
         <Events />
-      </main>
-      <footer></footer>
+      </Main>
+
+      <Footer />
     </PageContainer>
   );
 };
