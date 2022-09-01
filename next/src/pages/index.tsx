@@ -73,10 +73,7 @@ const Home: NextPage = () => {
 					</CurveContainer>
 				</Background>
 				{navbarOpen ? (
-					<HamburgerMenu
-						open={navbarOpen}
-						setNavbarOpen={handleToggle}
-					/>
+					<HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} />
 				) : (
 					<></>
 				)}
