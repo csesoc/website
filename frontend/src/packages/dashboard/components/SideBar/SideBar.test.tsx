@@ -6,7 +6,7 @@ import React from 'react'
 
 describe("Side bar tests", () => {
   it("Side bar is rendered with proper buttons", () => {
-    const [isOpen, setOpen] = React.useState(true)
+    const mockSetOpen = jest.fn();
 
     const mockSetModalState = jest.fn();
     const mockSelectedFileID = 5;
@@ -15,8 +15,8 @@ describe("Side bar tests", () => {
         <SideBar 
           setModalState={mockSetModalState}
           selectedFile={mockSelectedFileID}
-          isOpen={isOpen}
-          setOpen={setOpen}
+          isOpen={true}
+          setOpen={mockSetOpen}
         />
       </Router>
     )

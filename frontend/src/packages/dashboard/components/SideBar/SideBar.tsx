@@ -2,26 +2,42 @@ import React from 'react';
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import {useNavigate} from 'react-router-dom';
-import {useState} from 'react';
-import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MenuIcon from '@mui/icons-material/Menu';
 
 const Container = styled.div`
   position: relative;
   width: 250px;
-  background: #a695ea;
+  background: #c9bff2;
   height: 100vh;
   transition: left 0.3s ease-in-out;
   margin-right: 25px;
 `
 
-const ToggleButton = styled.div`
+const IconWrapper = styled.div`
+  z-index: 999;
   position: absolute;
-  margin-top: 2rem;
-  right: -30px;
+  top: 50%;
+  transform: translate(0, -50%);
+
+  right: -45px;
   width: 30px;
   height: 30px;
   cursor: pointer;
+
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const Circle = styled.div`  
+  position: absolute;
+  border: 1px solid black;
+  border-radius: 999px;
+  width: 40px;
+  height: 40px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `
 
 const SidebarTitle = styled.div`
@@ -106,13 +122,14 @@ export default function SideBar ({ setModalState, selectedFile, isOpen, setOpen}
 
   return (
     <Container style={{ left: isOpen ? '0px' : '-250px' }}>
-      <ToggleButton onClick={() => setOpen(!isOpen)}>
+      <IconWrapper onClick={() => setOpen(!isOpen)}>
+        <Circle />
         {isOpen ?
-          <CloseIcon /> 
+            <ArrowBackIcon /> 
           :
-          <MenuIcon />
+            <MenuIcon />
         }
-      </ToggleButton>
+      </IconWrapper>
       <SidebarTitle>
         Welcome \name\
       </SidebarTitle>
