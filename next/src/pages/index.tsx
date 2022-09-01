@@ -1,19 +1,19 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from 'next/image';
+import Image from "next/image";
 
 import styled from "styled-components";
 
 // local
-import Homepage from "./Homepage";
-import Events from './Events'
-import AboutUs from './AboutUs';
+import Homepage from "./MiniHomepage";
+import Events from "./MiniEvents";
+import AboutUs from "./MiniAboutUs";
 import HomepageCurve from "../svgs/HomepageCurve";
 import RectangleCurve from "../svgs/RectangleCurve";
 
 type CurveContainerProps = {
   offset: number;
-}
+};
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -25,14 +25,12 @@ const PageContainer = styled.div`
 
 const CurveContainer = styled.div<CurveContainerProps>`
   position: absolute;
-  top: ${props => props.offset}px;
+  top: ${(props) => props.offset}px;
   right: 0;
-  z-index: -1;  
+  z-index: -1;
 `;
 
-const Background = styled.div`
-`;
-
+const Background = styled.div``;
 
 // const Button = styled.button`
 //   background-color:#FFFFFF;
@@ -48,7 +46,6 @@ const Background = styled.div`
 // `;
 
 const Home: NextPage = () => {
-
   return (
     <PageContainer>
       <Head>
@@ -59,13 +56,10 @@ const Home: NextPage = () => {
       <main>
         <Background>
           <CurveContainer offset={0}>
-            <HomepageCurve width={400} height={1000}/>
+            <HomepageCurve width={400} height={1000} />
           </CurveContainer>
           <CurveContainer offset={1200}>
-            <RectangleCurve
-              height={2000}
-              dontPreserveAspectRatio
-            />
+            <RectangleCurve height={2000} dontPreserveAspectRatio />
           </CurveContainer>
         </Background>
         <Homepage />
