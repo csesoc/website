@@ -14,6 +14,7 @@ interface Props {
 const IconContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   margin: 20px;
   text-align: center;
 `;

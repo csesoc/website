@@ -22,8 +22,8 @@ const DirectoryFlex = styled.div`
 
 const BreadcrumbItem = customStyle(Chip)(({ theme }) => {
   const backgroundColor =
-    theme.palette.mode === "light"
-      ? theme.palette.grey[100]
+    theme.palette.mode === 'light'
+      ? theme.palette.grey[200]
       : theme.palette.grey[800];
   return {
     backgroundColor,

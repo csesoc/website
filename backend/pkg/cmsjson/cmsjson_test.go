@@ -85,8 +85,9 @@ func TestUnmarshallsProperly(t *testing.T) {
 		},
 	}
 
-	result, _ := Unmarshall[TestJson](config, []byte(json))
-	assert.Equal(expected, *result)
+	var result TestJson
+	Unmarshall[TestJson](config, &result, []byte(json))
+	assert.Equal(expected, result)
 }
 
 func TestMarshallsProperly(t *testing.T) {

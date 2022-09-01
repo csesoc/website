@@ -52,17 +52,17 @@ func (c *clientView) run(serverPipe pipe, terminatePipe alertLeaving) {
 			return
 
 		default:
-			request := data.Operation{}
-
-			err := c.socket.ReadJSON(&request)
-			if err != nil {
-				// todo: push a terminate signal to the client, also tell the server we're leaving
-				terminatePipe()
-				c.socket.Close()
+			if _, msg, err := c.socket.ReadMessage(); err == nil {
+				// push the update to the documentServer
+				if request, err := data.ParseOperation(string(msg)); err == nil {
+					serverPipe(request)
+					continue
+				}
 			}
 
-			// push the update to the documentServer
-			serverPipe(request)
+			// todo: push a terminate signal to the client, also tell the server we're leaving
+			terminatePipe()
+			c.socket.Close()
 		}
 	}
 }
