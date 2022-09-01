@@ -81,7 +81,7 @@ export default function Homepage({}: Props) {
 						/>
 					</ImageContainer>
 				</Container>
-			</HomepageContainer>
+			</HomepageContainer> 
 		</>
 	);
 }

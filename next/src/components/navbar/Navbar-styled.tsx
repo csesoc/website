@@ -25,7 +25,7 @@ const NavItem = styled.li`
 		display: none;
 	}
 
-	&:hover {
+	&:hover { 
 		cursor: pointer;
 	}
 `;

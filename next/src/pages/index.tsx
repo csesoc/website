@@ -57,7 +57,7 @@ const Home: NextPage = () => {
 	};
 
 	return (
-		<PageContainer>
+		<PageContainer> 
 			<Head>
 				<title>CSESoc</title>
 				<meta name="description" content="CSESoc Website Homepage" />
