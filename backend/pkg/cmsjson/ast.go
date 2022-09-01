@@ -1,8 +1,10 @@
 package cmsjson
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
+	"strconv"
 )
 
 type (
@@ -16,13 +18,22 @@ type (
 	//	- All implementations of AstNode must conform to this specification (there is no way within the Go type system to enforce this unfortunately :( )
 	//	- Note that the reflect.Type returned by JsonArray is the type of the array, ie if it was an array of integers then the reflect.type is an integer
 	//  - Note that jsonNode implements AstNode (indirectly), AstNode is of the form:
-	// AstNode interface {
-	// 		GetKey() string
-	//
-	// 		JsonPrimitive() (interface{}, reflect.Type)
-	//		JsonObject() ([]AstNode, reflect.Type)
-	// 		JsonArray() ([]AstNode, reflect.Type)
-	// }
+	AstNode interface {
+		GetKey() string
+
+		JsonPrimitive() (interface{}, reflect.Type)
+		JsonObject() ([]AstNode, reflect.Type)
+		JsonArray() ([]AstNode, reflect.Type)
+
+		// Update functions, if the underlying type does not match then an error is thrown
+		// ie if you perform an "UpdatePrimitive" on a JSONObject node
+		UpdatePrimitive(AstNode) error
+		UpdateArray(int, AstNode) error
+		UpdateObject(int, AstNode) error
+
+		RemoveArrayElement(int) error
+	}
+
 	jsonNode struct {
 		// key could be nil (according to the AstNode definition)
 		key string
@@ -49,7 +60,7 @@ func (node *jsonNode) GetKey() string { return node.key }
 
 // JsonPrimitive returns the underlying primitive value in a jsonNode, it either returns the value or nil in accordance with the
 // definition of the AstNode
-func (node *jsonNode) GetPrimitive() (interface{}, reflect.Type) {
+func (node *jsonNode) JsonPrimitive() (interface{}, reflect.Type) {
 	node.validateNode()
 	if node.value != nil {
 		return node.value, node.underlyingType
@@ -60,10 +71,10 @@ func (node *jsonNode) GetPrimitive() (interface{}, reflect.Type) {
 
 // JsonObject returns the underlying json object in a jsonNode, it either returns the value or nil in accordance with the
 // definition of the AstNode
-func (node *jsonNode) JsonObject() ([]*jsonNode, reflect.Type) {
+func (node *jsonNode) JsonObject() ([]AstNode, reflect.Type) {
 	node.validateNode()
 	if node.children != nil && node.isObject {
-		return node.children, node.underlyingType
+		return astArrFromNodes(node.children), node.underlyingType
 	}
 
 	return nil, nil
@@ -71,13 +82,91 @@ func (node *jsonNode) JsonObject() ([]*jsonNode, reflect.Type) {
 
 // JsonArray returns the underlying json array in a jsonNode, it either returns the value or nil in accordance with the
 // definition of the AstNode
-func (node *jsonNode) JsonArray() ([]*jsonNode, reflect.Type) {
+func (node *jsonNode) JsonArray() ([]AstNode, reflect.Type) {
 	node.validateNode()
 	if node.children != nil && !node.isObject {
-		return node.children, node.underlyingType
+		return astArrFromNodes(node.children), node.underlyingType
 	}
 
 	return nil, nil
+}
+
+// Insertion operations
+// UpdatePrimitive updates a primitive value given an incoming ast node
+func (node *jsonNode) UpdatePrimitive(replacement AstNode) error {
+	value, underlyingType := replacement.JsonPrimitive()
+
+	switch {
+	case value == nil:
+		return errors.New("provided replacement is not a json primitive")
+	case underlyingType != node.underlyingType:
+		return errors.New("type mismatch between replacement and target node")
+	case node.children != nil:
+		return errors.New("ast node is not a primitive")
+	}
+
+	node.value = value
+	return nil
+}
+
+// UpdateArray updates an array AST node to contain an additional entry :D
+func (node *jsonNode) UpdateArray(index int, newValue AstNode) error {
+	value, underlyingType := newValue.JsonPrimitive()
+	asJsonNode, couldCast := newValue.(*jsonNode)
+
+	switch {
+	case !couldCast:
+		return errors.New("incompatible AstNode implementation")
+	case value == nil:
+		return errors.New("provided target is not a json primitive")
+	case underlyingType != node.underlyingType:
+		return errors.New("type mismatch between target node and value to insert")
+	case node.children == nil || node.isObject:
+		return errors.New("ast node is not an array")
+	case len(node.children) > index:
+		return errors.New("cannot insert past the existing size of the array")
+	}
+
+	asJsonNode.key = strconv.Itoa(index)
+	node.children = append(append(node.children[:index], asJsonNode), node.children[index:]...)
+
+	return nil
+}
+
+// RemoveArrayElement removes an array element given its index, it shrinks the array accordingly
+func (node *jsonNode) RemoveArrayElement(index int) error {
+	switch {
+	case node.children == nil || node.isObject:
+		return errors.New("ast node is not an array")
+	case len(node.children) > index:
+		return errors.New("cannot insert past the existing size of the array")
+	}
+
+	node.children = append(node.children[:index], node.children[index+1:]...)
+	return nil
+}
+
+// UpdateObject updates a specific object and applies a value at a specific index
+func (node *jsonNode) UpdateObject(index int, newValue AstNode) error {
+	value, underlyingType := newValue.JsonPrimitive()
+	asJsonNode, couldCast := newValue.(*jsonNode)
+
+	switch {
+	case !couldCast:
+		return errors.New("incompatible AstNode implementation")
+	case value == nil:
+		return errors.New("provided target is not a json primitive")
+	case underlyingType != node.underlyingType:
+		return errors.New("type mismatch between target node and value to insert")
+	case node.children == nil || !node.isObject:
+		return errors.New("ast node is not an object")
+	case len(node.children) >= index:
+		return errors.New("cannot insert past the existing field count of the object")
+	}
+
+	asJsonNode.key = node.children[index].key
+	node.children[index] = asJsonNode
+	return nil
 }
 
 // validateNode determines if the current node configuration was corrupted or not
@@ -172,4 +261,16 @@ func getStructFieldType(structType reflect.Type, index int) reflect.Type {
 	}
 
 	return structType.FieldByIndex([]int{index}).Type
+}
+
+// astArrFromNodes exists to convert an array of jsonNodes to an array of AstNodes
+// because Go's sub-typing rules are weird
+func astArrFromNodes(nodes []*jsonNode) []AstNode {
+	astNodes := []AstNode{}
+
+	for _, jsonNode := range nodes {
+		astNodes = append(astNodes, AstNode(jsonNode))
+	}
+
+	return astNodes
 }

@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"cms.csesoc.unsw.edu.au/editor/OT/data"
+	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
 	"github.com/google/uuid"
 )
 
@@ -13,13 +14,13 @@ type documentServer struct {
 	// strategy or a more appropriate ds
 	// state management
 	ID        uuid.UUID
-	state     string
+	state     cmsjson.AstNode
 	stateLock sync.Mutex
 
 	clients     map[int]*clientState
 	clientsLock sync.Mutex
 
-	operationHistory []data.OperationRequest
+	operationHistory []data.Operation
 }
 
 type clientState struct {
@@ -31,7 +32,7 @@ func newDocumentServer() *documentServer {
 	// ideally state shouldn't be a string due to its immutability
 	// any update requires the allocation + copy of a new string in memory
 	return &documentServer{
-		state:       "amongus!!!",
+		state:       nil,
 		stateLock:   sync.Mutex{},
 		clients:     make(map[int]*clientState),
 		clientsLock: sync.Mutex{},
@@ -40,7 +41,7 @@ func newDocumentServer() *documentServer {
 
 // a pipe is a closure that the clientView can use to communicate
 // with the server, it wraps its internal clientView ID for security reasons
-type pipe = func(op data.OperationRequest)
+type pipe = func(op data.Operation)
 
 // alertLeaving is like a pipe except a client uses it to tell a document
 // that it is leaving
@@ -85,8 +86,8 @@ func (s *documentServer) disconnectClient(clientID int) {
 // buildClientPipe is a function that returns the "pipe" for a clientView
 // this pipe contains all the necessary code that the clientView needs to communicate with the documentServer
 // when the clientView wishes to send data to the documentServer they simply just call this pipe with the operation
-func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan func(), workerKillHandle chan empty) func(data.OperationRequest) {
-	return func(op data.OperationRequest) {
+func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan func(), workerKillHandle chan empty) func(data.Operation) {
+	return func(op data.Operation) {
 		// this could also just be captured from the outer func
 		clientState := s.clients[clientID]
 		thisClient := clientState.clientView
@@ -112,6 +113,11 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 
 			// apply op to clientView states
 			s.stateLock.Lock()
+
+			// TODO: apply operation
+			//	- Blockers:
+			//		- Gary's TLB
+			//		- Updated Traversal
 
 			// apply the operation locally and log the new operation
 			transformedOperation := s.transformOperation(op)
@@ -141,7 +147,7 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 
 // transformOperation transforms an incoming client operation against the history of applied server operations
 // 		note: the baseOpIndex indicates what operation to start applying against
-func (s *documentServer) transformOperation(incomingOp data.OperationRequest) data.OperationRequest {
+func (s *documentServer) transformOperation(incomingOp data.Operation) data.Operation {
 	for _, op := range s.operationHistory[incomingOp.AcknowledgedServerOps:] {
 		_, incomingOp = transformPipeline(incomingOp, op)
 	}

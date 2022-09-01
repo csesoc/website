@@ -1,9 +1,7 @@
 package data
 
 import (
-	"errors"
 	"reflect"
-	"strconv"
 
 	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels/cmsmodel"
 	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
@@ -19,33 +17,20 @@ var cmsJsonConf = cmsjson.Configuration{
 	// Registration for cmsmodel, when the LP is finally merged with CSESoc Projects
 	// this will also contain the registration for their data models
 	RegisteredTypes: map[reflect.Type]map[string]reflect.Type{
+		// TODO: later allow this to be dynamically swapped out for different front-ends
 		reflect.TypeOf((*cmsmodel.Component)(nil)).Elem(): {
 			"image":     reflect.TypeOf(cmsmodel.Image{}),
 			"paragraph": reflect.TypeOf(cmsmodel.Paragraph{}),
 		},
 
-		reflect.TypeOf((*Payload)(nil)).Elem(): {
-			"textEdit":  reflect.TypeOf(TextEdit{}),
-			"keyEdit":   reflect.TypeOf(KeyEdit{}),
-			"arrayEdit": reflect.TypeOf(ArrayEdit{}),
+		// Type registrations for the OperationModel
+		reflect.TypeOf((*OperationModel)(nil)).Elem(): {
+			"integerOperation": reflect.TypeOf(IntegerOperation{}),
+			"booleanOperation": reflect.TypeOf(BooleanOperation{}),
+			"stringOperation":  reflect.TypeOf(StringOperation{}),
+
+			"arrayOperation":  reflect.TypeOf(ArrayOperation{}),
+			"objectOperation": reflect.TypeOf(ObjectOperation{}),
 		},
 	},
-}
-
-// small helper function to parse a JSON value of a specific type
-func parseDataGivenType(dataStr string, dataType string) (interface{}, error) {
-	switch dataType {
-	case "integer":
-		return strconv.Atoi(dataStr)
-	case "boolean":
-		return strconv.ParseBool(dataStr)
-	case "float":
-		return strconv.ParseFloat(dataStr, 64)
-	case "string":
-		return dataStr, nil
-	case "component":
-		// todo: later
-		return nil, nil
-	}
-	return nil, errors.New("unable to parse data type")
 }
