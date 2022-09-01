@@ -1,8 +1,10 @@
 package cmsjson
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
+	"strconv"
 )
 
 type (
@@ -22,6 +24,12 @@ type (
 		JsonPrimitive() (interface{}, reflect.Type)
 		JsonObject() ([]AstNode, reflect.Type)
 		JsonArray() ([]AstNode, reflect.Type)
+
+		// Update functions, if the underlying type does not match then an error is thrown
+		// ie if you perform an "UpdatePrimitive" on a JSONObject node
+		UpdatePrimitive(AstNode) error
+		UpdateArray(int, AstNode) error
+		UpdateObject(int, AstNode) error
 	}
 
 	jsonNode struct {
@@ -79,6 +87,71 @@ func (node *jsonNode) JsonArray() ([]AstNode, reflect.Type) {
 	}
 
 	return nil, nil
+}
+
+// Insertion operations
+// UpdatePrimitive updates a primitive value given an incoming ast node
+func (node *jsonNode) UpdatePrimitive(replacement AstNode) error {
+	value, underlyingType := replacement.JsonPrimitive()
+
+	switch {
+	case value == nil:
+		return errors.New("provided replacement is not a json primitive")
+	case underlyingType != node.underlyingType:
+		return errors.New("type mismatch between replacement and target node")
+	case node.children != nil:
+		return errors.New("ast node is not a primitive")
+	}
+
+	node.value = value
+	return nil
+}
+
+// UpdateArray updates an array AST node to contain an additional entry :D
+func (node *jsonNode) UpdateArray(index int, newValue AstNode) error {
+	value, underlyingType := newValue.JsonPrimitive()
+	asJsonNode, couldCast := newValue.(*jsonNode)
+
+	switch {
+	case !couldCast:
+		return errors.New("incompatible AstNode implementation")
+	case value == nil:
+		return errors.New("provided target is not a json primitive")
+	case underlyingType != node.underlyingType:
+		return errors.New("type mismatch between target node and value to insert")
+	case node.children == nil || node.isObject:
+		return errors.New("ast node is not an array")
+	case len(node.children) > index:
+		return errors.New("cannot insert past the existing size of the array")
+	}
+
+	asJsonNode.key = strconv.Itoa(index)
+	node.children = append(append(node.children[:index], asJsonNode), node.children[index:]...)
+
+	return nil
+}
+
+// UpdateObject updates a specific object and applies a value at a specific index
+func (node *jsonNode) UpdateObject(index int, newValue AstNode) error {
+	value, underlyingType := newValue.JsonPrimitive()
+	asJsonNode, couldCast := newValue.(*jsonNode)
+
+	switch {
+	case !couldCast:
+		return errors.New("incompatible AstNode implementation")
+	case value == nil:
+		return errors.New("provided target is not a json primitive")
+	case underlyingType != node.underlyingType:
+		return errors.New("type mismatch between target node and value to insert")
+	case node.children == nil || !node.isObject:
+		return errors.New("ast node is not an object")
+	case len(node.children) >= index:
+		return errors.New("cannot insert past the existing field count of the object")
+	}
+
+	asJsonNode.key = node.children[index].key
+	node.children[index] = asJsonNode
+	return nil
 }
 
 // validateNode determines if the current node configuration was corrupted or not
