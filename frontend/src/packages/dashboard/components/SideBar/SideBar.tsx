@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   width: 250px;
@@ -38,18 +38,25 @@ const SidebarButton = styled(Button) <SideBarButtonProps>`
     width: 160px;
     variant: contained;
     background-color: ${props => props.bgcolor};
+    color: white;
     border-radius: 20px;
     text-transform: none;
+    &:hover {
+    transform: scale(1.04);
+    }
+    &:active {
+      transform: scale(0.96);
+    }
   }
 `
 
 type Props = {
-  setModalState: (state: {open: boolean, type: string}) => void;
+  setModalState: (state: { open: boolean, type: string }) => void;
   selectedFile: number | null;
 }
 
 // Wrapper component ${props => props.color}
-export default function SideBar ({ setModalState, selectedFile}: Props) {
+export default function SideBar({ setModalState, selectedFile }: Props) {
 
   const handleNewFile = () => {
     setModalState({
@@ -68,7 +75,7 @@ export default function SideBar ({ setModalState, selectedFile}: Props) {
   const navigate = useNavigate();
   const handleEdit = () => {
     if (selectedFile !== null) {
-      navigate('/editor/' + selectedFile, {replace: false}), [navigate]
+      navigate('/editor/' + selectedFile, { replace: false }), [navigate]
     }
   };
 
@@ -92,7 +99,7 @@ export default function SideBar ({ setModalState, selectedFile}: Props) {
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
-          <SidebarButton 
+          <SidebarButton
             bgcolor="#82A3F8"
             onClick={handleNewFile}
             data-anchor="NewPageButton"
@@ -109,7 +116,7 @@ export default function SideBar ({ setModalState, selectedFile}: Props) {
         </ButtonGroup>
         <ButtonGroup>
           <SidebarButton bgcolor="#B8E8E8" onClick={handleEdit}>
-              Edit
+            Edit
           </SidebarButton>
           <SidebarButton bgcolor="#B8E8E8">
             Feature
