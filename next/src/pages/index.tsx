@@ -1,11 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-<<<<<<< HEAD
-import Image from 'next/image';
-import { useState, useEffect } from "react";
-=======
 import Image from "next/image";
->>>>>>> main
 
 import styled from "styled-components";
 
