@@ -53,14 +53,23 @@ const SidebarButton = styled(Button) <SideBarButtonProps>`
     width: 160px;
     variant: contained;
     background-color: ${props => props.bgcolor};
+    color: white;
     border-radius: 20px;
     text-transform: none;
     color: black;
+    &:hover {
+    transform: scale(1.04);
+    background-color: darkgrey;
+    }
+    &:active {
+      transform: scale(0.96);
+      background-color: darkgrey;
+    }
   }
 `
 
 type Props = {
-  setModalState: (state: {open: boolean, type: string}) => void;
+  setModalState: (state: { open: boolean, type: string }) => void;
   selectedFile: number | null;
   isOpen: boolean;
   setOpen: (state: boolean) => void;
@@ -86,7 +95,7 @@ export default function SideBar ({ setModalState, selectedFile, isOpen, setOpen}
   const navigate = useNavigate();
   const handleEdit = () => {
     if (selectedFile !== null) {
-      navigate('/editor/' + selectedFile, {replace: false}), [navigate]
+      navigate('/editor/' + selectedFile, { replace: false }), [navigate]
     }
   };
 

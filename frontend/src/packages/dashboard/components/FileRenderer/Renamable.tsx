@@ -12,7 +12,7 @@ interface Props {
   id: number,
 }
 
-export default function Renamable ({ name, id }: Props) {
+export default function Renamable({ name, id }: Props) {
   const [toggle, setToggle] = useState(true);
   const [inputName, setInputName] = useState(name);
 
@@ -26,12 +26,18 @@ export default function Renamable ({ name, id }: Props) {
   return (
     <>
       {toggle ? (
-        <p
+        <div
           onDoubleClick={() => setToggle(false)}>
           {name}
-        </p>
+        </div>
       ) : (
         <input
+          style={
+            {
+              textAlign: "center",
+              width: "6vw"
+            }
+          }
           type="text"
           value={inputName}
           onChange={event => setInputName(event.target.value)}
