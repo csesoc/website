@@ -3,6 +3,7 @@ package endpoints
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"cms.csesoc.unsw.edu.au/internal/logger"
@@ -62,6 +63,8 @@ func (fn handler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+
+	log.Print("hello!!!!!")
 
 	// construct a dependency factory for this request, which implies instantiating a logger
 	logger := buildLogger(r.Method, r.URL.Path)
@@ -136,6 +139,8 @@ func writeResponse[V any](dest http.ResponseWriter, response handlerResponse[V])
 	}
 
 	dest.Header().Set("Content-Type", "application/json")
+	dest.WriteHeader(response.Status)
+
 	re, _ := json.Marshal(out)
 	dest.Write(re)
 }

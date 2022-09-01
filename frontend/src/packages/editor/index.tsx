@@ -78,12 +78,14 @@ const EditorPage: FC = () => {
 
           <PublishContent
             onClick={() => {
-              const data = new FormData();
-              data.append("DocumentID", `${id}`);
-              console.log(id);
               fetch("/api/filesystem/publish-document", {
                 method: "POST",
-                body: data,
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                  "DocumentID": `${id}`
+                }),
               });
             }}
           />

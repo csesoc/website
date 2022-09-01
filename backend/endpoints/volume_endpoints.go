@@ -81,7 +81,9 @@ func PublishDocument(form ValidPublishDocumentRequest, df DependencyFactory) han
 		}
 	}
 
-	return handlerResponse[empty]{}
+	return handlerResponse[empty]{
+		Status: http.StatusOK,
+	}
 }
 
 const emptyFile string = "{}"
