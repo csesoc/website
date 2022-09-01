@@ -4,22 +4,37 @@ import Image from "next/image";
 import styled from "styled-components";
 
 import CSESocLogo from "../../../public/assets/logo_white.svg";
+import { device } from "../../styles/device";
 
 const FooterComponent = styled.footer`
   background-color: #A09FE3;
   padding: 2rem;
   display: flex;
+  flex-direction: column;
+
+  @media ${device.tablet} {
+    flex-direction: row;
+  }
 `;
 
 const Logo = styled.div`
-  width: 75%;
+  width: 100%;
   display: flex;
+
+  @media ${device.tablet} {
+    width: 75%;
+  }
 `;
 
 const Details = styled.div`
-  width: 25%;
-  text-align: right;
+  width: 100%;
+  text-align: left;
   color: white;
+
+  @media ${device.tablet} {
+    width: 25%;
+    text-align: right;
+  }
 `;
 
 const Footer: React.FC<{}> = () => {
