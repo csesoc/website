@@ -46,6 +46,8 @@ const FileContainer: React.FC<FileProps> = ({ filename, image, active, onClick, 
           src={image}
           active={active}
           onClick={onClick} />
+          <div>
+
         {onRename === undefined ? (
           <p>{filename}</p>
         ) : (
@@ -53,6 +55,7 @@ const FileContainer: React.FC<FileProps> = ({ filename, image, active, onClick, 
             name={filename}
             onRename={onRename} />
         )}
+          </div>
       </IconContainer>
     </div>
   );

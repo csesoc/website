@@ -1,14 +1,18 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+<<<<<<< HEAD
 import Image from 'next/image';
 import { useState, useEffect } from "react";
+=======
+import Image from "next/image";
+>>>>>>> main
 
 import styled from "styled-components";
 
 // local
-import Homepage from "./Homepage";
-import Events from './Events'
-import AboutUs from './AboutUs';
+import Homepage from "./MiniHomepage";
+import Events from "./MiniEvents";
+import AboutUs from "./MiniAboutUs";
 import HomepageCurve from "../svgs/HomepageCurve";
 import RectangleCurve from "../svgs/RectangleCurve";
 import Footer from "../components/footer/Footer";
@@ -17,7 +21,7 @@ import { device } from '../styles/device'
 
 type CurveContainerProps = {
   offset: number;
-}
+};
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -32,14 +36,12 @@ const Main = styled.main`
 
 const CurveContainer = styled.div<CurveContainerProps>`
   position: absolute;
-  top: ${props => props.offset}px;
+  top: ${(props) => props.offset}px;
   right: 0;
-  z-index: -1;  
+  z-index: -1;
 `;
 
-const Background = styled.div`
-`;
-
+const Background = styled.div``;
 
 // const Button = styled.button`
 //   background-color:#FFFFFF;
@@ -81,13 +83,10 @@ const Index: NextPage = () => {
       <Main>
         <Background>
           <CurveContainer offset={0}>
-            <HomepageCurve width={400} height={1000}/>
+            <HomepageCurve width={400} height={1000} />
           </CurveContainer>
           <CurveContainer offset={1200}>
-            <RectangleCurve
-              height={2000}
-              dontPreserveAspectRatio
-            />
+            <RectangleCurve height={2000} dontPreserveAspectRatio />
           </CurveContainer>
         </Background>
         <Homepage />
