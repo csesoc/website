@@ -22,7 +22,7 @@ const DirectoryFlex = styled.div`
 const BreadcrumbItem = customStyle(Chip)(({ theme }) => {
   const backgroundColor =
     theme.palette.mode === 'light'
-      ? theme.palette.grey[100]
+      ? theme.palette.grey[200]
       : theme.palette.grey[800];
   return {
     backgroundColor,
@@ -50,7 +50,7 @@ export default function Directory() {
 
   return (
     <DirectoryFlex>
-      <button onClick={ () => handleClick()}>go back</button>
+      <button onClick={() => handleClick()}>go back</button>
       <Breadcrumbs aria-label="breadcrumb">
         {
           getFolderState().path.split("/").map((folder, i) => {

@@ -32,7 +32,7 @@ const IconContainer = styled.div<styledProps>`
   margin-bottom: 10px;
   cursor: pointer;
 
-  border: ${props => props.active ? '3px solid red': '3px solid var(--background-color)'}
+  border: ${props => props.active ? '3px solid red' : '3px solid var(--background-color)'}
 `;
 
 
@@ -44,8 +44,9 @@ function FileContainer({ name, id, selectedFile, setSelectedFile }: Props) {
 
   return (
     <div style={{
-      display:"flex",
-      flexDirection:"column",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
       padding: "35px",
     }}>
       <IconContainer
