@@ -1,2 +1,4 @@
-def lookup(config, structure):
+import psycopg2
+
+def lookup(config, structure, print_result=False):
     pass

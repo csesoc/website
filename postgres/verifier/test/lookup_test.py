@@ -30,6 +30,15 @@ def database():
 
     return conn
 
+def clean_database(conn: psycopg2.connection):
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
+
+        for (table_name,) in cursor.fetchall():
+            cursor.execute(f"TRUNCATE {table_name} CASCADE")
+
+        conn.commit()
+
 def test_table_nonexistent():
     config = open("./config/lookup_config.yml", "r")
     structure = open("./structure/table_nonexistent.yml", "r")
@@ -39,17 +48,14 @@ def test_table_nonexistent():
     assert results[0]["name"] == "foo"
     assert results[0]["columns"] == None
 
-def test_column_nonexistent(database):
-    cursor = database.cursor()
-
-    cursor.execute("CREATE TABLE foo (id SERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL);")
-    database.commit()
-
-    cursor.close()
+def test_column_nonexistent(database: psycopg2.connection):
+    with database.cursor() as cursor:
+        cursor.execute("CREATE TABLE foo (id SERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL);")
+        database.commit()
 
     config = open("./config/lookup_config.yml", "r")
     structure = open("./structure/column_nonexistent.yml", "r")
-    results = lookup(parse_config(config), yaml.parse(structure))
+    results = lookup(database, parse_config(config), yaml.parse(structure))
 
     assert len(results) == 1
     assert results[0]["name"] == "foo"
@@ -60,12 +66,10 @@ def test_column_nonexistent(database):
     assert columns[2]["name"] == "burger"
     assert columns[2]["correct"] == None
 
-    cursor = database.cursor()
+    clean_database(database)
 
-    cursor.execute("DROP TABLE foo;")
-    database.commit()
+def test_success(database: psycopg2.connection):
+    with database.cursor() as cursor:
+        pass
 
-    database.close()
-
-def test_success(database):
-    pass
+    clean_database(database)
