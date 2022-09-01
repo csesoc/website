@@ -44,7 +44,6 @@ func (ctx *TestingContext) Query(query string, sqlArgs []interface{}, resultOutp
 func (ctx *TestingContext) QueryRow(query string, sqlArgs []interface{}) (pgx.Rows, error) {
 	ctx.verifyEnvironment()
 	return ctx.activeTransaction.Query(context.Background(), query, sqlArgs...)
-
 }
 
 func (ctx *TestingContext) Exec(query string, sqlArgs []interface{}) error {
@@ -62,7 +61,6 @@ func (context *TestingContext) Close() {
 // RunTest sets up a new testing environment on the testing context (creates a transaction),
 // it then performs the given test method and finally rolls back any updates it had made
 func (ctx *TestingContext) RunTest(methodToTest func()) {
-
 	if testingTransaction, err := ctx.conn.Begin(context.Background()); err == nil {
 
 		ctx.startTestMode(testingTransaction)

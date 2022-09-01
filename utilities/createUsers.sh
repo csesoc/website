@@ -9,6 +9,8 @@ echo "accepted formats are: gmail/ ad.unsw.edu.au / student.unsw.edu.au"
 read email
 echo "please input your password: "
 read password
+echo 'please input the frontendid: '
+read frontendid
 
 # not sure if this is vulnerable to command injection?
-docker exec pg_container psql -U postgres -d test_db -c "select create_normal_user('$email', '$name', '$password');"
+docker exec pg_container psql -U postgres -d test_db -c "select create_normal_user('$email', '$name', '$password', '$frontendid');"

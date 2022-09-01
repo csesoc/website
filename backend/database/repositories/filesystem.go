@@ -28,6 +28,7 @@ func (rep filesystemRepository) query(query string, input ...interface{}) (Files
 	if err != nil {
 		return FilesystemEntry{}, err
 	}
+
 	// finally scan in the rows
 	for rows.Next() {
 		var x int
