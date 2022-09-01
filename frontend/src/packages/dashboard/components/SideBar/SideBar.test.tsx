@@ -2,12 +2,11 @@ import { render } from "src/cse-testing-lib"
 import { queryByDataAnchor } from "src/cse-testing-lib/custom-queries";
 import SideBar from "./SideBar"
 import { BrowserRouter as Router} from "react-router-dom";
-import { useState } from 'react'
-
+import React from 'react'
 
 describe("Side bar tests", () => {
   it("Side bar is rendered with proper buttons", () => {
-  const [isOpen, setOpen] = useState(true)
+    const [isOpen, setOpen] = React.useState(true)
 
     const mockSetModalState = jest.fn();
     const mockSelectedFileID = 5;
