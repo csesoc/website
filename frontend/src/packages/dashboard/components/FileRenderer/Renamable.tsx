@@ -35,7 +35,7 @@ export default function Renamable({ name, id }: Props) {
           style={
             {
               textAlign: "center",
-              width: "9vw"
+              width: "6vw"
             }
           }
           type="text"
