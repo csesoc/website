@@ -7,7 +7,7 @@ import "cms.csesoc.unsw.edu.au/pkg/cmsjson"
 type Noop struct{}
 
 // TransformAgainst is the noop implementation of the operationModel interface
-func (noop Noop) TransformAgainst(operation OperationModel) (OperationModel, OperationModel) {
+func (noop Noop) TransformAgainst(operation OperationModel, applicationType EditType) (OperationModel, OperationModel) {
 	return noop, operation
 }
 

@@ -10,7 +10,7 @@ type StringOperation struct {
 }
 
 // TransformAgainst is the ArrayOperation implementation of the operationModel interface
-func (stringOp StringOperation) TransformAgainst(operation OperationModel) (OperationModel, OperationModel) {
+func (stringOp StringOperation) TransformAgainst(operation OperationModel, applicationType EditType) (OperationModel, OperationModel) {
 	return stringOp, operation
 }
 

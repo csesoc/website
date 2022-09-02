@@ -13,7 +13,7 @@ func transformPipeline(x data.Operation, y data.Operation) (data.Operation, data
 	x, y = normaliseOperation(x), normaliseOperation(y)
 
 	if needsAppSpecific {
-		x.Operation.TransformAgainst(y.Operation)
+		x.Operation.TransformAgainst(y.Operation, x.OperationType)
 	}
 
 	return x, y

@@ -9,7 +9,7 @@ type IntegerOperation struct {
 }
 
 // TransformAgainst is the IntegerOperation implementation of the operationModel interface
-func (intOp IntegerOperation) TransformAgainst(operation OperationModel) (OperationModel, OperationModel) {
+func (intOp IntegerOperation) TransformAgainst(operation OperationModel, applicationType EditType) (OperationModel, OperationModel) {
 	return intOp, operation
 }
 
