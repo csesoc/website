@@ -15,6 +15,6 @@ func (stringOp StringOperation) TransformAgainst(operation OperationModel) (Oper
 }
 
 // Apply is the ArrayOperation implementation of the OperationModel interface, it does nothing
-func (arrOp StringOperation) Apply(ast cmsjson.AstNode) cmsjson.AstNode {
-	return ast
+func (arrOp StringOperation) Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) cmsjson.AstNode {
+	return parentNode
 }

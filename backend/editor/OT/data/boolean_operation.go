@@ -14,6 +14,6 @@ func (boolOp BooleanOperation) TransformAgainst(operation OperationModel) (Opera
 }
 
 // Apply is the BooleanOperation implementation of the OperationModel interface, it does nothing
-func (boolOp BooleanOperation) Apply(ast cmsjson.AstNode) cmsjson.AstNode {
-	return ast
+func (boolOp BooleanOperation) Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) cmsjson.AstNode {
+	return parentNode
 }

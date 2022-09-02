@@ -14,6 +14,6 @@ func (intOp IntegerOperation) TransformAgainst(operation OperationModel) (Operat
 }
 
 // Apply is the IntegerOperation implementation of the OperationModel interface, it does nothing
-func (intOp IntegerOperation) Apply(ast cmsjson.AstNode) cmsjson.AstNode {
-	return ast
+func (intOp IntegerOperation) Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) cmsjson.AstNode {
+	return parentNode
 }
