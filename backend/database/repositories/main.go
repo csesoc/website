@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"cms.csesoc.unsw.edu.au/database/contexts"
+	"github.com/google/uuid"
 )
 
 // Start up a database connection with a provided context
@@ -18,7 +19,7 @@ const (
 )
 
 // The ID for root, set this as the ID in a specified request
-const FILESYSTEM_ROOT_ID = 0
+var FILESYSTEM_ROOT_ID uuid.UUID = uuid.Nil
 
 // small factory for setting up and returning a repository
 func GetRepository(repo int) interface{} {

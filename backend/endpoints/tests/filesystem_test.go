@@ -14,6 +14,7 @@ import (
 	"cms.csesoc.unsw.edu.au/endpoints/models"
 	"cms.csesoc.unsw.edu.au/internal/logger"
 	"github.com/golang/mock/gomock"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,27 +24,28 @@ func TestValidEntityInfo(t *testing.T) {
 	defer controller.Finish()
 
 	// ==== test setup =====
+	entityID := uuid.New()
 	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
-	mockFileRepo.EXPECT().GetEntryWithID(1).Return(repositories.FilesystemEntry{
-		EntityID:     1,
+	mockFileRepo.EXPECT().GetEntryWithID(entityID).Return(repositories.FilesystemEntry{
+		EntityID:     entityID,
 		LogicalName:  "random name",
 		IsDocument:   false,
-		ParentFileID: 0,
-		ChildrenIDs:  []int{},
+		ParentFileID: repositories.FILESYSTEM_ROOT_ID,
+		ChildrenIDs:  []uuid.UUID{},
 	}, nil).Times(1)
 
 	mockDepFactory := createMockDependencyFactory(controller, mockFileRepo, true)
 
 	// ==== test execution =====
-	form := models.ValidInfoRequest{EntityID: 1}
+	form := models.ValidInfoRequest{EntityID: entityID}
 	response := endpoints.GetEntityInfo(form, mockDepFactory)
 
 	assert.Equal(response.Status, http.StatusOK)
 	assert.Equal(response.Response, models.EntityInfoResponse{
-		EntityID:   1,
+		EntityID:   entityID,
 		EntityName: "random name",
 		IsDocument: false,
-		Parent:     0,
+		Parent:     repositories.FILESYSTEM_ROOT_ID,
 		Children:   []models.EntityInfoResponse{},
 	})
 }
@@ -54,24 +56,26 @@ func TestValidCreateNewEntity(t *testing.T) {
 	defer controller.Finish()
 
 	// ==== test setup =====
+	entityID := uuid.New()
+	parentFileID := uuid.New()
 	entityToCreate := repositories.FilesystemEntry{
 		LogicalName:  "random name",
-		ParentFileID: 1,
+		ParentFileID: parentFileID,
 		IsDocument:   false,
 		OwnerUserId:  1,
 	}
 
 	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
 	mockFileRepo.EXPECT().CreateEntry(entityToCreate).Return(repositories.FilesystemEntry{
-		EntityID:     2,
+		EntityID:     entityID,
 		LogicalName:  "random name",
 		IsDocument:   false,
-		ChildrenIDs:  []int{},
-		ParentFileID: 1,
+		ChildrenIDs:  []uuid.UUID{},
+		ParentFileID: parentFileID,
 	}, nil).Times(1)
 
 	mockDockerFileSystemRepo := repMocks.NewMockIUnpublishedVolumeRepository(controller)
-	mockDockerFileSystemRepo.EXPECT().AddToVolume("2").Return(nil).Times(1)
+	mockDockerFileSystemRepo.EXPECT().AddToVolume(entityID.String()).Return(nil).Times(1)
 	dockerRepoType := reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil))
 
 	mockDepFactory := createMockDependencyFactory(controller, mockFileRepo, true)
@@ -80,7 +84,7 @@ func TestValidCreateNewEntity(t *testing.T) {
 
 	form := models.ValidEntityCreationRequest{
 		LogicalName: "random name",
-		Parent:      1,
+		Parent:      parentFileID,
 		IsDocument:  false,
 		OwnerGroup:  1,
 	}
@@ -89,7 +93,7 @@ func TestValidCreateNewEntity(t *testing.T) {
 	response := endpoints.CreateNewEntity(form, mockDepFactory)
 	assert.Equal(response.Status, http.StatusOK)
 	assert.Equal(response.Response, models.NewEntityResponse{
-		NewID: 2,
+		NewID: entityID,
 	})
 }
 
@@ -99,13 +103,14 @@ func TestValidDeleteFilesystemEntity(t *testing.T) {
 	defer controller.Finish()
 
 	// ==== test setup =====
+	entityID := uuid.New()
 	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
-	mockFileRepo.EXPECT().DeleteEntryWithID(1).Return(nil).Times(1)
+	mockFileRepo.EXPECT().DeleteEntryWithID(entityID).Return(nil).Times(1)
 
 	mockDepFactory := createMockDependencyFactory(controller, mockFileRepo, true)
 
 	form := models.ValidInfoRequest{
-		EntityID: 1,
+		EntityID: entityID,
 	}
 
 	// ==== test execution =====
@@ -119,25 +124,27 @@ func TestValidGetChildren(t *testing.T) {
 	defer controller.Finish()
 
 	// ==== test setup =====
+	entityID := uuid.New()
+	childID := uuid.New()
 	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
-	mockFileRepo.EXPECT().GetEntryWithID(1).Return(repositories.FilesystemEntry{
-		EntityID:    1,
+	mockFileRepo.EXPECT().GetEntryWithID(entityID).Return(repositories.FilesystemEntry{
+		EntityID:    entityID,
 		LogicalName: "random name",
 		IsDocument:  false,
-		ChildrenIDs: []int{2},
+		ChildrenIDs: []uuid.UUID{childID},
 	}, nil).Times(1)
 
 	mockDepFactory := createMockDependencyFactory(controller, mockFileRepo, true)
 
 	form := models.ValidInfoRequest{
-		EntityID: 1,
+		EntityID: entityID,
 	}
 
 	// ==== test execution =====
 	response := endpoints.GetChildren(form, mockDepFactory)
 	assert.Equal(response.Status, http.StatusOK)
 	assert.Equal(response.Response, models.ChildrenRequestResponse{
-		Children: []int{2},
+		Children: []uuid.UUID{childID},
 	})
 }
 
@@ -147,28 +154,30 @@ func TestValidUploadImage(t *testing.T) {
 	defer controller.Finish()
 
 	// ==== test setup =====
+	entityID := uuid.New()
+	parentID := uuid.New()
 	entityToCreate := repositories.FilesystemEntry{
 		LogicalName:  "a.png",
-		ParentFileID: 1,
+		ParentFileID: parentID,
 		IsDocument:   false,
 		OwnerUserId:  1,
 	}
 
 	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
 	mockFileRepo.EXPECT().CreateEntry(entityToCreate).Return(repositories.FilesystemEntry{
-		EntityID:     2,
+		EntityID:     entityID,
 		LogicalName:  "a.png",
 		IsDocument:   false,
-		ChildrenIDs:  []int{},
-		ParentFileID: 1,
+		ChildrenIDs:  []uuid.UUID{},
+		ParentFileID: parentID,
 	}, nil).Times(1)
 
 	tempFile, _ := ioutil.TempFile(os.TempDir(), "expected")
 	defer os.Remove(tempFile.Name())
 
 	mockDockerFileSystemRepo := repMocks.NewMockIUnpublishedVolumeRepository(controller)
-	mockDockerFileSystemRepo.EXPECT().AddToVolume("2").Return(nil).Times(1)
-	mockDockerFileSystemRepo.EXPECT().GetFromVolume("2").Return(tempFile, nil).Times(1)
+	mockDockerFileSystemRepo.EXPECT().AddToVolume(entityID.String()).Return(nil).Times(1)
+	mockDockerFileSystemRepo.EXPECT().GetFromVolume(entityID.String()).Return(tempFile, nil).Times(1)
 
 	dockerRepoType := reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil))
 
@@ -187,7 +196,7 @@ func TestValidUploadImage(t *testing.T) {
 	defer os.Remove(garbageFile.Name())
 
 	form := models.ValidImageUploadRequest{
-		Parent:      1,
+		Parent:      parentID,
 		LogicalName: "a.png",
 		OwnerGroup:  1,
 		Image:       garbageFile,
@@ -197,7 +206,7 @@ func TestValidUploadImage(t *testing.T) {
 	response := endpoints.UploadImage(form, mockDepFactory)
 	assert.Equal(response.Status, http.StatusOK)
 	assert.Equal(response.Response, models.NewEntityResponse{
-		NewID: 2,
+		NewID: entityID,
 	})
 
 	// Assert that the file was written to

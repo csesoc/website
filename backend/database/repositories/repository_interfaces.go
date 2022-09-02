@@ -7,11 +7,12 @@ import (
 	"time"
 
 	"cms.csesoc.unsw.edu.au/database/contexts"
+	"github.com/google/uuid"
 )
 
 // filesystem model (model stored within database)
 type FilesystemEntry struct {
-	EntityID    int
+	EntityID    uuid.UUID
 	LogicalName string
 
 	IsDocument  bool
@@ -19,23 +20,23 @@ type FilesystemEntry struct {
 	CreatedAt   time.Time
 
 	OwnerUserId  int
-	ParentFileID int
-	ChildrenIDs  []int
+	ParentFileID uuid.UUID
+	ChildrenIDs  []uuid.UUID
 }
 
 type (
 	// Repository interface that all valid filesystem repositories
 	// mocked/real should implement
 	IFilesystemRepository interface {
-		GetEntryWithID(ID int) (FilesystemEntry, error)
+		GetEntryWithID(ID uuid.UUID) (FilesystemEntry, error)
 		GetRoot() (FilesystemEntry, error)
-		GetEntryWithParentID(ID int) (FilesystemEntry, error)
-		GetIDWithPath(path string) (int, error)
+		GetEntryWithParentID(ID uuid.UUID) (FilesystemEntry, error)
+		GetIDWithPath(path string) (uuid.UUID, error)
 
 		CreateEntry(file FilesystemEntry) (FilesystemEntry, error)
-		DeleteEntryWithID(ID int) error
+		DeleteEntryWithID(ID uuid.UUID) error
 
-		RenameEntity(ID int, name string) error
+		RenameEntity(ID uuid.UUID, name string) error
 
 		GetContext() contexts.DatabaseContext
 	}

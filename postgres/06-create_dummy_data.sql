@@ -11,18 +11,17 @@ DECLARE
   randomGroup groups.UID%type;
   rootID      filesystem.EntityID%type;
 BEGIN
-  /* Root root :) */
   SELECT groups.UID INTO randomGroup FROM groups WHERE Name = 'admin'::VARCHAR;
-  INSERT INTO filesystem (LogicalName, IsDocument, IsPublished, OwnedBy, Parent)
-    VALUES ('rootroot', true, true, randomGroup, NULL);
   /* Insert the root directory */
-  INSERT INTO filesystem (LogicalName, OwnedBy)
-    VALUES ('root', randomGroup);
+  INSERT INTO filesystem (EntityID, LogicalName, OwnedBy)
+    VALUES (uuid_nil(), 'root', randomGroup);
   SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE LogicalName = 'root'::VARCHAR;
+  /* Set parent to uuid_nil() because postgres driver has issue supporting NULL values */
+  UPDATE filesystem SET Parent = uuid_nil() WHERE EntityID = rootID;
 
   /* insert "has parent" constraint*/
   EXECUTE 'ALTER TABLE filesystem 
-    ADD CONSTRAINT has_parent CHECK (Parent != 1 OR EntityID = '||rootID||')';
+    ADD CONSTRAINT has_parent CHECK (Parent != NULL)';
 END $$;
 
 
@@ -38,16 +37,17 @@ DECLARE
   wasPopping    filesystem.EntityID%type;
   oldEntity     filesystem.EntityID%type;
 BEGIN
-  SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE Parent = 0;
+  SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE EntityID = uuid_nil();
   
-  newEntity := (SELECT new_entity(2, 'downloads'::VARCHAR, 1, false));
-  oldEntity := (SELECT new_entity(2, 'documents'::VARCHAR, 1, false));
+  newEntity := (SELECT new_entity(rootID, 'downloads'::VARCHAR, 1, false));
+  oldEntity := (SELECT new_entity(rootID, 'documents'::VARCHAR, 1, false));
 
-  wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document'::VARCHAR, 1, true));
-  wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document_round_2'::VARCHAR, 1, true));
-  PERFORM delete_entity(wasPopping::INT);
-  wasPopping := (SELECT new_entity(oldEntity::INT, 'cool_document_round_2'::VARCHAR, 1, true));
+  wasPopping := (SELECT new_entity(oldEntity, 'cool_document'::VARCHAR, 1, true));
+  wasPopping := (SELECT new_entity(oldEntity, 'cool_document_round_2'::VARCHAR, 1, true));
+  PERFORM delete_entity(wasPopping);
+  wasPopping := (SELECT new_entity(oldEntity, 'cool_document_round_2'::VARCHAR, 1, true));
 END $$;
+
 
 /* inserting two accounts into db */
 DO LANGUAGE plpgsql $$

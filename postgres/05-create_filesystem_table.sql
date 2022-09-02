@@ -1,11 +1,12 @@
 SET timezone = 'Australia/Sydney';
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 /**
   The filesystem table models all file heirachies in our system
 **/
 DROP TABLE IF EXISTS filesystem;
 CREATE TABLE filesystem (
-  EntityID      SERIAL PRIMARY KEY,
+  EntityID      uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   LogicalName   VARCHAR(50) NOT NULL,
   
   IsDocument    BOOLEAN DEFAULT false,
@@ -14,7 +15,7 @@ CREATE TABLE filesystem (
 
   OwnedBy       INT,
   /* Pain */
-  Parent        INT REFERENCES filesystem(EntityID) DEFAULT 1,
+  Parent        uuid REFERENCES filesystem(EntityID) DEFAULT NULL,
 
   /* FK Constraint */
   CONSTRAINT fk_owner FOREIGN KEY (OwnedBy) 
@@ -26,7 +27,7 @@ CREATE TABLE filesystem (
 
 /* Utility procedure :) */
 DROP FUNCTION IF EXISTS new_entity;
-CREATE OR REPLACE FUNCTION new_entity (parentP INT, logicalNameP VARCHAR, ownedByP INT, isDocumentP BOOLEAN DEFAULT false) RETURNS INT
+CREATE OR REPLACE FUNCTION new_entity (parentP uuid, logicalNameP VARCHAR, ownedByP INT, isDocumentP BOOLEAN DEFAULT false) RETURNS uuid
 LANGUAGE plpgsql
 AS $$
 DECLARE
@@ -49,7 +50,7 @@ END $$;
 
 /* Another utility procedure */
 DROP FUNCTION IF EXISTS delete_entity;
-CREATE OR REPLACE FUNCTION delete_entity (entityIDP INT) RETURNS void
+CREATE OR REPLACE FUNCTION delete_entity (entityIDP uuid) RETURNS void
 LANGUAGE plpgsql
 AS $$
 DECLARE
