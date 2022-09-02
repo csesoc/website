@@ -11,6 +11,7 @@ import (
 	contexts "cms.csesoc.unsw.edu.au/database/contexts"
 	repositories "cms.csesoc.unsw.edu.au/database/repositories"
 	gomock "github.com/golang/mock/gomock"
+	uuid "github.com/google/uuid"
 )
 
 // MockIFilesystemRepository is a mock of IFilesystemRepository interface.
@@ -52,7 +53,7 @@ func (mr *MockIFilesystemRepositoryMockRecorder) CreateEntry(file interface{}) *
 }
 
 // DeleteEntryWithID mocks base method.
-func (m *MockIFilesystemRepository) DeleteEntryWithID(ID string) error {
+func (m *MockIFilesystemRepository) DeleteEntryWithID(ID uuid.UUID) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteEntryWithID", ID)
 	ret0, _ := ret[0].(error)
@@ -80,7 +81,7 @@ func (mr *MockIFilesystemRepositoryMockRecorder) GetContext() *gomock.Call {
 }
 
 // GetEntryWithID mocks base method.
-func (m *MockIFilesystemRepository) GetEntryWithID(ID string) (repositories.FilesystemEntry, error) {
+func (m *MockIFilesystemRepository) GetEntryWithID(ID uuid.UUID) (repositories.FilesystemEntry, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetEntryWithID", ID)
 	ret0, _ := ret[0].(repositories.FilesystemEntry)
@@ -95,7 +96,7 @@ func (mr *MockIFilesystemRepositoryMockRecorder) GetEntryWithID(ID interface{}) 
 }
 
 // GetEntryWithParentID mocks base method.
-func (m *MockIFilesystemRepository) GetEntryWithParentID(ID string) (repositories.FilesystemEntry, error) {
+func (m *MockIFilesystemRepository) GetEntryWithParentID(ID uuid.UUID) (repositories.FilesystemEntry, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetEntryWithParentID", ID)
 	ret0, _ := ret[0].(repositories.FilesystemEntry)
@@ -110,10 +111,10 @@ func (mr *MockIFilesystemRepositoryMockRecorder) GetEntryWithParentID(ID interfa
 }
 
 // GetIDWithPath mocks base method.
-func (m *MockIFilesystemRepository) GetIDWithPath(path string) (string, error) {
+func (m *MockIFilesystemRepository) GetIDWithPath(path string) (uuid.UUID, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetIDWithPath", path)
-	ret0, _ := ret[0].(string)
+	ret0, _ := ret[0].(uuid.UUID)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -140,7 +141,7 @@ func (mr *MockIFilesystemRepositoryMockRecorder) GetRoot() *gomock.Call {
 }
 
 // RenameEntity mocks base method.
-func (m *MockIFilesystemRepository) RenameEntity(ID string, name string) error {
+func (m *MockIFilesystemRepository) RenameEntity(ID uuid.UUID, name string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RenameEntity", ID, name)
 	ret0, _ := ret[0].(error)

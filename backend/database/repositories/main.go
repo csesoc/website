@@ -1,6 +1,9 @@
 package repositories
 
-import "cms.csesoc.unsw.edu.au/database/contexts"
+import (
+	"cms.csesoc.unsw.edu.au/database/contexts"
+	"github.com/google/uuid"
+)
 
 // Start up a database connection with a provided context
 var context contexts.DatabaseContext = nil
@@ -15,7 +18,7 @@ const (
 )
 
 // The ID for root, set this as the ID in a specified request
-const FILESYSTEM_ROOT_ID string = "00000000-0000-0000-0000-000000000000"
+var FILESYSTEM_ROOT_ID uuid.UUID = uuid.Nil
 
 // small factory for setting up and returning a repository
 func GetRepository(repo int) interface{} {

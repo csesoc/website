@@ -9,6 +9,7 @@ import (
 	"cms.csesoc.unsw.edu.au/database/contexts"
 	"cms.csesoc.unsw.edu.au/database/repositories"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	"github.com/stretchr/testify/assert"
 )
@@ -64,12 +65,12 @@ func TestRootInsert(t *testing.T) {
 		}
 
 		if rows, err := testContext.QueryRow("SELECT EntityID FROM filesystem WHERE Parent = $1", []interface{}{root.EntityID}); assert.Nil(err) {
-			childrenArr := scanArray[string](rows)
+			childrenArr := scanArray[uuid.UUID](rows)
 			assert.Contains(childrenArr, newDir.EntityID)
 		}
 
 		if rows, err := testContext.QueryRow("SELECT EntityID FROM filesystem WHERE Parent = $1", []interface{}{newDir.EntityID}); assert.Nil(err) {
-			childrenArr := scanArray[string](rows)
+			childrenArr := scanArray[uuid.UUID](rows)
 			assert.Contains(childrenArr, newDoc.EntityID)
 		}
 	})
@@ -157,7 +158,7 @@ func TestEntityDeletion(t *testing.T) {
 func TestEntityRename(t *testing.T) {
 	assert := assert.New(t)
 
-	getEntity := func(name string, permissions int, parent string, isDocument bool) repositories.FilesystemEntry {
+	getEntity := func(name string, permissions int, parent uuid.UUID, isDocument bool) repositories.FilesystemEntry {
 		return repositories.FilesystemEntry{
 			LogicalName:  name,
 			OwnerUserId:  permissions,
@@ -185,7 +186,7 @@ func TestEntityRename(t *testing.T) {
 
 func TestEntityChildren(t *testing.T) {
 	assert := assert.New(t)
-	getEntity := func(name string, permissions int, isDocument bool, parent string) repositories.FilesystemEntry {
+	getEntity := func(name string, permissions int, isDocument bool, parent uuid.UUID) repositories.FilesystemEntry {
 		return repositories.FilesystemEntry{
 			LogicalName:  name,
 			OwnerUserId:  permissions,
@@ -231,7 +232,7 @@ func TestEntityChildren(t *testing.T) {
 
 func TestGetIDWithPath(t *testing.T) {
 	assert := assert.New(t)
-	getEntity := func(name string, permissions int, isDocument bool, parent string) repositories.FilesystemEntry {
+	getEntity := func(name string, permissions int, isDocument bool, parent uuid.UUID) repositories.FilesystemEntry {
 		return repositories.FilesystemEntry{
 			LogicalName:  name,
 			OwnerUserId:  permissions,

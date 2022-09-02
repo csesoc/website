@@ -1,17 +1,20 @@
 package models
 
-import "cms.csesoc.unsw.edu.au/database/repositories"
+import (
+	"cms.csesoc.unsw.edu.au/database/repositories"
+	"github.com/google/uuid"
+)
 
 // Request models outline the general model that an incoming request to a handler must satisfy
 type (
 	// ValidInfoRequest is the model accepted by handlers that return information regarding an entity
 	ValidInfoRequest struct {
-		EntityID string `schema:"EntityID"`
+		EntityID uuid.UUID `schema:"EntityID"`
 	}
 
 	// ValidEntityCreationRequest is the model accepted by handlers that will ever create a FS entity
 	ValidEntityCreationRequest struct {
-		Parent      string
+		Parent      uuid.UUID
 		LogicalName string `schema:"LogicalName,required"`
 		OwnerGroup  int    `schema:"OwnerGroup,required"`
 		IsDocument  bool   `schema:"IsDocument,required"`
@@ -24,8 +27,8 @@ type (
 
 	// ValidRenameRequest is the request model accepted by handlers that rename entities
 	ValidRenameRequest struct {
-		EntityID string `schema:"EntityID,required"`
-		NewName  string `schema:"NewName,required"`
+		EntityID uuid.UUID `schema:"EntityID,required"`
+		NewName  string    `schema:"NewName,required"`
 	}
 )
 
@@ -33,20 +36,20 @@ type (
 type (
 	// NewEntityResponse is the response model for any handler that returns a new entity
 	NewEntityResponse struct {
-		NewID string
+		NewID uuid.UUID
 	}
 
 	// ChildrenRequestResponse is the response model for any handler that will return the children of an entity
 	ChildrenRequestResponse struct {
-		Children []string
+		Children []uuid.UUID
 	}
 
 	// EntityInfoResponse is the response model of any handler that returns information regarding an entity
 	EntityInfoResponse struct {
-		EntityID   string
+		EntityID   uuid.UUID
 		EntityName string
 		IsDocument bool
-		Parent     string
+		Parent     uuid.UUID
 		Children   []EntityInfoResponse
 	}
 )

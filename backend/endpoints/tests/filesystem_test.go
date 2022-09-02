@@ -24,14 +24,14 @@ func TestValidEntityInfo(t *testing.T) {
 	defer controller.Finish()
 
 	// ==== test setup =====
-	entityID := uuid.New().String()
+	entityID := uuid.New()
 	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
 	mockFileRepo.EXPECT().GetEntryWithID(entityID).Return(repositories.FilesystemEntry{
 		EntityID:     entityID,
 		LogicalName:  "random name",
 		IsDocument:   false,
 		ParentFileID: repositories.FILESYSTEM_ROOT_ID,
-		ChildrenIDs:  []string{},
+		ChildrenIDs:  []uuid.UUID{},
 	}, nil).Times(1)
 
 	mockDepFactory := createMockDependencyFactory(controller, mockFileRepo, true)
@@ -56,8 +56,8 @@ func TestValidCreateNewEntity(t *testing.T) {
 	defer controller.Finish()
 
 	// ==== test setup =====
-	entityID := uuid.New().String()
-	parentFileID := uuid.New().String()
+	entityID := uuid.New()
+	parentFileID := uuid.New()
 	entityToCreate := repositories.FilesystemEntry{
 		LogicalName:  "random name",
 		ParentFileID: parentFileID,
@@ -70,12 +70,12 @@ func TestValidCreateNewEntity(t *testing.T) {
 		EntityID:     entityID,
 		LogicalName:  "random name",
 		IsDocument:   false,
-		ChildrenIDs:  []string{},
+		ChildrenIDs:  []uuid.UUID{},
 		ParentFileID: parentFileID,
 	}, nil).Times(1)
 
 	mockDockerFileSystemRepo := repMocks.NewMockIUnpublishedVolumeRepository(controller)
-	mockDockerFileSystemRepo.EXPECT().AddToVolume(entityID).Return(nil).Times(1)
+	mockDockerFileSystemRepo.EXPECT().AddToVolume(entityID.String()).Return(nil).Times(1)
 	dockerRepoType := reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil))
 
 	mockDepFactory := createMockDependencyFactory(controller, mockFileRepo, true)
@@ -103,7 +103,7 @@ func TestValidDeleteFilesystemEntity(t *testing.T) {
 	defer controller.Finish()
 
 	// ==== test setup =====
-	entityID := uuid.New().String()
+	entityID := uuid.New()
 	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
 	mockFileRepo.EXPECT().DeleteEntryWithID(entityID).Return(nil).Times(1)
 
@@ -124,14 +124,14 @@ func TestValidGetChildren(t *testing.T) {
 	defer controller.Finish()
 
 	// ==== test setup =====
-	entityID := uuid.New().String()
-	childID := uuid.New().String()
+	entityID := uuid.New()
+	childID := uuid.New()
 	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
 	mockFileRepo.EXPECT().GetEntryWithID(entityID).Return(repositories.FilesystemEntry{
 		EntityID:    entityID,
 		LogicalName: "random name",
 		IsDocument:  false,
-		ChildrenIDs: []string{childID},
+		ChildrenIDs: []uuid.UUID{childID},
 	}, nil).Times(1)
 
 	mockDepFactory := createMockDependencyFactory(controller, mockFileRepo, true)
@@ -144,7 +144,7 @@ func TestValidGetChildren(t *testing.T) {
 	response := endpoints.GetChildren(form, mockDepFactory)
 	assert.Equal(response.Status, http.StatusOK)
 	assert.Equal(response.Response, models.ChildrenRequestResponse{
-		Children: []string{childID},
+		Children: []uuid.UUID{childID},
 	})
 }
 
@@ -154,8 +154,8 @@ func TestValidUploadImage(t *testing.T) {
 	defer controller.Finish()
 
 	// ==== test setup =====
-	entityID := uuid.New().String()
-	parentID := uuid.New().String()
+	entityID := uuid.New()
+	parentID := uuid.New()
 	entityToCreate := repositories.FilesystemEntry{
 		LogicalName:  "a.png",
 		ParentFileID: parentID,
@@ -168,7 +168,7 @@ func TestValidUploadImage(t *testing.T) {
 		EntityID:     entityID,
 		LogicalName:  "a.png",
 		IsDocument:   false,
-		ChildrenIDs:  []string{},
+		ChildrenIDs:  []uuid.UUID{},
 		ParentFileID: parentID,
 	}, nil).Times(1)
 
@@ -176,8 +176,8 @@ func TestValidUploadImage(t *testing.T) {
 	defer os.Remove(tempFile.Name())
 
 	mockDockerFileSystemRepo := repMocks.NewMockIUnpublishedVolumeRepository(controller)
-	mockDockerFileSystemRepo.EXPECT().AddToVolume(entityID).Return(nil).Times(1)
-	mockDockerFileSystemRepo.EXPECT().GetFromVolume(entityID).Return(tempFile, nil).Times(1)
+	mockDockerFileSystemRepo.EXPECT().AddToVolume(entityID.String()).Return(nil).Times(1)
+	mockDockerFileSystemRepo.EXPECT().GetFromVolume(entityID.String()).Return(tempFile, nil).Times(1)
 
 	dockerRepoType := reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil))
 

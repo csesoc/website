@@ -7,11 +7,12 @@ import (
 	"log"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
 // This is the main loop that the editor client will run
-func EditorClientLoop(requestedDocument string, fs repositories.IUnpublishedVolumeRepository, ws *websocket.Conn) error {
+func EditorClientLoop(requestedDocument uuid.UUID, fs repositories.IUnpublishedVolumeRepository, ws *websocket.Conn) error {
 	manager := getGlobalManagerInstance()
 	err := manager.startDocumentServer(requestedDocument)
 	if err != nil {
@@ -20,7 +21,7 @@ func EditorClientLoop(requestedDocument string, fs repositories.IUnpublishedVolu
 	}
 
 	defer manager.closeDocumentServer(requestedDocument)
-	file, err := fs.GetFromVolume(requestedDocument)
+	file, err := fs.GetFromVolume(requestedDocument.String())
 	if err != nil {
 		terminateWs(ws, "error")
 		return errors.New("unable to open request document")
