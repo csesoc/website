@@ -12,7 +12,7 @@ type ArrayOperation struct {
 }
 
 // TransformAgainst is the ArrayOperation implementation of the operationModel interface
-func (arrOp ArrayOperation) TransformAgainst(operation OperationModel) (OperationModel, OperationModel) {
+func (arrOp ArrayOperation) TransformAgainst(operation OperationModel, applicationType EditType) (OperationModel, OperationModel) {
 	return arrOp, operation
 }
 

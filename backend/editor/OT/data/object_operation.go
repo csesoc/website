@@ -11,7 +11,7 @@ type ObjectOperation struct {
 }
 
 // TransformAgainst is the ArrayOperation implementation of the operationModel interface
-func (objOp ObjectOperation) TransformAgainst(operation OperationModel) (OperationModel, OperationModel) {
+func (objOp ObjectOperation) TransformAgainst(operation OperationModel, applicationType EditType) (OperationModel, OperationModel) {
 	return objOp, operation
 }
 

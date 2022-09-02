@@ -9,7 +9,7 @@ type BooleanOperation struct {
 }
 
 // TransformAgainst is the BooleanOperation implementation of the operationModel interface
-func (boolOp BooleanOperation) TransformAgainst(operation OperationModel) (OperationModel, OperationModel) {
+func (boolOp BooleanOperation) TransformAgainst(operation OperationModel, applicationType EditType) (OperationModel, OperationModel) {
 	return boolOp, operation
 }
 

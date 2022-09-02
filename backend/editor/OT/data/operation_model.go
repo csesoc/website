@@ -12,7 +12,7 @@ type (
 
 	// OperationModel defines an simple interface an operation must implement
 	OperationModel interface {
-		TransformAgainst(OperationModel) (OperationModel, OperationModel)
+		TransformAgainst(op OperationModel, applicationType EditType) (OperationModel, OperationModel)
 		Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) cmsjson.AstNode
 	}
 
