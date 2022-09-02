@@ -6,3 +6,7 @@ package datamodels
 type DataModel interface {
 	IsExposed() bool
 }
+
+// DataType is a series of types that can be used within your datamodel, they require registration in the
+// json configuration file
+type DataType interface{}

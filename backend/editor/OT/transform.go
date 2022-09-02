@@ -6,27 +6,27 @@ import (
 
 // transformPipeline takes an operation and transforms it according to our transformation specification
 // todo: state should not be a string, am assuming that I'm taking a struct that contains operation, pos and
-func transformPipeline(x data.OperationRequest, y data.OperationRequest) (data.OperationRequest, data.OperationRequest) {
-	xOpType := x.OperationPayload.GetType()
-	yOpType := y.OperationPayload.GetType()
-	morphsDocumentTree := (xOpType == data.KeyEditType || xOpType == data.ArrayEditType) &&
-		(yOpType == data.KeyEditType || yOpType == data.ArrayEditType)
+func transformPipeline(x data.Operation, y data.Operation) (data.Operation, data.Operation) {
+	// Finally normalise the operations to account for no-op return values
+	needsAppSpecific := false
+	x.Path, y.Path, needsAppSpecific = transformPaths(x.Path, y.Path, x.OperationType, y.OperationType)
+	x, y = normaliseOperation(x), normaliseOperation(y)
 
-	if morphsDocumentTree {
-		x.ActualPath, y.ActualPath = transformPaths(x.ActualPath, y.ActualPath, x.EditType, y.EditType)
+	if needsAppSpecific {
+		x.Operation.TransformAgainst(y.Operation)
 	}
 
-	// Finally normalise the operations to account for no-op return values
-	return normaliseOperation(x), normaliseOperation(y)
+	return x, y
 }
 
 // transformPaths takes two paths and transforms it according to the paper's tree OT specification
-func transformPaths(pathX, pathY []int, xEditType, yEditType data.EditType) ([]int, []int) {
+func transformPaths(pathX, pathY []int, xEditType, yEditType data.EditType) ([]int, []int, bool) {
 	transformationPoint := TransformPoint(pathX, pathY)
+	needsAppSpecific := false
 
 	if !EffectIndependent(pathX, pathY, transformationPoint) {
 		if xEditType == data.Insert && yEditType == data.Insert {
-			pathX, pathY = TransformInserts(pathX, pathY, transformationPoint)
+			pathX, pathY, needsAppSpecific = TransformInserts(pathX, pathY, transformationPoint)
 		} else if xEditType == data.Delete && yEditType == data.Delete {
 			pathX, pathY = TransformDeletes(pathX, pathY, transformationPoint)
 		} else {
@@ -38,7 +38,7 @@ func transformPaths(pathX, pathY []int, xEditType, yEditType data.EditType) ([]i
 		}
 	}
 
-	return pathX, pathY
+	return pathX, pathY, needsAppSpecific
 }
 
 // Updates the access path at the given index by the given amount
@@ -48,21 +48,22 @@ func Update(pos []int, toChange int, change int) []int {
 }
 
 // Function takes two insert access paths and returns the transformed access paths
-func TransformInserts(pos_x []int, pos_y []int, TP int) ([]int, []int) {
+// bit hacky and should be fixed later but the boolean value indicates if an application specific operation needs to be applied
+func TransformInserts(pos_x []int, pos_y []int, TP int) ([]int, []int, bool) {
 	if pos_x[TP] > pos_y[TP] {
-		return Update(pos_x, TP, 1), pos_y
+		return Update(pos_x, TP, 1), pos_y, false
 	} else if pos_x[TP] < pos_y[TP] {
-		return pos_x, Update(pos_y, TP, 1)
+		return pos_x, Update(pos_y, TP, 1), false
 	} else if pos_x[TP] == pos_y[TP] {
 		if len(pos_x) > len(pos_y) {
-			return Update(pos_x, TP, 1), pos_y
+			return Update(pos_x, TP, 1), pos_y, false
 		} else if len(pos_x) < len(pos_y) {
-			return pos_x, Update(pos_y, TP, 1)
+			return pos_x, Update(pos_y, TP, 1), false
 		}
 	}
 
 	// TODO: update to be normal text OT operations
-	return pos_x, pos_y
+	return pos_x, pos_y, true
 }
 
 // Function takes two delete access paths and returns the transformed access paths
@@ -147,9 +148,9 @@ func min(a, b int) int {
 
 // normaliseOperation converts operations containing nil invalid paths to no-operations
 // no-operations are not applied by the rest of the system to the document :D
-func normaliseOperation(x data.OperationRequest) data.OperationRequest {
+func normaliseOperation(x data.Operation) data.Operation {
 	// Make sure to detect for no-ops, internally this is represented by a nil ActualPath
-	if x.ActualPath == nil {
+	if x.Path == nil {
 		return data.NoOperation
 	}
 

@@ -15,6 +15,7 @@ const (
 	DOCKER_UNPUBLISHED_FILESYSTEM
 	PERSON
 	GROUPS
+	FRONTENDS
 )
 
 // The ID for root, set this as the ID in a specified request
@@ -31,12 +32,12 @@ func GetRepository(repo int) interface{} {
 		return filesystemRepository{
 			embeddedContext{context},
 		}
-	case PERSON:
-		return personRepository{
+	case GROUPS:
+		return groupsRepository{
 			embeddedContext{context},
 		}
-	case GROUPS:
-		return GroupsRepository{
+	case FRONTENDS:
+		return frontendsRepository{
 			embeddedContext{context},
 		}
 	case DOCKER_PUBLISHED_FILESYSTEM:
@@ -47,5 +48,16 @@ func GetRepository(repo int) interface{} {
 		return fs
 	default:
 		return nil
+	}
+}
+
+func PersonRepository(frontendId int) interface{} {
+	if context == nil {
+		context = contexts.GetDatabaseContext()
+	}
+
+	return personRepository{
+		frontendId,
+		embeddedContext{context},
 	}
 }

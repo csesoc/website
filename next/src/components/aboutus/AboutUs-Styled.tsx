@@ -30,7 +30,7 @@ export const SpherePosition = styled.div<positionProps>`
 `
 
 export const AboutUsText = styled.div`
-    color: #A09FE3;
+    color: #5E5D8D;
     font-family: 'Raleway';
     font-weight: 810;
     font-size: 3.5vw;
