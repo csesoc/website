@@ -13,7 +13,7 @@ type (
 	// OperationModel defines an simple interface an operation must implement
 	OperationModel interface {
 		TransformAgainst(OperationModel) (OperationModel, OperationModel)
-		Apply(cmsjson.AstNode) cmsjson.AstNode
+		Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) cmsjson.AstNode
 	}
 
 	// Operation is the fundamental incoming type from the frontend

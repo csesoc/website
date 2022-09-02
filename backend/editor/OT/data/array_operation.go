@@ -8,8 +8,7 @@ import (
 // ArrayOperation is an operation on an array type
 // @implements OperationModel
 type ArrayOperation struct {
-	index   int
-	payload datamodels.DataType
+	newValue datamodels.DataType
 }
 
 // TransformAgainst is the ArrayOperation implementation of the operationModel interface
@@ -18,6 +17,6 @@ func (arrOp ArrayOperation) TransformAgainst(operation OperationModel) (Operatio
 }
 
 // Apply is the ArrayOperation implementation of the OperationModel interface, it does nothing
-func (arrOp ArrayOperation) Apply(ast cmsjson.AstNode) cmsjson.AstNode {
-	return ast
+func (arrOp ArrayOperation) Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) cmsjson.AstNode {
+	return parentNode
 }
