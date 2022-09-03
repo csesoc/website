@@ -9,7 +9,7 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-func UnmarshallAST[T any](c Configuration, source string) (*jsonNode, error) {
+func UnmarshallAST[T any](c Configuration, source string) (AstNode, error) {
 	base := gjson.Parse(source)
 	underlyingType := reflect.TypeOf(*new(T))
 	return c.parseASTCore(base, "root", underlyingType)

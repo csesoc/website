@@ -3,13 +3,11 @@ package cmsmodel
 import (
 	"errors"
 	"reflect"
-
-	"github.com/google/uuid"
 )
 
 // @implements the Component interface
 type Image struct {
-	ImageDocumentID uuid.UUID
+	ImageDocumentID string
 	ImageSource     string
 }
 
