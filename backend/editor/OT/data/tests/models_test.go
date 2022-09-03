@@ -26,9 +26,11 @@ func (a ArraysData) Set(field string, value reflect.Value) error {
 
 func (a ArraysData) SetField(field int, value reflect.Value) {}
 
-var IMAGE_DOCUMENT_ID uuid.UUID = uuid.New()
-var PARAGRAPH_ID uuid.UUID = uuid.New()
-var DOCUMENT_ID uuid.UUID = uuid.New()
+var (
+	IMAGE_DOCUMENT_ID uuid.UUID = uuid.New()
+	PARAGRAPH_ID      uuid.UUID = uuid.New()
+	DOCUMENT_ID       uuid.UUID = uuid.New()
+)
 
 func setupDocument() cmsjson.AstNode {
 	// image := cmsmodel.Image{
@@ -97,7 +99,11 @@ func setupDocument() cmsjson.AstNode {
 		},
 	}
 
-	result, _ := cmsjson.UnmarshallAST[cmsmodel.Document](config, document)
+	result, err := cmsjson.UnmarshallAST[cmsmodel.Document](config, document)
+	if err != nil {
+		panic(err)
+	}
+
 	return result
 }
 
