@@ -111,7 +111,7 @@ func (c Configuration) parseASTCore(result gjson.Result, key string, primitiveTy
 	case _primitive:
 		return c.visitPrimitiveAST(result, key, primitiveType)
 	case _array, _slice:
-		return c.visitArrayAST(result, key, primitiveType.Elem())
+		return c.visitArrayAST(result, key, primitiveType)
 	case _struct:
 		return c.visitStructAST(result, key, primitiveType)
 	case _interface:

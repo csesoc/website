@@ -2,13 +2,15 @@ package tests
 
 import (
 	"fmt"
+	"log"
 	"reflect"
 	"testing"
 
-	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels"
+	"cms.csesoc.unsw.edu.au/editor/OT/data"
 	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels/cmsmodel"
 	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
 )
 
 // @implements Component
@@ -24,8 +26,6 @@ func (a ArraysData) Set(field string, value reflect.Value) error {
 	return nil
 }
 
-func (a ArraysData) SetField(field int, value reflect.Value) {}
-
 var (
 	IMAGE_DOCUMENT_ID uuid.UUID = uuid.New()
 	PARAGRAPH_ID      uuid.UUID = uuid.New()
@@ -33,34 +33,6 @@ var (
 )
 
 func setupDocument() cmsjson.AstNode {
-	// image := cmsmodel.Image{
-	// 	ImageDocumentID: IMAGE_DOCUMENT_ID,
-	// 	ImageSource:     "big_morb.png",
-	// }
-
-	// paragraph := cmsmodel.Paragraph{
-	// 	ParagraphID:    PARAGRAPH_ID,
-	// 	ParagraphAlign: "center",
-	// 	ParagraphChildren: []cmsmodel.Text{
-	// 		{
-	// 			Text:      "why morb is important",
-	// 			Link:      "www.morb.com",
-	// 			Bold:      true,
-	// 			Italic:    true,
-	// 			Underline: false,
-	// 		},
-	// 	},
-	// }
-
-	// arrayData := arraysData{
-	// 	Data: [3]int{1, -10, 213},
-	// }
-
-	// document := cmsmodel.Document{
-	// 	DocumentName: "morbed up",
-	// 	DocumentId:   DOCUMENT_ID,
-	// 	Content:      []cmsmodel.Component{image, paragraph, arrayData},
-	// }
 	document := fmt.Sprintf(`{
 		"DocumentName": "morbed up",
 		"DocumentId": "%s",
@@ -108,72 +80,46 @@ func setupDocument() cmsjson.AstNode {
 }
 
 func TestValidSliceField(t *testing.T) {
-	setupDocument()
+	document := setupDocument()
+	// Content/0
+	subpaths := []int{2, 0}
+
+	prev, result, err := data.Traverse(document, subpaths)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	assert := assert.New(t)
+
+	parent, _ := prev.JsonArray()
+	assert.True(parent != nil)
+
+	target, targetType := result.JsonObject()
+	assert.True(target != nil)
+	assert.Equal(targetType.Name(), "Image")
+
+	child, _ := target[1].JsonPrimitive()
+	assert.Equal(child, "big_morb.png")
 }
 
-// func TestValidSliceField(t *testing.T) {
-// 	testObj := setupDocument()
-// 	// Content/0
-// 	subpaths := []int{2, 0}
+func TestValidArrayField(t *testing.T) {
+	document := setupDocument()
+	// Content/2/Data/0
+	subpaths := []int{2, 2, 0, 0}
 
-// 	prev, result, err := data.Traverse(testObj, subpaths)
-// 	if err != nil {
-// 		log.Fatalf(err.Error())
-// 	}
+	prev, result, err := data.Traverse(document, subpaths)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 
-// 	assert := assert.New(t)
+	assert := assert.New(t)
 
-// 	assert.Equal(reflect.Slice, prev.Kind())
-// 	assert.Equal(3, prev.Len())
+	parent, _ := prev.JsonArray()
+	assert.True(parent != nil)
 
-// 	assert.Equal(reflect.Struct, result.Kind())
-// 	assert.Equal("Image", result.Type().Name())
-// 	assert.Equal(IMAGE_DOCUMENT_ID, result.Field(0).Interface().(uuid.UUID))
-// 	assert.Equal("big_morb.png", result.Field(1).String())
-// }
-
-// func TestInvalidFieldName(t *testing.T) {
-// 	testObj := setupDocument()
-// 	// Content/0/InvalidFieldName/0
-// 	_, err := placeholder(testObj)
-// 	expectedErrorMsg := "Invalid"
-// 	assert.EqualErrorf(t, err, expectedErrorMsg, "Error should be: %v, got: %v", expectedErrorMsg, err)
-// }
-
-// func TestValidArrayField(t *testing.T) {
-// 	testObj := setupDocument()
-// 	// Content/2/Data/0
-// 	subpaths := []int{2, 2, 0, 0}
-
-// 	prev, result, err := data.Traverse(testObj, subpaths)
-// 	if err != nil {
-// 		log.Fatalf(err.Error())
-// 	}
-
-// 	assert := assert.New(t)
-
-// 	assert.Equal(reflect.Int, result.Kind())
-// 	assert.Equal(int64(1), result.Int())
-
-// 	assert.Equal(reflect.Array, prev.Kind())
-// 	assert.Equal(3, prev.Len())
-// }
-
-// func TestNonIntegerArrayIndex(t *testing.T) {
-// 	testObj := setupDocument()
-// 	// Content/asdf/Data
-// 	_, err := placeholder(testObj)
-// 	expectedErrorMsg := "Invalid"
-// 	assert.EqualErrorf(t, err, expectedErrorMsg, "Error should be: %v, got: %v", expectedErrorMsg, err)
-// }
-
-// func TestOutOfBoundsArrayIndex(t *testing.T) {
-// 	testObj := setupDocument()
-// 	// Content/4/Data
-// 	_, err := placeholder(testObj)
-// 	expectedErrorMsg := "Invalid"
-// 	assert.EqualErrorf(t, err, expectedErrorMsg, "Error should be: %v, got: %v", expectedErrorMsg, err)
-// }
+	target, _ := result.JsonPrimitive()
+	assert.Equal(1, target)
+}
 
 // func TestValidStructField(t *testing.T) {
 // 	testObj := setupDocument()
@@ -268,7 +214,33 @@ func TestValidSliceField(t *testing.T) {
 
 // }
 
-// TODO: When TLB stuff is done, remove this and replace above with TLB code
-func placeholder(datamodels.DataModel) ([]int, error) {
+// TODO: When TLB stuff is done, remove this and replace above with call to TLB code
+func placeholder(cmsjson.AstNode) ([]int, error) {
 	return nil, fmt.Errorf("Invalid")
+}
+
+// TODO: I've made some stub tests for the TLB path validation. Use the string given in the comments in each test
+func TestInvalidFieldName(t *testing.T) {
+	document := setupDocument()
+
+	// Content/0/InvalidFieldName/0
+	_, err := placeholder(document)
+	expectedErrorMsg := "Invalid"
+	assert.EqualErrorf(t, err, expectedErrorMsg, "Error should be: %v, got: %v", expectedErrorMsg, err)
+}
+
+func TestNonIntegerArrayIndex(t *testing.T) {
+	document := setupDocument()
+	// Content/asdf/Data
+	_, err := placeholder(document)
+	expectedErrorMsg := "Invalid"
+	assert.EqualErrorf(t, err, expectedErrorMsg, "Error should be: %v, got: %v", expectedErrorMsg, err)
+}
+
+func TestOutOfBoundsArrayIndex(t *testing.T) {
+	document := setupDocument()
+	// Content/4/Data
+	_, err := placeholder(document)
+	expectedErrorMsg := "Invalid"
+	assert.EqualErrorf(t, err, expectedErrorMsg, "Error should be: %v, got: %v", expectedErrorMsg, err)
 }
