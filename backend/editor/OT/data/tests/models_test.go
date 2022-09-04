@@ -27,9 +27,9 @@ func (a ArraysData) Set(field string, value reflect.Value) error {
 }
 
 var (
-	IMAGE_DOCUMENT_ID uuid.UUID = uuid.New()
-	PARAGRAPH_ID      uuid.UUID = uuid.New()
-	DOCUMENT_ID       uuid.UUID = uuid.New()
+	IMAGE_DOCUMENT_ID string = uuid.New().String()
+	PARAGRAPH_ID      string = uuid.New().String()
+	DOCUMENT_ID       string = uuid.New().String()
 )
 
 func setupDocument() cmsjson.AstNode {
@@ -46,12 +46,14 @@ func setupDocument() cmsjson.AstNode {
 				"$type": "Paragraph",
 				"ParagraphID": "%s",
 				"ParagraphAlign": "center",
-				"ParagraphChildren: [
-					"Text": "why morb is important",
-					"Link": "www.morb.com",
-					"Bold": true,
-					"Italic": true,
-					"Underline": false
+				"ParagraphChildren": [
+					{
+						"Text": "why morb is important",
+						"Link": "www.morb.com",
+						"Bold": true,
+						"Italic": true,
+						"Underline": false
+					}
 				]
 			}, 
 			{
@@ -59,7 +61,7 @@ func setupDocument() cmsjson.AstNode {
 				"Data": [1, -10, 213]
 			}
 		]
-	}`, DOCUMENT_ID.String(), IMAGE_DOCUMENT_ID.String(), PARAGRAPH_ID.String())
+	}`, DOCUMENT_ID, IMAGE_DOCUMENT_ID, PARAGRAPH_ID)
 
 	config := cmsjson.Configuration{
 		RegisteredTypes: map[reflect.Type]map[string]reflect.Type{
@@ -79,7 +81,7 @@ func setupDocument() cmsjson.AstNode {
 	return result
 }
 
-func TestValidSliceField(t *testing.T) {
+func TestValidStructField(t *testing.T) {
 	document := setupDocument()
 	// Content/0
 	subpaths := []int{2, 0}
@@ -96,6 +98,7 @@ func TestValidSliceField(t *testing.T) {
 
 	target, targetType := result.JsonObject()
 	assert.True(target != nil)
+	assert.Equal(len(target), 2)
 	assert.Equal(targetType.Name(), "Image")
 
 	child, _ := target[1].JsonPrimitive()
@@ -118,100 +121,75 @@ func TestValidArrayField(t *testing.T) {
 	assert.True(parent != nil)
 
 	target, _ := result.JsonPrimitive()
-	assert.Equal(1, target)
+	assert.Equal(float64(1), target)
 }
 
-// func TestValidStructField(t *testing.T) {
-// 	testObj := setupDocument()
+func TestValidNestedFields(t *testing.T) {
+	document := setupDocument()
+	// Content/1/ParagraphChildren/0/Bold
+	subpaths := []int{2, 1, 2, 0, 2}
+
+	prev, result, err := data.Traverse(document, subpaths)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	assert := assert.New(t)
+
+	parent, _ := prev.JsonObject()
+	assert.True(parent != nil)
+
+	targetKey := result.GetKey()
+	assert.Equal(targetKey, "Bold")
+	targetVal, targetValType := result.JsonPrimitive()
+	assert.Equal(targetValType.Kind(), reflect.Bool)
+	assert.Equal(true, targetVal)
+
+	textVal, _ := parent[0].JsonPrimitive()
+	assert.Equal(textVal, "why morb is important")
+	linkVal, _ := parent[1].JsonPrimitive()
+	assert.Equal(linkVal, "www.morb.com")
+	italicVal, _ := parent[3].JsonPrimitive()
+	assert.Equal(italicVal, true)
+	underlineVal, _ := parent[4].JsonPrimitive()
+	assert.Equal(underlineVal, false)
+}
+
+func TestValidGetFirstDepth(t *testing.T) {
+	document := setupDocument()
+	// Content/0/ImageDocumentID
+	subpaths := []int{2, 0, 0}
+
+	_, result, err := data.Traverse(document, subpaths)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	assert := assert.New(t)
+	target, _ := result.JsonPrimitive()
+	assert.Equal(IMAGE_DOCUMENT_ID, target)
+}
+
+func TestValidGetNestedPrimitive(t *testing.T) {
+	document := setupDocument()
+	// Content/1/ParagraphChildren/0/Underline
+	subpaths := []int{2, 1, 2, 0, 4}
+
+	_, result, err := data.Traverse(document, subpaths)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	assert := assert.New(t)
+	target, _ := result.JsonPrimitive()
+	assert.Equal(target, false)
+}
+
+// TODO: Test operation helpers when done
+// func TestStringOperation(t *testing.T) {
+// 	document := setupDocument()
 // 	// Content/0/ImageDocumentID
 // 	subpaths := []int{2, 0, 0}
-
-// 	prev, result, err := data.Traverse(testObj, subpaths)
-// 	if err != nil {
-// 		log.Fatalf(err.Error())
-// 	}
-
-// 	assert := assert.New(t)
-
-// 	// assert.Equal(reflect.String, result.Type().Kind()) // TODO: It should now be a uuid.UUID type, find some way to test
-// 	assert.Equal(IMAGE_DOCUMENT_ID, result.Interface().(uuid.UUID))
-// 	assert.Equal("Image", prev.Type().Name())
-// 	assert.Equal(IMAGE_DOCUMENT_ID, prev.Field(0).Interface().(uuid.UUID))
-// 	assert.Equal("big_morb.png", prev.Field(1).String())
-
-// }
-
-// func TestValidNestedFields(t *testing.T) {
-// 	testObj := setupDocument()
-// 	// Content/1/ParagraphChildren/0/Bold
-// 	subpaths := []int{2, 1, 2, 0, 2}
-
-// 	prev, result, err := data.Traverse(testObj, subpaths)
-// 	if err != nil {
-// 		log.Fatalf(err.Error())
-// 	}
-
-// 	assert := assert.New(t)
-
-// 	assert.Equal(reflect.Bool, result.Type().Kind())
-// 	assert.Equal(true, result.Bool())
-
-// 	assert.Equal("Text", prev.Type().Name())
-// 	assert.Equal("why morb is important", prev.Field(0).String())
-// 	assert.Equal("www.morb.com", prev.Field(1).String())
-
-// 	assert.Equal(true, prev.Field(2).Bool())
-// 	assert.Equal(true, prev.Field(3).Bool())
-// 	assert.Equal(false, prev.Field(4).Bool())
-// }
-
-// func TestValidGetFirstDepth(t *testing.T) {
-// 	testObj := setupDocument()
-// 	// Content/0/ImageDocumentID
-// 	subpaths := []int{2, 0, 0}
-
-// 	result, err := data.GetOperationTargetSite(testObj, subpaths)
-// 	if err != nil {
-// 		log.Fatalf(err.Error())
-// 	}
-
-// 	assert := assert.New(t)
-// 	assert.Equal(IMAGE_DOCUMENT_ID, result.Interface().(uuid.UUID))
-// }
-
-// func TestValidGetNestedPrimitive(t *testing.T) {
-// 	testObj := setupDocument()
-// 	// Content/1/ParagraphChildren/0/Underline
-// 	subpaths := []int{2, 1, 2, 0, 4}
-
-// 	result, err := data.GetOperationTargetSite(testObj, subpaths)
-// 	if err != nil {
-// 		log.Fatalf(err.Error())
-// 	}
-
-// 	assert := assert.New(t)
-// 	assert.False(result.Bool())
-// }
-
-// func TestTextEditUpdate(t *testing.T) {
-// 	testObj := setupDocument()
-// 	// Content/0/ImageDocumentID
-// 	subpaths := []int{2, 0, 0}
-
-// 	err := data.TextEditUpdate(testObj, subpaths, 1, 1, "o")
-
-// 	if err != nil {
-// 		log.Fatalf(err.Error())
-// 	}
-
-// 	result, err := data.GetOperationTargetSite(testObj, subpaths)
-// 	if err != nil {
-// 		log.Fatalf(err.Error())
-// 	}
-
-// 	assert := assert.New(t)
-// 	assert.Equal("morb", result.String())
-
 // }
 
 // TODO: When TLB stuff is done, remove this and replace above with call to TLB code
