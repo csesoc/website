@@ -185,12 +185,124 @@ func TestValidGetNestedPrimitive(t *testing.T) {
 	assert.Equal(target, false)
 }
 
-// TODO: Test operation helpers when done
-// func TestStringOperation(t *testing.T) {
-// 	document := setupDocument()
-// 	// Content/0/ImageDocumentID
-// 	subpaths := []int{2, 0, 0}
-// }
+func TestInsertStringOperation(t *testing.T) {
+	document := setupDocument()
+	// Content/0/ImageDocumentID
+	subpaths := []int{2, 0, 1}
+
+	jsonOperation := `{
+		"Path": [2, 0, 1],
+		"OperationType": 0,
+		"AcknowledgedServerOps": 0,
+		"IsNoOp": false,
+		"Operation": {
+			"$type": "stringOperation",
+			"RangeStart": 5,
+			"RangeEnd": 5,
+			"NewValue": "0"
+		}
+	}`
+
+	operation, err := data.ParseOperation(jsonOperation)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	parent, _, err := data.Traverse(document, subpaths)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	result, err := operation.Operation.Apply(parent, 1, data.Insert)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	assert := assert.New(t)
+
+	resultNode, _ := result.JsonObject()
+	resultContent, _ := resultNode[1].JsonPrimitive()
+	assert.Equal("big_m0rb.png", resultContent)
+}
+
+func TestDeleteStringOperation(t *testing.T) {
+	document := setupDocument()
+	// Content/0/ImageDocumentID
+	subpaths := []int{2, 0, 1}
+
+	jsonOperation := `{
+		"Path": [2, 0, 1],
+		"OperationType": 1,
+		"AcknowledgedServerOps": 0,
+		"IsNoOp": false,
+		"Operation": {
+			"$type": "stringOperation",
+			"RangeStart": 5,
+			"RangeEnd": 5,
+			"NewValue": "0"
+		}
+	}`
+
+	operation, err := data.ParseOperation(jsonOperation)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	parent, _, err := data.Traverse(document, subpaths)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	result, err := operation.Operation.Apply(parent, 1, data.Delete)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	assert := assert.New(t)
+
+	resultNode, _ := result.JsonObject()
+	resultContent, _ := resultNode[1].JsonPrimitive()
+	assert.Equal("big_mrb.png", resultContent)
+}
+
+func TestInsertArrayOperation(t *testing.T) {
+	document := setupDocument()
+	// Content/0/ImageDocumentID
+	subpaths := []int{2, 2, 0}
+
+	jsonOperation := `{
+		"Path": [2, 2, 0],
+		"OperationType": 0,
+		"AcknowledgedServerOps": 0,
+		"IsNoOp": false,
+		"Operation": {
+			"$type": "arrayOperation",
+			"Index": 0,
+			"NewValue": 6
+		}
+	}`
+
+	operation, err := data.ParseOperation(jsonOperation)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	parent, _, err := data.Traverse(document, subpaths)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	result, err := operation.Operation.Apply(parent, 0, data.Insert)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	assert := assert.New(t)
+
+	resultNode, _ := result.JsonObject()
+	resultContent, _ := resultNode[0].JsonArray()
+	assert.Equal([]int{6, 1, -10, 213}, resultContent)
+}
 
 // TODO: When TLB stuff is done, remove this and replace above with call to TLB code
 func placeholder(cmsjson.AstNode) ([]int, error) {
