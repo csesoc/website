@@ -268,7 +268,7 @@ func TestDeleteStringOperation(t *testing.T) {
 func TestInsertArrayOperation(t *testing.T) {
 	document := setupDocument()
 	// Content/0/ImageDocumentID
-	subpaths := []int{2, 2, 0}
+	subpaths := []int{2, 2, 0, 0}
 
 	jsonOperation := `{
 		"Path": [2, 2, 0],
@@ -277,7 +277,6 @@ func TestInsertArrayOperation(t *testing.T) {
 		"IsNoOp": false,
 		"Operation": {
 			"$type": "arrayOperation",
-			"Index": 0,
 			"NewValue": 6
 		}
 	}`
@@ -299,9 +298,16 @@ func TestInsertArrayOperation(t *testing.T) {
 
 	assert := assert.New(t)
 
-	resultNode, _ := result.JsonObject()
-	resultContent, _ := resultNode[0].JsonArray()
-	assert.Equal([]int{6, 1, -10, 213}, resultContent)
+	children, _ := result.JsonArray()
+	results := []interface{}{}
+	for _, x := range children {
+		value, _ := x.JsonPrimitive()
+		results = append(results, value)
+	}
+
+	// Weird bug here where the last 2 values returned from the child array are actually float64 (hence the interface comparison fails)
+	// see if u can fix this
+	assert.Equal([]interface{}{6, 1, -10, 213}, results)
 }
 
 // TODO: When TLB stuff is done, remove this and replace above with call to TLB code

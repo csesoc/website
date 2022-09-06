@@ -49,6 +49,6 @@ func (arrOp StringOperation) Apply(parentNode cmsjson.AstNode, applicationIndex 
 		return nil, fmt.Errorf("invalid edit type")
 	}
 
-	children[applicationIndex].UpdatePrimitive(cmsjson.ASTFromInterface(resultText))
+	children[applicationIndex].UpdateOrAddPrimitiveElement(cmsjson.ASTFromValue(resultText))
 	return parentNode, nil
 }
