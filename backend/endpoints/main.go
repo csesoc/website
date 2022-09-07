@@ -117,7 +117,7 @@ func (fn rawHandler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // getFrontendID gets the frontend id for an incoming http request
 func getFrontendId(r *http.Request) int {
-	frontendRepo := repositories.GetRepository(repositories.FRONTENDS).(repositories.IFrontendsRepository)
+	frontendRepo := repositories.NewFrontendsRepo()
 	return frontendRepo.GetFrontendFromURL(r.URL.Host)
 }
 

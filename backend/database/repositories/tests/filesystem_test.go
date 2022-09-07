@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	repo        = repositories.GetRepository(repositories.FILESYSTEM).(repositories.IFilesystemRepository)
+	repo        = repositories.NewFilesystemRepo()
 	testContext = repo.GetContext().(*contexts.TestingContext)
 )
 
@@ -43,7 +43,7 @@ func TestRootInsert(t *testing.T) {
 		root, _ := repo.GetRoot()
 
 		newDir, _ := repo.CreateEntry(repositories.FilesystemEntry{
-			LogicalName: "test_directory", ParentFileID: repositories.FILESYSTEM_ROOT_ID,
+			LogicalName: "test_directory", ParentFileID: repositories.FilesystemRootID,
 			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: false,
 		})
 
@@ -82,7 +82,7 @@ func TestDocumentInfoRetrieval(t *testing.T) {
 	testContext.RunTest(func() {
 		// ==== Setup ====
 		newDoc, err := repo.CreateEntry(repositories.FilesystemEntry{
-			LogicalName: "test_doc", ParentFileID: repositories.FILESYSTEM_ROOT_ID,
+			LogicalName: "test_doc", ParentFileID: repositories.FilesystemRootID,
 			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: true,
 		})
 		// ==== Assertions ====
@@ -108,7 +108,7 @@ func TestEntityDeletion(t *testing.T) {
 
 		newDir, _ := repo.CreateEntry(repositories.FilesystemEntry{
 			LogicalName: "cool_dir", OwnerUserId: repositories.GROUPS_ADMIN,
-			ParentFileID: repositories.FILESYSTEM_ROOT_ID, IsDocument: false,
+			ParentFileID: repositories.FilesystemRootID, IsDocument: false,
 		})
 
 		newDoc, _ := repo.CreateEntry(repositories.FilesystemEntry{
@@ -131,7 +131,7 @@ func TestEntityDeletion(t *testing.T) {
 		// ======= Secondary setup ==========
 		anotherDirectory, _ := repo.CreateEntry(repositories.FilesystemEntry{
 			LogicalName: "cheese", OwnerUserId: repositories.GROUPS_ADMIN,
-			ParentFileID: repositories.FILESYSTEM_ROOT_ID, IsDocument: false,
+			ParentFileID: repositories.FilesystemRootID, IsDocument: false,
 		})
 
 		nestedDirectory, _ := repo.CreateEntry(repositories.FilesystemEntry{
@@ -169,7 +169,7 @@ func TestEntityRename(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ===== Test setup =====
-		newDir, _ := repo.CreateEntry(getEntity("cool_dir", repositories.GROUPS_ADMIN, repositories.FILESYSTEM_ROOT_ID, false))
+		newDir, _ := repo.CreateEntry(getEntity("cool_dir", repositories.GROUPS_ADMIN, repositories.FilesystemRootID, false))
 		newDoc, _ := repo.CreateEntry(getEntity("cool_doc", repositories.GROUPS_ADMIN, newDir.EntityID, false))
 		newDoc1, _ := repo.CreateEntry(getEntity("cool_doc1", repositories.GROUPS_ADMIN, newDir.EntityID, false))
 		newDoc2, _ := repo.CreateEntry(getEntity("cool_doc2", repositories.GROUPS_ADMIN, newDir.EntityID, false))
@@ -197,11 +197,11 @@ func TestEntityChildren(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// Test setup
-		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, repositories.FILESYSTEM_ROOT_ID))
-		dir2, _ := repo.CreateEntry(getEntity("d2", repositories.GROUPS_ADMIN, false, repositories.FILESYSTEM_ROOT_ID))
-		dir3, _ := repo.CreateEntry(getEntity("d3", repositories.GROUPS_ADMIN, false, repositories.FILESYSTEM_ROOT_ID))
-		dir4, _ := repo.CreateEntry(getEntity("d4", repositories.GROUPS_ADMIN, false, repositories.FILESYSTEM_ROOT_ID))
-		emptyDir, _ := repo.CreateEntry(getEntity("de", repositories.GROUPS_ADMIN, false, repositories.FILESYSTEM_ROOT_ID))
+		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, repositories.FilesystemRootID))
+		dir2, _ := repo.CreateEntry(getEntity("d2", repositories.GROUPS_ADMIN, false, repositories.FilesystemRootID))
+		dir3, _ := repo.CreateEntry(getEntity("d3", repositories.GROUPS_ADMIN, false, repositories.FilesystemRootID))
+		dir4, _ := repo.CreateEntry(getEntity("d4", repositories.GROUPS_ADMIN, false, repositories.FilesystemRootID))
+		emptyDir, _ := repo.CreateEntry(getEntity("de", repositories.GROUPS_ADMIN, false, repositories.FilesystemRootID))
 
 		for x := 1; x < 10; x++ {
 			if x%3 == 0 {
@@ -243,7 +243,7 @@ func TestGetIDWithPath(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// Test setup
-		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, repositories.FILESYSTEM_ROOT_ID))
+		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, repositories.FilesystemRootID))
 		currentDir := dir1
 		for x := 1; x < 3; x++ {
 			newDir, _ := repo.CreateEntry(getEntity("cool_doc"+fmt.Sprint(x), repositories.GROUPS_ADMIN, false, currentDir.EntityID))

@@ -4,7 +4,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"reflect"
 	"testing"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
@@ -30,7 +29,7 @@ func TestValidEntityInfo(t *testing.T) {
 		EntityID:     entityID,
 		LogicalName:  "random name",
 		IsDocument:   false,
-		ParentFileID: repositories.FILESYSTEM_ROOT_ID,
+		ParentFileID: repositories.FilesystemRootID,
 		ChildrenIDs:  []uuid.UUID{},
 	}, nil).Times(1)
 
@@ -45,7 +44,7 @@ func TestValidEntityInfo(t *testing.T) {
 		EntityID:   entityID,
 		EntityName: "random name",
 		IsDocument: false,
-		Parent:     repositories.FILESYSTEM_ROOT_ID,
+		Parent:     repositories.FilesystemRootID,
 		Children:   []models.EntityInfoResponse{},
 	})
 }
@@ -76,11 +75,9 @@ func TestValidCreateNewEntity(t *testing.T) {
 
 	mockDockerFileSystemRepo := repMocks.NewMockIUnpublishedVolumeRepository(controller)
 	mockDockerFileSystemRepo.EXPECT().AddToVolume(entityID.String()).Return(nil).Times(1)
-	dockerRepoType := reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil))
 
 	mockDepFactory := createMockDependencyFactory(controller, mockFileRepo, true)
-	mockDepFactory.EXPECT().GetDependency(endpoints.UnpublishedVolumeRepository).Return(mockDockerFileSystemRepo)
-	mockDepFactory.EXPECT().GetDepFromType(dockerRepoType).Return(endpoints.UnpublishedVolumeRepository)
+	mockDepFactory.EXPECT().GetUnpublishedVolumeRepo().Return(mockDockerFileSystemRepo)
 
 	form := models.ValidEntityCreationRequest{
 		LogicalName: "random name",
@@ -179,11 +176,8 @@ func TestValidUploadImage(t *testing.T) {
 	mockDockerFileSystemRepo.EXPECT().AddToVolume(entityID.String()).Return(nil).Times(1)
 	mockDockerFileSystemRepo.EXPECT().GetFromVolume(entityID.String()).Return(tempFile, nil).Times(1)
 
-	dockerRepoType := reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil))
-
 	mockDepFactory := createMockDependencyFactory(controller, mockFileRepo, true)
-	mockDepFactory.EXPECT().GetDependency(endpoints.UnpublishedVolumeRepository).Return(mockDockerFileSystemRepo)
-	mockDepFactory.EXPECT().GetDepFromType(dockerRepoType).Return(endpoints.UnpublishedVolumeRepository)
+	mockDepFactory.EXPECT().GetUnpublishedVolumeRepo().Return(mockDockerFileSystemRepo)
 
 	// Create request
 	const pngBytes = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
@@ -218,17 +212,11 @@ func TestValidUploadImage(t *testing.T) {
 // createMockDependencyFactory just constructs an instance of a dependency factory mock
 func createMockDependencyFactory(controller *gomock.Controller, mockFileRepo *repMocks.MockIFilesystemRepository, needsLogger bool) *mocks.MockDependencyFactory {
 	mockDepFactory := mocks.NewMockDependencyFactory(controller)
-	fsRepositoryTypeInfo := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
-
-	mockDepFactory.EXPECT().GetDependency(endpoints.FileSystemRepository).Return(mockFileRepo)
-	mockDepFactory.EXPECT().GetDepFromType(fsRepositoryTypeInfo).Return(endpoints.FileSystemRepository)
+	mockDepFactory.EXPECT().GetFilesystemRepo().Return(mockFileRepo)
 
 	if needsLogger {
 		log := logger.OpenLog("new log")
-		logType := reflect.TypeOf((**logger.Log)(nil))
-
-		mockDepFactory.EXPECT().GetDependency(endpoints.Log).Return(log)
-		mockDepFactory.EXPECT().GetDepFromType(logType).Return(endpoints.Log)
+		mockDepFactory.EXPECT().GetLogger().Return(log)
 	}
 
 	return mockDepFactory

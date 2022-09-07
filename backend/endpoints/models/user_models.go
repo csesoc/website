@@ -31,11 +31,10 @@ func (u *User) IsValidEmail() bool {
 }
 
 // UserExists just checks if a user has a valid password
-func (u *User) UserExists() bool {
+func (u *User) UserExists(personRepo repositories.PersonRepository) bool {
 	hashedPassword := u.hashPassword()
-	repository := repositories.GetRepository(repositories.PERSON).(repositories.IPersonRepository)
 
-	return repository.PersonExists(repositories.Person{
+	return personRepo.PersonExists(repositories.Person{
 		Email:    u.Email,
 		Password: hashedPassword,
 	})
