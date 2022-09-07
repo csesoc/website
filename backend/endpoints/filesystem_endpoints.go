@@ -34,7 +34,7 @@ func GetEntityInfo(form ValidInfoRequest, df DependencyFactory) handlerResponse[
 func CreateNewEntity(form ValidEntityCreationRequest, df DependencyFactory) handlerResponse[NewEntityResponse] {
 	log := df.GetLogger()
 	fsRepo := df.GetFilesystemRepo()
-	pubRepo := df.GetPublishedVolumeRepo()
+	pubRepo := df.GetUnpublishedVolumeRepo()
 
 	entityToCreate := CreationReqToFsEntry(form)
 	newEntity, err := fsRepo.CreateEntry(entityToCreate)
