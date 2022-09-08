@@ -13,6 +13,9 @@ type filesystemRepository struct {
 	embeddedContext
 }
 
+// The ID for root, set this as the ID in a specified request
+var FilesystemRootID uuid.UUID = uuid.Nil
+
 // We really should use an ORM jesus this is ugly
 func (rep filesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
 	entity := FilesystemEntry{}
@@ -48,7 +51,7 @@ func (rep filesystemRepository) query(query string, input ...interface{}) (Files
 
 // Returns: entry struct containing the entity that was just created
 func (rep filesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEntry, error) {
-	if file.ParentFileID == FILESYSTEM_ROOT_ID {
+	if file.ParentFileID == FilesystemRootID {
 		// determine root ID
 		root, err := rep.GetRoot()
 		if err != nil {
@@ -67,7 +70,7 @@ func (rep filesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEnt
 }
 
 func (rep filesystemRepository) GetEntryWithID(ID uuid.UUID) (FilesystemEntry, error) {
-	if ID == FILESYSTEM_ROOT_ID {
+	if ID == FilesystemRootID {
 		return rep.GetRoot()
 	}
 
@@ -77,7 +80,7 @@ func (rep filesystemRepository) GetEntryWithID(ID uuid.UUID) (FilesystemEntry, e
 
 func (rep filesystemRepository) GetRoot() (FilesystemEntry, error) {
 	// Root is currently set to ID 1
-	return rep.query("SELECT * FROM filesystem WHERE EntityID = $1", FILESYSTEM_ROOT_ID)
+	return rep.query("SELECT * FROM filesystem WHERE EntityID = $1", FilesystemRootID)
 }
 
 func (rep filesystemRepository) GetEntryWithParentID(ID uuid.UUID) (FilesystemEntry, error) {

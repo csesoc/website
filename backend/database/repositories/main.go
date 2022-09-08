@@ -1,63 +1,76 @@
 package repositories
 
 import (
+	"sync"
+
 	"cms.csesoc.unsw.edu.au/database/contexts"
-	"github.com/google/uuid"
 )
 
 // Start up a database connection with a provided context
+// TODO: this is technical a global shared variable and should be treated as such, this should be wrapped in a mutex
+// or eliminated of entirely :D
+var contextLock = sync.Mutex{}
 var context contexts.DatabaseContext = nil
 
-// enum of repositories
-const (
-	FILESYSTEM = iota
-	DOCKER_PUBLISHED_FILESYSTEM
-	DOCKER_UNPUBLISHED_FILESYSTEM
-	PERSON
-	GROUPS
-	FRONTENDS
-)
+// Open constructors available for everyone
 
-// The ID for root, set this as the ID in a specified request
-var FILESYSTEM_ROOT_ID uuid.UUID = uuid.Nil
-
-// small factory for setting up and returning a repository
-func GetRepository(repo int) interface{} {
-	if context == nil {
-		context = contexts.GetDatabaseContext()
-	}
-
-	switch repo {
-	case FILESYSTEM:
-		return filesystemRepository{
-			embeddedContext{context},
-		}
-	case GROUPS:
-		return groupsRepository{
-			embeddedContext{context},
-		}
-	case FRONTENDS:
-		return frontendsRepository{
-			embeddedContext{context},
-		}
-	case DOCKER_PUBLISHED_FILESYSTEM:
-		fs, _ := NewDockerPublishedFileSystemRepository()
-		return fs
-	case DOCKER_UNPUBLISHED_FILESYSTEM:
-		fs, _ := NewDockerUnpublishedFileSystemRepository()
-		return fs
-	default:
-		return nil
+// NewFilesystemRepo instantiates a new file system repository with the current embedded context
+func NewFilesystemRepo() FilesystemRepository {
+	return filesystemRepository{
+		embeddedContext{getContext()},
 	}
 }
 
-func PersonRepository(frontendId int) interface{} {
+// NewGroupsRepo instantiates a new groups repository
+func NewGroupsRepo() GroupsRepository {
+	return groupsRepository{
+		embeddedContext{getContext()},
+	}
+}
+
+// NewFrontendsRepo instantiates a new frontends repository
+func NewFrontendsRepo() FrontendsRepository {
+	return frontendsRepository{
+		embeddedContext{getContext()},
+	}
+}
+
+// NewPersonRepo instantiates a new person repository
+func NewPersonRepo(frontendId int) PersonRepository {
+	return personRepository{
+		frontendId,
+		embeddedContext{getContext()},
+	}
+}
+
+// NewDockerPublishedRepo instantiates a new published docker volume repository
+func NewUnpublishedRepo() UnpublishedVolumeRepository {
+	fs, err := newDockerUnpublishedFileSystemRepository()
+	if err != nil {
+		// We should always be able to acquire this repository, if we cant then something really bad has happened
+		panic(err)
+	}
+
+	return fs
+}
+
+func NewPublishedRepo() PublishedVolumeRepository {
+	fs, err := newDockerPublishedFileSystemRepository()
+	if err != nil {
+		// We should always be able to acquire this repository, if we cant then something really bad has happened
+		panic(err)
+	}
+
+	return fs
+}
+
+func getContext() contexts.DatabaseContext {
+	contextLock.Lock()
+	defer contextLock.Unlock()
+
 	if context == nil {
 		context = contexts.GetDatabaseContext()
 	}
 
-	return personRepository{
-		frontendId,
-		embeddedContext{context},
-	}
+	return context
 }

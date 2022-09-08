@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"cms.csesoc.unsw.edu.au/database/repositories"
 	editor "cms.csesoc.unsw.edu.au/editor/pessimistic"
 	. "cms.csesoc.unsw.edu.au/endpoints/models"
-	"cms.csesoc.unsw.edu.au/internal/logger"
 	"github.com/gorilla/websocket"
 )
 
@@ -23,8 +21,8 @@ var Upgrader = websocket.Upgrader{
 // EditHandler is the HTTP handler responsible for dealing with incoming requests to edit a document
 // for the most part this is passed over to the editor package
 func EditHandler(form ValidEditRequest, w http.ResponseWriter, r *http.Request, df DependencyFactory) handlerResponse[empty] {
-	unpublishedVol := getDependency[repositories.IUnpublishedVolumeRepository](df)
-	log := getDependency[*logger.Log](df)
+	unpublishedVol := df.GetUnpublishedVolumeRepo()
+	log := df.GetLogger()
 
 	ws, err := Upgrader.Upgrade(w, r, nil)
 	if err != nil {
