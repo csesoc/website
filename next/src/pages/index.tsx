@@ -17,8 +17,9 @@ import Navbar from "../components/navbar/Navbar";
 import Homepage from "./MiniHomepage";
 import Events from "./MiniEvents";
 import AboutUs from "./MiniAboutUs";
-import HomepageCurve from "../svgs/HomepageCurve";
-import RectangleCurve from "../svgs/RectangleCurve";
+import Resources from "./MiniResources";
+import Support from "./MiniSupport";
+
 import Footer from "../components/footer/Footer";
 import { device } from '../styles/device'
 
@@ -34,8 +35,8 @@ const PageContainer = styled.div`
 `;
 
 const Main = styled.main`
-  padding-left: 2rem;
-  padding-right: 2rem;
+  // padding-left: 2rem;
+  // padding-right: 2rem;
 `;
 
 const CurveContainer = styled.div<CurveContainerProps>`
@@ -48,9 +49,9 @@ const CurveContainer = styled.div<CurveContainerProps>`
 const PurpleBlock = styled.div`
   background: #BEB8EA;
   width: 100vw;
-  height: 100vh;
+  height: 125vh;
   position: relative;
-  // top: -10px;
+  top: -10px;
 `
 
 const Background = styled.div`
@@ -59,6 +60,8 @@ const Background = styled.div`
 	right: 0;
 	z-index: -1;
 `;
+
+const RefLink = styled.div``
 
 // const Background = styled.div``;
 
@@ -97,7 +100,6 @@ const Index: NextPage = () => {
   }, []);
 
   useEffect(() => {
-
     setHeight(window?.innerHeight);
     setWidth(window?.innerWidth)
   },[width])
@@ -106,47 +108,44 @@ const Index: NextPage = () => {
     <PageContainer>
       <Head>
         <title>CSESoc</title>
-        <metdiv name="description" content="CSESoc Website Homepage" />
+        <meta name="description" content="CSESoc Website Homepage" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} />}
+      {navbarOpen && <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} /> }
       <Main>
         { (loaded && height && width) && (
           <>
-          {console.log(height)}
-          <Background>
-            {/* <CurveContainer offset={0}>
-              <HomepageCurve width={400} height={height}/>
-            </CurveContainer>
-            <CurveContainer offset={height + 500}>
-              <RectangleCurve
-                height={2000}
-                dontPreserveAspectRatio
-              />
-            </CurveContainer> */}
-            <CurveContainer offset={0}>
-              <Image src={HomePageCurve}/>
-            </CurveContainer>
-            <CurveContainer offset={height+300}>
-              <Image src={TopRect}/>
-              <PurpleBlock/>
-              <Image src={BottomRect}/>
-            </CurveContainer>
-          </Background>
-          <Navbar open={navbarOpen} setNavbarOpen={handleToggle} />
-          <div id="homepage">
-            <Homepage />
-          </div>
-          <div id="aboutus">
-            <AboutUs />
-          </div>
-          <div id="events">
-            <Events />
-          </div>
-          <Footer />
+            {console.log(height)}
+            <Background>
+              <CurveContainer offset={0}>
+                <Image src={HomePageCurve}/>
+              </CurveContainer>
+              <CurveContainer offset={height+300}>
+                <Image src={TopRect}/>
+                <PurpleBlock/>
+                <Image src={BottomRect}/>
+              </CurveContainer>
+            </Background>
+            <RefLink id="homepage">
+              <Homepage />
+            </RefLink>
+            <RefLink id="aboutus">
+              <AboutUs />
+            </RefLink>
+            <RefLink id="events">
+              <Events />
+            </RefLink>
+            <RefLink id="resources">
+              <Resources />
+            </RefLink>
+            <RefLink id="support">
+              <Support />
+            </RefLink>
           </>
         )}
       </Main>
+      <Footer />
 {/* 
       <Main>
         <Background>
@@ -158,11 +157,7 @@ const Index: NextPage = () => {
           </CurveContainer>
         </Background>
 
-        {navbarOpen ? (
-					<HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} />
-				) : (
-					<></>
-				)} */}
+ */}
 
 
 

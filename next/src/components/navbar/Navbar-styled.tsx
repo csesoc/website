@@ -5,7 +5,6 @@ const Container = styled.div`
 	top: 0;
 	width: 100%;
 	height: 20vh;
-	padding: 20px 0;
 	background: transparent;
 	display: flex;
 	z-index: 9000;
@@ -16,6 +15,7 @@ const ItemWrapper = styled.ul`
 	margin-left: auto;
 	gap: 5vw;
 	list-style: none;
+	padding: 0 20px;
 `;
 const NavItem = styled.li`
 	font-size: 20px;

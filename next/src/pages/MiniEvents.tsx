@@ -7,13 +7,14 @@ const Container = styled.div`
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    margin-top: 23vh; 
+    margin: 30vh 0;
 `
 
 const ColumnContainer = styled.div`
     display: flex;
     flex-direction: column;
     max-width: 28vw;
+
 `
 
 const EventsText = styled.div`
