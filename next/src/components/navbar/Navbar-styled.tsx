@@ -27,6 +27,7 @@ const NavItem = styled.li`
 
 	&:hover { 
 		cursor: pointer;
+		transform: scale(1.1);
 	}
 `;
 

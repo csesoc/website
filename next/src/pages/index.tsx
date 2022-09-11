@@ -49,7 +49,7 @@ const CurveContainer = styled.div<CurveContainerProps>`
 const PurpleBlock = styled.div`
   background: #BEB8EA;
   width: 100vw;
-  height: 125vh;
+  height: 135vh;
   position: relative;
   top: -10px;
 `
@@ -116,7 +116,6 @@ const Index: NextPage = () => {
       <Main>
         { (loaded && height && width) && (
           <>
-            {console.log(height)}
             <Background>
               <CurveContainer offset={0}>
                 <Image src={HomePageCurve}/>
@@ -124,7 +123,9 @@ const Index: NextPage = () => {
               <CurveContainer offset={height+300}>
                 <Image src={TopRect}/>
                 <PurpleBlock/>
-                <Image src={BottomRect}/>
+                <div style={{position: 'relative', top: '-10px'}}>
+                  <Image src={BottomRect}/>
+                </div>
               </CurveContainer>
             </Background>
             <RefLink id="homepage">
@@ -146,22 +147,6 @@ const Index: NextPage = () => {
         )}
       </Main>
       <Footer />
-{/* 
-      <Main>
-        <Background>
-          <CurveContainer offset={0}>
-            <HomepageCurve width={400} height={1000} />
-          </CurveContainer>
-          <CurveContainer offset={1200}>
-            <RectangleCurve height={2000} dontPreserveAspectRatio />
-          </CurveContainer>
-        </Background>
-
- */}
-
-
-
-
     </PageContainer>
   );
 };

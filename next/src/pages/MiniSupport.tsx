@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Otter from '../svgs/otter.png'
 import Image from 'next/image';
+import Link from 'next/link'
 
 type Props = {}
 
@@ -59,7 +60,9 @@ export default function Support({}: Props) {
         <TextContainer>
           <H3>Our Sponsors</H3>
           <ButtonContainer>
-            <button>view our sponsors</button>
+            <Link href="/sponsors">
+              <button>view our sponsors</button>
+            </Link>
           </ButtonContainer>
           <Text>Check out our very cool sponsors</Text>
         </TextContainer>
