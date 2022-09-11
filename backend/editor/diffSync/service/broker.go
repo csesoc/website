@@ -2,6 +2,7 @@ package service
 
 import (
 	"cms.csesoc.unsw.edu.au/editor/diffSync/document"
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -26,9 +27,9 @@ func NewBroker() *Broker {
 
 // ConnectOrOpenDocument does 2 things, if a document is open
 // then it creates a new connection to the document and triggers the newConn event
-// loading in the required extensions, otherwise if the documnet is not open it
+// loading in the required extensions, otherwise if the document is not open it
 // triggers the newDoc event, creating the document and loading in the newDoc extensions
-func (b *Broker) ConnectOrOpenDocument(documentID string, conn *websocket.Conn) error {
+func (b *Broker) ConnectOrOpenDocument(documentID uuid.UUID, conn *websocket.Conn) error {
 	var requiredExtensions []string = newDoc
 
 	if b.manager.IsDocOpen(documentID) {

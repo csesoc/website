@@ -19,7 +19,7 @@ const ToolbarContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  max-width: 440px;
+  max-width: 660px;
   margin: 5px;
 `;
 

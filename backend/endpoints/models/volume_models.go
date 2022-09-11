@@ -1,12 +1,16 @@
 package models
 
-import "mime/multipart"
+import (
+	"mime/multipart"
+
+	"github.com/google/uuid"
+)
 
 // Request models outline the general model that an incoming request to a handler must satisfy
 type (
 	// ValidImageUploadRequest is the request model for an handler that uploads an IMAGE to a docker volume
 	ValidImageUploadRequest struct {
-		Parent      int
+		Parent      uuid.UUID
 		LogicalName string `schema:"LogicalName,required"`
 		OwnerGroup  int    `schema:"OwnerGroup,required"`
 		Image       multipart.File
@@ -14,13 +18,13 @@ type (
 
 	// ValidPublishDocumentRequest is the request model for any handler that publishes a document
 	ValidPublishDocumentRequest struct {
-		DocumentID int `schema:"DocumentID,required"`
+		DocumentID uuid.UUID `schema:"DocumentID,required"`
 	}
 
 	// ValidGetPublishedDocumentRequest is the response model for any handler that fetches information from
 	// the published volume
 	ValidGetPublishedDocumentRequest struct {
-		DocumentID int `schema:"DocumentID,required"`
+		DocumentID uuid.UUID `schema:"DocumentID,required"`
 	}
 )
 

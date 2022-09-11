@@ -4,7 +4,9 @@ import (
 	"errors"
 	"sync"
 
+	"cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/internal/storage"
+	"github.com/google/uuid"
 )
 
 // Manager is a singleton "class" thats in charge
@@ -12,12 +14,15 @@ import (
 // and their underlying document connection
 type Manager struct {
 	// openDocuments maps document IDs (in the database) to document states
-	openDocuments    map[string]*Document
+	openDocuments    map[uuid.UUID]*Document
 	readingDocuments *sync.RWMutex
 }
 
-var managerInstance *Manager
-var lock = &sync.Mutex{}
+var (
+	managerInstance *Manager
+	lock            = &sync.Mutex{}
+	repo            = repositories.NewFilesystemRepo()
+)
 
 // implementation of the singleton pattern :)
 func GetManagerInstance() *Manager {
@@ -26,7 +31,7 @@ func GetManagerInstance() *Manager {
 		defer lock.Unlock()
 
 		managerInstance = &Manager{
-			openDocuments:    make(map[string]*Document),
+			openDocuments:    make(map[uuid.UUID]*Document),
 			readingDocuments: &sync.RWMutex{},
 		}
 	}
@@ -38,16 +43,21 @@ func GetManagerInstance() *Manager {
 // id in the database, it will also spin up the document for us :)
 // note that on failure it returns an error indicating that the document
 // could not be opened
-func (docManager *Manager) OpenDocument(documentName string) error {
-	if _, ok := docManager.openDocuments[documentName]; ok {
+func (docManager *Manager) OpenDocument(documentID uuid.UUID) error {
+	if _, ok := docManager.openDocuments[documentID]; ok {
 		return errors.New("document already open")
 	}
 
-	newDoc := newDocument(documentName, storage.Read(documentName, "data"))
+	// Get the name of the document
+	docInfo, err := repo.GetEntryWithID(documentID)
+	if err != nil {
+		return errors.New("invalid document id")
+	}
+	newDoc := newDocument(documentID, docInfo.LogicalName, storage.Read(documentID.String(), "data"))
 	docManager.readingDocuments.Lock()
 	defer docManager.readingDocuments.Unlock()
 
-	docManager.openDocuments[documentName] = newDoc
+	docManager.openDocuments[documentID] = newDoc
 
 	go newDoc.spin()
 	return nil
@@ -55,8 +65,8 @@ func (docManager *Manager) OpenDocument(documentName string) error {
 
 // CloseAndStopDocument closes a document with a specific ID and
 // sends it a shutdown signal
-func (docManager *Manager) CloseAndStopDocument(documentName string) error {
-	if doc := docManager.closeDocument(documentName); doc != nil {
+func (docManager *Manager) CloseAndStopDocument(documentID uuid.UUID) error {
+	if doc := docManager.closeDocument(documentID); doc != nil {
 		return doc.stop()
 	}
 	return errors.New("no such document exists within the manager")
@@ -65,28 +75,28 @@ func (docManager *Manager) CloseAndStopDocument(documentName string) error {
 // closeDocument just closes a document and stops
 // the manager from maintaining it (should only be called internally)
 // and within the context of the document event loop to prevent deadlocks
-func (docManager *Manager) closeDocument(documentName string) *Document {
+func (docManager *Manager) closeDocument(documentID uuid.UUID) *Document {
 	docManager.readingDocuments.Lock()
 	defer docManager.readingDocuments.Unlock()
 
-	if doc, ok := docManager.openDocuments[documentName]; ok {
-		delete(docManager.openDocuments, documentName)
+	if doc, ok := docManager.openDocuments[documentID]; ok {
+		delete(docManager.openDocuments, documentID)
 		return doc
 	}
 	return nil
 }
 
 // LoadExtension adds an extension to a document with the specified ID
-func (docManager *Manager) LoadExtension(documentName string, ext *Extension) error {
-	if _, ok := docManager.openDocuments[documentName]; !ok {
+func (docManager *Manager) LoadExtension(documentID uuid.UUID, ext *Extension) error {
+	if _, ok := docManager.openDocuments[documentID]; !ok {
 		return errors.New("document not open")
 	}
 
-	return docManager.openDocuments[documentName].addExtension(ext)
+	return docManager.openDocuments[documentID].addExtension(ext)
 }
 
 // IsDocOpen determines if we have a document open and spinning :)
-func (docManager *Manager) IsDocOpen(documentName string) bool {
-	_, ok := docManager.openDocuments[documentName]
+func (docManager *Manager) IsDocOpen(documentID uuid.UUID) bool {
+	_, ok := docManager.openDocuments[documentID]
 	return ok
 }

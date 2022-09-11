@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"cms.csesoc.unsw.edu.au/editor/OT/data"
+	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
 	"github.com/google/uuid"
 )
 
@@ -13,7 +14,7 @@ type documentServer struct {
 	// strategy or a more appropriate ds
 	// state management
 	ID        uuid.UUID
-	state     string
+	state     cmsjson.AstNode
 	stateLock sync.Mutex
 
 	clients     map[int]*clientState
@@ -31,7 +32,7 @@ func newDocumentServer() *documentServer {
 	// ideally state shouldn't be a string due to its immutability
 	// any update requires the allocation + copy of a new string in memory
 	return &documentServer{
-		state:       "amongus!!!",
+		state:       nil,
 		stateLock:   sync.Mutex{},
 		clients:     make(map[int]*clientState),
 		clientsLock: sync.Mutex{},
@@ -112,6 +113,11 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 
 			// apply op to clientView states
 			s.stateLock.Lock()
+
+			// TODO: apply operation
+			//	- Blockers:
+			//		- Gary's TLB
+			//		- Updated Traversal
 
 			// apply the operation locally and log the new operation
 			transformedOperation := s.transformOperation(op)

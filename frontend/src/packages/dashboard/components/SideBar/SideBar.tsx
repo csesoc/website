@@ -2,11 +2,42 @@ import React from 'react';
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import {useNavigate} from 'react-router-dom';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import MenuIcon from '@mui/icons-material/Menu';
 
 const Container = styled.div`
+  position: relative;
   width: 250px;
-  background: lightgrey;
+  background: #c9bff2;
   height: 100vh;
+  transition: left 0.3s ease-in-out;
+  margin-right: 25px;
+`
+
+const IconWrapper = styled.div`
+  z-index: 999;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+
+  right: -45px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const Circle = styled.div`  
+  position: absolute;
+  border: 1px solid black;
+  border-radius: 999px;
+  width: 40px;
+  height: 40px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `
 
 const SidebarTitle = styled.div`
@@ -38,18 +69,30 @@ const SidebarButton = styled(Button) <SideBarButtonProps>`
     width: 160px;
     variant: contained;
     background-color: ${props => props.bgcolor};
+    color: white;
     border-radius: 20px;
     text-transform: none;
+    color: black;
+    &:hover {
+    transform: scale(1.04);
+    background-color: darkgrey;
+    }
+    &:active {
+      transform: scale(0.96);
+      background-color: darkgrey;
+    }
   }
 `
 
 type Props = {
-  setModalState: (state: {open: boolean, type: string}) => void;
+  setModalState: (state: { open: boolean, type: string }) => void;
   selectedFile: number | null;
+  isOpen: boolean;
+  setOpen: (state: boolean) => void;
 }
 
 // Wrapper component ${props => props.color}
-export default function SideBar ({ setModalState, selectedFile}: Props) {
+export default function SideBar ({ setModalState, selectedFile, isOpen, setOpen}: Props) {
 
   const handleNewFile = () => {
     setModalState({
@@ -68,7 +111,7 @@ export default function SideBar ({ setModalState, selectedFile}: Props) {
   const navigate = useNavigate();
   const handleEdit = () => {
     if (selectedFile !== null) {
-      navigate('/editor/' + selectedFile, {replace: false}), [navigate]
+      navigate('/editor/' + selectedFile, { replace: false }), [navigate]
     }
   };
 
@@ -78,29 +121,37 @@ export default function SideBar ({ setModalState, selectedFile}: Props) {
   }
 
   return (
-    <Container>
+    <Container style={{ left: isOpen ? '0px' : '-250px' }}>
+      <IconWrapper onClick={() => setOpen(!isOpen)}>
+        <Circle />
+        {isOpen ?
+            <ArrowBackIcon /> 
+          :
+            <MenuIcon />
+        }
+      </IconWrapper>
       <SidebarTitle>
         Welcome \name\
       </SidebarTitle>
       <ButtonFlex>
-        <ButtonGroup>
+        {/* <ButtonGroup>
           <SidebarButton bgcolor="#F88282">
             Blog
           </SidebarButton>
           <SidebarButton bgcolor="#F88282">
             Core pages
           </SidebarButton>
-        </ButtonGroup>
+        </ButtonGroup> */}
         <ButtonGroup>
           <SidebarButton 
-            bgcolor="#82A3F8"
+            bgcolor="#b4c6ff"
             onClick={handleNewFile}
             data-anchor="NewPageButton"
           >
             New page
           </SidebarButton>
           <SidebarButton
-            bgcolor="#82A3F8"
+            bgcolor="#b4c6ff"
             onClick={handleNewFolder}
             data-anchor="NewFolderButton"
           >
@@ -108,15 +159,15 @@ export default function SideBar ({ setModalState, selectedFile}: Props) {
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
-          <SidebarButton bgcolor="#B8E8E8" onClick={handleEdit}>
+          <SidebarButton bgcolor="white" onClick={handleEdit}>
               Edit
           </SidebarButton>
-          <SidebarButton bgcolor="#B8E8E8">
+          {/* <SidebarButton bgcolor="#B8E8E8">
             Feature
           </SidebarButton>
           <SidebarButton bgcolor="#B8E8E8" onClick={handleRecycle}>
             Recycle
-          </SidebarButton>
+          </SidebarButton> */}
         </ButtonGroup>
       </ButtonFlex>
     </Container>
