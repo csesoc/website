@@ -4,6 +4,7 @@ export type positionProps = {
     position: string;
     top?: number;
     left?: number;
+    dark?: boolean;
 };
 
 export const StyledContainer = styled.div<positionProps>`
@@ -13,7 +14,7 @@ export const StyledContainer = styled.div<positionProps>`
     top: ${(props) => props.top}vw;
     left: ${(props) => props.left}vw;
     border-radius: 1vw;
-    background-color: #FFFFFF30;
+    background-color: ${(props) => props.dark ? '#00000030' : '#FFFFFF30'};
     border-width: 0.15vw;
     border-style: solid;
     border-color: #FAFCFF;

@@ -39,7 +39,7 @@ export default function Resources({}: Props) {
         <Heading>Resources and Contacts</Heading>
       </HeadingContainer>
       <BodyContainer>
-        <GlassContainer>
+        <GlassContainer dark={true}>
         </GlassContainer>
       </BodyContainer>
     </Container>
