@@ -57,22 +57,31 @@ const ImageContainer = styled.div`
 `;
 
 const Text1 = styled.p`
-	color: #010033;
-	font-size: 36px;
 	padding: 10px 0;
 	margin-top: 100px;
+	color: #010033;
+	font-size: 25px;
+  @media ${device.tablet} {
+    font-size: 36px;
+  }
 `;
 
 const Text2 = styled.p`
 	color: #3977f8;
-	font-size: 36px;
+	font-size: 25px;
+  @media ${device.tablet} {
+    font-size: 36px;
+  }
 `;
 
 const Text3 = styled.p`
 	color: #010033;
 	font-style: italic;
-	font-size: 36px;
+	font-size: 25px;
 	display: inline;
+  @media ${device.tablet} {
+    font-size: 36px;
+  }
 `;
 
 const Scroll = styled.p`

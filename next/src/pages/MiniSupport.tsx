@@ -20,7 +20,10 @@ const Heading = styled.div`
   color: #A09FE3;
   font-family: 'Raleway';
   font-weight: 800;
-  font-size: 3.5vw;
+  font-size: 30px;
+  @media ${device.tablet} {
+    font-size: 3.5vw;
+  }
 `;
 
 const BodyContainer = styled.div`
@@ -44,7 +47,10 @@ const H3 = styled.div`
   color: #9B9B9B;
   font-family: 'Raleway';
   font-weight: 800;
-  font-size: 2.5vw;
+  font-size: 20px;
+  @media ${device.tablet} {
+    font-size: 2.5vw;
+  }
 `;
 
 const Text = styled.p`
