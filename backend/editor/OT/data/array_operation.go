@@ -10,7 +10,7 @@ import (
 // ArrayOperation is an operation on an array type
 // @implements OperationModel
 type ArrayOperation struct {
-	NewValue int
+	NewValue float64
 }
 
 // TransformAgainst is the ArrayOperation implementation of the operationModel interface

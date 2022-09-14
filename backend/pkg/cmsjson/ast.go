@@ -128,8 +128,8 @@ func (node *jsonNode) UpdateOrAddArrayElement(index int, newValue AstNode) error
 	}
 
 	asJsonNode.key = strconv.Itoa(index)
-	node.children = append(append(node.children[:index], asJsonNode), node.children[index:]...)
-
+	node.children = append(node.children[:index+1], node.children[index:]...)
+	node.children[index] = asJsonNode
 	return nil
 }
 

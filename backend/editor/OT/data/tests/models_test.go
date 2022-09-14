@@ -15,7 +15,7 @@ import (
 
 // @implements Component
 type ArraysData struct {
-	Data [3]int
+	Data [3]float64
 }
 
 func (a ArraysData) Get(field string) (reflect.Value, error) {
@@ -299,15 +299,13 @@ func TestInsertArrayOperation(t *testing.T) {
 	assert := assert.New(t)
 
 	children, _ := result.JsonArray()
-	results := []interface{}{}
+	results := []float64{}
 	for _, x := range children {
 		value, _ := x.JsonPrimitive()
-		results = append(results, value)
+		results = append(results, value.(float64))
 	}
 
-	// Weird bug here where the last 2 values returned from the child array are actually float64 (hence the interface comparison fails)
-	// see if u can fix this
-	assert.Equal([]interface{}{6, 1, -10, 213}, results)
+	assert.Equal([]float64{6, 1, -10, 213}, results)
 }
 
 // TODO: When TLB stuff is done, remove this and replace above with call to TLB code
