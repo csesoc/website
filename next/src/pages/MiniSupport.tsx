@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Otter from '../svgs/otter.png'
 import Image from 'next/image';
 import Link from 'next/link'
+import { device } from '../styles/device'
 
 type Props = {}
 
@@ -24,7 +25,12 @@ const Heading = styled.div`
 
 const BodyContainer = styled.div`
   display: flex;
-  padding: 10vh 30vw;
+  flex-direction: column;
+  padding: 10vh 0;
+  @media ${device.tablet} {
+    flex-direction: row;
+    padding: 10vh 30vw;
+  }
 `
 
 const TextContainer = styled.div`
@@ -49,6 +55,12 @@ const ButtonContainer = styled.div`
   display: flex;
 `
 
+const ImgContainer = styled.div`
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+`
+
 
 export default function Support({}: Props) {
   return (
@@ -66,7 +78,9 @@ export default function Support({}: Props) {
           </ButtonContainer>
           <Text>Check out our very cool sponsors</Text>
         </TextContainer>
-        <Image src={Otter}/>
+        <ImgContainer>
+          <Image src={Otter}/>
+        </ImgContainer>
       </BodyContainer>
     </Container>
   )
