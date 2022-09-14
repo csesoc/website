@@ -41,12 +41,19 @@ const ColumnContainer = styled.div`
 `;
 
 const ImageContainer = styled.div`
+
+
 	position: relative; /* IMPORTANT */
-	width: 550px;
-	height: 400px;
-	margin-left: 100px;
-	display: flex;
-	align-items: center;
+  width: 70vw;
+
+  @media ${device.laptop} {
+    width: 550px;
+    height: 400px;
+    margin-left: 100px;
+    display: flex;
+    align-items: center;
+  }
+
 `;
 
 const Text1 = styled.p`
@@ -81,7 +88,9 @@ export default function Homepage({}: Props) {
       <HomepageContainer>
         <Container>
           <ColumnContainer>
-            <Image src="/assets/logo.svg" width="600px" height="300px"/>
+            <ImageContainer>
+              <Image src="/assets/logo.svg" width="600px" height="300px"/>
+            </ImageContainer>
             <Text1>
               Empowering
               <Text3> future</Text3>
