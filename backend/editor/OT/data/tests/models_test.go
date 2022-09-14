@@ -15,7 +15,8 @@ import (
 
 // @implements Component
 type ArraysData struct {
-	Data [3]float64
+	Data     [3]float64
+	IntField int
 }
 
 func (a ArraysData) Get(field string) (reflect.Value, error) {
@@ -58,7 +59,8 @@ func setupDocument() cmsjson.AstNode {
 			}, 
 			{
 				"$type": "ArraysData",
-				"Data": [1, -10, 213]
+				"Data": [1, -10, 213],
+				"IntField": 7
 			}
 		]
 	}`, DOCUMENT_ID, IMAGE_DOCUMENT_ID, PARAGRAPH_ID)
@@ -187,7 +189,7 @@ func TestValidGetNestedPrimitive(t *testing.T) {
 
 func TestInsertStringOperation(t *testing.T) {
 	document := setupDocument()
-	// Content/0/ImageDocumentID
+	// Content/0/ImageSource
 	subpaths := []int{2, 0, 1}
 
 	jsonOperation := `{
@@ -227,7 +229,7 @@ func TestInsertStringOperation(t *testing.T) {
 
 func TestDeleteStringOperation(t *testing.T) {
 	document := setupDocument()
-	// Content/0/ImageDocumentID
+	// Content/0/ImageSource
 	subpaths := []int{2, 0, 1}
 
 	jsonOperation := `{
@@ -267,7 +269,7 @@ func TestDeleteStringOperation(t *testing.T) {
 
 func TestInsertArrayOperation(t *testing.T) {
 	document := setupDocument()
-	// Content/0/ImageDocumentID
+	// Content/2/Data/0
 	subpaths := []int{2, 2, 0, 0}
 
 	jsonOperation := `{
@@ -291,7 +293,7 @@ func TestInsertArrayOperation(t *testing.T) {
 		log.Fatalf(err.Error())
 	}
 
-	result, err := operation.Operation.Apply(parent, 0, data.Insert)
+	result, err := operation.Operation.Apply(parent, 3, data.Insert)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -305,8 +307,87 @@ func TestInsertArrayOperation(t *testing.T) {
 		results = append(results, value.(float64))
 	}
 
-	assert.Equal([]float64{6, 1, -10, 213}, results)
+	assert.Equal([]float64{1, -10, 213, 6}, results)
 }
+
+func TestUpdateArrayElement(t *testing.T) {
+	document := setupDocument()
+	// Content/2/Data/0
+	subpaths := []int{2, 2, 0, 0}
+
+	jsonOperation := `{
+		"Path": [2, 2, 0],
+		"OperationType": 0,
+		"AcknowledgedServerOps": 0,
+		"IsNoOp": false,
+		"Operation": {
+			"$type": "arrayOperation",
+			"NewValue": 6
+		}
+	}`
+
+	operation, _ := data.ParseOperation(jsonOperation)
+
+	parent, _, _ := data.Traverse(document, subpaths)
+
+	result, _ := operation.Operation.Apply(parent, 0, data.Insert)
+
+	assert := assert.New(t)
+
+	children, _ := result.JsonArray()
+	results := []float64{}
+	for _, x := range children {
+		value, _ := x.JsonPrimitive()
+		results = append(results, value.(float64))
+	}
+
+	assert.Equal([]float64{6, -10, 213}, results)
+}
+
+func TestUpdateObjectElement(t *testing.T) {
+	document := setupDocument()
+	// Content/0
+	subpaths := []int{2, 0, 0}
+
+	jsonOperation := `{
+		"Path": [2, 0, 0],
+		"OperationType": 0,
+		"AcknowledgedServerOps": 0,
+		"IsNoOp": false,
+		"Operation": {
+			"$type": "objectOperation",
+			"NewValue": {
+				"$type": "image",
+				"ImageDocumentID": "NEW_UUID",
+				"ImageSource": "morb_dead_meme.jpg"
+			}
+		}
+	}`
+
+	operation, err := data.ParseOperation(jsonOperation)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	parent, _, err := data.Traverse(document, subpaths)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	result, err := operation.Operation.Apply(parent, 0, data.Insert)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	assert := assert.New(t)
+	resultNode, _ := result.JsonObject()
+	resultContent, _ := resultNode[0].JsonPrimitive()
+	assert.Equal(resultContent, "NEW_UUID")
+}
+
+// func TestUpdateInteger(t *testing.T) {
+
+// }
 
 // TODO: When TLB stuff is done, remove this and replace above with call to TLB code
 func placeholder(cmsjson.AstNode) ([]int, error) {

@@ -123,13 +123,16 @@ func (node *jsonNode) UpdateOrAddArrayElement(index int, newValue AstNode) error
 		return errors.New("type mismatch between target node and value to insert")
 	case node.children == nil || node.isObject:
 		return errors.New("ast node is not an array")
-	case index >= len(node.children):
+	case index > len(node.children):
 		return errors.New("cannot insert past the existing size of the array")
 	}
 
 	asJsonNode.key = strconv.Itoa(index)
-	node.children = append(node.children[:index+1], node.children[index:]...)
-	node.children[index] = asJsonNode
+	if index == len(node.children) {
+		node.children = append(node.children, asJsonNode)
+	} else {
+		node.children[index] = asJsonNode
+	}
 	return nil
 }
 
@@ -149,6 +152,9 @@ func (node *jsonNode) RemoveArrayElement(index int) error {
 // UpdateObject updates a specific object and applies a value at a specific index
 func (node *jsonNode) UpdateOrAddObjectElement(index int, newValue AstNode) error {
 	value, underlyingType := newValue.JsonPrimitive()
+	if value == nil {
+		value, underlyingType = newValue.JsonObject()
+	}
 	asJsonNode, couldCast := newValue.(*jsonNode)
 
 	switch {

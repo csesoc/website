@@ -22,7 +22,7 @@ func (arrOp ArrayOperation) TransformAgainst(operation OperationModel, applicati
 func (arrOp ArrayOperation) Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) (cmsjson.AstNode, error) {
 	var err error = nil
 	if children, _ := parentNode.JsonArray(); children != nil {
-		if applicationIndex < 0 || applicationIndex >= len(children) {
+		if applicationIndex < 0 || applicationIndex > len(children) {
 			return nil, fmt.Errorf("invalid application index, index %d out of bounds for array of size %d", applicationIndex, len(children))
 		}
 

@@ -3,6 +3,7 @@ package data
 import (
 	"reflect"
 
+	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels"
 	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels/cmsmodel"
 	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
 )
@@ -19,6 +20,11 @@ var cmsJsonConf = cmsjson.Configuration{
 	RegisteredTypes: map[reflect.Type]map[string]reflect.Type{
 		// TODO: later allow this to be dynamically swapped out for different front-ends
 		reflect.TypeOf((*cmsmodel.Component)(nil)).Elem(): {
+			"image":     reflect.TypeOf(cmsmodel.Image{}),
+			"paragraph": reflect.TypeOf(cmsmodel.Paragraph{}),
+		},
+
+		reflect.TypeOf((*datamodels.DataType)(nil)).Elem(): {
 			"image":     reflect.TypeOf(cmsmodel.Image{}),
 			"paragraph": reflect.TypeOf(cmsmodel.Paragraph{}),
 		},

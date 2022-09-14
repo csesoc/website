@@ -6,7 +6,6 @@ import (
 )
 
 // @implements Component
-// TODO: How do take in specific types words for ParagraphAlign?
 type Paragraph struct {
 	ParagraphID       string
 	ParagraphAlign    string
