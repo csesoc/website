@@ -54,7 +54,7 @@ const PurpleBlock = styled.div`
   top: -10px;
 `
 
-const Background = styled.div`
+const Background = styled.div<{offset?: number}>`
 	position: absolute;
 	top: ${(props) => props.offset}px;
 	right: 0;
