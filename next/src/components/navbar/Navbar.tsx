@@ -30,7 +30,7 @@ const Navbar = (props: NavbarOpenProps) => {
 					<NavItem>Resources</NavItem>
 				</a>
 				<a href="#support">
-					<NavItem>sponsors</NavItem>
+					<NavItem>Sponsors</NavItem>
 				</a>
 			</ItemWrapper>
 		</Container>
