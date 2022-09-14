@@ -23,9 +23,6 @@ const Navbar = (props: NavbarOpenProps) => {
 				<a href="#events">
 					<NavItem>Events</NavItem>
 				</a>
-				<a href="#contactus">
-					<NavItem>Contact</NavItem>
-				</a>
 				<a href="#resources">
 					<NavItem>Resources</NavItem>
 				</a>

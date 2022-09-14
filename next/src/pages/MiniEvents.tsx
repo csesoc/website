@@ -10,7 +10,7 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     gap: 100px;
-    @media ${device.tablet} {
+    @media ${device.laptop} {
         flex-direction: row;
         justify-content: space-evenly;
         align-items: center;
@@ -23,7 +23,7 @@ const ColumnContainer = styled.div`
     display: flex;
     flex-direction: column;
     width: 60vw;
-    @media ${device.tablet} {
+    @media ${device.laptop} {
         padding: 30px;
     }
 `
@@ -33,7 +33,7 @@ const EventsText = styled.div`
     font-family: 'Raleway';
     font-weight: 800;
     font-size: 40px;
-    @media ${device.tablet} {
+    @media ${device.laptop} {
         font-size: 3.5vw;
         line-height: 0vw;
         text-align: left;

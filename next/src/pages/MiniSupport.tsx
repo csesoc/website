@@ -8,7 +8,9 @@ import { device } from '../styles/device'
 type Props = {}
 
 const Container = styled.div`
-  height: 100vh;
+  @media ${device.laptop} {
+    height: 100vh;
+  }
 `
 
 const HeadingContainer = styled.div`
