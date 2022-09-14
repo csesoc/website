@@ -17,8 +17,8 @@ const ItemWrapper = styled.ul`
 	list-style: none;
 	padding: 0 20px;
 	@media (max-width: 768px) {
-		padding: 50px 0;
-		gap: 5px;
+		padding: 0;
+		gap: 0;
 	}
 `;
 const NavItem = styled.li`
