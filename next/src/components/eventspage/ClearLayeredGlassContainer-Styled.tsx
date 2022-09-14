@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { device } from "../../styles/device";
 
 export type positionProps = {
-    position: string;
+    position?: string;
     top?: number;
     left?: number;
     dark?: boolean;
@@ -20,7 +20,7 @@ export const GlassContainer = styled.div<positionProps>`
     border-color: #FAFCFF;
     width: 80vw;
     height: 50vw;
-    @media ${device.tablet} {
+    @media ${device.laptop} {
         width: 36.7vw;
         height: 20vw;
     }
@@ -32,7 +32,7 @@ export const ImgContainer = styled.div`
     height: 60vw;
     top: -4.15vw;
     left: 1.5vw;
-    @media ${device.tablet} {
+    @media ${device.laptop} {
         width: 36vw;
         height: 17.8vw;
         top: 2.15vw;

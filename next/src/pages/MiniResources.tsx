@@ -2,15 +2,22 @@ import React from 'react'
 import styled from 'styled-components'
 import { GlassContainer } from '../components/eventspage/ClearLayeredGlassContainer-Styled';
 import { device } from '../styles/device'
-
+import Image from 'next/image';
+import YT from '../svgs/YT.svg'
+import FB from '../svgs/FB.svg'
+import DC from '../svgs/DC.svg'
+import SPOT from '../svgs/SPOT.svg'
 type Props = {}
 
 const Container = styled.div`
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 30vh 0;
+
+  @media ${device.laptop} {
+    height: 100vh;
+  }
 `
 const Heading = styled.div`
   color: var(--accent-darker-purple);
@@ -31,7 +38,37 @@ const HeadingContainer = styled.div`
 const BodyContainer = styled.div`
   display:flex;
   padding: 10vh 20vw;
+
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20vw;
+  @media ${device.laptop} {
+    flex-direction: row;
+  }
 `
+
+const ColumnContainer = styled.div`
+  display: flex; 
+
+  flex-direction: row;
+  gap: 5vw;
+  justify-content: center;
+  @media ${device.laptop} {
+    flex-direction: column;
+    gap: 10vh;
+  }
+
+`
+
+const ImgContainer = styled.div`
+  width: 50px;
+  @media ${device.laptop} {
+    width: 60px;
+  }
+`
+
+const imgs = [YT, FB, DC, SPOT]
 
 export default function Resources({}: Props) {
   return (
@@ -41,6 +78,13 @@ export default function Resources({}: Props) {
       </HeadingContainer>
       <BodyContainer>
         <GlassContainer dark={true}/>
+        <ColumnContainer>
+          {imgs.map((src) => (
+            <ImgContainer>
+              <Image src={src}/>
+            </ImgContainer>
+          ))}
+        </ColumnContainer>
       </BodyContainer>
     </Container>
   )
