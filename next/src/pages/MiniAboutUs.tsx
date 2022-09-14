@@ -66,14 +66,14 @@ const AboutUs = () => (
             <PageStyle.AboutUsContent>
                 <PageStyle.AboutUsText>
                     About Us
-                    <PageStyle.MainText>
+                </PageStyle.AboutUsText>
+                <PageStyle.MainText>
                         We are one of the biggest and most active societies at
                         <PageStyle.BlueText> UNSW</PageStyle.BlueText>
                         , catering to over
                         <PageStyle.BlueText> 3500 CSE students </PageStyle.BlueText>
                         spanning across degrees in Computer Science, Software Engineering, Bioinformatics and Computer Engineering.
                     </PageStyle.MainText>
-                </PageStyle.AboutUsText>
             </PageStyle.AboutUsContent>
             {CreateSpheres}
         </PageStyle.AboutUsPage>

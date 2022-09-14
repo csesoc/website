@@ -41,31 +41,47 @@ const ColumnContainer = styled.div`
 `;
 
 const ImageContainer = styled.div`
+
+
 	position: relative; /* IMPORTANT */
-	width: 550px;
-	height: 400px;
-	margin-left: 100px;
-	display: flex;
-	align-items: center;
+  width: 70vw;
+
+  @media ${device.laptop} {
+    width: 550px;
+    height: 400px;
+    margin-left: 100px;
+    display: flex;
+    align-items: center;
+  }
+
 `;
 
 const Text1 = styled.p`
-	color: #010033;
-	font-size: 36px;
 	padding: 10px 0;
 	margin-top: 100px;
+	color: #010033;
+	font-size: 25px;
+  @media ${device.tablet} {
+    font-size: 36px;
+  }
 `;
 
 const Text2 = styled.p`
 	color: #3977f8;
-	font-size: 36px;
+	font-size: 25px;
+  @media ${device.tablet} {
+    font-size: 36px;
+  }
 `;
 
 const Text3 = styled.p`
 	color: #010033;
 	font-style: italic;
-	font-size: 36px;
+	font-size: 25px;
 	display: inline;
+  @media ${device.tablet} {
+    font-size: 36px;
+  }
 `;
 
 const Scroll = styled.p`
@@ -81,7 +97,9 @@ export default function Homepage({}: Props) {
       <HomepageContainer>
         <Container>
           <ColumnContainer>
-            <Image src="/assets/logo.svg" width="600px" height="300px"/>
+            <ImageContainer>
+              <Image src="/assets/logo.svg" width="600px" height="300px"/>
+            </ImageContainer>
             <Text1>
               Empowering
               <Text3> future</Text3>

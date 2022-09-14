@@ -8,13 +8,18 @@ import styled from "styled-components";
 import { NavbarOpenHandler } from "../components/navbar/types";
 import HamburgerMenu from "../components/navbar/HamburgerMenu";
 
+import HomePageCurve from "../svgs/HPCurve.svg"
+import TopRect from "../svgs/TopRect.svg"
+import BottomRect from "../svgs/BottomRect.svg"
+
 // local
 import Navbar from "../components/navbar/Navbar";
 import Homepage from "./MiniHomepage";
 import Events from "./MiniEvents";
 import AboutUs from "./MiniAboutUs";
-import HomepageCurve from "../svgs/HomepageCurve";
-import RectangleCurve from "../svgs/RectangleCurve";
+import Resources from "./MiniResources";
+import Support from "./MiniSupport";
+
 import Footer from "../components/footer/Footer";
 import { device } from '../styles/device'
 
@@ -30,18 +35,35 @@ const PageContainer = styled.div`
 `;
 
 const Main = styled.main`
-  padding-left: 2rem;
-  padding-right: 2rem;
+  // padding-left: 2rem;
+  // padding-right: 2rem;
 `;
 
 const CurveContainer = styled.div<CurveContainerProps>`
+  position: absolute;
+  top: ${props => props.offset}px;
+  right: 0;
+  z-index: -1;  
+`;
+
+const PurpleBlock = styled.div`
+  background: #BEB8EA;
+  width: 100vw;
+  height: 135vh;
+  position: relative;
+  top: -10px;
+`
+
+const Background = styled.div`
 	position: absolute;
 	top: ${(props) => props.offset}px;
 	right: 0;
 	z-index: -1;
 `;
 
-const Background = styled.div``;
+const RefLink = styled.div``
+
+// const Background = styled.div``;
 
 // const Button = styled.button`
 //   background-color:#FFFFFF;
@@ -59,6 +81,7 @@ const Background = styled.div``;
 const Index: NextPage = () => {
   const [width, setWidth]   = useState<undefined|number>();
   const [height, setHeight] = useState<undefined|number>();
+  const [loaded, setLoaded] = useState(false);
   const [navbarOpen, setNavbarOpen] = useState(false);
 
 	const handleToggle: NavbarOpenHandler = () => {
@@ -72,12 +95,14 @@ const Index: NextPage = () => {
 
   useEffect(() => {
       window.addEventListener("resize", updateDimensions);
+      setLoaded(true)
       return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
   useEffect(() => {
-
-  }, [width])
+    setHeight(window?.innerHeight);
+    setWidth(window?.innerWidth)
+  },[width])
 
   return (
     <PageContainer>
@@ -86,36 +111,41 @@ const Index: NextPage = () => {
         <meta name="description" content="CSESoc Website Homepage" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} />}
+      {navbarOpen && <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} /> }
       <Main>
-        <Background>
-          <CurveContainer offset={0}>
-            <HomepageCurve width={400} height={1000} />
-          </CurveContainer>
-          <CurveContainer offset={1200}>
-            <RectangleCurve height={2000} dontPreserveAspectRatio />
-          </CurveContainer>
-        </Background>
-
-        {navbarOpen ? (
-					<HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} />
-				) : (
-					<></>
-				)}
-
-				<Navbar open={navbarOpen} setNavbarOpen={handleToggle} />
-        
-				<a id="homepage">
-					<Homepage />
-				</a>
-				<a id="aboutus">
-					<AboutUs />
-				</a>
-				<a id="events">
-					<Events />
-				</a>
+        { (loaded && height && width) && (
+          <>
+            <Background>
+              <CurveContainer offset={0}>
+                <Image src={HomePageCurve}/>
+              </CurveContainer>
+              <CurveContainer offset={height+300}>
+                <Image src={TopRect}/>
+                <PurpleBlock/>
+                <div style={{position: 'relative', top: '-10px'}}>
+                  <Image src={BottomRect}/>
+                </div>
+              </CurveContainer>
+            </Background>
+            <RefLink id="homepage">
+              <Homepage />
+            </RefLink>
+            <RefLink id="aboutus">
+              <AboutUs />
+            </RefLink>
+            <RefLink id="events">
+              <Events />
+            </RefLink>
+            <RefLink id="resources">
+              <Resources />
+            </RefLink>
+            <RefLink id="support">
+              <Support />
+            </RefLink>
+          </>
+        )}
       </Main>
-
       <Footer />
     </PageContainer>
   );
