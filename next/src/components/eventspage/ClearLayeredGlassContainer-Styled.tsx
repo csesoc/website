@@ -7,7 +7,7 @@ export type positionProps = {
     dark?: boolean;
 };
 
-export const StyledContainer = styled.div<positionProps>`
+export const GlassContainer = styled.div<positionProps>`
     position: ${(props) => props.position};
     width: 36.7vw;
     height: 20vw;

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { StyledContainer as GlassContainer} from '../components/eventspage/ClearLayeredGlassContainer-Styled';
+import { GlassContainer } from '../components/eventspage/ClearLayeredGlassContainer-Styled';
 import { device } from '../styles/device'
 
 type Props = {}
