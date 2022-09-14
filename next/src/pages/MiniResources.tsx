@@ -80,7 +80,7 @@ export default function Resources({}: Props) {
         <GlassContainer dark={true}/>
         <ColumnContainer>
           {imgs.map((src) => (
-            <ImgContainer>
+            <ImgContainer key="imgContainer">
               <Image src={src}/>
             </ImgContainer>
           ))}
