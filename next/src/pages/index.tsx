@@ -13,6 +13,7 @@ import Navbar from "../components/navbar/Navbar";
 import Homepage from "./MiniHomepage";
 import Events from "./MiniEvents";
 import AboutUs from "./MiniAboutUs";
+import Sponsors from "./Sponsors";
 import HomepageCurve from "../svgs/HomepageCurve";
 import RectangleCurve from "../svgs/RectangleCurve";
 
@@ -57,13 +58,13 @@ const Home: NextPage = () => {
 	};
 
 	return (
-		<PageContainer> 
+		<PageContainer>
 			<Head>
 				<title>CSESoc</title>
 				<meta name="description" content="CSESoc Website Homepage" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<main>
+			{/* <main>
 				<Background>
 					<CurveContainer offset={0}>
 						<HomepageCurve width={400} height={1000} />
@@ -88,7 +89,8 @@ const Home: NextPage = () => {
 					<Events />
 				</a>
 			</main>
-			<footer></footer>
+			<footer></footer> */}
+			<Sponsors />
 		</PageContainer>
 	);
 };

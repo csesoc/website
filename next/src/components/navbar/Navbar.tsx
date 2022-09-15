@@ -12,7 +12,7 @@ import {
 
 const Navbar = (props: NavbarOpenProps) => {
 	return (
-		<Container> 
+		<Container>
 			<ItemWrapper>
 				<HamburgerButton onClick={props.setNavbarOpen}>
 					<Image src={HamburgerIcon} />
@@ -25,7 +25,9 @@ const Navbar = (props: NavbarOpenProps) => {
 					<NavItem>Events</NavItem>
 				</a>
 				<NavItem>Resources</NavItem>
-				<NavItem>Sponsors</NavItem>
+				<a href="#sponsors">
+					<NavItem>Sponsors</NavItem>
+				</a>
 			</ItemWrapper>
 		</Container>
 	);
