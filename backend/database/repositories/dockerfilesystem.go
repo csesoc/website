@@ -28,7 +28,7 @@ type dockerPublishedFileSystemRepository struct {
 }
 
 // create new instances of the corresponding repository types
-func NewDockerPublishedFileSystemRepository() (*dockerPublishedFileSystemRepository, error) {
+func newDockerPublishedFileSystemRepository() (*dockerPublishedFileSystemRepository, error) {
 	inner, err := newDockerFilesystemRepositoryCore(publishedVolumePath)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func NewDockerPublishedFileSystemRepository() (*dockerPublishedFileSystemReposit
 }
 
 // create new instances of the corresponding repository types
-func NewDockerUnpublishedFileSystemRepository() (*dockerUnpublishedFileSystemRepository, error) {
+func newDockerUnpublishedFileSystemRepository() (*dockerUnpublishedFileSystemRepository, error) {
 	inner, err := newDockerFilesystemRepositoryCore(unpublishedVolumePath)
 	if err != nil {
 		return nil, err
@@ -68,25 +68,25 @@ func (c *dockerFileSystemRepositoryCore) AddToVolume(filename string) error {
 	// Check if source file is valid
 	src, err := os.Open(filename)
 	if err != nil {
-		return errors.New("Couldn't open source file")
+		return errors.New("couldn't open source file")
 	}
 	defer src.Close()
 	// Create/update destination file and check it is valid
 	filepath := filepath.Join(c.volumePath, filename)
 	moved, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0o755)
 	if err != nil {
-		return errors.New("Couldn't read/create the destination file")
+		return errors.New("couldn't read/create the destination file")
 	}
 	defer moved.Close()
 	// Copy source to destination
 	_, err = io.Copy(moved, src)
 	if err != nil {
-		return errors.New("File couldn't be copied to destination")
+		return errors.New("file couldn't be copied to destination")
 	}
 	// Delete source file
 	err = os.Remove(filename)
 	if err != nil {
-		return errors.New("Couldn't remove the source file")
+		return errors.New("couldn't remove the source file")
 	}
 	return nil
 }
@@ -98,13 +98,13 @@ func (c *dockerFileSystemRepositoryCore) CopyToVolume(src *os.File, filename str
 	filepath := filepath.Join(c.volumePath, filename)
 	copied, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE, 0o755)
 	if err != nil {
-		return errors.New("Couldn't read/create the destination file")
+		return errors.New("couldn't read/create the destination file")
 	}
 	defer copied.Close()
 	// Copy source to destination
 	_, err = io.Copy(copied, src)
 	if err != nil {
-		return errors.New("File couldn't be copied to destination")
+		return errors.New("file couldn't be copied to destination")
 	}
 	return nil
 }
@@ -126,12 +126,12 @@ func (c *dockerFileSystemRepositoryCore) DeleteFromVolume(filename string) error
 	filepath := filepath.Join(c.volumePath, filename)
 	file, err := os.Open(filepath)
 	if err != nil {
-		return errors.New("File doesn't exist")
+		return errors.New("file doesn't exist")
 	}
 	file.Close()
 	os.Remove(filepath)
 	if err = os.Remove(filepath); err != nil {
-		return errors.New("Couldn't remove the source file")
+		return errors.New("couldn't remove the source file")
 	}
 	return nil
 }

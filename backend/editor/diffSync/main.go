@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"cms.csesoc.unsw.edu.au/editor/diffSync/service"
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -27,14 +28,20 @@ func EditEndpoint(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(400)
 		return
 	}
-
-	ws, err := Upgrader.Upgrade(w, r, nil)
+	var err error
+	var ws *websocket.Conn
+	ws, err = Upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 	}
 
-	err = broker.ConnectOrOpenDocument(requestedDocument[0], ws)
+	var documentID uuid.UUID
+	documentID, err = uuid.Parse(requestedDocument[0])
+	if err == nil {
+		err = broker.ConnectOrOpenDocument(documentID, ws)
+	}
 	if err != nil {
+		log.Println(err)
 		ws.Close()
 	}
 }

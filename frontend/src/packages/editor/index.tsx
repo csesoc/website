@@ -57,25 +57,30 @@ const EditorPage: FC = () => {
     <div style={{ height: "100%" }}>
       <EditorHeader />
       <Container>
-        {blocks.map((block, idx) =>
-          block[0].type === "paragraph" ? (
-            <EditorBlock
-              id={idx}
-              key={idx}
-              initialValue={block}
-              update={updateValues}
-              showToolBar={focusedId === idx}
-              onEditorClick={() => setFocusedId(idx)}
-            />
-          ) : (
-            <HeadingBlock
-              id={idx}
-              key={idx}
-              update={updateValues}
-              showToolBar={focusedId === idx}
-              onEditorClick={() => setFocusedId(idx)}
-            />
+        {blocks.map((block, idx) => {
+          console.log(block[0].type)
+          return (
+            block[0].type === "paragraph" ? (
+              <EditorBlock
+                id={idx}
+                key={idx}
+                initialValue={block}
+                update={updateValues}
+                showToolBar={focusedId === idx}
+                onEditorClick={() => setFocusedId(idx)}
+              />
+            ) : (
+              <HeadingBlock
+                id={idx}
+                key={idx}
+                update={updateValues}
+                showToolBar={focusedId === idx}
+                onEditorClick={() => setFocusedId(idx)}
+              />
+            )
           )
+        }
+          
         )}
 
         <InsertContentWrapper>

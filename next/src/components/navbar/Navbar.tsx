@@ -20,12 +20,13 @@ const Navbar = (props: NavbarOpenProps) => {
 				<a href="#aboutus">
 					<NavItem>About Us</NavItem>
 				</a>
-				<NavItem>Contact</NavItem>
 				<a href="#events">
 					<NavItem>Events</NavItem>
 				</a>
-				<NavItem>Resources</NavItem>
-				<a href="#sponsors">
+				<a href="#resources">
+					<NavItem>Resources</NavItem>
+				</a>
+				<a href="#support">
 					<NavItem>Sponsors</NavItem>
 				</a>
 			</ItemWrapper>

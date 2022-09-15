@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { device } from "../../styles/device";
 
 export const AboutUsPage = styled.div`
     position: relative;
@@ -15,6 +16,7 @@ export const AboutUsContent = styled.div`
     flex-direction: column;
     justify-content: flex-end;
     margin-bottom: 5vw;
+    gap: 20px;
 `
 
 type positionProps = {
@@ -30,12 +32,17 @@ export const SpherePosition = styled.div<positionProps>`
 `
 
 export const AboutUsText = styled.div`
-    color: #A09FE3;
+    color: var(--accent-darker-purple);
     font-family: 'Raleway';
     font-weight: 810;
-    font-size: 3.5vw;
-    line-height: 1.9vw;
-    text-align: right;
+
+    font-size: 40px;
+    @media ${device.tablet} {
+        font-size: 3.5vw;
+        line-height: 1.9vw;
+        text-align: right;
+    }
+
 `
 
 export const MainText = styled.div`
@@ -43,11 +50,17 @@ export const MainText = styled.div`
     background: #A09FE3;
     border-radius: 1vw;
     color: #FFFFFF;
-    font-weight: 300;
-    font-size: 1.3vw;
-    text-align: center;
-    padding: 1.4vw 2vw;
-    margin-top: 2.8vw;
+    font-weight: 400;
+    font-size: 18px;
+    padding: 20px;
+    line-height: 20px;
+    @media ${device.tablet} {
+        font-size: 2vw;
+        text-align: center;
+        padding: 1.4vw 2vw;
+        margin-top: 2.8vw;
+        line-height: 2.5vw;
+    }
 `;
 
 export const BlueText = styled.span`
