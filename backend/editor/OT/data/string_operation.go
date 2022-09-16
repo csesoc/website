@@ -95,7 +95,25 @@ func deleteDelete(o1 StringOperation, o2 StringOperation) StringOperation {
 		length := o2.RangeEnd - o2.RangeStart
 		o1.RangeStart, o2.RangeEnd = o1.RangeStart+length, o1.RangeEnd+length
 	} else {
-		// Overlap case FUCK FUCK FUCK
+		if o2.RangeStart <= o1.RangeStart {
+			// o2 starts before o1
+			if o1.RangeEnd <= o2.RangeEnd {
+				// o2 is bigger or same as o1 so o1 becomes noop
+				o1.RangeEnd = o1.RangeStart
+			} else {
+				// o1 ends after o2, so delete everything inbetween o1 and o2
+				o1.RangeStart = o2.RangeEnd
+			}
+		} else {
+			// o1 starts before o2
+			if o2.RangeEnd <= o1.RangeEnd {
+				// o1 is bigger or same as o1 so do nothing
+				return o1
+			} else {
+				// o2 ends after o1, so delete everything inbetween o1 and o2
+				o1.RangeEnd = o2.RangeStart
+			}
+		}
 	}
 	return o1
 }
