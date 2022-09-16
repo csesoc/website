@@ -65,7 +65,25 @@ func insertDelete(o1 StringOperation, o2 StringOperation) StringOperation {
 		o1.RangeStart, o1.RangeEnd = o1.RangeStart-length, o1.RangeEnd-length
 	} else {
 		// Overlap case FUCK FUCK FUCK
-		o1.RangeStart = o2.RangeStart
+		if o2.RangeStart <= o1.RangeStart {
+			// o2 starts before o1
+			if o1.RangeEnd <= o2.RangeEnd {
+				// o2 is bigger or same as o1 so o1 becomes noop
+				o1.RangeEnd = o1.RangeStart
+			} else {
+				// o1 ends after o2, so delete everything inbetween o1 and o2
+				o1.RangeStart = o2.RangeEnd
+			}
+		} else {
+			// o1 starts before o2
+			if o2.RangeEnd <= o1.RangeEnd {
+				// o1 is bigger or same as o1 so do nothing
+				return o1
+			} else {
+				// o2 ends after o1, so delete everything inbetween o1 and o2
+				o1.RangeEnd = o2.RangeStart
+			}
+		}
 	}
 	return o1
 }
@@ -79,10 +97,26 @@ func deleteInsert(o1 StringOperation, o2 StringOperation) StringOperation {
 		// If delete happens after insert, shift delete right
 		length := o2.RangeEnd - o2.RangeStart
 		o1.RangeStart, o1.RangeEnd = o1.RangeStart+length, o1.RangeEnd+length
-	}
-	if o1.RangeEnd < o2.RangeStart {
-		// Overlap case FUCK FUCK FUCK
-		o1.RangeStart = o2.RangeStart
+	} else {
+		if o2.RangeStart <= o1.RangeStart {
+			// o2 starts before o1
+			if o1.RangeEnd <= o2.RangeEnd {
+				// o2 is bigger or same as o1 so o1 becomes noop
+				o1.RangeEnd = o1.RangeStart
+			} else {
+				// o1 ends after o2, so delete everything inbetween o1 and o2
+				o1.RangeStart = o2.RangeEnd
+			}
+		} else {
+			// o1 starts before o2
+			if o2.RangeEnd <= o1.RangeEnd {
+				// o1 is bigger or same as o1 so do nothing
+				return o1
+			} else {
+				// o2 ends after o1, so delete everything inbetween o1 and o2
+				o1.RangeEnd = o2.RangeStart
+			}
+		}
 	}
 	return o1
 }
