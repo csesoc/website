@@ -26,7 +26,7 @@ import { device } from '../styles/device'
 
 
 type CurveContainerProps = {
-	offset: number;
+  offset: number;
 };
 
 const PageContainer = styled.div`
@@ -53,24 +53,9 @@ const PurpleBlock = styled.div`
   height: 135vh;
   position: relative;
   top: -10px;
-`
-
-const Background = styled.div<{offset?: number}>`
-	position: absolute;
-  top: ${props => props.offset}px;
-  right: 0;
-  z-index: -1;  
 `;
 
-const PurpleBlock = styled.div`
-  background: #BEB8EA;
-  width: 100vw;
-  height: 135vh;
-  position: relative;
-  top: -10px;
-`
-
-const Background = styled.div<{offset?: number}>`
+const Background = styled.div<{ offset?: number }>`
 	position: absolute;
 	top: ${(props) => props.offset}px;
 	right: 0;
@@ -95,30 +80,30 @@ const RefLink = styled.div``
 // `;
 
 const Index: NextPage = () => {
-  const [width, setWidth]   = useState<undefined|number>();
-  const [height, setHeight] = useState<undefined|number>();
+  const [width, setWidth] = useState<undefined | number>();
+  const [height, setHeight] = useState<undefined | number>();
   const [loaded, setLoaded] = useState(false);
   const [navbarOpen, setNavbarOpen] = useState(false);
 
-	const handleToggle: NavbarOpenHandler = () => {
-		setNavbarOpen(!navbarOpen);
-	};
+  const handleToggle: NavbarOpenHandler = () => {
+    setNavbarOpen(!navbarOpen);
+  };
 
   const updateDimensions = () => {
-      setWidth(window?.innerWidth);
-      setHeight(window?.innerHeight);
+    setWidth(window?.innerWidth);
+    setHeight(window?.innerHeight);
   }
 
   useEffect(() => {
-      window.addEventListener("resize", updateDimensions);
-      setLoaded(true)
-      return () => window.removeEventListener("resize", updateDimensions);
+    window.addEventListener("resize", updateDimensions);
+    setLoaded(true)
+    return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
   useEffect(() => {
     setHeight(window?.innerHeight);
     setWidth(window?.innerWidth)
-  },[width])
+  }, [width])
 
   return (
     <PageContainer>
@@ -127,20 +112,20 @@ const Index: NextPage = () => {
         <meta name="description" content="CSESoc Website Homepage" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} />}
-      {navbarOpen && <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} /> }
+      {/* {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} />}
+      {navbarOpen && <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} />}
       <Main>
-        { (loaded && height && width) && (
+        {(loaded && height && width) && (
           <>
             <Background>
               <CurveContainer offset={0}>
-                <Image src={HomePageCurve}/>
+                <Image src={HomePageCurve} />
               </CurveContainer>
-              <CurveContainer offset={height+300}>
-                <Image src={TopRect}/>
-                <PurpleBlock/>
-                <div style={{position: 'relative', top: '-10px'}}>
-                  <Image src={BottomRect}/>
+              <CurveContainer offset={height + 300}>
+                <Image src={TopRect} />
+                <PurpleBlock />
+                <div style={{ position: 'relative', top: '-10px' }}>
+                  <Image src={BottomRect} />
                 </div>
               </CurveContainer>
             </Background>
@@ -162,7 +147,8 @@ const Index: NextPage = () => {
           </>
         )}
       </Main>
-      <Footer />
+      <Footer /> */}
+      <Sponsors/>
     </PageContainer>
   );
 };
