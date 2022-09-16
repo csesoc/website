@@ -1,6 +1,8 @@
 package data
 
 import (
+	"fmt"
+
 	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
 )
 
@@ -56,6 +58,7 @@ func insertInsert(o1 StringOperation, o2 StringOperation) StringOperation {
 
 // Transform o1 when o1 is an insert, and o2 is a delete
 func insertDelete(o1 StringOperation, o2 StringOperation) StringOperation {
+	fmt.Println("insertDelete called")
 	if o1.RangeStart <= o2.RangeStart {
 		// If insert happens before the delete, do nothing to insert op
 		return o1
@@ -90,6 +93,7 @@ func insertDelete(o1 StringOperation, o2 StringOperation) StringOperation {
 
 // Transform o1 when o1 is an delete, and o2 is a insert
 func deleteInsert(o1 StringOperation, o2 StringOperation) StringOperation {
+	fmt.Println("deleteInsert called")
 	if o2.RangeStart < o1.RangeEnd {
 		// If delete happens after the insert, do nothing to delete op
 		return o1
@@ -121,13 +125,13 @@ func deleteInsert(o1 StringOperation, o2 StringOperation) StringOperation {
 	return o1
 }
 
-// Transform o2 when o1 is an delete, and o2 is a delete
+// Transform o1 when o1 is an delete, and o2 is a delete
 func deleteDelete(o1 StringOperation, o2 StringOperation) StringOperation {
 	if o2.RangeStart >= o1.RangeEnd {
 		return o1
 	} else if o1.RangeStart >= o2.RangeEnd {
 		length := o2.RangeEnd - o2.RangeStart
-		o1.RangeStart, o2.RangeEnd = o1.RangeStart+length, o1.RangeEnd+length
+		o1.RangeStart, o1.RangeEnd = o1.RangeStart-length, o1.RangeEnd-length
 	} else {
 		if o2.RangeStart <= o1.RangeStart {
 			// o2 starts before o1
