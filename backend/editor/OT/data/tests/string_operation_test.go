@@ -30,7 +30,7 @@ func TestInsertInsertNonOverlap(t *testing.T) {
 // 	o1_t, o2_t := o1.TransformAgainst(o2, data.Insert)
 
 // 	assert := assert.New(t)
-//  assert.Equal(apply(o1_t, apply(o2_t, s)), apply(o2_t, apply(o1_t, s)))
+// 	assert.Equal(apply(o1_t, apply(o2_t, s)), apply(o2_t, apply(o1_t, s)))
 // }
 
 func TestInsertInsertOverlap(t *testing.T) {

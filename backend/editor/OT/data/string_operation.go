@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
+	"github.com/jinzhu/copier"
 )
 
 // StringOperation represents an operation on a string type
@@ -23,17 +24,22 @@ func (stringOp StringOperation) TransformAgainst(operation OperationModel, appli
 	if !ok {
 		return stringOp, operation
 	}
+	op1_1, op1_2, op2_1, op2_2 := StringOperation{}, StringOperation{}, StringOperation{}, StringOperation{}
+	copier.Copy(&op1_1, &stringOp)
+	copier.Copy(&op1_2, &stringOp)
+	copier.Copy(&op2_1, &othStringOp)
+	copier.Copy(&op2_2, &othStringOp)
 	if stringOp.NewValue != "" {
 		if applicationType == Insert {
-			return insertInsert(othStringOp, stringOp), insertInsert(stringOp, othStringOp)
+			return insertInsert(op2_1, op1_1), insertInsert(op1_2, op2_2)
 		} else {
-			return insertDelete(stringOp, othStringOp), deleteInsert(othStringOp, stringOp)
+			return insertDelete(op1_1, op2_1), deleteInsert(op2_2, op1_2)
 		}
 	} else {
 		if applicationType == Insert {
-			return deleteInsert(stringOp, othStringOp), insertDelete(othStringOp, stringOp)
+			return deleteInsert(op1_1, op2_1), insertDelete(op2_2, op1_2)
 		} else {
-			return deleteDelete(othStringOp, stringOp), deleteDelete(stringOp, othStringOp)
+			return deleteDelete(op2_1, op1_1), deleteDelete(op1_2, op2_2)
 		}
 	}
 	// If the operation to transform it against is not a StringOperation, do nothing
