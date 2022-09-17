@@ -1,8 +1,6 @@
 package data
 
 import (
-	"fmt"
-
 	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
 	"github.com/jinzhu/copier"
 )
@@ -19,7 +17,6 @@ type StringOperation struct {
 
 // TransformAgainst is the StringOperation implementation of the operationModel interface
 func (stringOp StringOperation) TransformAgainst(operation OperationModel, applicationType EditType) (OperationModel, OperationModel) {
-	fmt.Println("TransformAgainst was called")
 	othStringOp, ok := operation.(StringOperation)
 	if !ok {
 		return stringOp, operation
@@ -65,49 +62,27 @@ func insertInsert(o1 StringOperation, o2 StringOperation) StringOperation {
 
 // Transform o1 when o1 is an insert, and o2 is a delete
 func insertDelete(o1 StringOperation, o2 StringOperation) StringOperation {
-	fmt.Println("insertDelete called")
 	if o1.RangeStart <= o2.RangeStart {
 		// If insert happens before the delete, do nothing to insert op
-		fmt.Println("Do nothing")
 		return o1
 	} else if o1.RangeStart > o2.RangeEnd {
 		// If the insert happens after the delete, shift insert left
 		length := o2.RangeEnd - o2.RangeStart
 		o1.RangeStart, o1.RangeEnd = o1.RangeStart-length, o1.RangeEnd-length
-		fmt.Printf("Shift insert left by %d to %d-%d\n", length, o1.RangeStart, o1.RangeEnd)
 	} else {
 		// Overlap
 		if o2.RangeStart <= o1.RangeStart {
 			// If delete comes before shift insert to start of delete
-			fmt.Println("Shift insert to start of delete")
 			shift := o1.RangeStart - o2.RangeStart
 			o1.RangeStart, o1.RangeEnd = o1.RangeStart-shift, o1.RangeEnd-shift
 		}
-		// Else the delete will be shifted to after the insert
 	}
 	return o1
 }
 
 // Transform o1 when o1 is an delete, and o2 is a insert
 func deleteInsert(o1 StringOperation, o2 StringOperation) StringOperation {
-	fmt.Println("deleteInsert called")
-	if o2.RangeStart >= o1.RangeEnd {
-		fmt.Println("Do nothing")
-		// If delete happens before the insert, do nothing to delete op
-		return o1
-	} else if o1.RangeStart >= o2.RangeStart {
-		// If delete happens after insert, shift delete right
-		// length := o2.RangeEnd - o2.RangeStart
-		// o1.RangeStart, o1.RangeEnd = o1.RangeStart+length, o1.RangeEnd+length
-		// fmt.Printf("Shift delete to end of insert by %d to %d-%d\n", length, o1.RangeStart, o1.RangeEnd)
-	} else {
-		// Overlap case - if the insert comes after the delete, shift the insert to start, and delete to end
-		if o2.RangeStart >= o1.RangeStart {
-			fmt.Println("Shift delete to end of insert")
-			shift := o2.RangeEnd - o1.RangeStart
-			o1.RangeStart, o1.RangeEnd = o1.RangeStart+shift, o1.RangeEnd+shift
-		}
-	}
+	// Do nothing as cases are all handled by insertDelete
 	return o1
 }
 

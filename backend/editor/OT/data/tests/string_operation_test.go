@@ -93,6 +93,32 @@ func TestInsertDeleteOverlapDeleteBeforeInsert(t *testing.T) {
 	assert.Equal(apply(o1_t1, apply(o2_t1, s)), apply(o2_t2, apply(o1_t2, s)))
 }
 
+func TestInsertDeleteLessInsertThanDelete(t *testing.T) {
+	// Test what happens when the range for delete encompasses insert
+	s := "abcde"
+	o1 := data.StringOperation{RangeStart: 0, RangeEnd: 1, NewValue: "1"}
+	o2 := data.StringOperation{RangeStart: 0, RangeEnd: 5, NewValue: ""}
+	o1_t1, o2_t1 := o1.TransformAgainst(o2, data.Delete)
+	o1_t2, o2_t2 := o2.TransformAgainst(o1, data.Insert)
+
+	assert := assert.New(t)
+	assert.Equal("1", apply(o1_t1, apply(o2_t1, s)))
+	assert.Equal(apply(o1_t1, apply(o2_t1, s)), apply(o2_t2, apply(o1_t2, s)))
+}
+
+func TestInsertDeleteMoreInsertThanDelete(t *testing.T) {
+	// Test what happens when the range for insert encompasses delete
+	s := "a"
+	o1 := data.StringOperation{RangeStart: 0, RangeEnd: 5, NewValue: "11111"}
+	o2 := data.StringOperation{RangeStart: 0, RangeEnd: 1, NewValue: ""}
+	o1_t1, o2_t1 := o1.TransformAgainst(o2, data.Delete)
+	o1_t2, o2_t2 := o2.TransformAgainst(o1, data.Insert)
+
+	assert := assert.New(t)
+	assert.Equal("11111", apply(o1_t1, apply(o2_t1, s)))
+	assert.Equal(apply(o1_t1, apply(o2_t1, s)), apply(o2_t2, apply(o1_t2, s)))
+}
+
 func TestDeleteDeleteNonOverlap(t *testing.T) {
 	s := "abcde"
 	o1 := data.StringOperation{RangeStart: 1, RangeEnd: 2, NewValue: ""}
