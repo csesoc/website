@@ -53,14 +53,14 @@ func TestInsertDeleteNonOverlap(t *testing.T) {
 	o1_t2, o2_t2 := o2.TransformAgainst(o1, data.Insert)
 
 	assert := assert.New(t)
-	assert.Equal("a1cde", apply(o1_t1, apply(o2_t1, s)))
+	assert.Equal("a1bde", apply(o1_t1, apply(o2_t1, s)))
 	assert.Equal(apply(o1_t1, apply(o2_t1, s)), apply(o2_t2, apply(o1_t2, s)))
 }
 
 func TestInsertDeleteSameLocation(t *testing.T) {
 	s := "abcde"
 	o1 := data.StringOperation{RangeStart: 1, RangeEnd: 2, NewValue: "1"}
-	o2 := data.StringOperation{RangeStart: 1, RangeEnd: 2, NewValue: ""}
+	o2 := data.StringOperation{RangeStart: 0, RangeEnd: 1, NewValue: ""}
 	o1_t1, o2_t1 := o1.TransformAgainst(o2, data.Delete)
 	o1_t2, o2_t2 := o2.TransformAgainst(o1, data.Insert)
 
@@ -77,7 +77,7 @@ func TestInsertDeleteOverlapInsertBeforeDelete(t *testing.T) {
 	o1_t2, o2_t2 := o2.TransformAgainst(o1, data.Insert)
 
 	assert := assert.New(t)
-	assert.Equal("a12cde", apply(o1_t1, apply(o2_t1, s)))
+	assert.Equal("a12bde", apply(o1_t1, apply(o2_t1, s)))
 	assert.Equal(apply(o1_t1, apply(o2_t1, s)), apply(o2_t2, apply(o1_t2, s)))
 }
 
@@ -128,6 +128,14 @@ func TestDeleteDeleteOverlap(t *testing.T) {
 	assert := assert.New(t)
 	assert.Equal("ade", apply(o1_t1, apply(o2_t1, s)))
 	assert.Equal(apply(o1_t1, apply(o2_t1, s)), apply(o2_t2, apply(o1_t2, s)))
+}
+
+func TestDelete(t *testing.T) {
+	s := "abcde"
+	o1 := data.StringOperation{RangeStart: 2, RangeEnd: 3, NewValue: ""}
+
+	assert := assert.New(t)
+	assert.Equal("abde", apply(o1, s))
 }
 
 // Apply an operational model to a string if it is a string operation else fail
