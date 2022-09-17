@@ -80,11 +80,6 @@ export default function Sponsors() {
   const [sponsorName, setSponsorName] = useState("");
   const [sponsorDescription, setSponsorDescription] = useState("");
   const handleClose = () => setOpen(false);
-  // function SponsorImage() {
-  //   return(
-
-  //   )
-  // }
   let tierOne = content.filter((S) => S.level === 'P');
   let tierTwo = content.filter((S) => S.level === 'M');
   let tierThree = content.filter((S) => S.level === 'A');
