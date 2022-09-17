@@ -104,9 +104,7 @@ export default function Sponsors() {
         >
           {
             tierOne.map((Sponsor) =>
-              <SponsorsLogo
-                key={Sponsor.id}
-              >
+              <SponsorsLogo>
                 <Image
                   src={`/assets/sponsors/${Sponsor.logo}`}
                   width="250px"
@@ -127,9 +125,7 @@ export default function Sponsors() {
         <LevelContainer
         >
           {tierTwo.map((Sponsor) =>
-            <SponsorsLogo
-              key={Sponsor.id}
-            >
+            <SponsorsLogo>
               <Image
                 src={`/assets/sponsors/${Sponsor.logo}`}
                 width="200px"
@@ -150,9 +146,7 @@ export default function Sponsors() {
         <LevelContainer
         >
           {tierThree.map((Sponsor) =>
-            <SponsorsLogo
-              key={Sponsor.id}
-            >
+            <SponsorsLogo>
               <Image
                 src={`/assets/sponsors/${Sponsor.logo}`}
                 width="150px"
