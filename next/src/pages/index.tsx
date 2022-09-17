@@ -147,8 +147,9 @@ const Index: NextPage = () => {
           </>
         )}
       </Main>
-      <Footer /> */}
-      <Sponsors/>
+      <Footer />
+       */}
+      <Sponsors />
     </PageContainer>
   );
 };

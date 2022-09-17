@@ -15,7 +15,7 @@ export const content = [
   {
     alt_text: "CSE",
     amount_paid: 1000001,
-    description: "CSE is now one of the largest Schools within the University, and one of the largest of its kind in Australia.  The school's <a href=\"http://do.cse.unsw.edu.au\">Development Office</a> was established in 2001 to promote the development of our students beyond their academic studies. It has always been a great supporter of student societies, which is one of the reasons our students enjoy a complete and fulfilling university life.",
+    description: "CSE is now one of the largest Schools within the University, and one of the largest of its kind in Australia.  The school's <a href=\"http://do.cse.unsw.edu.au\" target=\"_blank\" rel=\"noopener noreferrer\">Development Office</a> was established in 2001 to promote the development of our students beyond their academic studies. It has always been a great supporter of student societies, which is one of the reasons our students enjoy a complete and fulfilling university life.",
     expiry_date: "2100-12-12",
     id: 3,
     in_side_bar: 1,
@@ -67,7 +67,7 @@ export const content = [
   {
     alt_text: "Atlassian",
     amount_paid: 4000,
-    description: "Software is changing the world, and Atlassian is at the center of it all. With more than 65,000 global customers (including 85 of the Fortune 100) and a highly disruptive business model, we’re advancing the art of team collaboration with products like JIRA, Confluence, BitBucket and HipChat – and we’re just getting started. Motivated by honest values, an amazing culture, and consistent revenue growth, we’re out to unleash the potential of every team. From Amsterdam and Austin to Sydney and San Francisco, we’re looking for people who are powered by passion and eager to do the best work of their lives in a highly autonomous yet collaborative, no B.S. environment. Find out more at <a href=\"http://atlassian.com\">http://atlassian.com</a>.",
+    description: "Software is changing the world, and Atlassian is at the center of it all. With more than 65,000 global customers (including 85 of the Fortune 100) and a highly disruptive business model, we’re advancing the art of team collaboration with products like JIRA, Confluence, BitBucket and HipChat – and we’re just getting started. Motivated by honest values, an amazing culture, and consistent revenue growth, we’re out to unleash the potential of every team. From Amsterdam and Austin to Sydney and San Francisco, we’re looking for people who are powered by passion and eager to do the best work of their lives in a highly autonomous yet collaborative, no B.S. environment. Find out more at <a href=\"http://atlassian.com\" target=\"_blank\" rel=\"noopener noreferrer\">http://atlassian.com</a>.",
     expiry_date: "2020-12-31",
     id: 52,
     in_side_bar: 1,
@@ -93,7 +93,7 @@ export const content = [
   {
     alt_text: "Google",
     amount_paid: 4000,
-    description: "Google is and always will be an engineering company. We hire people with a broad set of technical skills who are ready to tackle some of technology's greatest challenges and make an impact on millions, if not billions, of users. At Google, engineers not only revolutionise search, they routinely work on massive scalability and storage solutions, large-scale applications and entirely new platforms for developers around the world. From AdWords to Chrome, Android to YouTube, Social to Local, Google engineers are changing the world one technological achievement after another. Voted the top Graduate Employer by students in Australia, we're looking for students to do cool things that matter. Join us, visit <a href=\"google.com/careers/students\">google.com/careers/students</a>.",
+    description: "Google is and always will be an engineering company. We hire people with a broad set of technical skills who are ready to tackle some of technology's greatest challenges and make an impact on millions, if not billions, of users. At Google, engineers not only revolutionise search, they routinely work on massive scalability and storage solutions, large-scale applications and entirely new platforms for developers around the world. From AdWords to Chrome, Android to YouTube, Social to Local, Google engineers are changing the world one technological achievement after another. Voted the top Graduate Employer by students in Australia, we're looking for students to do cool things that matter. Join us, visit <a href=\"google.com/careers/students\" target=\"_blank\" rel=\"noopener noreferrer\">google.com/careers/students</a>.",
     expiry_date: "2020-12-31",
     id: 56,
     in_side_bar: 1,
@@ -249,7 +249,7 @@ export const content = [
   {
     alt_text: "Macquarie Group",
     amount_paid: 2500,
-    description: "https://www.macquarie.com.au/",
+    description: "<a href=\"https://www.macquarie.com.au/\" target=\"_blank\" rel=\"noopener noreferrer\">Macquarie Group</a>",
     id: 114,
     in_side_bar: 1,
     level: "A",
@@ -260,7 +260,7 @@ export const content = [
   {
     alt_text: "Bukalapak",
     amount_paid: 2500,
-    description: "https://www.bukalapak.com",
+    description: "<a href=\"https://www.bukalapak.com\" target=\"_blank\" rel=\"noopener noreferrer\">Bukalapak</a>",
     id: 115,
     in_side_bar: 1,
     level: "M",
@@ -271,7 +271,7 @@ export const content = [
   {
     alt_text: "Wargaming",
     amount_paid: 2500,
-    description: "https://wargaming.com/en/",
+    description: "<a href=\"https://wargaming.com/en/\" target=\"_blank\" rel=\"noopener noreferrer\">Wargaming</a>",
     id: 116,
     in_side_bar: 1,
     level: "A",
@@ -282,7 +282,7 @@ export const content = [
   {
     alt_text: "Revolutionise Sport",
     amount_paid: 2500,
-    description: "https://www.revolutionise.com.au/",
+    description: "<a href=\"https://www.revolutionise.com.au/\" target=\"_blank\" rel=\"noopener noreferrer\">Revolutionise Sport</a>",
     id: 117,
     in_side_bar: 1,
     level: "A",
@@ -293,7 +293,7 @@ export const content = [
   {
     alt_text: "Airwallex",
     amount_paid: 2500,
-    description: "https://www.airwallex.com/au",
+    description: "<a href=\"https://www.airwallex.com/au\" target=\"_blank\" rel=\"noopener noreferrer\">Airwallex</a>",
     id: 118,
     in_side_bar: 1,
     level: "A",
@@ -304,7 +304,7 @@ export const content = [
   {
     alt_text: "No Moss",
     amount_paid: 2500,
-    description: "https://nomoss.co/",
+    description: "<a href=\"https://nomoss.co/\" target=\"_blank\" rel=\"noopener noreferrer\">No Moss</a>",
     id: 119,
     in_side_bar: 1,
     level: "A",
@@ -315,7 +315,7 @@ export const content = [
   {
     alt_text: "Mantel Group",
     amount_paid: 2500,
-    description: "https://mantelgroup.com.au",
+    description: "<a href=\"https://mantelgroup.com.au\" target=\"_blank\" rel=\"noopener noreferrer\">Mantel Group</a>",
     id: 120,
     in_side_bar: 1,
     level: "A",
@@ -326,7 +326,7 @@ export const content = [
   {
     alt_text: "JDS",
     amount_paid: 2500,
-    description: "https://www.jds.net.au",
+    description: "<a href=\"https://www.jds.net.au\" target=\"_blank\" rel=\"noopener noreferrer\">JDS</a>",
     id: 121,
     in_side_bar: 1,
     level: "M",
@@ -337,7 +337,7 @@ export const content = [
   {
     alt_text: "Checkbox",
     amount_paid: 2500,
-    description: "https://www.checkbox.ai",
+    description: "<a href=\"https://www.checkbox.ai\" target=\"_blank\" rel=\"noopener noreferrer\">Checkbox</a>",
     id: 122,
     in_side_bar: 1,
     level: "A",
@@ -348,7 +348,7 @@ export const content = [
   {
     alt_text: "Cognizant",
     amount_paid: 2500,
-    description: "https://www.cognizant.com/au/en",
+    description: "<a href=\https://www.cognizant.com/au/en\" target=\"_blank\" rel=\"noopener noreferrer\">Cognizant</a>",
     id: 123,
     in_side_bar: 1,
     level: "A",
@@ -370,7 +370,7 @@ export const content = [
   {
     alt_text: "Nine",
     amount_paid: 2500,
-    description: "https://www.nine.com.au",
+    description: "<a href=\"https://www.nine.com.au\" target=\"_blank\" rel=\"noopener noreferrer\">Nine</a>",
     id: 125,
     in_side_bar: 1,
     level: "A",
@@ -381,7 +381,7 @@ export const content = [
   {
     alt_text: "Knapp",
     amount_paid: 2500,
-    description: "https://www.knapp.com/en/",
+    description: "<a href=\"https://www.knapp.com/en/\" target=\"_blank\" rel=\"noopener noreferrer\">Knapp</a>",
     id: 126,
     in_side_bar: 1,
     level: "P",
@@ -392,7 +392,7 @@ export const content = [
   {
     alt_text: "ZipCo",
     amount_paid: 2500,
-    description: "https://zip.co/au",
+    description: "<a href=\"https://zip.co/au\" target=\"_blank\" rel=\"noopener noreferrer\">ZipCo</a>",
     id: 127,
     in_side_bar: 1,
     level: "A",
@@ -403,7 +403,7 @@ export const content = [
   {
     alt_text: "Mirvac",
     amount_paid: 2500,
-    description: "https://www.mirvac.com",
+    description: "<a href=\"https://www.mirvac.com\" target=\"_blank\" rel=\"noopener noreferrer\">Mirvac</a>",
     id: 128,
     in_side_bar: 1,
     level: "M",
@@ -414,7 +414,7 @@ export const content = [
   {
     alt_text: "RecordPoint",
     amount_paid: 2500,
-    description: "https://www.recordpoint.com",
+    description: "<a href=\"https://www.recordpoint.com\" target=\"_blank\" rel=\"noopener noreferrer\">RecordPoint</a>",
     id: 129,
     in_side_bar: 1,
     level: "A",
@@ -425,7 +425,7 @@ export const content = [
   {
     alt_text: "Prospa",
     amount_paid: 2500,
-    description: "https://www.prospa.com",
+    description: "<a href=\"https://www.prospa.com\" target=\"_blank\" rel=\"noopener noreferrer\">Prospa</a>",
     id: 130,
     in_side_bar: 1,
     level: "M",
@@ -436,7 +436,7 @@ export const content = [
   {
     alt_text: "Dolby",
     amount_paid: 2500,
-    description: "https://www.dolby.com",
+    description: "<a href=\"https://www.dolby.com\" target=\"_blank\" rel=\"noopener noreferrer\">Dolby</a>",
     id: 131,
     in_side_bar: 1,
     level: "M",
@@ -447,7 +447,7 @@ export const content = [
   {
     alt_text: "ROKT",
     amount_paid: 2500,
-    description: "https://www.rokt.com",
+    description: "<a href=\"https://www.rokt.com\" target=\"_blank\" rel=\"noopener noreferrer\">ROKT</a>",
     id: 132,
     in_side_bar: 1,
     level: "P",
@@ -458,7 +458,7 @@ export const content = [
   {
     alt_text: "Qube Holdings",
     amount_paid: 2500,
-    description: "https://qube.com.au",
+    description: "<a href=\"https://qube.com.au\" target=\"_blank\" rel=\"noopener noreferrer\">Qube Holdings</a>",
     id: 133,
     in_side_bar: 1,
     level: "P",
@@ -469,7 +469,7 @@ export const content = [
   {
     alt_text: "Pearler",
     amount_paid: 2500,
-    description: "https://pearler.com",
+    description: "<a href=\"https://pearler.com\" target=\"_blank\" rel=\"noopener noreferrer\">Pearler</a>",
     id: 134,
     in_side_bar: 1,
     level: "P",
