@@ -2,7 +2,6 @@ package data
 
 import (
 	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
-	"github.com/jinzhu/copier"
 )
 
 // StringOperation represents an operation on a string type
@@ -21,22 +20,17 @@ func (stringOp StringOperation) TransformAgainst(operation OperationModel, appli
 	if !ok {
 		return stringOp, operation
 	}
-	op1_1, op1_2, op2_1, op2_2 := StringOperation{}, StringOperation{}, StringOperation{}, StringOperation{}
-	copier.Copy(&op1_1, &stringOp)
-	copier.Copy(&op1_2, &stringOp)
-	copier.Copy(&op2_1, &othStringOp)
-	copier.Copy(&op2_2, &othStringOp)
 	if stringOp.NewValue != "" {
 		if applicationType == Insert {
-			return insertInsert(op2_1, op1_1), insertInsert(op1_2, op2_2)
+			return insertInsert(othStringOp, stringOp), insertInsert(stringOp, othStringOp)
 		} else {
-			return insertDelete(op1_1, op2_1), deleteInsert(op2_2, op1_2)
+			return insertDelete(stringOp, othStringOp), deleteInsert(othStringOp, stringOp)
 		}
 	} else {
 		if applicationType == Insert {
-			return deleteInsert(op1_1, op2_1), insertDelete(op2_2, op1_2)
+			return deleteInsert(stringOp, othStringOp), insertDelete(othStringOp, stringOp)
 		} else {
-			return deleteDelete(op2_1, op1_1), deleteDelete(op1_2, op2_2)
+			return deleteDelete(othStringOp, stringOp), deleteDelete(stringOp, othStringOp)
 		}
 	}
 	// If the operation to transform it against is not a StringOperation, do nothing
@@ -95,7 +89,7 @@ func deleteDelete(o1 StringOperation, o2 StringOperation) StringOperation {
 		o1.RangeStart, o1.RangeEnd = o1.RangeStart-length, o1.RangeEnd-length
 	} else {
 		if o2.RangeStart <= o1.RangeStart {
-			// o2 starts before o1
+			// o2 starts before or at o1
 			if o1.RangeEnd <= o2.RangeEnd {
 				// o2 is bigger or same as o1 so o1 becomes noop
 				o1.RangeEnd = o1.RangeStart
