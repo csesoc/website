@@ -156,6 +156,7 @@ func TestDeleteDeleteOverlap(t *testing.T) {
 	assert.Equal(apply(o1_t1, apply(o2_t1, s)), apply(o2_t2, apply(o1_t2, s)))
 }
 
+// Sanity check for which characters delete effects
 func TestDelete(t *testing.T) {
 	s := "abcde"
 	o1 := data.StringOperation{RangeStart: 2, RangeEnd: 3, NewValue: ""}
