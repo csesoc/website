@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 import styled from "styled-components";
 
-import { NavbarOpenHandler } from "../components/navbar/types";
+import { NavbarOpenHandler, NavbarType } from "../components/navbar/types";
 import HamburgerMenu from "../components/navbar/HamburgerMenu";
 
 import HomePageCurve from "../svgs/HPCurve.svg"
@@ -111,7 +111,7 @@ const Index: NextPage = () => {
         <meta name="description" content="CSESoc Website Homepage" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} />}
+      {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.HOMEPAGE}/>}
       {navbarOpen && <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} /> }
       <Main>
         { (loaded && height && width) && (
