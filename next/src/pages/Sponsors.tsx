@@ -39,7 +39,7 @@ export default function Sponsors() {
     );
   }
 
-  // Function for the modal popup that contains each sponsors description
+  // Function for the modal popup that contains descriptions for each sponsor
   function SponsorDetails() {
     return (
       <PageStyle.SponsorsModal>
