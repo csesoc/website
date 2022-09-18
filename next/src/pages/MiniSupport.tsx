@@ -43,6 +43,7 @@ const TextContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 1500px;
 `
 
 const H3 = styled.div`
@@ -69,6 +70,17 @@ const ImgContainer = styled.div`
   justify-content: center;
 `
 
+const Button = styled.button`
+  background-color:  #9B9B9B;
+  margin: 10px;
+  padding: 10px 45px;
+  font-size: 18px;
+  color: white;
+  border: none;
+  border-radius: 6px;
+
+`
+
 
 export default function Support({}: Props) {
   return (
@@ -81,7 +93,7 @@ export default function Support({}: Props) {
           <H3>Our Sponsors</H3>
           <ButtonContainer>
             <Link href="/sponsors">
-              <button>view our sponsors</button>
+              <Button>View our sponsors</Button>
             </Link>
           </ButtonContainer>
           <Text>Check out our very cool sponsors</Text>
