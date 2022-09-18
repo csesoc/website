@@ -16,6 +16,10 @@ type StringOperation struct {
 
 // TransformAgainst is the StringOperation implementation of the operationModel interface
 func (stringOp StringOperation) TransformAgainst(operation OperationModel, applicationType EditType) (OperationModel, OperationModel) {
+	// If the operation to transform it against is not a StringOperation, do nothing
+	// Else transform it by adjusting RangeStart / RangeEnd values to account for other edit
+	// https://srijancse.medium.com/operational-transformation-the-real-time-collaborative-editing-algorithm-bf8756683f66
+	// Then return (transformedOperation, operation)
 	othStringOp, ok := operation.(StringOperation)
 	if !ok {
 		return stringOp, operation
@@ -30,13 +34,9 @@ func (stringOp StringOperation) TransformAgainst(operation OperationModel, appli
 		if applicationType == Insert {
 			return deleteInsert(stringOp, othStringOp), insertDelete(othStringOp, stringOp)
 		} else {
-			return deleteDelete(othStringOp, stringOp), deleteDelete(stringOp, othStringOp)
+			return deleteDelete(othStringOp, stringOp, false), deleteDelete(stringOp, othStringOp, true)
 		}
 	}
-	// If the operation to transform it against is not a StringOperation, do nothing
-	// Else transform it by adjusting RangeStart / RangeEnd values to account for other edit
-	// https://srijancse.medium.com/operational-transformation-the-real-time-collaborative-editing-algorithm-bf8756683f66
-	// Then return (transformedOperation, operation)
 }
 
 // Apply is the StringOperation implementation of the OperationModel interface, it does nothing
@@ -46,7 +46,7 @@ func (stringOp StringOperation) Apply(parentNode cmsjson.AstNode, applicationInd
 
 // Transform o2 when o1 is an insert, and o2 is a insert
 func insertInsert(o1 StringOperation, o2 StringOperation) StringOperation {
-	if o1.RangeStart >= o2.RangeStart {
+	if o1.RangeStart > o2.RangeStart {
 		// If other insert happens before our insert, shift insert right
 		length := o2.RangeEnd - o2.RangeStart
 		o1.RangeStart, o1.RangeEnd = o1.RangeStart+length, o1.RangeEnd+length
@@ -81,7 +81,17 @@ func deleteInsert(o1 StringOperation, o2 StringOperation) StringOperation {
 }
 
 // Transform o1 when o1 is an delete, and o2 is a delete
-func deleteDelete(o1 StringOperation, o2 StringOperation) StringOperation {
+func deleteDelete(o1 StringOperation, o2 StringOperation, isLast bool) StringOperation {
+	if o1.RangeStart == o2.RangeStart && o1.RangeEnd == o2.RangeEnd {
+		if isLast {
+			// If both operations do the same thing, make second operation noop
+			o1.RangeEnd = o1.RangeStart
+			return o1
+		} else {
+			// And do nothing with the first op
+			return o1
+		}
+	}
 	if o2.RangeStart >= o1.RangeEnd {
 		return o1
 	} else if o1.RangeStart >= o2.RangeEnd {

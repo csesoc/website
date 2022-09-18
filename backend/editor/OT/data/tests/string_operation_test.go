@@ -23,15 +23,26 @@ func TestInsertInsertNonOverlap(t *testing.T) {
 
 // TODO: In the case that they are the same location, we need vector clock / ID to determine which operation is done first
 // UNCOMMENT TEST WHEN THIS IS IMPLEMENTED
-// func TestInsertInsertSameLocation(t *testing.T) {
-// 	s := "abcde"
-// 	o1 := data.StringOperation{RangeStart: 1, RangeEnd: 2, NewValue: "1"}
-// 	o2 := data.StringOperation{RangeStart: 1, RangeEnd: 2, NewValue: "2"}
-// 	o1_t, o2_t := o1.TransformAgainst(o2, data.Insert)
+func TestInsertInsertSameLocation(t *testing.T) {
+	s := "abcde"
+	o1 := data.StringOperation{RangeStart: 1, RangeEnd: 2, NewValue: "2"}
+	o2 := data.StringOperation{RangeStart: 1, RangeEnd: 2, NewValue: "1"}
+	o1_t1, o2_t1 := o1.TransformAgainst(o2, data.Insert)
+	o1_t2, o2_t2 := o2.TransformAgainst(o1, data.Insert)
 
-// 	assert := assert.New(t)
-// 	assert.Equal(apply(o1_t, apply(o2_t, s)), apply(o2_t, apply(o1_t, s)))
-// }
+	assert := assert.New(t)
+	assert.Equal("a12bcde", apply(o1_t1, apply(o2_t1, s)))
+	assert.Equal(apply(o1_t1, apply(o2_t1, s)), apply(o2_t2, apply(o1_t2, s)))
+
+	s = "abcde"
+	o1 = data.StringOperation{RangeStart: 1, RangeEnd: 3, NewValue: "34"}
+	o2 = data.StringOperation{RangeStart: 1, RangeEnd: 3, NewValue: "12"}
+	o1_t1, o2_t1 = o1.TransformAgainst(o2, data.Insert)
+	o1_t2, o2_t2 = o2.TransformAgainst(o1, data.Insert)
+
+	assert.Equal("a1234bcde", apply(o1_t1, apply(o2_t1, s)))
+	assert.Equal(apply(o1_t1, apply(o2_t1, s)), apply(o2_t2, apply(o1_t2, s)))
+}
 
 func TestInsertInsertOverlap(t *testing.T) {
 	s := "abcde"
@@ -131,18 +142,26 @@ func TestDeleteDeleteNonOverlap(t *testing.T) {
 	assert.Equal(apply(o1_t1, apply(o2_t1, s)), apply(o2_t2, apply(o1_t2, s)))
 }
 
-// TODO: SAME THING WITH TestInsertInsertSameLocation
-// func TestDeleteDeleteSame(t *testing.T) {
-// 	s := "abcde"
-// 	o1 := data.StringOperation{RangeStart: 1, RangeEnd: 2, NewValue: ""}
-// 	o2 := data.StringOperation{RangeStart: 1, RangeEnd: 2, NewValue: ""}
-// 	o1_t1, o2_t1 := o1.TransformAgainst(o2, data.Delete)
-// 	o1_t2, o2_t2 := o2.TransformAgainst(o1, data.Delete)
+func TestDeleteDeleteSame(t *testing.T) {
+	s := "abcde"
+	o1 := data.StringOperation{RangeStart: 1, RangeEnd: 2, NewValue: ""}
+	o2 := data.StringOperation{RangeStart: 1, RangeEnd: 2, NewValue: ""}
+	o1_t1, o2_t1 := o1.TransformAgainst(o2, data.Delete)
+	o1_t2, o2_t2 := o2.TransformAgainst(o1, data.Delete)
 
-// 	assert := assert.New(t)
-// 	assert.Equal("acde", apply(o1_t1, apply(o2_t1, s)))
-// 	assert.Equal(apply(o1_t1, apply(o2_t1, s)), apply(o2_t2, apply(o1_t2, s)))
-// }
+	assert := assert.New(t)
+	assert.Equal("acde", apply(o1_t1, apply(o2_t1, s)))
+	assert.Equal(apply(o1_t1, apply(o2_t1, s)), apply(o2_t2, apply(o1_t2, s)))
+
+	s = "abcde"
+	o1 = data.StringOperation{RangeStart: 1, RangeEnd: 3, NewValue: ""}
+	o2 = data.StringOperation{RangeStart: 1, RangeEnd: 3, NewValue: ""}
+	o1_t1, o2_t1 = o1.TransformAgainst(o2, data.Delete)
+	o1_t2, o2_t2 = o2.TransformAgainst(o1, data.Delete)
+
+	assert.Equal("ade", apply(o1_t1, apply(o2_t1, s)))
+	assert.Equal(apply(o1_t1, apply(o2_t1, s)), apply(o2_t2, apply(o1_t2, s)))
+}
 
 func TestDeleteDeleteOverlap(t *testing.T) {
 	s := "abcde"
