@@ -1,167 +1,64 @@
 import React, { useState } from "react";
-import Image from "next/image";
-import styled from 'styled-components'
+import * as PageStyle from '../components/sponsors/Sponsors-Styled';
 import { content } from "../assets/sponsors.js";
+import Image from "next/image";
 import Dialog from '@mui/material/Dialog';
 import Fade from '@mui/material/Fade';
 import Footer from "../components/footer/Footer";
-
-const SponsorsContainer = styled.div`
-  margin: 4rem;
-  font-family: 'Raleway';
-`
-
-const SponsorsHeading = styled.div`
-  font-weight: 800;
-  font-size: 40px;
-  padding: 3rem 0;
-`
-
-const SponsorsTier = styled.div`
-  font-family: 'Raleway';
-  font-weight: 450;
-  font-size: 25px;
-`
-
-const SponsorsLogo = styled.div`
-  padding: 1rem 2rem;
-  &:hover {
-    transform: scale(1.04);
-  }
-  &:active {
-    transform: scale(0.96);
-  }
-  cursor: pointer;
-`
-
-const SponsorsModal = styled.div`
-  width: 35vw;  
-  height: max-content;
-  background: #ffffff;
-  border-color: none;
-  border-radius: 5px;
-  padding: 1.5rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  font-family: 'Raleway';
-`
-
-const SponsorsTitle = styled.div`
-  font-weight: 470;
-  font-size: 25px;
-`
-
-const SponsorsInfo = styled.div`
-  color: grey;
-  font-weight: 300;
-  font-size: 17px;
-  line-height: 27pt;
-  padding-top: 1rem;
-  word-wrap: break-word;
-  a{
-    color: #44a6c6;
-    text-decoration: underline;
-  }
-`
-
-const LevelContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-content: space-between;
-  flex-wrap: wrap;
-  border-left: 1px solid grey;
-  padding-left: 2rem;
-  margin: 4rem 2rem;
-`
 
 export default function Sponsors() {
   const [open, setOpen] = useState(false);
   const [sponsorName, setSponsorName] = useState("");
   const [sponsorDescription, setSponsorDescription] = useState("");
   const handleClose = () => setOpen(false);
-  let tierOne = content.filter((S) => S.level === 'P');
-  let tierTwo = content.filter((S) => S.level === 'M');
-  let tierThree = content.filter((S) => S.level === 'A');
-  function SponsorDetails() {
+
+  function SponsorContainers(tierName: string, tierLevel: string, size: string) {
+    let tier = content.filter(S => S.level === tierLevel);
     return (
-      <SponsorsModal>
-        <SponsorsTitle>
-          {sponsorName}
-        </SponsorsTitle>
-        <SponsorsInfo dangerouslySetInnerHTML={{ __html: sponsorDescription }} />
-      </SponsorsModal>
+      <div>
+        <PageStyle.SponsorsTier>
+          {tierName}
+        </PageStyle.SponsorsTier>
+        <PageStyle.LevelContainer>
+          {tier.map((Sponsor) =>
+            <PageStyle.SponsorsLogo>
+              <Image
+                src={`/assets/sponsors/${Sponsor.logo}`}
+                width={size}
+                height={size}
+                objectFit="contain"
+                onClick={() => {
+                  setOpen(true);
+                  setSponsorName(Sponsor.alt_text);
+                  setSponsorDescription(Sponsor.description);
+                }}
+              />
+            </PageStyle.SponsorsLogo>)}
+        </PageStyle.LevelContainer>
+      </div>
     );
   }
+
+  // Function for the modal popup that contains each sponsors description
+  function SponsorDetails() {
+    return (
+      <PageStyle.SponsorsModal>
+        <PageStyle.SponsorsTitle>
+          {sponsorName}
+        </PageStyle.SponsorsTitle>
+        <PageStyle.SponsorsInfo dangerouslySetInnerHTML={{ __html: sponsorDescription }} />
+      </PageStyle.SponsorsModal>
+    );
+  }
+
   return (
     <div>
-      <SponsorsContainer>
-        <SponsorsHeading>Sponsors</SponsorsHeading>
-        <SponsorsTier>
-          Principal Sponsors
-        </SponsorsTier>
-        <LevelContainer
-        >
-          {
-            tierOne.map((Sponsor) =>
-              <SponsorsLogo>
-                <Image
-                  src={`/assets/sponsors/${Sponsor.logo}`}
-                  width="250px"
-                  height="250px"
-                  objectFit="contain"
-                  onClick={() => {
-                    setOpen(true);
-                    setSponsorName(Sponsor.alt_text);
-                    setSponsorDescription(Sponsor.description);
-                  }}
-                />
-              </SponsorsLogo>
-            )}
-        </LevelContainer>
-        <SponsorsTier>
-          Major Sponsors
-        </SponsorsTier>
-        <LevelContainer
-        >
-          {tierTwo.map((Sponsor) =>
-            <SponsorsLogo>
-              <Image
-                src={`/assets/sponsors/${Sponsor.logo}`}
-                width="200px"
-                height="200px"
-                objectFit="contain"
-                onClick={() => {
-                  setOpen(true);
-                  setSponsorName(Sponsor.alt_text);
-                  setSponsorDescription(Sponsor.description);
-                }}
-              />
-            </SponsorsLogo>
-          )}
-        </LevelContainer>
-        <SponsorsTier>
-          Affiliiate Sponsors
-        </SponsorsTier>
-        <LevelContainer
-        >
-          {tierThree.map((Sponsor) =>
-            <SponsorsLogo>
-              <Image
-                src={`/assets/sponsors/${Sponsor.logo}`}
-                width="150px"
-                height="150px"
-                objectFit="contain"
-                onClick={() => {
-                  setOpen(true);
-                  setSponsorName(Sponsor.alt_text);
-                  setSponsorDescription(Sponsor.description);
-                }}
-              />
-            </SponsorsLogo>
-          )}
-        </LevelContainer>
-      </SponsorsContainer>
+      <PageStyle.SponsorsContainer>
+        <PageStyle.SponsorsHeading>Sponsors</PageStyle.SponsorsHeading>
+        {SponsorContainers('Principal Sponsors', 'P', '250px')}
+        {SponsorContainers('Major Sponsors', 'M', '200px')}
+        {SponsorContainers('Affiliiate Sponsors', 'A', '150px')}
+      </PageStyle.SponsorsContainer>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -188,5 +85,3 @@ export default function Sponsors() {
     </div>
   );
 }
-
-
