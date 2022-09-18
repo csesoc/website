@@ -17,7 +17,6 @@ import Navbar from "../components/navbar/Navbar";
 import Homepage from "./MiniHomepage";
 import Events from "./MiniEvents";
 import AboutUs from "./MiniAboutUs";
-import Sponsors from "./Sponsors";
 import Resources from "./MiniResources";
 import Support from "./MiniSupport";
 
@@ -112,7 +111,7 @@ const Index: NextPage = () => {
         <meta name="description" content="CSESoc Website Homepage" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {/* {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} />}
+      {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} />}
       {navbarOpen && <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} />}
       <Main>
         {(loaded && height && width) && (
@@ -148,8 +147,6 @@ const Index: NextPage = () => {
         )}
       </Main>
       <Footer />
-       */}
-      <Sponsors />
     </PageContainer>
   );
 };
