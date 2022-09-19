@@ -10,8 +10,8 @@ const selectFont = () => {
       name="fonts"
       id="fontDropdown"
       onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-        const val = event.currentTarget?.value == null;
-        if (!val) return;
+        const val = event.currentTarget?.value;
+        if (val == null) return;
         Editor.addMark(editor, "textSize", val);
       }}
     >

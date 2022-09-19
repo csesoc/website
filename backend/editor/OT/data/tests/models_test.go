@@ -9,6 +9,7 @@ import (
 	"cms.csesoc.unsw.edu.au/editor/OT/data"
 	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels"
 	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels/cmsmodel"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,14 +28,18 @@ func (a arraysData) Set(field string, value reflect.Value) error {
 
 func (a arraysData) SetField(field int, value reflect.Value) {}
 
+var IMAGE_DOCUMENT_ID uuid.UUID = uuid.New()
+var PARAGRAPH_ID uuid.UUID = uuid.New()
+var DOCUMENT_ID uuid.UUID = uuid.New()
+
 func setupDocument() cmsmodel.Document {
 	image := cmsmodel.Image{
-		ImageDocumentID: "m0rb",
+		ImageDocumentID: IMAGE_DOCUMENT_ID,
 		ImageSource:     "big_morb.png",
 	}
 
 	paragraph := cmsmodel.Paragraph{
-		ParagraphID:    "the morb",
+		ParagraphID:    PARAGRAPH_ID,
 		ParagraphAlign: "center",
 		ParagraphChildren: []cmsmodel.Text{
 			{
@@ -53,7 +58,7 @@ func setupDocument() cmsmodel.Document {
 
 	return cmsmodel.Document{
 		DocumentName: "morbed up",
-		DocumentId:   "M0R8",
+		DocumentId:   DOCUMENT_ID,
 		Content:      []cmsmodel.Component{image, paragraph, arrayData},
 	}
 }
@@ -75,7 +80,7 @@ func TestValidSliceField(t *testing.T) {
 
 	assert.Equal(reflect.Struct, result.Kind())
 	assert.Equal("Image", result.Type().Name())
-	assert.Equal("m0rb", result.Field(0).String())
+	assert.Equal(IMAGE_DOCUMENT_ID, result.Field(0).Interface().(uuid.UUID))
 	assert.Equal("big_morb.png", result.Field(1).String())
 }
 
@@ -134,10 +139,10 @@ func TestValidStructField(t *testing.T) {
 
 	assert := assert.New(t)
 
-	assert.Equal(reflect.String, result.Type().Kind())
-	assert.Equal("m0rb", result.String())
+	// assert.Equal(reflect.String, result.Type().Kind()) // TODO: It should now be a uuid.UUID type, find some way to test
+	assert.Equal(IMAGE_DOCUMENT_ID, result.Interface().(uuid.UUID))
 	assert.Equal("Image", prev.Type().Name())
-	assert.Equal("m0rb", prev.Field(0).String())
+	assert.Equal(IMAGE_DOCUMENT_ID, prev.Field(0).Interface().(uuid.UUID))
 	assert.Equal("big_morb.png", prev.Field(1).String())
 
 }
@@ -177,7 +182,7 @@ func TestValidGetFirstDepth(t *testing.T) {
 	}
 
 	assert := assert.New(t)
-	assert.Equal("m0rb", result.String())
+	assert.Equal(IMAGE_DOCUMENT_ID, result.Interface().(uuid.UUID))
 }
 
 func TestValidGetNestedPrimitive(t *testing.T) {

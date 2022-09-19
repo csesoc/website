@@ -7,7 +7,8 @@ package mocks
 import (
 	reflect "reflect"
 
-	endpoints "cms.csesoc.unsw.edu.au/endpoints"
+	repositories "cms.csesoc.unsw.edu.au/database/repositories"
+	logger "cms.csesoc.unsw.edu.au/internal/logger"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -34,30 +35,100 @@ func (m *MockDependencyFactory) EXPECT() *MockDependencyFactoryMockRecorder {
 	return m.recorder
 }
 
-// GetDepFromType mocks base method.
-func (m *MockDependencyFactory) GetDepFromType(arg0 reflect.Type) endpoints.Dependency {
+// GetFilesystemRepo mocks base method.
+func (m *MockDependencyFactory) GetFilesystemRepo() repositories.FilesystemRepository {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetDepFromType", arg0)
-	ret0, _ := ret[0].(endpoints.Dependency)
+	ret := m.ctrl.Call(m, "GetFilesystemRepo")
+	ret0, _ := ret[0].(repositories.FilesystemRepository)
 	return ret0
 }
 
-// GetDepFromType indicates an expected call of GetDepFromType.
-func (mr *MockDependencyFactoryMockRecorder) GetDepFromType(arg0 interface{}) *gomock.Call {
+// GetFilesystemRepo indicates an expected call of GetFilesystemRepo.
+func (mr *MockDependencyFactoryMockRecorder) GetFilesystemRepo() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDepFromType", reflect.TypeOf((*MockDependencyFactory)(nil).GetDepFromType), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFilesystemRepo", reflect.TypeOf((*MockDependencyFactory)(nil).GetFilesystemRepo))
 }
 
-// GetDependency mocks base method.
-func (m *MockDependencyFactory) GetDependency(depType endpoints.Dependency) interface{} {
+// GetFrontendsRepo mocks base method.
+func (m *MockDependencyFactory) GetFrontendsRepo() repositories.FrontendsRepository {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetDependency", depType)
-	ret0, _ := ret[0].(interface{})
+	ret := m.ctrl.Call(m, "GetFrontendsRepo")
+	ret0, _ := ret[0].(repositories.FrontendsRepository)
 	return ret0
 }
 
-// GetDependency indicates an expected call of GetDependency.
-func (mr *MockDependencyFactoryMockRecorder) GetDependency(depType interface{}) *gomock.Call {
+// GetFrontendsRepo indicates an expected call of GetFrontendsRepo.
+func (mr *MockDependencyFactoryMockRecorder) GetFrontendsRepo() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDependency", reflect.TypeOf((*MockDependencyFactory)(nil).GetDependency), depType)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFrontendsRepo", reflect.TypeOf((*MockDependencyFactory)(nil).GetFrontendsRepo))
+}
+
+// GetGroupsRepo mocks base method.
+func (m *MockDependencyFactory) GetGroupsRepo() repositories.GroupsRepository {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetGroupsRepo")
+	ret0, _ := ret[0].(repositories.GroupsRepository)
+	return ret0
+}
+
+// GetGroupsRepo indicates an expected call of GetGroupsRepo.
+func (mr *MockDependencyFactoryMockRecorder) GetGroupsRepo() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGroupsRepo", reflect.TypeOf((*MockDependencyFactory)(nil).GetGroupsRepo))
+}
+
+// GetLogger mocks base method.
+func (m *MockDependencyFactory) GetLogger() *logger.Log {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetLogger")
+	ret0, _ := ret[0].(*logger.Log)
+	return ret0
+}
+
+// GetLogger indicates an expected call of GetLogger.
+func (mr *MockDependencyFactoryMockRecorder) GetLogger() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLogger", reflect.TypeOf((*MockDependencyFactory)(nil).GetLogger))
+}
+
+// GetPersonsRepo mocks base method.
+func (m *MockDependencyFactory) GetPersonsRepo() repositories.PersonRepository {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetPersonsRepo")
+	ret0, _ := ret[0].(repositories.PersonRepository)
+	return ret0
+}
+
+// GetPersonsRepo indicates an expected call of GetPersonsRepo.
+func (mr *MockDependencyFactoryMockRecorder) GetPersonsRepo() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPersonsRepo", reflect.TypeOf((*MockDependencyFactory)(nil).GetPersonsRepo))
+}
+
+// GetPublishedVolumeRepo mocks base method.
+func (m *MockDependencyFactory) GetPublishedVolumeRepo() repositories.PublishedVolumeRepository {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetPublishedVolumeRepo")
+	ret0, _ := ret[0].(repositories.PublishedVolumeRepository)
+	return ret0
+}
+
+// GetPublishedVolumeRepo indicates an expected call of GetPublishedVolumeRepo.
+func (mr *MockDependencyFactoryMockRecorder) GetPublishedVolumeRepo() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPublishedVolumeRepo", reflect.TypeOf((*MockDependencyFactory)(nil).GetPublishedVolumeRepo))
+}
+
+// GetUnpublishedVolumeRepo mocks base method.
+func (m *MockDependencyFactory) GetUnpublishedVolumeRepo() repositories.UnpublishedVolumeRepository {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUnpublishedVolumeRepo")
+	ret0, _ := ret[0].(repositories.UnpublishedVolumeRepository)
+	return ret0
+}
+
+// GetUnpublishedVolumeRepo indicates an expected call of GetUnpublishedVolumeRepo.
+func (mr *MockDependencyFactoryMockRecorder) GetUnpublishedVolumeRepo() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnpublishedVolumeRepo", reflect.TypeOf((*MockDependencyFactory)(nil).GetUnpublishedVolumeRepo))
 }

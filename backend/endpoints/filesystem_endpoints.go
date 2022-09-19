@@ -3,17 +3,15 @@ package endpoints
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
-	"cms.csesoc.unsw.edu.au/database/repositories"
 	. "cms.csesoc.unsw.edu.au/endpoints/models"
-	"cms.csesoc.unsw.edu.au/internal/logger"
+	"github.com/google/uuid"
 )
 
 // Defines endpoints consumable via the API
 func GetEntityInfo(form ValidInfoRequest, df DependencyFactory) handlerResponse[EntityInfoResponse] {
-	log := getDependency[*logger.Log](df)
-	fsRepo := getDependency[repositories.IFilesystemRepository](df)
+	log := df.GetLogger()
+	fsRepo := df.GetFilesystemRepo()
 
 	// Query the repository for an existing entity with the given ID
 	entity, err := fsRepo.GetEntryWithID(form.EntityID)
@@ -34,9 +32,9 @@ func GetEntityInfo(form ValidInfoRequest, df DependencyFactory) handlerResponse[
 
 // CreateNewEntity is the public handler for constructing and creating new entities
 func CreateNewEntity(form ValidEntityCreationRequest, df DependencyFactory) handlerResponse[NewEntityResponse] {
-	fsRepo := getDependency[repositories.IFilesystemRepository](df)
-	pubRepo := getDependency[repositories.IUnpublishedVolumeRepository](df)
-	log := getDependency[*logger.Log](df)
+	log := df.GetLogger()
+	fsRepo := df.GetFilesystemRepo()
+	pubRepo := df.GetUnpublishedVolumeRepo()
 
 	entityToCreate := CreationReqToFsEntry(form)
 	newEntity, err := fsRepo.CreateEntry(entityToCreate)
@@ -47,7 +45,7 @@ func CreateNewEntity(form ValidEntityCreationRequest, df DependencyFactory) hand
 	}
 
 	log.Write(fmt.Sprintf("created new entity %v.", entityToCreate))
-	pubRepo.AddToVolume(strconv.Itoa(newEntity.EntityID))
+	pubRepo.AddToVolume(newEntity.EntityID.String())
 	return handlerResponse[NewEntityResponse]{
 		Status:   http.StatusOK,
 		Response: NewEntityResponse{NewID: newEntity.EntityID},
@@ -56,8 +54,8 @@ func CreateNewEntity(form ValidEntityCreationRequest, df DependencyFactory) hand
 
 // Handler for deleting filesystem entities
 func DeleteFilesystemEntity(form ValidInfoRequest, df DependencyFactory) handlerResponse[empty] {
-	fsRepo := getDependency[repositories.IFilesystemRepository](df)
-	log := getDependency[*logger.Log](df)
+	log := df.GetLogger()
+	fsRepo := df.GetFilesystemRepo()
 
 	err := fsRepo.DeleteEntryWithID(form.EntityID)
 	if err != nil {
@@ -66,7 +64,7 @@ func DeleteFilesystemEntity(form ValidInfoRequest, df DependencyFactory) handler
 		}
 	}
 
-	log.Write(fmt.Sprintf("deleted entity with ID: %d", form.EntityID))
+	log.Write(fmt.Sprintf("deleted entity with ID: %s", form.EntityID))
 	return handlerResponse[empty]{
 		Status: http.StatusOK,
 	}
@@ -74,8 +72,8 @@ func DeleteFilesystemEntity(form ValidInfoRequest, df DependencyFactory) handler
 
 // Handler for retrieving children
 func GetChildren(form ValidInfoRequest, df DependencyFactory) handlerResponse[ChildrenRequestResponse] {
-	fsRepo := getDependency[repositories.IFilesystemRepository](df)
-	log := getDependency[*logger.Log](df)
+	log := df.GetLogger()
+	fsRepo := df.GetFilesystemRepo()
 
 	fileInfo, err := fsRepo.GetEntryWithID(form.EntityID)
 	if err != nil {
@@ -84,7 +82,7 @@ func GetChildren(form ValidInfoRequest, df DependencyFactory) handlerResponse[Ch
 		}
 	}
 
-	log.Write(fmt.Sprintf("fetched children for %d, got %v.", form.EntityID, fileInfo.ChildrenIDs))
+	log.Write(fmt.Sprintf("fetched children for %s, got %v.", form.EntityID, fileInfo.ChildrenIDs))
 	return handlerResponse[ChildrenRequestResponse]{
 		Status: http.StatusOK,
 		Response: ChildrenRequestResponse{
@@ -93,26 +91,26 @@ func GetChildren(form ValidInfoRequest, df DependencyFactory) handlerResponse[Ch
 	}
 }
 
-func GetIDWithPath(form ValidPathRequest, df DependencyFactory) handlerResponse[int] {
-	repository := getDependency[repositories.IFilesystemRepository](df)
-	log := getDependency[*logger.Log](df)
+func GetIDWithPath(form ValidPathRequest, df DependencyFactory) handlerResponse[uuid.UUID] {
+	log := df.GetLogger()
+	repository := df.GetFilesystemRepo()
 
 	entityID, err := repository.GetIDWithPath(form.Path)
 	if err != nil {
-		return handlerResponse[int]{
+		return handlerResponse[uuid.UUID]{
 			Status: http.StatusNotFound,
 		}
 	}
 
-	log.Write(fmt.Sprintf("got ID %d for %s", entityID, form.Path))
-	return handlerResponse[int]{
+	log.Write(fmt.Sprintf("got ID %s for %s", entityID, form.Path))
+	return handlerResponse[uuid.UUID]{
 		Status: http.StatusOK, Response: entityID,
 	}
 }
 
 // Handler for renaming filesystem entities
 func RenameFilesystemEntity(form ValidRenameRequest, df DependencyFactory) handlerResponse[empty] {
-	repository := getDependency[repositories.IFilesystemRepository](df)
+	repository := df.GetFilesystemRepo()
 	err := repository.RenameEntity(form.EntityID, form.NewName)
 	if err != nil {
 		return handlerResponse[empty]{Status: http.StatusNotAcceptable}

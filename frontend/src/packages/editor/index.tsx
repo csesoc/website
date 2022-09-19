@@ -81,10 +81,10 @@ const EditorPage: FC = () => {
               fetch("/api/filesystem/publish-document", {
                 method: "POST",
                 headers: {
-                  "Content-Type": "application/x-www-form-urlencoded"
+                  "Content-Type": "application/x-www-form-urlencoded",
                 },
                 body: new URLSearchParams({
-                  "DocumentID": `${id}`
+                  DocumentID: `${id}`,
                 }),
               });
             }}

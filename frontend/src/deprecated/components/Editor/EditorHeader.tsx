@@ -43,7 +43,7 @@ const EditorHeader: React.FC = () => {
   return (
     <Container>
       <HeaderFlex>
-        <ButtonGroup>
+        {/* <ButtonGroup>
           <ButtonStyle>
           ←
           </ButtonStyle>
@@ -54,12 +54,12 @@ const EditorHeader: React.FC = () => {
         <EditorTitle>
           Session identifier
         </EditorTitle>
-          <EditorTitle>
-            Preview and text
-          </EditorTitle>
-      </HeaderFlex>    
+        <EditorTitle>
+          Preview and text
+        </EditorTitle> */}
+      </HeaderFlex>
     </Container>
-  );    
+  );
 };
 
 export default EditorHeader;

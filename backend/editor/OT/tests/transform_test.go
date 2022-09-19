@@ -43,28 +43,28 @@ func TestTransformInserts(t *testing.T) {
 	pos1 := []int{1, 2, 3, 4}
 	pos2 := []int{1, 2, 3, 3}
 	TP1 := editor.TransformPoint(pos1, pos2)
-	pos1, pos2 = editor.TransformInserts(pos1, pos2, TP1)
+	pos1, pos2, _ = editor.TransformInserts(pos1, pos2, TP1)
 	assert.Equal(t, []int{1, 2, 3, 5}, pos1)
 	assert.Equal(t, pos2, []int{1, 2, 3, 3})
 
 	pos3 := []int{1, 2, 3, 3}
 	pos4 := []int{1, 2, 3, 4}
 	TP2 := editor.TransformPoint(pos3, pos4)
-	pos3, pos4 = editor.TransformInserts(pos3, pos4, TP2)
+	pos3, pos4, _ = editor.TransformInserts(pos3, pos4, TP2)
 	assert.Equal(t, pos4, []int{1, 2, 3, 5})
 	assert.Equal(t, pos3, []int{1, 2, 3, 3})
 
 	pos5 := []int{1, 2, 3, 4, 5, 6}
 	pos6 := []int{1, 2, 3, 4}
 	TP3 := editor.TransformPoint(pos5, pos6)
-	pos5, pos6 = editor.TransformInserts(pos5, pos6, TP3)
+	pos5, pos6, _ = editor.TransformInserts(pos5, pos6, TP3)
 	assert.Equal(t, []int{1, 2, 3, 5, 5, 6}, pos5)
 	assert.Equal(t, pos6, []int{1, 2, 3, 4})
 
 	pos7 := []int{1, 2, 3, 4}
 	pos8 := []int{1, 2, 3, 4, 5, 6}
 	TP4 := editor.TransformPoint(pos7, pos8)
-	pos7, pos8 = editor.TransformInserts(pos7, pos8, TP4)
+	pos7, pos8, _ = editor.TransformInserts(pos7, pos8, TP4)
 	assert.Equal(t, []int{1, 2, 3, 5, 5, 6}, pos8)
 	assert.Equal(t, pos7, []int{1, 2, 3, 4})
 }

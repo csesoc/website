@@ -9,11 +9,11 @@ type IntegerOperation struct {
 }
 
 // TransformAgainst is the IntegerOperation implementation of the operationModel interface
-func (intOp IntegerOperation) TransformAgainst(operation OperationModel) (OperationModel, OperationModel) {
+func (intOp IntegerOperation) TransformAgainst(operation OperationModel, applicationType EditType) (OperationModel, OperationModel) {
 	return intOp, operation
 }
 
 // Apply is the IntegerOperation implementation of the OperationModel interface, it does nothing
-func (intOp IntegerOperation) Apply(ast cmsjson.AstNode) cmsjson.AstNode {
-	return ast
+func (intOp IntegerOperation) Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) cmsjson.AstNode {
+	return parentNode
 }

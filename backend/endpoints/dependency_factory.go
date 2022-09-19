@@ -3,80 +3,62 @@ package endpoints
 //go:generate mockgen -source=dependency_factory.go -destination=mocks/dependency_factory_mock.go -package=mocks
 
 import (
-	"reflect"
-
-	"cms.csesoc.unsw.edu.au/database/repositories"
+	repos "cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/internal/logger"
 )
-
-// Dependency Types that the factory supports
-type Dependency int
-
-const (
-	FileSystemRepository Dependency = iota
-	GroupsRepository
-	PersonRepository
-
-	UnpublishedVolumeRepository
-	PublishedVolumeRepository
-
-	Log
-)
-
-// baseDependencyMappings contains all the mappings that are non-specific to the execution of a handler and are instead global
-// an example of a non-baseDependencyMapping is a logger dependency (as each function maintains its own log)
-var baseDependencyMappings = map[Dependency]func() interface{}{
-	FileSystemRepository:        func() interface{} { return repositories.GetRepository(repositories.FILESYSTEM) },
-	GroupsRepository:            func() interface{} { return repositories.GetRepository(repositories.GROUPS) },
-	PersonRepository:            func() interface{} { return repositories.GetRepository(repositories.PERSON) },
-	UnpublishedVolumeRepository: func() interface{} { return repositories.GetRepository(repositories.DOCKER_UNPUBLISHED_FILESYSTEM) },
-	PublishedVolumeRepository:   func() interface{} { return repositories.GetRepository(repositories.DOCKER_PUBLISHED_FILESYSTEM) },
-}
-
-// baseTypeDependencyMappings maps reflect.Types to the underlying dependency ID (mostly just used by the getDependency helper)
-var baseTypeDependencyMappings = map[reflect.Type]Dependency{
-	reflect.TypeOf((*repositories.IFilesystemRepository)(nil)): FileSystemRepository,
-	reflect.TypeOf((*repositories.IGroupsRepository)(nil)):     GroupsRepository,
-	reflect.TypeOf((*repositories.IPersonRepository)(nil)):     PersonRepository,
-
-	reflect.TypeOf((*repositories.IPublishedVolumeRepository)(nil)):   PublishedVolumeRepository,
-	reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil)): UnpublishedVolumeRepository,
-}
 
 type (
 	// DependencyFactory is an interface type that handlers can use to retrieve
 	// and fetch specific dependencies
 	DependencyFactory interface {
-		GetDependency(depType Dependency) interface{}
-		// GetDepFromType converts a reflect.Type into a dependency ID
-		GetDepFromType(reflect.Type) Dependency
+		GetFilesystemRepo() repos.FilesystemRepository
+		GetGroupsRepo() repos.GroupsRepository
+		GetFrontendsRepo() repos.FrontendsRepository
+		GetPersonsRepo() repos.PersonRepository
+
+		GetUnpublishedVolumeRepo() repos.UnpublishedVolumeRepository
+		GetPublishedVolumeRepo() repos.PublishedVolumeRepository
+
+		GetLogger() *logger.Log
 	}
 
 	// DependencyProvider is a simple implementation of the dependency factory that supports the injection of "dynamic" dependencies
 	DependencyProvider struct {
-		Log *logger.Log
+		Log        *logger.Log
+		FrontEndID int
 	}
 )
 
-// GetDependency constructs a dependency given the required dependency type
-func (dp DependencyProvider) GetDependency(depType Dependency) interface{} {
-	// setup a dependency mapping by first taking the base dependencies and adding handler specific ones
-	dependencies := baseDependencyMappings
-	dependencies[Log] = func() interface{} { return dp.Log }
-
-	return dependencies[depType]()
+// GetFilesystemRepo is the constructor for FS repos
+func (dp DependencyProvider) GetFilesystemRepo() repos.FilesystemRepository {
+	return repos.NewFilesystemRepo()
 }
 
-func (dp DependencyProvider) GetDepFromType(t reflect.Type) Dependency {
-	depTypeMappings := baseTypeDependencyMappings
-	depTypeMappings[reflect.TypeOf((**logger.Log)(nil))] = Log
-
-	return depTypeMappings[t]
+// GetGroupsRepo instantiates a new groups repository
+func (dp DependencyProvider) GetGroupsRepo() repos.GroupsRepository {
+	return repos.NewGroupsRepo()
 }
 
-// getDependency is a small little generic wrapper around the dependency factor to make fetching dependencies cleaner
-func getDependency[T any](factory DependencyFactory) T {
-	typeMapping := reflect.TypeOf((*T)(nil))
+// GetFrontendsRepo instantiates a new frontend repository
+func (dp DependencyProvider) GetFrontendsRepo() repos.FrontendsRepository {
+	return repos.NewFrontendsRepo()
+}
 
-	return factory.GetDependency(factory.GetDepFromType(typeMapping)).(T)
+// GetPersonsRepo instantiates a new person repository
+func (dp DependencyProvider) GetPersonsRepo() repos.PersonRepository {
+	return repos.NewPersonRepo(dp.FrontEndID)
+}
+
+// GetUnpublishedVolumeRepo instantiates a new instance of the unpublished volume repository
+func (dp DependencyProvider) GetUnpublishedVolumeRepo() repos.UnpublishedVolumeRepository {
+	return repos.NewUnpublishedRepo()
+}
+
+// PublishedVolumeRepo instantiates an instance of the published volume repository
+func (dp DependencyProvider) GetPublishedVolumeRepo() repos.PublishedVolumeRepository {
+	return repos.NewPublishedRepo()
+}
+
+func (dp DependencyProvider) GetLogger() *logger.Log {
+	return dp.Log
 }
