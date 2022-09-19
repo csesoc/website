@@ -124,8 +124,6 @@ describe("delete delete", () => {
     const o2: StringOperation = { rangeStart: 2, rangeEnd: 3, newValue: "" };
     const [o1_t1, o2_t1] = stringTransform(o1, o2);
     const [o1_t2, o2_t2] = stringTransform(o2, o1);
-    console.log(o1_t1, o2_t1);
-    console.log(o1_t2, o2_t2);
     expect(apply(o1_t1, apply(o2_t1, s))).toBe("ade");
     expect(apply(o2_t2, apply(o1_t2, s))).toBe("ade");
   });
