@@ -12,6 +12,7 @@ const args1 = {
     angle: 261.11,
     blur: 3.5,
     rotation: 93.47,
+    text: ""
 }
 
 const args2 = {
@@ -24,6 +25,7 @@ const args2 = {
     startSecondaryPoint: 99.56,
     angle: 261.11,
     blur: 3,
+    text: ""
 }
 
 const args3 = {
@@ -36,6 +38,7 @@ const args3 = {
     startSecondaryPoint: 76.59,
     angle: 261.11,
     rotation: -74.2,
+    text: ""
 }
 
 const args4 = {
@@ -48,6 +51,7 @@ const args4 = {
     startSecondaryPoint: 81.0,
     angle: 155.55,
     rotation: 96.49,
+    text: "More Info"
 }
 
 const SphereArgs = [args1, args2, args3, args4];
@@ -55,7 +59,11 @@ const SphereArgs = [args1, args2, args3, args4];
 const CreateSpheres = SphereArgs.map((arg, index) => {
     return (
         <PageStyle.SpherePosition key={index} left={arg.left} top={arg.top}>
-            <Sphere {...arg} />
+            <Sphere {...arg}>
+              <a href='AboutUs'>
+                <PageStyle.MoreInfoText {...arg}>{arg.text}</PageStyle.MoreInfoText>
+              </a>
+            </Sphere>
         </PageStyle.SpherePosition>
     )
 })

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { device } from "../../styles/device";
+import { sphereProps } from "./Sphere-Styled";
 
 export const AboutUsPage = styled.div`
     position: relative;
@@ -17,6 +18,7 @@ export const AboutUsContent = styled.div`
     justify-content: flex-end;
     margin-bottom: 5vw;
     gap: 20px;
+    z-index: 2;
 `
 
 type positionProps = {
@@ -26,7 +28,7 @@ type positionProps = {
 
 export const SpherePosition = styled.div<positionProps>`
     position: absolute;
-    z-index: -1;
+    z-index: 0;
     left: ${props => props.left}%;
     top: ${props => props.top}%;
 `
@@ -66,3 +68,16 @@ export const MainText = styled.div`
 export const BlueText = styled.span`
     color: #3977F8;
 `
+
+export const MoreInfoText = styled.div<sphereProps>`
+    transform: rotate(${props => props.rotation ? -props.rotation : 0}deg);
+    color: #FFFFFF;
+    font-weight: 700;
+    line-height: 58px;
+    font-size: 2vw;
+
+    &:hover { 
+      cursor: pointer;
+      transform: rotate(${props => props.rotation ? -props.rotation : 0}deg) scale(1.1);
+    }
+`;
