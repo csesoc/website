@@ -11,8 +11,8 @@ export default function Sponsors() {
   const [sponsorName, setSponsorName] = useState("");
   const [sponsorDescription, setSponsorDescription] = useState("");
   const handleClose = () => setOpen(false);
-
-  function SponsorContainers(tierName: string, tierLevel: string, size: string) {
+  const smallLogos = ["CSE", "IMC Trading", "Sig", "Optiver", "Prospa"]
+  function SponsorContainers(tierName: string, tierLevel: string, size: number) {
     let tier = content.filter(S => S.level === tierLevel);
     return (
       <div>
@@ -21,11 +21,13 @@ export default function Sponsors() {
         </PageStyle.SponsorsTier>
         <PageStyle.LevelContainer>
           {tier.map((Sponsor) =>
-            <PageStyle.SponsorsLogo>
+            <PageStyle.SponsorsLogo
+              key={Sponsor.id}
+            >
               <Image
                 src={`/assets/sponsors/${Sponsor.logo}`}
-                width={size}
-                height={size}
+                width={(smallLogos.includes(Sponsor.alt_text)) ? (size - 50) : size}
+                height={(smallLogos.includes(Sponsor.alt_text)) ? (size - 50) : size}
                 objectFit="contain"
                 onClick={() => {
                   setOpen(true);
@@ -55,9 +57,9 @@ export default function Sponsors() {
     <div>
       <PageStyle.SponsorsContainer>
         <PageStyle.SponsorsHeading>Sponsors</PageStyle.SponsorsHeading>
-        {SponsorContainers('Principal Sponsors', 'P', '250px')}
-        {SponsorContainers('Major Sponsors', 'M', '200px')}
-        {SponsorContainers('Affiliiate Sponsors', 'A', '150px')}
+        {SponsorContainers('Principal Sponsors', 'P', 210)}
+        {SponsorContainers('Major Sponsors', 'M', 150)}
+        {SponsorContainers('Affiliiate Sponsors', 'A', 130)}
       </PageStyle.SponsorsContainer>
       <Dialog
         open={open}
