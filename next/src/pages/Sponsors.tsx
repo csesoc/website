@@ -21,7 +21,9 @@ export default function Sponsors() {
         </PageStyle.SponsorsTier>
         <PageStyle.LevelContainer>
           {tier.map((Sponsor) =>
-            <PageStyle.SponsorsLogo>
+            <PageStyle.SponsorsLogo
+              key={Sponsor.id}
+            >
               <Image
                 src={`/assets/sponsors/${Sponsor.logo}`}
                 width={(smallLogos.includes(Sponsor.alt_text)) ? (size - 50) : size}
