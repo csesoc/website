@@ -5,7 +5,7 @@
 */
 export default class Client {
   constructor(
-    documentID: number,
+    documentID: string,
     initCallback: (arg: any[]) => void,
     terminatingCallbck: (arg: TerminationReason) => void
   ) {
@@ -73,7 +73,7 @@ export default class Client {
     });
   }
 
-  documentID: number;
+  documentID: string;
   socket: WebSocket;
   messageQueue: Array<string>;
 }

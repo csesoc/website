@@ -1,26 +1,25 @@
 import { createAction } from "@reduxjs/toolkit";
-import { FileEntity, Folder, File } from './types';
+import { FileEntity, Folder, File } from "./types";
 
 /**
  * Payload Types
  */
 
 export type RenamePayloadType = {
-  id: number;
+  id: string;
   newName: string;
-}
+};
 
 export type AddPayloadType = {
   name: string;
   type: string;
-  parentId: number;
-}
+  parentId: string;
+};
 
 export type SetDirPayloadType = {
-  parentFolder: number;
+  parentFolder: string;
   folderName: string;
-}
-
+};
 
 /**
  * Init Actions
@@ -32,20 +31,29 @@ export const initItemsAction = createAction<FileEntity[]>("folders/initItems");
 /**
  * Directory Traversal actions
  */
-export const traverseIntoFolder = createAction<number>("folders/traverseIntoFolder");
-export const traverseBackFolder = createAction<number>("folders/traverseBackFolder");
-export const setDirectory = createAction<SetDirPayloadType>("folders/setDirectory")
+export const traverseIntoFolder = createAction<string>(
+  "folders/traverseIntoFolder"
+);
+export const traverseBackFolder = createAction<string>(
+  "folders/traverseBackFolder"
+);
+export const setDirectory = createAction<SetDirPayloadType>(
+  "folders/setDirectory"
+);
 
 /**
  * CRUD actions
  */
 export const addItemAction = createAction<AddPayloadType>("folders/addItem");
-export const addFolderItemAction = createAction<Folder>("folders/addFolderItem");
+export const addFolderItemAction = createAction<Folder>(
+  "folders/addFolderItem"
+);
 export const addFileItemAction = createAction<File>("folders/addFileItem");
 
-
 // FileEntity = Folder | File
-export const renameFileEntityAction = createAction<RenamePayloadType>("folders/renameFileEntity");
+export const renameFileEntityAction = createAction<RenamePayloadType>(
+  "folders/renameFileEntity"
+);
 
 // TODO removeFolderItemAction
 // TODO removeFileItemAction

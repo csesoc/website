@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
 import { Breadcrumbs, Link } from "@mui/material";
 
 // local imports
-import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
-import Renderer from './components/FileRenderer/Renderer';
-import {initAction, traverseBackFolder} from './state/folders/actions';
-import ConfirmationWindow from './components/ConfirmationModal/ConfirmationWindow';
+import SideBar from "src/packages/dashboard/components/SideBar/SideBar";
+import Renderer from "./components/FileRenderer/Renderer";
+import { initAction, traverseBackFolder } from "./state/folders/actions";
+import ConfirmationWindow from "./components/ConfirmationModal/ConfirmationWindow";
 import Directory from "./components/Directory";
 
 const Container = styled.div`
@@ -20,17 +20,19 @@ const FlexWrapper = styled.div`
   display: flex;
   flex-direction: column;
   transition: left 0.3s ease-in-out;
-`
+`;
 
 export default function Dashboard() {
-  const [isOpen, setOpen] = useState(true)
+  const [isOpen, setOpen] = useState(true);
 
-  const [modalState, setModalState] = useState<{ open: boolean, type: string }>({
-    open: false,
-    type: "",
-  });
+  const [modalState, setModalState] = useState<{ open: boolean; type: string }>(
+    {
+      open: false,
+      type: "",
+    }
+  );
 
-  const [selectedFile, setSelectedFile] = useState<number | null>(null);
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
   // const parentFolder = getFolderState().parentFolder;
   const dispatch = useDispatch();
 
@@ -41,8 +43,13 @@ export default function Dashboard() {
 
   return (
     <Container>
-      <SideBar setModalState={setModalState} selectedFile={selectedFile} isOpen={isOpen} setOpen={setOpen}/>
-      <FlexWrapper style={{ left: isOpen ? '0px' : '-250px' }}>
+      <SideBar
+        setModalState={setModalState}
+        selectedFile={selectedFile}
+        isOpen={isOpen}
+        setOpen={setOpen}
+      />
+      <FlexWrapper style={{ left: isOpen ? "0px" : "-250px" }}>
         <Directory />
         <Renderer
           selectedFile={selectedFile}
@@ -55,5 +62,5 @@ export default function Dashboard() {
         setModalState={setModalState}
       />
     </Container>
-  )
+  );
 }

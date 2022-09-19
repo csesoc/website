@@ -43,7 +43,7 @@ const EditorPage: FC = () => {
 
   useEffect(() => {
     wsClient.current = new Client(
-      parseInt(id as string), // for testing, documentID=5 and docuemntID=7 should exist
+      id as string, // for testing, documentID=5 and docuemntID=7 should exist
       (data) => {
         setBlocks(data as BlockData[]);
       },
@@ -58,30 +58,26 @@ const EditorPage: FC = () => {
       <EditorHeader />
       <Container>
         {blocks.map((block, idx) => {
-          console.log(block[0].type)
-          return (
-            block[0].type === "paragraph" ? (
-              <EditorBlock
-                id={idx}
-                key={idx}
-                initialValue={block}
-                update={updateValues}
-                showToolBar={focusedId === idx}
-                onEditorClick={() => setFocusedId(idx)}
-              />
-            ) : (
-              <HeadingBlock
-                id={idx}
-                key={idx}
-                update={updateValues}
-                showToolBar={focusedId === idx}
-                onEditorClick={() => setFocusedId(idx)}
-              />
-            )
-          )
-        }
-          
-        )}
+          console.log(block[0].type);
+          return block[0].type === "paragraph" ? (
+            <EditorBlock
+              id={idx}
+              key={idx}
+              initialValue={block}
+              update={updateValues}
+              showToolBar={focusedId === idx}
+              onEditorClick={() => setFocusedId(idx)}
+            />
+          ) : (
+            <HeadingBlock
+              id={idx}
+              key={idx}
+              update={updateValues}
+              showToolBar={focusedId === idx}
+              onEditorClick={() => setFocusedId(idx)}
+            />
+          );
+        })}
 
         <InsertContentWrapper>
           <CreateHeadingBlock
