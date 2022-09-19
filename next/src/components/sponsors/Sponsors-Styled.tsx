@@ -18,7 +18,7 @@ export const SponsorsTier = styled.div`
 `
 
 export const SponsorsLogo = styled.div`
-  padding: 1rem 2rem;
+  padding: 1rem 3rem;
   &:hover {
     transform: scale(1.04);
   }
@@ -62,7 +62,9 @@ export const SponsorsInfo = styled.div`
 export const LevelContainer = styled.div`
   display: flex;
   flex-direction: row;
-  align-content: space-between;
+  justify-content: center;
+  align-items: center;
+  align-content: stretch;
   flex-wrap: wrap;
   border-left: 1px solid grey;
   padding-left: 2rem;
