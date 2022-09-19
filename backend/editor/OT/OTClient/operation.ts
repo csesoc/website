@@ -1,6 +1,6 @@
 // Represents atomic operations that can be applied to a piece of data of a specific type
 // TODO: in the future update object operation to strictly contain CMS operation data
-type StringOperation = {
+export type StringOperation = {
   rangeStart: number;
   rangeEnd: number;
   newValue: string;
@@ -166,3 +166,87 @@ const effectIndependent = (a: number[], b: number[], tp: number): boolean =>
  * Normalise turns an empty operation into a noop
  */
 const normalise = (a: Operation): Operation => (a.path.length === 0 ? noOp : a);
+
+const copy = <T>(a: T): T => JSON.parse(JSON.stringify(a));
+
+export const stringTransform = (
+  a: StringOperation,
+  b: StringOperation
+): [StringOperation, StringOperation] => {
+  const [a1, a2, b1, b2] = [copy(a), copy(a), copy(b), copy(b)];
+  if (a.newValue != "" && b.newValue != "") {
+    return [insertInsert(b1, a1), insertInsert(a2, b2)];
+  } else if (a.newValue != "" && b.newValue == "") {
+    return [insertDelete(a1, b1), deleteInsert(b2, a2)];
+  } else if (a.newValue == "" && b.newValue != "") {
+    return [deleteInsert(a1, b1), insertDelete(b2, a2)];
+  } else {
+    return [deleteDelete(b1, a1, false), deleteDelete(a2, b2, true)];
+  }
+};
+
+const insertInsert = (
+  o1: StringOperation,
+  o2: StringOperation
+): StringOperation => {
+  if (o1.rangeStart > o2.rangeStart) {
+    o1.rangeStart += o2.newValue.length;
+    o1.rangeEnd += o2.newValue.length;
+  }
+  return o1;
+};
+
+const insertDelete = (
+  o1: StringOperation,
+  o2: StringOperation
+): StringOperation => {
+  if (o1.rangeStart <= o2.rangeStart) {
+    return o1;
+  } else if (o1.rangeStart > o2.rangeEnd) {
+    o1.rangeStart -= o2.newValue.length;
+    o1.rangeEnd -= o2.newValue.length;
+  } else if (o2.rangeStart <= o1.rangeStart) {
+    const shift = o1.rangeStart - o2.rangeStart;
+    o1.rangeStart -= shift;
+    o1.rangeEnd -= shift;
+  }
+  return o1;
+};
+
+const deleteInsert = (
+  o1: StringOperation,
+  o2: StringOperation
+): StringOperation => {
+  return o1;
+};
+
+const deleteDelete = (
+  o1: StringOperation,
+  o2: StringOperation,
+  isLast: boolean
+): StringOperation => {
+  if (o1.rangeStart == o2.rangeStart && o1.rangeEnd == o2.rangeEnd) {
+    if (isLast) {
+      o1.rangeEnd = o1.rangeStart;
+    }
+    return o1;
+  }
+  if (o2.rangeStart >= o1.rangeEnd) {
+    return o1;
+  } else if (o1.rangeStart >= o2.rangeEnd) {
+    const length = o2.rangeEnd - o2.rangeStart;
+    o1.rangeStart -= length;
+    o1.rangeEnd -= length;
+  } else {
+    if (o2.rangeStart <= o1.rangeStart) {
+      if (o1.rangeEnd <= o2.rangeEnd) {
+        o1.rangeEnd = o1.rangeStart;
+      } else {
+        o1.rangeStart = o2.rangeEnd;
+      }
+    } else if (o2.rangeEnd > o1.rangeEnd) {
+      o1.rangeEnd = o2.rangeStart;
+    }
+  }
+  return o1;
+};

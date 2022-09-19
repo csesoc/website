@@ -57,19 +57,15 @@ func insertInsert(o1 StringOperation, o2 StringOperation) StringOperation {
 // Transform o1 when o1 is an insert, and o2 is a delete
 func insertDelete(o1 StringOperation, o2 StringOperation) StringOperation {
 	if o1.RangeStart <= o2.RangeStart {
-		// If insert happens before the delete, do nothing to insert op
 		return o1
 	} else if o1.RangeStart > o2.RangeEnd {
 		// If the insert happens after the delete, shift insert left
 		length := o2.RangeEnd - o2.RangeStart
 		o1.RangeStart, o1.RangeEnd = o1.RangeStart-length, o1.RangeEnd-length
-	} else {
-		// Overlap
-		if o2.RangeStart <= o1.RangeStart {
-			// If delete comes before shift insert to start of delete
-			shift := o1.RangeStart - o2.RangeStart
-			o1.RangeStart, o1.RangeEnd = o1.RangeStart-shift, o1.RangeEnd-shift
-		}
+	} else if o2.RangeStart <= o1.RangeStart {
+		// If delete comes before shift insert to start of delete and overlap
+		shift := o1.RangeStart - o2.RangeStart
+		o1.RangeStart, o1.RangeEnd = o1.RangeStart-shift, o1.RangeEnd-shift
 	}
 	return o1
 }
@@ -86,11 +82,8 @@ func deleteDelete(o1 StringOperation, o2 StringOperation, isLast bool) StringOpe
 		if isLast {
 			// If both operations do the same thing, make second operation noop
 			o1.RangeEnd = o1.RangeStart
-			return o1
-		} else {
-			// And do nothing with the first op
-			return o1
 		}
+		return o1
 	}
 	if o2.RangeStart >= o1.RangeEnd {
 		return o1
@@ -107,15 +100,9 @@ func deleteDelete(o1 StringOperation, o2 StringOperation, isLast bool) StringOpe
 				// o1 ends after o2, so delete everything inbetween o1 and o2
 				o1.RangeStart = o2.RangeEnd
 			}
-		} else {
-			// o1 starts before o2
-			if o2.RangeEnd <= o1.RangeEnd {
-				// o1 is bigger or same as o1 so do nothing
-				return o1
-			} else {
-				// o2 ends after o1, so delete everything inbetween o1 and o2
-				o1.RangeEnd = o2.RangeStart
-			}
+		} else if o2.RangeEnd > o1.RangeEnd {
+			// o2 ends after o1, so delete everything inbetween o1 and o2
+			o1.RangeEnd = o2.RangeStart
 		}
 	}
 	return o1
