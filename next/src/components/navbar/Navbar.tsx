@@ -9,6 +9,7 @@ import {
 	ItemWrapper,
 	NavItem,
 	HamburgerButton,
+  HomepageButton,
 } from "./Navbar-styled";
 
 //     background-color: #A09FE3
@@ -41,14 +42,11 @@ const Navbar = (props: NavbarOpenProps) => {
       return (
           <Container style={{backgroundColor: "#A09FE3"}}> 
             <Image src={WebsitesIcon} objectFit="contain" objectPosition="left"/>
-              <ItemWrapper>
-                  <HamburgerButton onClick={props.setNavbarOpen}>
-                      <Image src={HamburgerIcon} />
-                  </HamburgerButton>
-                  <a href="#homepage">
-                      <NavItem style={{color: "#FFFFFF"}}>Homepage</NavItem>
-                  </a>
-              </ItemWrapper>
+            <ItemWrapper>
+                <a href="#homepage">
+                  <HomepageButton style={{color: "#FFFFFF"}}>Homepage</HomepageButton>
+                </a>
+            </ItemWrapper>
           </Container>
       );
     }

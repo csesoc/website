@@ -35,6 +35,22 @@ const NavItem = styled.li`
 	}
 `;
 
+const HomepageButton = styled.div`
+  font-size: 20px;
+  font-weight: bold;
+  
+
+  @media (max-width: 768px) {
+    font-size: 4.5vw;
+    margin-right: 2.8vw;
+  }
+
+  &:hover { 
+		cursor: pointer;
+		transform: scale(1.1);
+	}
+`;
+
 const HamburgerButton = styled.button`
 	width: fit-content;
 	height: auto;
@@ -47,4 +63,4 @@ const HamburgerButton = styled.button`
 	}
 `;
 
-export { Container, ItemWrapper, NavItem, HamburgerButton };
+export { Container, ItemWrapper, NavItem, HamburgerButton, HomepageButton};
