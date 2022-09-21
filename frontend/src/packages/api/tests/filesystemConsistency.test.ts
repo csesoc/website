@@ -30,7 +30,6 @@ describe("the filesystem api should", () => {
 
         // Create a document
         const newDocument = await FilesystemAPI.CreateDocument("ebic document of truth", root.EntityID);
-        console.log(newDocument);      
         expect(IsCreateFilesystemEntryResponse(newDocument), "Expected CreateDocument response to be assignable to CreateFilesystemEntryResponse").toBe(true);
 
         // fetch the information

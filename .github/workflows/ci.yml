@@ -10,6 +10,10 @@ on:
 
 env:
   PG_PORT: 5432
+  PG_USER: postgres
+  PG_PASSWORD: postgres
+  PG_DB: test_db
+  PG_HOST: db:5432
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -32,6 +36,6 @@ jobs:
       - name: Typescript TSC
         run: cd frontend && npm install && npm run types
       - name: Building docker containers using docker-compose
-        run: GO_MOD=go.mod docker compose up --wait --build backend db staging_db
+        run: GO_MOD=go.mod docker compose up --env-file=./config/ci.env.dev --wait --build backend db staging_db
       - name: React tests
         run: cd frontend && npm test
