@@ -8,5 +8,5 @@ export type FilesystemEntry = {
 }
 
 export type CreateFilesystemEntryResponse = {
-    EntityID: string
+    NewID: string
 }
