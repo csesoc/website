@@ -36,6 +36,6 @@ jobs:
       - name: Typescript TSC
         run: cd frontend && npm install && npm run types
       - name: Building docker containers using docker-compose
-        run: GO_MOD=go.mod docker compose up --env-file=./config/ci.env.dev --wait --build backend db staging_db
+        run: GO_MOD=go.mod docker compose --env-file=./config/ci.env.dev up --wait --build backend db staging_db
       - name: React tests
         run: cd frontend && npm test
