@@ -6,7 +6,11 @@ import { APIError, IsEmptyApiResponse } from "../types/general";
 // filesystemConsistencyTests ensure that the contract maintained between the frontend and backend regarding endpoint input/response types are consistent
 //  note: requires the BE container to be up and running
 beforeAll(() => {
-    configureApiUrl("http://localhost:8080")
+    if (process.env.E2E_MODE === "github") {
+        configureApiUrl("http://backend:8080");
+    } else {
+        configureApiUrl("http://localhost:8080")
+    }
 });
 
 afterAll(() => {
@@ -35,7 +39,6 @@ describe("the filesystem api should", () => {
         // fetch the information
         const newEntityId = (newDocument as CreateFilesystemEntryResponse).NewID;
         const documentInformation = await FilesystemAPI.GetEntityInfo(newEntityId);
-        console.log(newEntityId, documentInformation);
         expect(IsFilesystemEntry(documentInformation), 'Expected document information to be assignable to the FilesystemEntry type').toBe(true);
 
         // rename it

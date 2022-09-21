@@ -21,6 +21,8 @@ services:
     stdin_open: true
     ports:
       - 3000:3000
+    environment:
+      - E2E_MODE=${E2E_MODE}
   backend:
     container_name: go_backend
     build:
