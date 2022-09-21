@@ -1,5 +1,5 @@
 import { describe } from "@jest/globals";
-import { FilesystemAPI } from "../filesystem";
+import { configureApiUrl, FilesystemAPI, resetApiUrl } from "../filesystem";
 import { CreateFilesystemEntryResponse, FilesystemEntry } from "../types/filesystem";
 import { APIError, IsEmptyApiResponse } from "../types/general";
 
@@ -19,10 +19,18 @@ const IsFilesystemEntry = (o: any): o is FilesystemEntry =>
 const IsCreateFilesystemEntryResponse = (o: any): o is CreateFilesystemEntryResponse =>
     hasFieldOfType(o, "EntityID", "string");
     
+beforeAll(() => {
+    configureApiUrl("http://localhost:8080")
+});
+
+afterAll(() => {
+    resetApiUrl();
+})
+    
+    
 // Ensure that the returned response was actually indeed assignable to FilesystemEntry
 //  - We need this additional check as the return value is merely a "promise" to the typescript compiler that the response
 //    conforms to a specific format, we need to additionally confirm this at runtime using a test
-
 // All of these tests basically just assert that AT RUNTIME the API response types are indeed assignable to our type definitions
 describe("the filesystem api should", () => {
     test("structure root info responses properly", async () => {

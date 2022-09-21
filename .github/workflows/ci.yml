@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
 # Controls when the action will run. Triggers the workflow on push or pull request
@@ -15,20 +13,31 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  testing:
+  setup_cms:
     runs-on: ubuntu-latest
+    needs: [setup_cms]
     steps:
       - uses: actions/setup-go@v3
         with:
           go-version: 1.18
       - uses: actions/checkout@v3
-      - name: type check
-        run: cd frontend && npm install && npm run types
       - name: Building docker containers using docker-compose
         run: GO_MOD=go.mod docker-compose up -d --build
+
+  backend_testing:
+    runs-on: ubuntu-latest
+    needs: [setup_cms]
+    steps:
       - name: Golang Tests
         run: go test -v ./...
         working-directory: ./backend
-      - name: Frontend Tests
-        run: npm test
-        working-directory: ./frontend
+
+  frontend_testing:
+    runs-on: ubuntu-latest
+    needs: [setup_cms]
+    steps:
+      - uses: actions/checkout@v3
+      - name: type check
+        run: cd frontend && npm install && npm run types
+      - name: react tests
+        run: cd frontend && npm test

@@ -6,6 +6,13 @@ type PostBody =
     | { $type: "Record", body: Record<string, string> }
     | { $type: "FormData", body: FormData }
 
+// TODO: not this
+// This was the best way I could figure out how to get actual integration tests to run in the frontend container
+let API_URL = ""
+
+export const configureApiUrl = (newUrl: string): void => { API_URL = newUrl }
+export const resetApiUrl = (): void => { API_URL = "" }
+
 // Only interface with the BE FS APIs via this class
 export class FilesystemAPI {
     // GetEntityInfo retrieves all entity information for an FS entity given its ID
@@ -63,7 +70,7 @@ export class FilesystemAPI {
 
     // SendGetRequest is a small helper functions for sending get request and wrapping the response in an appropriate type
     static async SendGetRequest<ResponseType> (url: string): Promise<ResponseType | APIError> {
-        const response = await fetch(url);
+        const response = await fetch(`${API_URL}${url}`);
         return response.ok
             ? (await response.json()).Response as ResponseType
             : (await response.json()) as APIError;
@@ -71,7 +78,7 @@ export class FilesystemAPI {
 
     // SendPostRequest is a small helper function for sending post requests and wrapping the response in appropriate types
     static async SendPostRequest<ResponseType> (url: string, body: PostBody): Promise<ResponseType | APIError> {
-        const response = await fetch(url, {
+        const response = await fetch(`${API_URL}${url}`, {
             method: "POST",
             body: body.$type === "Record"
                     ? new URLSearchParams(body.body)
