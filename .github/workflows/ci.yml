@@ -27,13 +27,10 @@ jobs:
 
   frontend_testing:
     runs-on: ubuntu-latest
+    needs: [ backend_testing ]
     steps:
       - uses: actions/checkout@v3
       - name: Typescript TSC
         run: cd frontend && npm install && npm run types
-      - name: Building docker containers using docker-compose
-        run: GO_MOD=go.mod docker-compose up -d --build
-      - name: Check logs
-        run: docker logs go_backend
       - name: React tests
         run: cd frontend && npm test
