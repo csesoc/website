@@ -12,7 +12,7 @@ import {
 
 const Navbar = (props: NavbarOpenProps) => {
 	return (
-		<Container> 
+		<Container>
 			<ItemWrapper>
 				<HamburgerButton onClick={props.setNavbarOpen}>
 					<Image src={HamburgerIcon} />
