@@ -37,5 +37,9 @@ jobs:
         run: cd frontend && npm install && npm run types
       - name: Building docker containers using docker-compose
         run: GO_MOD=go.mod docker compose --env-file=./config/ci.env.dev up --wait --build backend db staging_db
+      - name: Wait for Go BE to configure
+        uses: juliangruber/sleep-action@v1
+        with:
+          time: 5s
       - name: React tests
         run: cd frontend && npm test
