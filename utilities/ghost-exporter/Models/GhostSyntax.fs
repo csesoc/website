@@ -83,6 +83,7 @@ module Sections =
     type sectionTag =
     | Paragraph
     | Heading
+    | Card
 
     // Specialised parsers since this library doesn't seem to give us any :(((((((
     // Might stack overflow on large lists but I dont see us ever having to deal with that, if stack overflows are an issue just optimise to be tail call recursive
@@ -115,17 +116,22 @@ module Sections =
             | json -> Decode.Fail.arrExpected json
 
     let parseSectionBlockList = parseList sectionBlock.OfJson 
+    
+    type blockValue =
+        | Section of list<sectionBlock>
+        | CardReference of int
 
     // Sections are the core of the ghost mobiledoc format, they're what will directly dictate the structure of the exported CMS json
     type section = {
         tag: sectionTag;
-        blocks: sectionBlock list;
+        blocks: blockValue;
     } with
         static member OfJson json =
             match json with
             | JArray o -> match List.ofSeq o with
-                            | (JNumber 1m) :: (JString "p") :: (JArray subsections) :: [] -> (fun sections -> { tag = Paragraph; blocks = sections }) <!> (parseSectionBlockList subsections)
-                            | (JNumber 1m) :: (JString "h2") :: (JArray subsections) :: [] -> (fun sections -> { tag = Heading; blocks = sections }) <!> (parseSectionBlockList subsections)
+                            | (JNumber 1m) :: (JString "p") :: (JArray subsections) :: [] -> (fun sections -> { tag = Paragraph; blocks = Section sections }) <!> (parseSectionBlockList subsections)
+                            | (JNumber 1m) :: (JString "h2") :: (JArray subsections) :: [] -> (fun sections -> { tag = Heading; blocks = Section sections }) <!> (parseSectionBlockList subsections)
+                            | (JNumber 10m) :: (JNumber x) :: [] -> Decode.Success { tag = Card; blocks = CardReference <| Decimal.ToInt32 x }
                             | _ -> Decode.Fail.invalidValue json "failed to parse into sections"
             | json -> Decode.Fail.arrExpected json
 

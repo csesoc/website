@@ -11,5 +11,9 @@
     <Compile Include="Converters.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Fleece" Version="0.10.0" />
+    <PackageReference Include="Fleece.NewtonsoftJson" Version="0.10.0" />
+  </ItemGroup>
   <Import Project=".paket\Paket.Restore.targets" />
 </Project>
