@@ -6,7 +6,7 @@ import { APIError, IsEmptyApiResponse } from "../types/general";
 // filesystemConsistencyTests ensure that the contract maintained between the frontend and backend regarding endpoint input/response types are consistent
 //  note: requires the BE container to be up and running
 const hasFieldOfType = (o: any, fieldName: string, type: string): boolean =>
-    fieldName in o && typeof o.fieldName == type;
+    fieldName in o && (typeof o[fieldName]) === type;
 
 const IsFilesystemEntry = (o: any): o is FilesystemEntry =>
     hasFieldOfType(o, "EntityID", "string") &&
@@ -14,10 +14,10 @@ const IsFilesystemEntry = (o: any): o is FilesystemEntry =>
     hasFieldOfType(o, "IsDocument", "boolean") &&
     hasFieldOfType(o, "Parent", "string") && 
     hasFieldOfType(o, "Children", typeof []) &&
-    o.Children.all((child: any) => IsFilesystemEntry(child));
+    o.Children.every((child: any) => IsFilesystemEntry(child));
 
 const IsCreateFilesystemEntryResponse = (o: any): o is CreateFilesystemEntryResponse =>
-    hasFieldOfType(o, "EntityID", "string");
+    hasFieldOfType(o, "NewID", "string");
     
 beforeAll(() => {
     configureApiUrl("http://localhost:8080")
@@ -43,12 +43,14 @@ describe("the filesystem api should", () => {
         const root = (await FilesystemAPI.GetRootInfo()) as FilesystemEntry;
 
         // Create a document
-        const newDocument = await FilesystemAPI.CreateDocument("NewDoc", root.EntityID);        
-        expect(IsCreateFilesystemEntryResponse(newDocument), "Expected CreateDocument response to be assignable to CreateFilesystemEntryResponse");
+        const newDocument = await FilesystemAPI.CreateDocument("ebic document of truth", root.EntityID);
+        console.log(newDocument);      
+        expect(IsCreateFilesystemEntryResponse(newDocument), "Expected CreateDocument response to be assignable to CreateFilesystemEntryResponse").toBe(true);
 
         // fetch the information
-        const newEntityId = (newDocument as CreateFilesystemEntryResponse).EntityID;
+        const newEntityId = (newDocument as CreateFilesystemEntryResponse).NewID;
         const documentInformation = await FilesystemAPI.GetEntityInfo(newEntityId);
+        console.log(newEntityId, documentInformation);
         expect(IsFilesystemEntry(documentInformation), 'Expected document information to be assignable to the FilesystemEntry type').toBe(true);
 
         // rename it
