@@ -4,9 +4,9 @@ name: CI
 # events but only for the master branch
 on:
   push:
-    branches: [main, prototype, "renovate/*"]
+    branches: [main, "renovate/*"]
   pull_request:
-    branches: [main, prototype]
+    branches: [main]
 
 env:
   PG_PORT: 5432
@@ -33,5 +33,7 @@ jobs:
         run: cd frontend && npm install && npm run types
       - name: Building docker containers using docker-compose
         run: GO_MOD=go.mod docker-compose up -d --build
+      - name: Check logs
+        run: docker logs go_backend
       - name: React tests
         run: cd frontend && npm test

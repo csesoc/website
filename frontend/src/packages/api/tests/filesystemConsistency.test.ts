@@ -1,24 +1,10 @@
 import { describe } from "@jest/globals";
 import { configureApiUrl, FilesystemAPI, resetApiUrl } from "../filesystem";
-import { CreateFilesystemEntryResponse, FilesystemEntry } from "../types/filesystem";
+import { CreateFilesystemEntryResponse, FilesystemEntry, IsCreateFilesystemEntryResponse, IsFilesystemEntry } from "../types/filesystem";
 import { APIError, IsEmptyApiResponse } from "../types/general";
 
 // filesystemConsistencyTests ensure that the contract maintained between the frontend and backend regarding endpoint input/response types are consistent
 //  note: requires the BE container to be up and running
-const hasFieldOfType = (o: any, fieldName: string, type: string): boolean =>
-    fieldName in o && (typeof o[fieldName]) === type;
-
-const IsFilesystemEntry = (o: any): o is FilesystemEntry =>
-    hasFieldOfType(o, "EntityID", "string") &&
-    hasFieldOfType(o, "EntityName", "string") &&
-    hasFieldOfType(o, "IsDocument", "boolean") &&
-    hasFieldOfType(o, "Parent", "string") && 
-    hasFieldOfType(o, "Children", typeof []) &&
-    o.Children.every((child: any) => IsFilesystemEntry(child));
-
-const IsCreateFilesystemEntryResponse = (o: any): o is CreateFilesystemEntryResponse =>
-    hasFieldOfType(o, "NewID", "string");
-    
 beforeAll(() => {
     configureApiUrl("http://localhost:8080")
 });
