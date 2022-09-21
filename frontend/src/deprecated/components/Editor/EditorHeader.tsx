@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 
 const Container = styled.div`
   height: 50px;
-  background: #2B3648;
+  background: #A09FE3;
   width: 100%;
 `
 const EditorTitle = styled.div`
