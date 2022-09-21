@@ -7,7 +7,6 @@ import { APIError, IsEmptyApiResponse } from "../types/general";
 //  note: requires the BE container to be up and running
 beforeAll(() => {
     if (process.env.E2E_MODE === "github") {
-        console.log("hello world! :D")
         configureApiUrl("http://backend:8080");
     } else {
         configureApiUrl("http://localhost:8080")

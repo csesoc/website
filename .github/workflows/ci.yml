@@ -30,5 +30,7 @@ jobs:
         run: cd frontend && npm install && npm run types
       - name: Building docker containers using docker-compose
         run: GO_MOD=go.mod docker compose --env-file=./config/ci.env.dev up --wait --build backend db staging_db frontend
+      - name: BE container logs
+        run: docker go_backend logs
       - name: React tests
         run: docker exec frontend npm test
