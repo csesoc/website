@@ -8,13 +8,6 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  PG_PORT: 5432
-  PG_USER: postgres
-  PG_PASSWORD: postgres
-  PG_DB: test_db
-  PG_HOST: db:5432
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   backend_testing:
@@ -37,9 +30,5 @@ jobs:
         run: cd frontend && npm install && npm run types
       - name: Building docker containers using docker-compose
         run: GO_MOD=go.mod docker compose --env-file=./config/ci.env.dev up --wait --build backend db staging_db frontend
-      - name: Wait for Go BE to configure
-        uses: juliangruber/sleep-action@v1
-        with:
-          time: 5s
       - name: React tests
         run: docker exec frontend npm test
