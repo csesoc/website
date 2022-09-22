@@ -19,7 +19,7 @@ EXPOSE 8080
 ENV GOPATH /go
 
 # might start the app
-CMD ["go", "run", "main.go"]
+ENTRYPOINT go run main.go
 
 # For some reason compile daemon is broken
 # ENTRYPOINT CompileDaemon --build="go build main.go" --command="./main"

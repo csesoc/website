@@ -34,6 +34,7 @@ services:
       dockerfile: ./Dockerfile.development
     depends_on:
       - db
+      - staging_db
     volumes:
       - './backend:/go/src/cms.csesoc.unsw.edu.au'
       - 'unpublished_document_data:/var/lib/documents/unpublished/data'
