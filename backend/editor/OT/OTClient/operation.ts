@@ -1,24 +1,81 @@
 // Represents atomic operations that can be applied to a piece of data of a specific type
 // TODO: in the future update object operation to strictly contain CMS operation data
-export type StringOperation = {
+export interface AtomicOperation {
+  $type: string;
+  transformAgainst: (op: AtomicOperation) => AtomicOperation[];
+}
+
+export class IntegerOperation implements AtomicOperation {
+  $type = "integerOperation";
+  newValue: number;
+  constructor(newValue: number) {
+    this.newValue = newValue;
+  }
+
+  transformAgainst = (op: AtomicOperation): AtomicOperation[] => [this, op];
+}
+
+export class BooleanOperation implements AtomicOperation {
+  $type = "booleanOperation";
+  newValue: boolean;
+  constructor(newValue: boolean) {
+    this.newValue = newValue;
+  }
+  transformAgainst = (op: AtomicOperation): AtomicOperation[] => [this, op];
+}
+
+export class ObjectOperation implements AtomicOperation {
+  $type = "objectOperation";
+  newValue: object;
+  constructor(newValue: object) {
+    this.newValue = newValue;
+  }
+  transformAgainst = (op: AtomicOperation): AtomicOperation[] => [this, op];
+}
+
+export class ArrayOperation implements AtomicOperation {
+  $type = "arrayOperation";
+  newValue: object;
+  constructor(newValue: object) {
+    this.newValue = newValue;
+  }
+  transformAgainst = (op: AtomicOperation): AtomicOperation[] => [this, op];
+}
+
+export class NoOp implements AtomicOperation {
+  $type = "noOp";
+  transformAgainst = (op: AtomicOperation): AtomicOperation[] => [this, op];
+}
+
+export class StringOperation implements AtomicOperation {
+  $type = "stringOperation";
   rangeStart: number;
   rangeEnd: number;
   newValue: string;
-};
-type IntegerOperation = { newValue: number };
-type BooleanOperation = { newValue: boolean };
-type ObjectOperation = { newValue: object };
-type ArrayOperation = { newValue: object };
-type NoOp = {};
 
-// atomicOperation is a single operation that can be applied in our system
-type AtomicOperation =
-  | { $type: "stringOperation"; stringOperation: StringOperation }
-  | { $type: "integerOperation"; integerOperation: IntegerOperation }
-  | { $type: "booleanOperation"; booleanOperation: BooleanOperation }
-  | { $type: "objectOperation"; objectOperation: ObjectOperation }
-  | { $type: "arrayOperation"; arrayOperation: ArrayOperation }
-  | { $type: "noOp"; noOp: NoOp };
+  constructor(rangeStart: number, rangeEnd: number, newValue: string) {
+    this.rangeStart = rangeStart;
+    this.rangeEnd = rangeEnd;
+    this.newValue = newValue;
+  }
+
+  transformAgainst = (op: AtomicOperation): AtomicOperation[] => {
+    if (op.constructor.name !== "StringOperation") {
+      return [this, op];
+    }
+    const b: StringOperation = op as StringOperation;
+    const [a1, a2, b1, b2] = [copy(this), copy(this), copy(b), copy(b)];
+    if (this.newValue != "" && b.newValue != "") {
+      return [insertInsert(b1, a1), insertInsert(a2, b2)];
+    } else if (this.newValue != "" && b.newValue == "") {
+      return [insertDelete(a1, b1), deleteInsert(b2, a2)];
+    } else if (this.newValue == "" && b.newValue != "") {
+      return [deleteInsert(a1, b1), insertDelete(b2, a2)];
+    } else {
+      return [deleteDelete(b1, a1, false), deleteDelete(a2, b2, true)];
+    }
+  };
+}
 
 // operation is the atomic operation that is sent between clients and servers
 export type Operation = {
@@ -33,10 +90,7 @@ export const noOp: Operation = {
   path: [],
   operationType: "insert",
   isNoOp: true,
-  operation: {
-    $type: "noOp",
-    noOp: {},
-  },
+  operation: new NoOp(),
 };
 
 // Actual OT transformation functions
@@ -168,22 +222,6 @@ const effectIndependent = (a: number[], b: number[], tp: number): boolean =>
 const normalise = (a: Operation): Operation => (a.path.length === 0 ? noOp : a);
 
 const copy = <T>(a: T): T => JSON.parse(JSON.stringify(a));
-
-export const stringTransform = (
-  a: StringOperation,
-  b: StringOperation
-): [StringOperation, StringOperation] => {
-  const [a1, a2, b1, b2] = [copy(a), copy(a), copy(b), copy(b)];
-  if (a.newValue != "" && b.newValue != "") {
-    return [insertInsert(b1, a1), insertInsert(a2, b2)];
-  } else if (a.newValue != "" && b.newValue == "") {
-    return [insertDelete(a1, b1), deleteInsert(b2, a2)];
-  } else if (a.newValue == "" && b.newValue != "") {
-    return [deleteInsert(a1, b1), insertDelete(b2, a2)];
-  } else {
-    return [deleteDelete(b1, a1, false), deleteDelete(a2, b2, true)];
-  }
-};
 
 const insertInsert = (
   o1: StringOperation,
