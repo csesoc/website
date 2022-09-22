@@ -36,15 +36,10 @@ const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  @media ${device.laptop} {
-    padding-left: 5vw;
-  }
-
-  @media ${device.desktop} {
+  @media ${device.tablet} {
     padding: 0 10vw;
+    
   }
-
-
 `;
 
 const ImageContainer = styled.div`
@@ -56,16 +51,27 @@ const ImageContainer = styled.div`
   @media ${device.laptop} {
     width: 550px;
     height: 400px;
-    margin-left: 100px;
     display: flex;
-    align-items: center;
+  }
+
+`;
+
+const WebsiteImageContainer = styled.div`
+
+	position: relative; /* IMPORTANT */
+  width: 70vw;
+
+  @media ${device.laptop} {
+    width: 550px;
+    height: 400px;
+    margin-left: 100px;
+    margin-top: 30vh;
+    display: flex;
   }
 
 `;
 
 const Text1 = styled.p`
-	padding: 10px 0;
-	margin-top: 100px;
 	color: #010033;
 	font-size: 25px;
   display: flex;
@@ -131,9 +137,9 @@ export default function Homepage({}: Props) {
           </ColumnContainer>
           {/* <Button>Visit on Blog</Button> */}
           <SlideInFromRight>
-            <ImageContainer>
+            <WebsiteImageContainer>
               <Image src="/assets/WebsitesIcon.png" layout="fill" objectFit="contain" />
-            </ImageContainer>
+            </WebsiteImageContainer>
           </SlideInFromRight>
         </Container>
       </HomepageContainer>
