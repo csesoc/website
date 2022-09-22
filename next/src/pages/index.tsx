@@ -8,7 +8,7 @@ import styled from "styled-components";
 import { NavbarOpenHandler } from "../components/navbar/types";
 import HamburgerMenu from "../components/navbar/HamburgerMenu";
 
-import HomePageCurve from "../svgs/HPCurve.svg"
+import HPCurve from "../svgs/HPCurve"
 import TopRect from "../svgs/TopRect.svg"
 import BottomRect from "../svgs/BottomRect.svg"
 
@@ -22,13 +22,14 @@ import Support from "./MiniSupport";
 
 import Footer from "../components/footer/Footer";
 import { device } from '../styles/device'
-
+import { SectionFadeInFromLeft, SectionFadeInFromRight } from "../styles/motion"
 
 type CurveContainerProps = {
   offset: number;
 };
 
 const PageContainer = styled.div`
+  max-width: 100vw;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -118,7 +119,8 @@ const Index: NextPage = () => {
           <>
             <Background>
               <CurveContainer offset={0}>
-                <Image src={HomePageCurve} />
+                {/* <Image src={HPCurve} objectFit="cover"/> */}
+                <HPCurve/>
               </CurveContainer>
               <CurveContainer offset={height + 300}>
                 <Image src={TopRect} />
@@ -132,10 +134,14 @@ const Index: NextPage = () => {
               <Homepage />
             </RefLink>
             <RefLink id="aboutus">
-              <AboutUs />
+              <SectionFadeInFromRight>
+                <AboutUs />
+              </SectionFadeInFromRight>
             </RefLink>
             <RefLink id="events">
-              <Events />
+              <SectionFadeInFromLeft>
+                <Events />
+              </SectionFadeInFromLeft>
             </RefLink>
             <RefLink id="resources">
               <Resources />
