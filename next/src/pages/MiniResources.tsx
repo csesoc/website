@@ -7,6 +7,9 @@ import YT from '../svgs/YT.svg'
 import FB from '../svgs/FB.svg'
 import DC from '../svgs/DC.svg'
 import SPOT from '../svgs/SPOT.svg'
+
+import { SectionFadeInFromLeft, SectionFadeInFromRight } from "../styles/motion"
+
 type Props = {}
 
 const Container = styled.div`
@@ -77,14 +80,18 @@ export default function Resources({}: Props) {
         <Heading>Resources and Contacts</Heading>
       </HeadingContainer>
       <BodyContainer>
-        <GlassContainer dark={true}/>
-        <ColumnContainer>
-          {imgs.map((src) => (
-            <ImgContainer key="imgContainer">
-              <Image src={src}/>
-            </ImgContainer>
-          ))}
-        </ColumnContainer>
+        <SectionFadeInFromLeft>
+          <GlassContainer dark={true}/>
+        </SectionFadeInFromLeft>
+        <SectionFadeInFromRight>
+          <ColumnContainer>
+            {imgs.map((src) => (
+              <ImgContainer key="imgContainer">
+                <Image src={src}/>
+              </ImgContainer>
+            ))}
+          </ColumnContainer>
+        </SectionFadeInFromRight>
       </BodyContainer>
     </Container>
   )

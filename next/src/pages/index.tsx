@@ -22,13 +22,14 @@ import Support from "./MiniSupport";
 
 import Footer from "../components/footer/Footer";
 import { device } from '../styles/device'
-
+import { SectionFadeInFromLeft, SectionFadeInFromRight } from "../styles/motion"
 
 type CurveContainerProps = {
   offset: number;
 };
 
 const PageContainer = styled.div`
+  max-width: 100vw;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -133,10 +134,14 @@ const Index: NextPage = () => {
               <Homepage />
             </RefLink>
             <RefLink id="aboutus">
-              <AboutUs />
+              <SectionFadeInFromRight>
+                <AboutUs />
+              </SectionFadeInFromRight>
             </RefLink>
             <RefLink id="events">
-              <Events />
+              <SectionFadeInFromLeft>
+                <Events />
+              </SectionFadeInFromLeft>
             </RefLink>
             <RefLink id="resources">
               <Resources />
