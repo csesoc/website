@@ -30,5 +30,7 @@ func main() {
 	handler := cors.Default().Handler(mux)
 	handler = c.Handler(handler)
 
+	log.Print("CMS Go backend starting on port :8080 :D.")
+	log.Print("Amongus.")
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }
