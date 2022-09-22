@@ -8,7 +8,7 @@ import styled from "styled-components";
 import { NavbarOpenHandler } from "../components/navbar/types";
 import HamburgerMenu from "../components/navbar/HamburgerMenu";
 
-import HomePageCurve from "../svgs/HPCurve.svg"
+import HPCurve from "../svgs/HPCurve"
 import TopRect from "../svgs/TopRect.svg"
 import BottomRect from "../svgs/BottomRect.svg"
 
@@ -118,7 +118,8 @@ const Index: NextPage = () => {
           <>
             <Background>
               <CurveContainer offset={0}>
-                <Image src={HomePageCurve} />
+                {/* <Image src={HPCurve} objectFit="cover"/> */}
+                <HPCurve/>
               </CurveContainer>
               <CurveContainer offset={height + 300}>
                 <Image src={TopRect} />
