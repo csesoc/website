@@ -21,6 +21,8 @@ jobs:
         run: GO_MOD=go.mod docker compose --env-file=./config/ci.env.dev up --wait --build backend db staging_db
       - name: Golang Tests
         run: cd backend && go test -v ./...
+      - name: GetLogs
+        run: docker container logs go_backend
 
   frontend_testing:
     runs-on: ubuntu-22.04
