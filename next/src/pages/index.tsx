@@ -111,7 +111,7 @@ const Index: NextPage = () => {
         <meta name="description" content="CSESoc Website Homepage" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE}/>}
+      {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.HOMEPAGE}/>}
       {navbarOpen && <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} /> }
       <Main>
         { (loaded && height && width) && (

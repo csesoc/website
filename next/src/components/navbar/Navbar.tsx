@@ -9,10 +9,10 @@ import {
 	ItemWrapper,
 	NavItem,
 	HamburgerButton,
-  HomepageButton,
+  ImageWrapper,
+  MiniPageContainer,
+  HomepageButton
 } from "./Navbar-styled";
-
-//     background-color: #A09FE3
 
 const Navbar = (props: NavbarOpenProps) => {
   switch(props.variant) {
@@ -40,14 +40,21 @@ const Navbar = (props: NavbarOpenProps) => {
         );
     case NavbarType.MINIPAGE:
       return (
-          <Container style={{backgroundColor: "#A09FE3"}}> 
-            <Image src={WebsitesIcon} objectFit="contain" objectPosition="left"/>
-            <ItemWrapper>
-                <a href="#homepage">
-                  <HomepageButton style={{color: "#FFFFFF"}}>Homepage</HomepageButton>
-                </a>
-            </ItemWrapper>
-          </Container>
+          <MiniPageContainer>
+            <ImageWrapper>
+              <a href="#homepage">
+                <Image src="/assets/WebsitesIcon.png" layout="fill" objectFit="contain" objectPosition="left"/>
+              </a>
+              
+            </ImageWrapper>
+
+            <HomepageButton>
+              <a href="#homepage">
+                <div style={{color: "#FFFFFF"}}>Homepage</div>
+              </a>
+            </HomepageButton>
+
+          </MiniPageContainer>
       );
     }
 };
