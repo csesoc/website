@@ -5,9 +5,20 @@
   "labels": ["dependencies"],
   "packageRules": [
     {
-      "matchUpdateTypes": ["patch", "pin", "digest"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": false,
+      "automergeType": "branch"
+    },
+    {
+      "groupName": "docker-github-actions",
+      "matchPackagePatterns": ["docker/*"],
       "automerge": true,
       "automergeType": "branch"
+    },
+    {
+      "matchUpdateTypes": ["patch"],
+      "groupName": "weekly patch updates",
+      "schedule": ["before 5am every monday"]
     }
   ]
 }
