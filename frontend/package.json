@@ -92,6 +92,6 @@
     "webpack": "5.74.0"
   },
   "overrides": {
-    "react-refresh": "0.11.0"
+    "react-refresh": "0.14.0"
   }
 }
