@@ -4,6 +4,8 @@ FROM node:16.15.0-alpine
 # Setting working directory
 WORKDIR /app
 
+RUN apk --no-cache add curl
+
 # exposing ports
 EXPOSE 3000
 

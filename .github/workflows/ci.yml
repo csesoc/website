@@ -1,17 +1,12 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
   push:
-    branches: [main, prototype, "renovate/*"]
+    branches: [main, "renovate/*"]
   pull_request:
-    branches: [main, prototype]
-
-env:
-  PG_PORT: 5432
+    branches: [main]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -23,15 +18,26 @@ jobs:
           go-version: 1.18
       - uses: actions/checkout@v3
       - name: Building docker containers using docker-compose
-        run: GO_MOD=go.mod docker-compose up -d --build
+        run: GO_MOD=go.mod docker compose --env-file=./config/ci.env.dev up --wait --build backend db staging_db
       - name: Golang Tests
-        run: go test -v ./...
-        working-directory: ./backend
+        run: cd backend && go test -v ./...
+      - name: GetLogs
+        run: docker container logs go_backend
+
   frontend_testing:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      - name: type check
+      - name: Typescript TSC
         run: cd frontend && npm install && npm run types
-      - name: react tests
-        run: cd frontend && npm test
+      - name: React tests
+        run: |
+          GO_MOD=go.mod docker compose --env-file=./config/ci.env.dev up --wait --build backend db staging_db frontend
+      - name: Backend Logs
+        run: |
+          docker logs go_backend
+          docker logs pg_container
+          docker ps
+          docker logs go_backend
+#         docker exec frontend curl http://backend:8080/api/filesystem/info
+# docker exec frontend npm test

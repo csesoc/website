@@ -39,6 +39,7 @@ func CreateNewEntity(form ValidEntityCreationRequest, df DependencyFactory) hand
 	entityToCreate := CreationReqToFsEntry(form)
 	newEntity, err := fsRepo.CreateEntry(entityToCreate)
 	if err != nil {
+		log.Write(fmt.Sprintf("Encountered error: %s", err.Error()))
 		return handlerResponse[NewEntityResponse]{
 			Status: http.StatusNotAcceptable,
 		}
