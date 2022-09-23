@@ -13,12 +13,22 @@
       "groupName": "docker-github-actions",
       "matchPackagePatterns": ["docker/*"],
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "branch",
+      "addLabels": ["deps: docker-actions"]
     },
     {
       "matchUpdateTypes": ["patch"],
       "groupName": "weekly patch updates",
-      "schedule": ["before 5am every monday"]
+      "schedule": ["before 5am every monday"],
+      "addLabels": ["deps: patches"]
+    },
+    {
+      "managers": ["npm"],
+      "addLabels": ["deps: javascript"]
+    },
+    {
+      "managers": ["gomod"],
+      "addLabels": ["deps: go"]
     }
   ]
 }
