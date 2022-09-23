@@ -1,5 +1,1 @@
-frontend/*   @csesoc/Websites-Frontend
-next/*       @csesoc/Websites-Frontend
-scripts/*    @csesoc/Websites-Backend
-backend/*    @csesoc/Websites-Backend
-postgres/*   @csesoc/Websites-Backend
+.github/ @csesoc/technical
