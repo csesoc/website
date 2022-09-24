@@ -43,8 +43,9 @@ const EditorPage: FC = () => {
 
   useEffect(() => {
     wsClient.current = new Client(
-      id as string, // for testing, documentID=5 and docuemntID=7 should exist
+      id as string,
       (data) => {
+        console.log(id, JSON.stringify(data));
         setBlocks(data as BlockData[]);
       },
       (reason) => {
@@ -126,11 +127,14 @@ const EditorPage: FC = () => {
           </button>
           <button
             onClick={() => {
-              const data = new FormData();
-              data.append("DocumentID", `${id}`);
               fetch("/api/filesystem/publish-document", {
                 method: "POST",
-                body: data,
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({
+                  DocumentID: `${id}`,
+                }),
               });
             }}
           >
