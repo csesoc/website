@@ -21,18 +21,6 @@ export const AboutUsContent = styled.div`
     z-index: 2;
 `
 
-type positionProps = {
-    left?: number;
-    top?: number;
-}
-
-export const SpherePosition = styled.div<positionProps>`
-    position: absolute;
-    z-index: 0;
-    left: ${props => props.left}%;
-    top: ${props => props.top}%;
-`
-
 export const AboutUsText = styled.div`
     color: var(--accent-darker-purple);
     font-family: 'Raleway';
@@ -74,7 +62,7 @@ export const MoreInfoText = styled.div<sphereProps>`
     color: #FFFFFF;
     font-weight: 700;
     line-height: 58px;
-    font-size: 2vw;
+    font-size: 2.3vw;
 
     &:hover { 
       cursor: pointer;
