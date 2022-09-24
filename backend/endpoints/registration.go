@@ -22,7 +22,7 @@ func RegisterAuthenticationEndpoints(mux *http.ServeMux) {
 
 // Registers the editor related endpoints
 func RegisterEditorEndpoints(mux *http.ServeMux) {
-	mux.Handle("/editor", newRawHandler("POST", EditHandler, false, false)) // auth
+	mux.Handle("/editor", newRawHandler("GET", EditHandler, false, false)) // auth
 }
 
 // newHandler is just a small wrapper around a handler that returns an instance of a handler struct
