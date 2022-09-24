@@ -24,21 +24,25 @@ func TestMain(m *testing.M) {
 func TestFrontendRoot(t *testing.T) {
 	assert := assert.New(t)
 	testContext.RunTest(func() {
-		rootID, _ := frontendRepo.GetIDWithName("A")
-		assert.NotEqual(rootID, uuid.Nil)
+		rootID, err := frontendRepo.GetIDWithName("A")
+		if assert.Nil(err) {
+			assert.NotEqual(rootID, uuid.Nil)
+		}
 	})
 }
 
 func TestRootRetrieval(t *testing.T) {
 	assert := assert.New(t)
 	testContext.RunTest(func() {
-		rootID, _ := frontendRepo.GetIDWithName("A")
-		// assert.Nil(err)
+		rootID, err := frontendRepo.GetIDWithName("A")
+		assert.Nil(err)
 
-		root, _ := repo.GetEntryWithID(rootID)
-		assert.Equal("A", root.LogicalName)
-		assert.False(root.IsDocument)
-		assert.GreaterOrEqual(len(root.ChildrenIDs), 0)
+		root, err := repo.GetEntryWithID(rootID)
+		if assert.Nil(err) {
+			assert.Equal("A", root.LogicalName)
+			assert.False(root.IsDocument)
+			assert.GreaterOrEqual(len(root.ChildrenIDs), 0)
+		}
 	})
 }
 
