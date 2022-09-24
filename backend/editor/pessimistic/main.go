@@ -57,8 +57,8 @@ func EditorClientLoop(requestedDocument uuid.UUID, fs repositories.UnpublishedVo
 		if err != nil {
 			if !websocket.IsCloseError(err, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
 				log.Printf("something went horribly wrong, terminating connection: %v\n", err)
-				break
 			}
+			break
 		}
 
 		file.Truncate(0)

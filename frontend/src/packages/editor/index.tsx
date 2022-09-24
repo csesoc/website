@@ -52,6 +52,10 @@ const EditorPage: FC = () => {
         console.log(reason);
       }
     );
+    return () => {
+      console.log("Editor component destroyed");
+      wsClient.current?.close();
+    };
   }, []);
 
   return (
