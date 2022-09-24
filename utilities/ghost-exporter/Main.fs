@@ -1,6 +1,7 @@
 ﻿module Main
 
 open GhostSyntax
+open CMSSyntax
 open Newtonsoft.Json
 
 open FSharpPlus

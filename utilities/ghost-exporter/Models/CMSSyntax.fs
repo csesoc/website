@@ -1,8 +1,6 @@
 module CMSSyntax
 
 open Fleece
-open Newtonsoft.Json
-open Fleece.Newtonsoft
 open Fleece.Newtonsoft.Operators
 
 // possible allignment of text blocks
