@@ -1,4 +1,5 @@
-import { Operation, transform } from "./operation";
+import { Operation } from "./operation";
+import { transform } from "./transform";
 
 /**
  * OperationQueue is a simple data structure of the maintenance of outgoing
@@ -7,7 +8,6 @@ import { Operation, transform } from "./operation";
  * elements of this queue
  */
 export class OperationQueue {
-
   /**
    * Push an operation to the end of the operation queue
    *
