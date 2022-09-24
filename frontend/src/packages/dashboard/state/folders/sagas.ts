@@ -81,26 +81,24 @@ function* traverseIntoFolderSaga({ payload: id }: { payload: string }) {
 }
 
 function* traverseBackFolderSaga({ payload: id }: { payload: string }) {
-  if (id != "2") {
-    const parentFolder: FileEntity = yield call(API.getFolder, id);
-    const parentOfParentFolder: FileEntity = yield call(
-      API.getFolder,
-      parentFolder.parentId
-    );
-    const children: FileEntity[] = yield call(
-      API.updateContents,
-      parentOfParentFolder.id
-    );
-    const dirPayload: actions.SetDirPayloadType = {
-      parentFolder: parentOfParentFolder.id,
-      folderName: "",
-    };
+  const parentFolder: FileEntity = yield call(API.getFolder, id);
+  const parentOfParentFolder: FileEntity = yield call(
+    API.getFolder,
+    parentFolder.parentId
+  );
+  const children: FileEntity[] = yield call(
+    API.updateContents,
+    parentOfParentFolder.id
+  );
+  const dirPayload: actions.SetDirPayloadType = {
+    parentFolder: parentOfParentFolder.id,
+    folderName: "",
+  };
 
-    // change path
-    yield put(actions.setDirectory(dirPayload));
-    // set children
-    yield put(actions.initItemsAction(children));
-  }
+  // change path
+  yield put(actions.setDirectory(dirPayload));
+  // set children
+  yield put(actions.initItemsAction(children));
 }
 
 // root watchers

@@ -1,6 +1,8 @@
 import { toFileOrFolder } from "./helpers";
 import { JSONFileFormat } from "./types";
 
+const DEFAULT_OWNER_GROUP = "1";
+
 // Given a file ID (if no ID is provided root is assumed), returns
 // a FileFormat of that file from the backend
 export async function getFolder(id?: string) {
@@ -47,7 +49,7 @@ export const newFile = async (
     body: new URLSearchParams({
       LogicalName: name,
       Parent: parentID.toString(),
-      OwnerGroup: "1",
+      OwnerGroup: DEFAULT_OWNER_GROUP,
       IsDocument: "true",
     }),
   });
@@ -73,7 +75,7 @@ export const newFolder = async (
     body: new URLSearchParams({
       LogicalName: name,
       Parent: parentID.toString(),
-      OwnerGroup: "1",
+      OwnerGroup: DEFAULT_OWNER_GROUP,
       IsDocument: "false",
     }),
   });
