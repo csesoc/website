@@ -1,14 +1,13 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import React from "react";
+import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import { traverseIntoFolder } from "src/packages/dashboard/state/folders/actions";
-import Renamable from './Renamable';
-import FolderIcon from '@mui/icons-material/Folder';
-
+import Renamable from "./Renamable";
+import FolderIcon from "@mui/icons-material/Folder";
 
 interface Props {
   name: string;
-  id: number;
+  id: string;
 }
 
 const IconContainer = styled.div`
@@ -20,7 +19,7 @@ const IconContainer = styled.div`
 `;
 
 interface HighlightProps {
-  active: boolean
+  active: boolean;
 }
 
 const Folder = styled.div<HighlightProps>`
@@ -28,23 +27,23 @@ const Folder = styled.div<HighlightProps>`
   height: 100px;
   background: #999999;
 
-  ${props => props.active && `
+  ${(props) =>
+    props.active &&
+    `
     border: 5px solid lightblue;
     border-radius: 3px;
   `}
-`
-
-
+`;
 
 export default function FolderContainer({ name, id }: Props) {
   const dispatch = useDispatch();
   const handleClick = () => {
     console.log(id);
-    dispatch(traverseIntoFolder(id))
-  }
+    dispatch(traverseIntoFolder(id));
+  };
 
   return (
-    <IconContainer >
+    <IconContainer>
       <FolderIcon
         onClick={handleClick}
         sx={{
@@ -55,5 +54,5 @@ export default function FolderContainer({ name, id }: Props) {
       {/* <Folder active={false}/> */}
       <Renamable name={name} id={id} />
     </IconContainer>
-  )
+  );
 }

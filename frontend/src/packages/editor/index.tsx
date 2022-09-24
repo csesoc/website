@@ -43,8 +43,9 @@ const EditorPage: FC = () => {
 
   useEffect(() => {
     wsClient.current = new Client(
-      parseInt(id as string), // for testing, documentID=5 and docuemntID=7 should exist
+      id as string,
       (data) => {
+        console.log(id, JSON.stringify(data));
         setBlocks(data as BlockData[]);
       },
       (reason) => {
@@ -58,30 +59,26 @@ const EditorPage: FC = () => {
       <EditorHeader />
       <Container>
         {blocks.map((block, idx) => {
-          console.log(block[0].type)
-          return (
-            block[0].type === "paragraph" ? (
-              <EditorBlock
-                id={idx}
-                key={idx}
-                initialValue={block}
-                update={updateValues}
-                showToolBar={focusedId === idx}
-                onEditorClick={() => setFocusedId(idx)}
-              />
-            ) : (
-              <HeadingBlock
-                id={idx}
-                key={idx}
-                update={updateValues}
-                showToolBar={focusedId === idx}
-                onEditorClick={() => setFocusedId(idx)}
-              />
-            )
-          )
-        }
-          
-        )}
+          console.log(block[0].type);
+          return block[0].type === "paragraph" ? (
+            <EditorBlock
+              id={idx}
+              key={idx}
+              initialValue={block}
+              update={updateValues}
+              showToolBar={focusedId === idx}
+              onEditorClick={() => setFocusedId(idx)}
+            />
+          ) : (
+            <HeadingBlock
+              id={idx}
+              key={idx}
+              update={updateValues}
+              showToolBar={focusedId === idx}
+              onEditorClick={() => setFocusedId(idx)}
+            />
+          );
+        })}
 
         <InsertContentWrapper>
           <CreateHeadingBlock
@@ -130,11 +127,14 @@ const EditorPage: FC = () => {
           </button>
           <button
             onClick={() => {
-              const data = new FormData();
-              data.append("DocumentID", `${id}`);
               fetch("/api/filesystem/publish-document", {
                 method: "POST",
-                body: data,
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({
+                  DocumentID: `${id}`,
+                }),
               });
             }}
           >
