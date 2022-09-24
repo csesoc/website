@@ -20,11 +20,11 @@ CREATE TABLE person (
 
 /* create user function plpgsql */
 DROP FUNCTION IF EXISTS create_normal_user;
-CREATE OR REPLACE FUNCTION create_normal_user (email VARCHAR, name VARCHAR, password VARCHAR, frontendID INT) RETURNS void
+CREATE OR REPLACE FUNCTION create_normal_user (email VARCHAR, name VARCHAR, password VARCHAR, frontendID uuid) RETURNS void
 LANGUAGE plpgsql
 AS $$
 DECLARE
 BEGIN
-  INSERT INTO person (Email, First_name, Password, isOfGroup, frontendID)
-    VALUES (email, name, encode(sha256(password::BYTEA), 'hex'), 2, 1);
+  INSERT INTO person (Email, First_name, Password, isOfGroup, frontendid)
+    VALUES (email, name, encode(sha256(password::BYTEA), 'hex'), 2, frontendID);
 END $$;

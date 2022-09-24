@@ -29,7 +29,7 @@ type (
 	// mocked/real should implement
 	FilesystemRepository interface {
 		GetEntryWithID(ID uuid.UUID) (FilesystemEntry, error)
-		GetRoot() (FilesystemEntry, error)
+		GetRoot(frontend string) (FilesystemEntry, error)
 		GetEntryWithParentID(ID uuid.UUID) (FilesystemEntry, error)
 		GetIDWithPath(path string) (uuid.UUID, error)
 
@@ -72,7 +72,8 @@ type (
 
 	// repository interface for getting information from the frontend table
 	FrontendsRepository interface {
-		GetFrontendFromURL(url string) int
+		GetIDWithName(name string) (uuid.UUID, error)
+		GetFrontendFromURL(url string) (uuid.UUID, error)
 	}
 )
 

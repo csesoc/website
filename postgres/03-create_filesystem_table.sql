@@ -22,7 +22,10 @@ CREATE TABLE filesystem (
     REFERENCES groups(UID),
   /* Unique name constraint: there should not exist an entity of the same type with the
      same parent and logical name. */
-  CONSTRAINT unique_name UNIQUE (Parent, LogicalName, IsDocument)        
+  CONSTRAINT unique_name UNIQUE (Parent, LogicalName, IsDocument),
+  /* Frontend Root ID is derived first and then referenced here */
+  CONSTRAINT fk_AccessFrontend FOREIGN KEY (EntityID)
+    REFERENCES frontend(FrontendID)
 );
 
 /* Utility procedure :) */
