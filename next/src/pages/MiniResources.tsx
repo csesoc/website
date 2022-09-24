@@ -69,9 +69,15 @@ const ImgContainer = styled.div`
   @media ${device.laptop} {
     width: 60px;
   }
+
+  &:hover { 
+		cursor: pointer;
+		transform: scale(1.1);
+	}
 `
 
 const imgs = [YT, FB, DC, SPOT]
+const urls = ["https://www.youtube.com/c/CSESocUNSW", "https://www.facebook.com/csesoc/", "https://bit.ly/CSESocDiscord", "https://open.spotify.com/show/2h9OxTkeKNznIfNqMMYcxj"]
 
 export default function Resources({}: Props) {
   return (
@@ -87,10 +93,12 @@ export default function Resources({}: Props) {
           <ColumnContainer>
             {imgs.map((src) => (
               <ImgContainer key="imgContainer">
-                <Image src={src}/>
-              </ImgContainer>
+                <a href={urls[imgs.indexOf(src)]}>    
+                  <Image src={src}/>
+                </a>
+            </ImgContainer>
             ))}
-          </ColumnContainer>
+        </ColumnContainer>
         </SectionFadeInFromRight>
       </BodyContainer>
     </Container>

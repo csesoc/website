@@ -66,15 +66,16 @@ func (fn handler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// acquire the frontend ID and error out if the client isn't registered to use the CMS
-	frontendId, _ := getFrontendId(r)
-	if frontendId == repositories.InvalidFrontend {
-		writeResponse(w, handlerResponse[empty]{
-			Status:   http.StatusUnauthorized,
-			Response: empty{},
-		})
-
-		return
-	}
+	frontendId := uuid.Nil
+	// getFrontendId(r)
+	// if frontendId == repositories.InvalidFrontend {
+	// writeResponse(w, handlerResponse[empty]{
+	// Status:   http.StatusUnauthorized,
+	// Response: empty{},
+	// })
+	//
+	// return
+	// }
 
 	// construct a dependency factory for this request, which implies instantiating a logger
 	logger := buildLogger(r.Method, r.URL.Path)
