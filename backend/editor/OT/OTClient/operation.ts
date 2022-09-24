@@ -78,19 +78,19 @@ export class StringOperation implements AtomicOperation {
 }
 
 // operation is the atomic operation that is sent between clients and servers
-export type Operation = {
+export interface Operation {
   path: number[];
   operationType: "insert" | "delete";
 
   isNoOp: boolean;
-  operation: AtomicOperation;
+  atomicOperation: AtomicOperation;
 };
 
 export const noOp: Operation = {
   path: [],
   operationType: "insert",
   isNoOp: true,
-  operation: new NoOp(),
+  atomicOperation: new NoOp(),
 };
 
 // Actual OT transformation functions
@@ -221,8 +221,15 @@ const effectIndependent = (a: number[], b: number[], tp: number): boolean =>
  */
 const normalise = (a: Operation): Operation => (a.path.length === 0 ? noOp : a);
 
+/**
+ * Deepcopy an object
+ */
 const copy = <T>(a: T): T => JSON.parse(JSON.stringify(a));
 
+/**
+ * Return first string operation transformed against second operation when both
+ * are insert operations
+ */
 const insertInsert = (
   o1: StringOperation,
   o2: StringOperation
@@ -234,6 +241,10 @@ const insertInsert = (
   return o1;
 };
 
+/**
+ * Return first string operation transformed against second operation when first
+ * is insert and second is delete
+ */
 const insertDelete = (
   o1: StringOperation,
   o2: StringOperation
@@ -251,6 +262,10 @@ const insertDelete = (
   return o1;
 };
 
+/**
+ * Return first string operation transformed against second operation when first
+ * is delete and second is insert
+ */
 const deleteInsert = (
   o1: StringOperation,
   o2: StringOperation
@@ -258,6 +273,10 @@ const deleteInsert = (
   return o1;
 };
 
+/**
+ * Return first string operation transformed against second operation when both
+ * are delete operations
+ */
 const deleteDelete = (
   o1: StringOperation,
   o2: StringOperation,
