@@ -5,11 +5,14 @@
 
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { RenamePayloadType, renameFileEntityAction } from "src/packages/dashboard/state/folders/actions";
+import {
+  RenamePayloadType,
+  renameFileEntityAction,
+} from "src/packages/dashboard/state/folders/actions";
 
 interface Props {
-  name: string,
-  id: number,
+  name: string;
+  id: string;
 }
 
 export default function Renamable({ name, id }: Props) {
@@ -19,29 +22,24 @@ export default function Renamable({ name, id }: Props) {
   const dispatch = useDispatch();
 
   const handleRename = (newName: string) => {
-    const newPayload: RenamePayloadType = { id, newName }
-    dispatch(renameFileEntityAction(newPayload))
-  }
+    const newPayload: RenamePayloadType = { id, newName };
+    dispatch(renameFileEntityAction(newPayload));
+  };
 
   return (
     <>
       {toggle ? (
-        <div
-          onDoubleClick={() => setToggle(false)}>
-          {name}
-        </div>
+        <div onDoubleClick={() => setToggle(false)}>{name}</div>
       ) : (
         <input
-          style={
-            {
-              textAlign: "center",
-              width: "6vw"
-            }
-          }
+          style={{
+            textAlign: "center",
+            width: "6vw",
+          }}
           type="text"
           value={inputName}
-          onChange={event => setInputName(event.target.value)}
-          onKeyDown={event => {
+          onChange={(event) => setInputName(event.target.value)}
+          onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === "Escape") {
               if (event.key === "Enter") {
                 handleRename(inputName);
@@ -50,8 +48,9 @@ export default function Renamable({ name, id }: Props) {
               event.preventDefault();
               event.stopPropagation();
             }
-          }} />
+          }}
+        />
       )}
     </>
-  )
+  );
 }
