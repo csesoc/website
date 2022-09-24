@@ -6,11 +6,13 @@ package repositories
 
 import (
 	"log"
+
+	"github.com/google/uuid"
 )
 
 // Implements IPersonRepository
 type personRepository struct {
-	frontEndID int
+	frontEndID uuid.UUID
 	embeddedContext
 }
 

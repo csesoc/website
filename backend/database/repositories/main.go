@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"cms.csesoc.unsw.edu.au/database/contexts"
+	"github.com/google/uuid"
 )
 
 // Start up a database connection with a provided context
@@ -36,7 +37,7 @@ func NewFrontendsRepo() FrontendsRepository {
 }
 
 // NewPersonRepo instantiates a new person repository
-func NewPersonRepo(frontendId int) PersonRepository {
+func NewPersonRepo(frontendId uuid.UUID) PersonRepository {
 	return personRepository{
 		frontendId,
 		embeddedContext{getContext()},
