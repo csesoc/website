@@ -65,7 +65,7 @@ func (fn handler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// acquire the frontend ID and error out if the client isn't registered to use the CMS
-	frontendId := getFrontendId(r)
+	frontendId := 0
 	if frontendId == repositories.InvalidFrontend {
 		writeResponse(w, handlerResponse[empty]{
 			Status:   http.StatusUnauthorized,

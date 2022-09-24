@@ -57,6 +57,9 @@ export const newFile = async (
     throw new Error(message);
   }
   const response = await create_resp.json();
+
+  console.log(response);
+  console.log(JSON.stringify(response));
   return response.Response.NewID;
 };
 
