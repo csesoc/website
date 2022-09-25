@@ -73,6 +73,17 @@ const ImgContainer = styled.div`
   align-items: center;
 `
 
+const Button = styled.button`
+  background-color:  #9B9B9B;
+  margin: 10px;
+  padding: 10px 45px;
+  font-size: 18px;
+  color: white;
+  border: none;
+  border-radius: 6px;
+
+`
+
 
 export default function Support({}: Props) {
   return (
