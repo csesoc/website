@@ -80,14 +80,14 @@ func PublishDocument(form ValidPublishDocumentRequest, df DependencyFactory) han
 const emptyFile string = "{}"
 
 // GetPublishedDocument retrieves the contents of a published document from the published docker volume
-func GetPublishedDocument(form ValidGetPublishedDocumentRequest, df DependencyFactory) handlerResponse[DocumentRetrievalResponse] {
+func GetPublishedDocument(form ValidGetPublishedDocumentRequest, df DependencyFactory) handlerResponse[[]byte] {
 	publishedVol := df.GetPublishedVolumeRepo()
 	log := df.GetLogger()
 
 	// Get file from published volume
 	file, err := publishedVol.GetFromVolume(form.DocumentID.String())
 	if err != nil {
-		return handlerResponse[DocumentRetrievalResponse]{
+		return handlerResponse[[]byte]{
 			Status: http.StatusNotFound,
 		}
 	}
@@ -100,13 +100,10 @@ func GetPublishedDocument(form ValidGetPublishedDocumentRequest, df DependencyFa
 		log.Write("failed to read from the requested file")
 		buf.WriteString(emptyFile)
 	}
-	contentType := http.DetectContentType(buf.Bytes())
-
-	return handlerResponse[DocumentRetrievalResponse]{
-		Status: http.StatusOK,
-		Response: DocumentRetrievalResponse{
-			Contents: buf.String(),
-		},
-		ContentType: contentType,
+	// contentType := http.DetectContentType(buf.Bytes())
+	return handlerResponse[[]byte]{
+		Status:      http.StatusOK,
+		Response:    buf.Bytes(),
+		ContentType: "application/octet-stream",
 	}
 }

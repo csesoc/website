@@ -156,11 +156,12 @@ func writeResponse[V any](dest http.ResponseWriter, response handlerResponse[V])
 
 	if response.ContentType == "" {
 		dest.Header().Set("Content-Type", "application/json")
-	} else {
+		re, _ := json.Marshal(out)
+		dest.Write(re)
+	} else if data, ok := any(response.Response).([]byte); ok {
 		dest.Header().Set("Content-Type", response.ContentType)
+		dest.Write(data)
 	}
-	re, _ := json.Marshal(out)
-	dest.Write(re)
 }
 
 // getErrorResponse does the exact same thing as write response except it's specific to errors

@@ -32,6 +32,6 @@ type (
 type (
 	// DocumentRetrievalResponse is just the returned response for any handler that fetches the contents of a docker volume
 	DocumentRetrievalResponse struct {
-		Contents string
+		Contents []byte
 	}
 )
