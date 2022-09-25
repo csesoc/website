@@ -34,7 +34,7 @@ const Block = ({ element }: { element: Element }) => {
   );
 };
 
-const Blog = ({ elements }: { elements: Element[][] }) => {
+const Blog = ({ elements }: { elements: Element[] }) => {
   return (
     <BlogContainer>
       {elements.flat().map((element, idx) => (
