@@ -16,8 +16,9 @@ type (
 
 	// handlerResponse is a special response type only returned by HTTP Handlers
 	handlerResponse[V any] struct {
-		Status   int
-		Response V
+		Status      int
+		Response    V
+		ContentType string
 	}
 
 	// APIResponse is the public response type that is marshalled and presented to consumers of the API
@@ -153,7 +154,11 @@ func writeResponse[V any](dest http.ResponseWriter, response handlerResponse[V])
 		}
 	}
 
-	dest.Header().Set("Content-Type", "application/json")
+	if response.ContentType == "" {
+		dest.Header().Set("Content-Type", "application/json")
+	} else {
+		dest.Header().Set("Content-Type", response.ContentType)
+	}
 	re, _ := json.Marshal(out)
 	dest.Write(re)
 }
