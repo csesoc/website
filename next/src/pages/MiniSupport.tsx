@@ -67,10 +67,18 @@ const ButtonContainer = styled.div`
   display: flex;
 `
 
-const ImgContainer = styled.div`
+const FlexCenter = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`
+const ImgContainer = styled.div`
+  width: 50vw;
+
+  @media ${device.laptop} {
+    width: 350px;
+    height: 400px;
+  }
 `
 
 const Button = styled.button`
@@ -104,9 +112,11 @@ export default function Support({}: Props) {
           </TextContainer>
         </SectionFadeInFromLeft>
         <SectionFadeInFromRight>
-          <ImgContainer>
-            <Image src={Otter}/>
-          </ImgContainer>
+          <FlexCenter>
+            <ImgContainer>
+              <Image src={Otter}/>
+            </ImgContainer>
+          </FlexCenter>
         </SectionFadeInFromRight>
       </BodyContainer>
     </Container>
