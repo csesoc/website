@@ -16,7 +16,7 @@ const Container = styled.div`
         align-items: center;
         margin: 30vh 10vw;
     }
-
+    z-index: 100;
 `
 
 const ColumnContainer = styled.div`

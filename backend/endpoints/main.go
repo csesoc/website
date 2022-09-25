@@ -33,6 +33,7 @@ type (
 		FormType    string
 		Handler     func(form T, dependencyFactory DependencyFactory) (response handlerResponse[V])
 		IsMultipart bool
+		IsWebsocket bool
 	}
 
 	// rawHandler is a handler that expect the incoming w and r request objects
@@ -42,6 +43,7 @@ type (
 		Handler     func(form T, w http.ResponseWriter, r *http.Request, dependencyFactory DependencyFactory) (response handlerResponse[V])
 		IsMultipart bool
 		NeedsAuth   bool
+		IsWebsocket bool
 	}
 
 	// authenticatedHandler is basically a regular http handler the only difference is that
@@ -65,15 +67,15 @@ func (fn handler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// acquire the frontend ID and error out if the client isn't registered to use the CMS
-	frontendId := getFrontendId(r)
-	if frontendId == repositories.InvalidFrontend {
-		writeResponse(w, handlerResponse[empty]{
-			Status:   http.StatusUnauthorized,
-			Response: empty{},
-		})
-
-		return
-	}
+	frontendId := 0 // getFrontendId(r)
+	// if frontendId == repositories.InvalidFrontend {
+	// writeResponse(w, handlerResponse[empty]{
+	// Status:   http.StatusUnauthorized,
+	// Response: empty{},
+	// })
+	//
+	// return
+	// }
 
 	// construct a dependency factory for this request, which implies instantiating a logger
 	logger := buildLogger(r.Method, r.URL.Path)
@@ -81,7 +83,10 @@ func (fn handler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	response := fn.Handler(*parsedForm, dependencyFactory)
 
 	// Record and write out any useful information
-	writeResponse(w, response)
+	if !fn.IsWebsocket {
+		writeResponse(w, response)
+	}
+
 	logResponse(logger, response)
 	logger.Close()
 }

@@ -1,5 +1,10 @@
-frontend/*   @csesoc/Websites-Frontend
-next/*       @csesoc/Websites-Frontend
-scripts/*    @csesoc/Websites-Backend
-backend/*    @csesoc/Websites-Backend
-postgres/*   @csesoc/Websites-Backend
+backend/ @csesoc/csesoc-website-leads
+config/ @csesoc/csesoc-website-leads
+frontend/ @csesoc/csesoc-website-leads
+next/ @csesoc/csesoc-website-leads
+postgres/ @csesoc/csesoc-website-leads
+utilities/ @csesoc/csesoc-website-leads
+
+.github/ @csesoc/technical
+renovate.json @csesoc/technical
+Dockerfile @csesoc/technical

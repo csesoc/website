@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link'
 import { device } from '../styles/device'
 
+import { SectionFadeInFromLeft, SectionFadeInFromRight } from "../styles/motion"
+
 type Props = {}
 
 const Container = styled.div`
@@ -43,7 +45,8 @@ const TextContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 1500px;
+  height: 100%;
+  padding: 0 3vw;
 `
 
 const H3 = styled.div`
@@ -65,9 +68,9 @@ const ButtonContainer = styled.div`
 `
 
 const ImgContainer = styled.div`
-  width: 100vw;
   display: flex;
   justify-content: center;
+  align-items: center;
 `
 
 const Button = styled.button`
@@ -89,18 +92,22 @@ export default function Support({}: Props) {
         <Heading>Support CSESoc</Heading>
       </HeadingContainer>
       <BodyContainer>
-        <TextContainer>
-          <H3>Our Sponsors</H3>
-          <ButtonContainer>
-            <Link href="/sponsors">
-              <Button>View our sponsors</Button>
-            </Link>
-          </ButtonContainer>
-          <Text>Check out our very cool sponsors</Text>
-        </TextContainer>
-        <ImgContainer>
-          <Image src={Otter}/>
-        </ImgContainer>
+        <SectionFadeInFromLeft>
+          <TextContainer>
+            <H3>Our Sponsors</H3>
+            <ButtonContainer>
+              <Link href="/sponsors">
+                <button>view our sponsors</button>
+              </Link>
+            </ButtonContainer>
+            <Text>Check out our very cool sponsors</Text>
+          </TextContainer>
+        </SectionFadeInFromLeft>
+        <SectionFadeInFromRight>
+          <ImgContainer>
+            <Image src={Otter}/>
+          </ImgContainer>
+        </SectionFadeInFromRight>
       </BodyContainer>
     </Container>
   )
