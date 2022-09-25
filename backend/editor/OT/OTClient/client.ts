@@ -23,6 +23,14 @@ const ACK_TIMEOUT_DURATION = 10_000;
 */
 
 export default class Client {
+  private socket: Socket;
+
+  private queuedOperations: OperationQueue = new OperationQueue();
+  private pendingAcknowledgement = false;
+  private appliedOperations = 0;
+
+  private timeoutID: number = NaN;
+
   // TODO: Handle destruction / closing of the websocket
   constructor(opCallback: (op: Operation) => void) {
     this.socket = io(`ws://localhost:8080/edit?document=${document}`);
@@ -94,12 +102,4 @@ export default class Client {
       "finish"
     );
   };
-
-  private socket: Socket;
-
-  private queuedOperations: OperationQueue = new OperationQueue();
-  private pendingAcknowledgement = false;
-  private appliedOperations = 0;
-
-  private timeoutID: number = NaN;
 }

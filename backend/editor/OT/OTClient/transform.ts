@@ -5,19 +5,19 @@ export const transform = (
   a: Operation,
   b: Operation
 ): [Operation, Operation] => {
-  const [newPathA, newPathB] = transformPaths(a, b);
+  // Make a new copy
+  const [newA, newB] = [{...a}, {...b}];
+  [newA.atomicOp, newB.atomicOp] = [{...a.atomicOp}, {...b.atomicOp}];
+
+  const [newPathA, newPathB] = transformPaths(newA, newB);
   if (newPathA == a.path && newPathB == b.path) {
     // If the paths did not change, then apply atomic operation
-    a.atomicOp = a.atomicOp.transformAgainst(b.atomicOp)[0];
-    b.atomicOp = b.atomicOp.transformAgainst(a.atomicOp)[0];
-    // TODO: Double check logic here with tests, could also be this code
-    // [a.atomicOp, b.atomicOp] = a.atomicOp.transformAgainst(b.atomicOp);
+    [newA.atomicOp, newB.atomicOp] = a.atomicOp.transformAgainst(b.atomicOp);
   } else {
     // Else update the paths
-    a.path = newPathA;
-    b.path = newPathB;
+    [newA.path, newB.path] = [newPathA, newPathB];
   }
-  return [normalise(a), normalise(b)];
+  return [normalise(newA), normalise(newB)];
 };
 
 /**

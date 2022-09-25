@@ -70,7 +70,8 @@ export class StringOperation implements AtomicOperation {
     const b: StringOperation = op as StringOperation;
     const [a1, a2, b1, b2] = [copy(this), copy(this), copy(b), copy(b)];
 
-    // This implementation is a TypeScript copy of the 
+    // This implementation is a TypeScript copy of the server string transform
+    // functions which contain more comments explaining the implementation
     if (this.newValue != "" && b.newValue != "") {
       return [insertInsert(b1, a1), insertInsert(a2, b2)];
     } else if (this.newValue != "" && b.newValue == "") {
