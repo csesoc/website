@@ -6,7 +6,7 @@ CREATE TABLE person (
   Password      CHAR(64) NOT NULL,
 
   isOfGroup     INT,
-  frontendid    uuid PRIMARY KEY DEFAULT uuid_generate_v4(), 
+  frontendid    uuid DEFAULT uuid_generate_v4(), 
 
   CONSTRAINT fk_AccessLevel FOREIGN KEY (isOfGroup)
     REFERENCES groups(UID),

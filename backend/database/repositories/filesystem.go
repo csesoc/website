@@ -13,9 +13,6 @@ type filesystemRepository struct {
 	embeddedContext
 }
 
-// The ID for root, set this as the ID in a specified request
-var FilesystemRootID uuid.UUID = uuid.Nil
-
 // We really should use an ORM jesus this is ugly
 func (rep filesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
 	entity := FilesystemEntry{}
@@ -72,10 +69,6 @@ func (rep filesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEnt
 
 // TODO: Change this
 func (rep filesystemRepository) GetEntryWithID(ID uuid.UUID) (FilesystemEntry, error) {
-	if ID == FilesystemRootID {
-		return rep.GetRoot("A")
-	}
-
 	result, err := rep.query("SELECT * FROM filesystem WHERE EntityID = $1", ID)
 	return result, err
 }

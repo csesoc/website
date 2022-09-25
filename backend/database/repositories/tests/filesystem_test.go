@@ -2,12 +2,13 @@ package repositories
 
 import (
 	"os"
+	"sort"
 	"testing"
 
 	"cms.csesoc.unsw.edu.au/database/contexts"
 	"cms.csesoc.unsw.edu.au/database/repositories"
 
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -34,15 +35,52 @@ func TestFrontendRoot(t *testing.T) {
 func TestRootRetrieval(t *testing.T) {
 	assert := assert.New(t)
 	testContext.RunTest(func() {
-		rootID, err := frontendRepo.GetIDWithName("A")
-		assert.Nil(err)
+		rootID, _ := frontendRepo.GetIDWithName("A")
 
 		root, err := repo.GetEntryWithID(rootID)
-		if assert.Nil(err) {
-			assert.Equal("A", root.LogicalName)
-			assert.False(root.IsDocument)
-			assert.GreaterOrEqual(len(root.ChildrenIDs), 0)
+		assert.Nil(err)
+
+		assert.Equal("A", root.LogicalName)
+		assert.False(root.IsDocument)
+		assert.GreaterOrEqual(len(root.ChildrenIDs), 2)
+
+		/* 				TEST DATA HIERARCHY
+								(A)
+								/ \
+					(documents)  (downloads)
+						/  \
+		(cool_document) (cool_document_round_2)
+
+		*/
+		expected := []string{"downloads", "documents"}
+		var actual []string
+		documents := uuid.Nil
+		for _, child := range root.ChildrenIDs {
+			file, err := repo.GetEntryWithID(child)
+			assert.Nil(err)
+			filename := file.LogicalName
+			if filename == "documents" {
+				documents = file.EntityID
+			}
+			actual = append(actual, filename)
 		}
+		sort.Strings(expected)
+		sort.Strings(actual)
+		assert.Equal(expected, actual)
+
+		documents_folder, err := repo.GetEntryWithID(documents)
+		assert.Nil(err)
+
+		expected = []string{"cool_document", "cool_document_round_2"}
+		actual = []string{}
+		for _, leaf := range documents_folder.ChildrenIDs {
+			document, err := repo.GetEntryWithID(leaf)
+			assert.Nil(err)
+			actual = append(actual, document.LogicalName)
+		}
+		sort.Strings(expected)
+		sort.Strings(actual)
+		assert.Equal(expected, actual)
 	})
 }
 

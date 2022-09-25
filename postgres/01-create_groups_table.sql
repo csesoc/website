@@ -1,4 +1,5 @@
-CREATE EXTENSION hstore;
+CREATE EXTENSION IF NOT EXISTS hstore;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 SET timezone = 'Australia/Sydney';
 
 CREATE TYPE permissions_enum as ENUM ('read', 'write', 'delete');
