@@ -84,7 +84,7 @@ export const TypewriterAnimation = ({ children }: Props) => {
     return (
       <div
         key={children + i}
-        style={{ display: 'inline-block', overflow: 'hidden' }}
+        style={{ display: 'inline-block', overflow: 'hidden', height:"auto" }}
       >
         <motion.div
           {...params}
