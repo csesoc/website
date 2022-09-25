@@ -1,6 +1,3 @@
-SET timezone = 'Australia/Sydney';
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 /**
   The filesystem table models all file heirachies in our system
 **/
@@ -14,15 +11,20 @@ CREATE TABLE filesystem (
   CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW(),
 
   OwnedBy       INT,
-  /* Pain */
-  Parent        uuid REFERENCES filesystem(EntityID) DEFAULT NULL,
+  /**
+    If parent is uuid_nil(), it is a frontend root.
+    Also note that neither entityID and parent are foreign keys to frontend table since
+    keys must always exist in frontend table. This violates the purpose of it to only
+    store frontend roots.
+  **/
+  Parent        uuid DEFAULT uuid_nil(),
 
   /* FK Constraint */
   CONSTRAINT fk_owner FOREIGN KEY (OwnedBy) 
     REFERENCES groups(UID),
   /* Unique name constraint: there should not exist an entity of the same type with the
      same parent and logical name. */
-  CONSTRAINT unique_name UNIQUE (Parent, LogicalName, IsDocument)        
+  CONSTRAINT unique_name UNIQUE (Parent, LogicalName, IsDocument)
 );
 
 /* Utility procedure :) */

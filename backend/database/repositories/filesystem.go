@@ -13,9 +13,6 @@ type filesystemRepository struct {
 	embeddedContext
 }
 
-// The ID for root, set this as the ID in a specified request
-var FilesystemRootID uuid.UUID = uuid.Nil
-
 // We really should use an ORM jesus this is ugly
 func (rep filesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
 	entity := FilesystemEntry{}
@@ -51,15 +48,16 @@ func (rep filesystemRepository) query(query string, input ...interface{}) (Files
 
 // Returns: entry struct containing the entity that was just created
 func (rep filesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEntry, error) {
-	if file.ParentFileID == FilesystemRootID {
-		// determine root ID
-		root, err := rep.GetRoot()
-		if err != nil {
-			return FilesystemEntry{}, errors.New("failed to get root")
-		}
+	// TODO: I feel like this is useless?
+	// if file.ParentFileID == FilesystemRootID {
+	// 	// determine root ID
+	// 	root, err := rep.GetRoot()
+	// 	if err != nil {
+	// 		return FilesystemEntry{}, errors.New("failed to get root")
+	// 	}
 
-		file.ParentFileID = root.EntityID
-	}
+	// 	file.ParentFileID = root.EntityID
+	// }
 
 	var newID uuid.UUID
 	err := rep.ctx.Query("SELECT new_entity($1, $2, $3, $4)", []interface{}{file.ParentFileID, file.LogicalName, file.OwnerUserId, file.IsDocument}, &newID)
@@ -69,18 +67,15 @@ func (rep filesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEnt
 	return rep.GetEntryWithID(newID)
 }
 
+// TODO: Change this
 func (rep filesystemRepository) GetEntryWithID(ID uuid.UUID) (FilesystemEntry, error) {
-	if ID == FilesystemRootID {
-		return rep.GetRoot()
-	}
-
 	result, err := rep.query("SELECT * FROM filesystem WHERE EntityID = $1", ID)
 	return result, err
 }
 
-func (rep filesystemRepository) GetRoot() (FilesystemEntry, error) {
-	// Root is currently set to ID 1
-	return rep.query("SELECT * FROM filesystem WHERE EntityID = $1", FilesystemRootID)
+// TODO: Is this even necessary anymore? frontend table's GetIDWithName does same thing
+func (rep filesystemRepository) GetRoot(frontend string) (FilesystemEntry, error) {
+	return rep.query("SELECT * FROM frontend WHERE FrontendLogicalname = $1", frontend)
 }
 
 func (rep filesystemRepository) GetEntryWithParentID(ID uuid.UUID) (FilesystemEntry, error) {

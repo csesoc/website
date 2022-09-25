@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/emirpasic/gods v1.18.1
+	github.com/gofrs/uuid v4.0.0+incompatible
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/schema v1.2.0

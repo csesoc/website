@@ -5,6 +5,7 @@ package endpoints
 import (
 	repos "cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/internal/logger"
+	"github.com/google/uuid"
 )
 
 type (
@@ -25,7 +26,7 @@ type (
 	// DependencyProvider is a simple implementation of the dependency factory that supports the injection of "dynamic" dependencies
 	DependencyProvider struct {
 		Log        *logger.Log
-		FrontEndID int
+		FrontEndID uuid.UUID
 	}
 )
 
