@@ -100,10 +100,10 @@ func GetPublishedDocument(form ValidGetPublishedDocumentRequest, df DependencyFa
 		log.Write("failed to read from the requested file")
 		buf.WriteString(emptyFile)
 	}
-	// contentType := http.DetectContentType(buf.Bytes())
+	contentType := http.DetectContentType(buf.Bytes())
 	return handlerResponse[[]byte]{
 		Status:      http.StatusOK,
 		Response:    buf.Bytes(),
-		ContentType: "application/octet-stream",
+		ContentType: contentType,
 	}
 }
