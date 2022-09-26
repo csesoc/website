@@ -7,6 +7,9 @@ import YT from '../svgs/YT.svg'
 import FB from '../svgs/FB.svg'
 import DC from '../svgs/DC.svg'
 import SPOT from '../svgs/SPOT.svg'
+
+import { SectionFadeInFromLeft, SectionFadeInFromRight } from "../styles/motion"
+
 type Props = {}
 
 const Container = styled.div`
@@ -66,9 +69,15 @@ const ImgContainer = styled.div`
   @media ${device.laptop} {
     width: 60px;
   }
+
+  &:hover { 
+		cursor: pointer;
+		transform: scale(1.1);
+	}
 `
 
 const imgs = [YT, FB, DC, SPOT]
+const urls = ["https://www.youtube.com/c/CSESocUNSW", "https://www.facebook.com/csesoc/", "https://bit.ly/CSESocDiscord", "https://open.spotify.com/show/2h9OxTkeKNznIfNqMMYcxj"]
 
 export default function Resources({}: Props) {
   return (
@@ -77,14 +86,20 @@ export default function Resources({}: Props) {
         <Heading>Resources and Contacts</Heading>
       </HeadingContainer>
       <BodyContainer>
-        <GlassContainer dark={true}/>
-        <ColumnContainer>
-          {imgs.map((src) => (
-            <ImgContainer key="imgContainer">
-              <Image src={src}/>
+        <SectionFadeInFromLeft>
+          <GlassContainer dark={true}/>
+        </SectionFadeInFromLeft>
+        <SectionFadeInFromRight>
+          <ColumnContainer>
+            {imgs.map((src) => (
+              <ImgContainer key="imgContainer">
+                <a href={urls[imgs.indexOf(src)]}>    
+                  <Image src={src}/>
+                </a>
             </ImgContainer>
-          ))}
+            ))}
         </ColumnContainer>
+        </SectionFadeInFromRight>
       </BodyContainer>
     </Container>
   )

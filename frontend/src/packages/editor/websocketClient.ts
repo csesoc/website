@@ -5,7 +5,7 @@
 */
 export default class Client {
   constructor(
-    documentID: number,
+    documentID: string,
     initCallback: (arg: any[]) => void,
     terminatingCallbck: (arg: TerminationReason) => void
   ) {
@@ -14,11 +14,13 @@ export default class Client {
       `ws://localhost:8080/editor?DocumentID=${documentID}`
     );
     this.messageQueue = [];
+    console.log("socket created");
     // setup handler functions
     // note that the assumption in this simple protocol is that
     // we only get messages that are ACKNOWLEDGEMENTS of previous requests
     this.socket.onmessage = (message) => {
       const data: payload = JSON.parse(message.data) as payload;
+      console.log("on messasge");
       switch (data.type) {
         case "init":
           console.log(data); // for testing
@@ -36,8 +38,8 @@ export default class Client {
     };
 
     // handles violent termination
-    this.socket.close = (___, reason) =>
-      terminatingCallbck(reason as TerminationReason);
+    // this.socket.close = (___, reason) =>
+    //   terminatingCallbck(reason as TerminationReason);
   }
 
   // handles an incoming request to
@@ -62,6 +64,10 @@ export default class Client {
     }
   }
 
+  public close() {
+    this.socket.close();
+  }
+
   private async sendToSocket(data: string): Promise<void> {
     if (data === "") {
       return new Promise((resolve) => resolve());
@@ -73,7 +79,7 @@ export default class Client {
     });
   }
 
-  documentID: number;
+  documentID: string;
   socket: WebSocket;
   messageQueue: Array<string>;
 }

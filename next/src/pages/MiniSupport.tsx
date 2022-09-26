@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link'
 import { device } from '../styles/device'
 
+import { SectionFadeInFromLeft, SectionFadeInFromRight } from "../styles/motion"
+
 type Props = {}
 
 const Container = styled.div`
@@ -43,6 +45,8 @@ const TextContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100%;
+  padding: 0 3vw;
 `
 
 const H3 = styled.div`
@@ -63,10 +67,29 @@ const ButtonContainer = styled.div`
   display: flex;
 `
 
-const ImgContainer = styled.div`
-  width: 100vw;
+const FlexCenter = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
+`
+const ImgContainer = styled.div`
+  width: 50vw;
+
+  @media ${device.laptop} {
+    width: 350px;
+    height: 400px;
+  }
+`
+
+const Button = styled.button`
+  background-color:  #9B9B9B;
+  margin: 10px;
+  padding: 10px 45px;
+  font-size: 18px;
+  color: white;
+  border: none;
+  border-radius: 6px;
+
 `
 
 
@@ -77,18 +100,24 @@ export default function Support({}: Props) {
         <Heading>Support CSESoc</Heading>
       </HeadingContainer>
       <BodyContainer>
-        <TextContainer>
-          <H3>Our Sponsors</H3>
-          <ButtonContainer>
-            <Link href="/sponsors">
-              <button>view our sponsors</button>
-            </Link>
-          </ButtonContainer>
-          <Text>Check out our very cool sponsors</Text>
-        </TextContainer>
-        <ImgContainer>
-          <Image src={Otter}/>
-        </ImgContainer>
+        <SectionFadeInFromLeft>
+          <TextContainer>
+            <H3>Our Sponsors</H3>
+            <ButtonContainer>
+              <Link href="/sponsors">
+                <button>view our sponsors</button>
+              </Link>
+            </ButtonContainer>
+            <Text>Check out our very cool sponsors</Text>
+          </TextContainer>
+        </SectionFadeInFromLeft>
+        <SectionFadeInFromRight>
+          <FlexCenter>
+            <ImgContainer>
+              <Image src={Otter}/>
+            </ImgContainer>
+          </FlexCenter>
+        </SectionFadeInFromRight>
       </BodyContainer>
     </Container>
   )

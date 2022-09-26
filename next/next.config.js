@@ -5,9 +5,7 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  experimental: {
-    outputStandalone: true,
-  },
+  output: "standalone"
 };
 
 module.exports = nextConfig;

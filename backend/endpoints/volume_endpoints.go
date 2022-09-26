@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	. "cms.csesoc.unsw.edu.au/endpoints/models"
@@ -80,14 +81,14 @@ func PublishDocument(form ValidPublishDocumentRequest, df DependencyFactory) han
 const emptyFile string = "{}"
 
 // GetPublishedDocument retrieves the contents of a published document from the published docker volume
-func GetPublishedDocument(form ValidGetPublishedDocumentRequest, df DependencyFactory) handlerResponse[DocumentRetrievalResponse] {
+func GetPublishedDocument(form ValidGetPublishedDocumentRequest, df DependencyFactory) handlerResponse[[]byte] {
 	publishedVol := df.GetPublishedVolumeRepo()
 	log := df.GetLogger()
 
 	// Get file from published volume
 	file, err := publishedVol.GetFromVolume(form.DocumentID.String())
 	if err != nil {
-		return handlerResponse[DocumentRetrievalResponse]{
+		return handlerResponse[[]byte]{
 			Status: http.StatusNotFound,
 		}
 	}
@@ -101,10 +102,18 @@ func GetPublishedDocument(form ValidGetPublishedDocumentRequest, df DependencyFa
 		buf.WriteString(emptyFile)
 	}
 
-	return handlerResponse[DocumentRetrievalResponse]{
-		Status: http.StatusOK,
-		Response: DocumentRetrievalResponse{
-			Contents: buf.String(),
-		},
+	// Will return "text/..." if file contains text / json
+	contentType := http.DetectContentType(buf.Bytes())
+
+	// TODO: Remove this if statement and modify frontend to account for changed API
+	if strings.Contains(contentType, "text") {
+		wrappedContent := "{Contents: " + strings.TrimSpace(buf.String()) + "}"
+		buf.Reset()
+		buf.WriteString(wrappedContent)
+	}
+	return handlerResponse[[]byte]{
+		Status:      http.StatusOK,
+		Response:    buf.Bytes(),
+		ContentType: contentType,
 	}
 }

@@ -1,10 +1,12 @@
-import { toFileOrFolder } from './helpers';
-import { JSONFileFormat } from './types';
+import { toFileOrFolder } from "./helpers";
+import { JSONFileFormat } from "./types";
+
+const DEFAULT_OWNER_GROUP = "1";
 
 // Given a file ID (if no ID is provided root is assumed), returns
 // a FileFormat of that file from the backend
-export async function getFolder (id?: number) {
-  const ending = (id === undefined) ? "" : `?EntityID=${id}`;
+export async function getFolder(id?: string) {
+  const ending = id === undefined ? "" : `?EntityID=${id}`;
   const folder_resp = await fetch(`/api/filesystem/info${ending}`);
 
   if (!folder_resp.ok) {
@@ -15,10 +17,9 @@ export async function getFolder (id?: number) {
   return toFileOrFolder(folder_json.Response);
 }
 
-
 // Given a file ID, sets the `contents` state variable to the children
 // of that file
-export async function updateContents(id: number) {
+export async function updateContents(id: string) {
   // const id = getCurrentID();
   const children_resp = await fetch(`/api/filesystem/info?EntityID=${id}`);
 
@@ -28,27 +29,29 @@ export async function updateContents(id: number) {
   }
 
   const children_json = await children_resp.json();
-  const children = children_json.Response.Children.map((child: JSONFileFormat) => {
-    return toFileOrFolder(child);
-  });
+  const children = children_json.Response.Children.map(
+    (child: JSONFileFormat) => {
+      return toFileOrFolder(child);
+    }
+  );
 
   return children;
-
 }
 
-
-export const newFile = async (name: string, parentID: number): Promise<string> => {
-
+export const newFile = async (
+  name: string,
+  parentID: string
+): Promise<string> => {
   // This isn't attached to the parent folder yet,
   // TODO: patch once auth is finished
   const create_resp = await fetch("/api/filesystem/create", {
     method: "POST",
     body: new URLSearchParams({
-      "LogicalName": name,
-      "Parent": parentID.toString(),
-      "OwnerGroup": "1",
-      "IsDocument": "true",
-    })
+      LogicalName: name,
+      Parent: parentID.toString(),
+      OwnerGroup: DEFAULT_OWNER_GROUP,
+      IsDocument: "true",
+    }),
   });
 
   if (!create_resp.ok) {
@@ -56,20 +59,25 @@ export const newFile = async (name: string, parentID: number): Promise<string> =
     throw new Error(message);
   }
   const response = await create_resp.json();
+
+  console.log(response);
+  console.log(JSON.stringify(response));
   return response.Response.NewID;
-}
+};
 
-export const newFolder = async (name: string, parentID: number): Promise<string> => {
-
+export const newFolder = async (
+  name: string,
+  parentID: string
+): Promise<string> => {
   // TODO: patch once auth is finished
   const create_resp = await fetch("/api/filesystem/create", {
     method: "POST",
     body: new URLSearchParams({
-      "LogicalName": name,
-      "Parent": parentID.toString(),
-      "OwnerGroup": "1",
-      "IsDocument": "false",
-    })
+      LogicalName: name,
+      Parent: parentID.toString(),
+      OwnerGroup: DEFAULT_OWNER_GROUP,
+      IsDocument: "false",
+    }),
   });
 
   if (!create_resp.ok) {
@@ -78,5 +86,4 @@ export const newFolder = async (name: string, parentID: number): Promise<string>
   }
   const response = await create_resp.json();
   return response.Response.NewID;
-}
-
+};

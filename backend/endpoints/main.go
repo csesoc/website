@@ -16,8 +16,9 @@ type (
 
 	// handlerResponse is a special response type only returned by HTTP Handlers
 	handlerResponse[V any] struct {
-		Status   int
-		Response V
+		Status      int
+		Response    V
+		ContentType string
 	}
 
 	// APIResponse is the public response type that is marshalled and presented to consumers of the API
@@ -33,6 +34,7 @@ type (
 		FormType    string
 		Handler     func(form T, dependencyFactory DependencyFactory) (response handlerResponse[V])
 		IsMultipart bool
+		IsWebsocket bool
 	}
 
 	// rawHandler is a handler that expect the incoming w and r request objects
@@ -42,6 +44,7 @@ type (
 		Handler     func(form T, w http.ResponseWriter, r *http.Request, dependencyFactory DependencyFactory) (response handlerResponse[V])
 		IsMultipart bool
 		NeedsAuth   bool
+		IsWebsocket bool
 	}
 
 	// authenticatedHandler is basically a regular http handler the only difference is that
@@ -65,15 +68,15 @@ func (fn handler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// acquire the frontend ID and error out if the client isn't registered to use the CMS
-	frontendId := getFrontendId(r)
-	if frontendId == repositories.InvalidFrontend {
-		writeResponse(w, handlerResponse[empty]{
-			Status:   http.StatusUnauthorized,
-			Response: empty{},
-		})
-
-		return
-	}
+	frontendId := 0 // getFrontendId(r)
+	// if frontendId == repositories.InvalidFrontend {
+	// writeResponse(w, handlerResponse[empty]{
+	// Status:   http.StatusUnauthorized,
+	// Response: empty{},
+	// })
+	//
+	// return
+	// }
 
 	// construct a dependency factory for this request, which implies instantiating a logger
 	logger := buildLogger(r.Method, r.URL.Path)
@@ -81,7 +84,10 @@ func (fn handler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	response := fn.Handler(*parsedForm, dependencyFactory)
 
 	// Record and write out any useful information
-	writeResponse(w, response)
+	if !fn.IsWebsocket {
+		writeResponse(w, response)
+	}
+
 	logResponse(logger, response)
 	logger.Close()
 }
@@ -153,9 +159,14 @@ func writeResponse[V any](dest http.ResponseWriter, response handlerResponse[V])
 		}
 	}
 
-	dest.Header().Set("Content-Type", "application/json")
-	re, _ := json.Marshal(out)
-	dest.Write(re)
+	if response.ContentType == "" {
+		dest.Header().Set("Content-Type", "application/json")
+		re, _ := json.Marshal(out)
+		dest.Write(re)
+	} else if data, ok := any(response.Response).([]byte); ok {
+		dest.Header().Set("Content-Type", response.ContentType)
+		dest.Write(data)
+	}
 }
 
 // getErrorResponse does the exact same thing as write response except it's specific to errors
