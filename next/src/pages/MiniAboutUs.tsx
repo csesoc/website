@@ -1,5 +1,6 @@
 import Sphere from '../components/aboutus/ReusableSpheres';
 import * as PageStyle from '../components/aboutus/AboutUs-Styled';
+import { Fragment } from 'react';
 
 const args1 = {
     left: 11,
@@ -64,11 +65,13 @@ const SphereArgs = [args1, args2, args3, args4];
 
 const CreateSpheres = SphereArgs.map((arg, index) => {
     return (
-      <Sphere {...arg}>
-        <a href='AboutUs'>
-          <PageStyle.MoreInfoText {...arg}>{arg.text}</PageStyle.MoreInfoText>
-        </a>
-      </Sphere>
+      <Fragment key={index}>
+        <Sphere {...arg}>
+          <a href='AboutUs'>
+            <PageStyle.MoreInfoText {...arg}>{arg.text}</PageStyle.MoreInfoText>
+          </a>
+        </Sphere>
+      </Fragment>
     )
 })
 
