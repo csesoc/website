@@ -33,7 +33,6 @@ const MainContainer = styled.div`
   flex-direction: column;
   align-items: center;
   min-height: 80vh;
-  // border-style: solid;
 `;
 
 const BlogPage = () => {
