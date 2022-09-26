@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { GlassContainer } from '../components/eventspage/ClearLayeredGlassContainer-Styled';
-import Carousel from '../components/resources/Carousel';
 import { device } from '../styles/device'
 import Image from 'next/image';
 import YT from '../svgs/YT.svg'
@@ -88,9 +87,7 @@ export default function Resources({}: Props) {
       </HeadingContainer>
       <BodyContainer>
         <SectionFadeInFromLeft>
-          <GlassContainer dark={true} center={true}>
-            <Carousel />
-          </GlassContainer>
+          <GlassContainer dark={true}/>
         </SectionFadeInFromLeft>
         <SectionFadeInFromRight>
           <ColumnContainer>

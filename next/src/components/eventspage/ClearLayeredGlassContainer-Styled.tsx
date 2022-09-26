@@ -6,15 +6,10 @@ export type positionProps = {
     top?: number;
     left?: number;
     dark?: boolean;
-    center?: boolean;
 };
 
 export const GlassContainer = styled.div<positionProps>`
     position: ${(props) => props.position};
-    
-    display: ${(props) => props.center ? "flex": ""};
-    justify-content: ${(props) => props.center ? "center": ""};
-    align-items: ${(props) => props.center ? "center": ""};
 
     top: ${(props) => props.top}vw;
     left: ${(props) => props.left}vw;
