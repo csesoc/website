@@ -8,6 +8,7 @@ open GhostSyntax.Cards
 let findTextStyle (markups: Markups.markup list) (markup: Markups.markup) : bool = 
     List.exists (fun m -> m = markup) markups
 
+
 let convertMarkups (markups: Markups.markup list) : textStyle = 
     {
         bold = findTextStyle markups Markups.Strong // Strong seems like a direct translation for bold despite also having a bold markup?
@@ -15,45 +16,29 @@ let convertMarkups (markups: Markups.markup list) : textStyle =
         underline = false
     }
 
-// This needs to be implemented properly once frontend is ready
-let convertCallout (callout: Cards.callout) : text list = 
-    [{
-        data = Text callout.calloutText
+let convertToText (text: string) (styles: bool list) : text = 
+    {
+        data = Text text
         style = {
             bold = false
             italic = false
             underline = false
-        }
-    }]
+        } // When we inevitably switch to lists of styles we can add an additional parameter to this function to pass in the styles
+    }
+
+// This needs to be implemented properly once frontend is ready
+let convertCallout (callout: Cards.callout) : text list = 
+    [convertToText callout.text [false; false; false]]
 
 // This needs to be implemented properly once frontend is ready
 let convertToggle (toggle: Cards.toggle) : text list = 
-    [{
-        data = Text toggle.heading
-        style = {
-            bold = true
-            italic = false
-            underline = false
-        }
-    };
-    {
-        data = Text toggle.content
-        style = {
-            bold = true
-            italic = false
-            underline = false
-        }
-    }]
+    [convertToText toggle.heading [true; false; false]; convertToText toggle.body [false; false; false]]
+
 
 let convertCode (code: Cards.code) : text list = 
-    [{
-        data = Text code.code
-        style = {
-            bold = false
-            italic = false
-            underline = false
-        }
-    }]
+    [convertToText code.code [false; false; false]]
+
+
 
 let convertCard (cards: Cards.card list) (cardIndex: int) : text list = 
     match List.tryItem cardIndex cards with
@@ -74,22 +59,19 @@ let modifyOpenMarkups (openMarkups: int list) (newMarkups: int list) (numClosedM
 let retrieveMarkups (markups: Markups.markup list) (indices: int list) : Markups.markup list = 
     List.map (fun index -> List.item index markups) indices
 
-
- 
 let convertValue (sectionBlock : sectionBlock) (openMarkups : Markups.markup list) : textType = 
-    let isLink (markup : Markups.markup) : bool = 
+    let isLink markup = 
         match markup with
             | Markups.Link _ -> true 
             | _ -> false
     
-    let listContainsLink (list : Markups.markup list) : bool = 
-        List.exists (isLink) list
+    let listContainsLink list = 
+        List.exists (isType) list
 
     if listContainsLink openMarkups then
         Text sectionBlock.value // Should be URL type in future
     else
         Text sectionBlock.value
-
 
 let convertSectionBlocks (markups: Markups.markup list) (sectionBlock: list<sectionBlock>) : text list = 
     let rec convertSectionBlock (sections: list<sectionBlock>) (openMarkups : int list) : text list = 
@@ -98,7 +80,6 @@ let convertSectionBlocks (markups: Markups.markup list) (sectionBlock: list<sect
             | x :: xs -> 
                 let openMarkups = modifyOpenMarkups openMarkups x.openMarkups x.numClosedMarkups
                 let retrievedMarkups = retrieveMarkups markups openMarkups
-                let isLink = function | Markups.Link _ -> true | _ -> false
 
                 {
                     data = convertValue x retrievedMarkups
