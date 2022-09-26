@@ -19,7 +19,7 @@ type (
 	// ValidImageUploadRequest is the request model for an handler that uploads an IMAGE to a docker volume
 	ValidDocumentUploadRequest struct {
 		DocumentID uuid.UUID `schema:"DocumentID,required"`
-		Content    string    `schema:Content,required` // TODO: Add check that content is valid JSON
+		Content    string    `schema:"Content,required"` // TODO: Add check that content is valid JSON
 	}
 
 	// ValidPublishDocumentRequest is the request model for any handler that publishes a document

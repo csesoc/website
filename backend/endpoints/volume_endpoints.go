@@ -107,12 +107,11 @@ func PublishDocument(form ValidPublishDocumentRequest, df DependencyFactory) han
 	if err != nil {
 		log.Write("failed to copy file to published volume")
 		log.Write(err.Error())
-		return handlerResponse[empty]{}
+		return handlerResponse[empty]{
+			Status: http.StatusInternalServerError,
+		}
 	}
-
-	return handlerResponse[empty]{
-		Status: http.StatusInternalServerError,
-	}
+	return handlerResponse[empty]{}
 }
 
 const emptyFile string = "{}"
