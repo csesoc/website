@@ -25,7 +25,6 @@ class UpgradeJob:
     def __init__(self):
         self.connection = get_db()
         self.cursor = self.connection.cursor()
-        pass
 
     def run_script(self, script: str):
         self.cursor.execute(script)
