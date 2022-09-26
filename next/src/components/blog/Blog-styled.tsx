@@ -27,12 +27,16 @@ const ParagraphBlock = styled.p<ParagraphStyle>`
 `;
 
 const BlogContainer = styled.div`
-  max-width: 600px;
+  max-width: 700px;
   font-size: 1.25rem;
+  margin: 60px;
 
   @media (max-width: 768px) {
     padding: 20px 2vw;
-    margin: 60px;
+  }
+
+  @media ${device.laptop} {
+    max-width: 1440px;
   }
 
 

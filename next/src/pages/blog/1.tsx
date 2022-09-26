@@ -31,9 +31,9 @@ const PageContainer = styled.div`
 const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-
+  min-height: 80vh;
+  // border-style: solid;
 `;
 
 const BlogPage = () => {
