@@ -16,13 +16,13 @@ func RegisterFilesystemEndpoints(mux *http.ServeMux) {
 
 // Registers the authentication based endpoints
 func RegisterAuthenticationEndpoints(mux *http.ServeMux) {
-	mux.Handle("/login", newRawHandler("POST", LoginHandler, false, false))
-	mux.Handle("/logout", newRawHandler("POST", LogoutHandler, false, false)) // auth
+	mux.Handle("/login", newRawHandler("POST", LoginHandler, false, false, false))
+	mux.Handle("/logout", newRawHandler("POST", LogoutHandler, false, false, false)) // auth
 }
 
 // Registers the editor related endpoints
 func RegisterEditorEndpoints(mux *http.ServeMux) {
-	mux.Handle("/editor", newRawHandler("GET", EditHandler, false, false)) // auth
+	mux.Handle("/editor", newRawHandler("GET", EditHandler, false, false, true)) // auth
 }
 
 // newHandler is just a small wrapper around a handler that returns an instance of a handler struct
@@ -44,10 +44,11 @@ func newAuthenticatedHandler[T, V any](formType string, handler func(T, Dependen
 }
 
 // newRawHandler is like the other instantiation functions except it returns an instance of a raw handler (see documentation)
-func newRawHandler[T, V any](formType string, handler func(form T, w http.ResponseWriter, r *http.Request, dependencyFactory DependencyFactory) (response handlerResponse[V]), isMultipart bool, needsAuth bool) rawHandler[T, V] {
+func newRawHandler[T, V any](formType string, handler func(form T, w http.ResponseWriter, r *http.Request, dependencyFactory DependencyFactory) (response handlerResponse[V]), isMultipart bool, needsAuth bool, isWebsocket bool) rawHandler[T, V] {
 	return rawHandler[T, V]{
 		FormType:    formType,
 		Handler:     handler,
 		IsMultipart: isMultipart,
+		IsWebsocket: isWebsocket,
 	}
 }

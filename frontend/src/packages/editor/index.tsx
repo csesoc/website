@@ -42,6 +42,10 @@ const EditorPage: FC = () => {
   };
 
   useEffect(() => {
+    function cleanup() {
+      wsClient.current?.close();
+    }
+
     wsClient.current = new Client(
       id as string,
       (data) => {
@@ -52,6 +56,12 @@ const EditorPage: FC = () => {
         console.log(reason);
       }
     );
+    window.addEventListener("beforeunload", cleanup);
+    return () => {
+      console.log("Editor component destroyed");
+      wsClient.current?.close();
+      window.removeEventListener("beforeunload", cleanup);
+    };
   }, []);
 
   return (
