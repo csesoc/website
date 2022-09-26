@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 import styled from "styled-components";
 
-import { NavbarOpenHandler } from "../components/navbar/types";
+import { NavbarOpenHandler, NavbarType } from "../components/navbar/types";
 import HamburgerMenu from "../components/navbar/HamburgerMenu";
 
 import HPCurve from "../svgs/HPCurve"
@@ -99,7 +99,7 @@ const Index: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <NavContainer>
-        {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} />}
+        {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.HOMEPAGE}/>}
         {navbarOpen && <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} />}
       </NavContainer>
       {(loaded && height && width) && (
