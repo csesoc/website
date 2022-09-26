@@ -41,6 +41,5 @@ func EditHandler(form ValidEditRequest, w http.ResponseWriter, r *http.Request, 
 			Status: http.StatusInternalServerError,
 		}
 	}
-
 	return handlerResponse[empty]{Status: http.StatusOK}
 }

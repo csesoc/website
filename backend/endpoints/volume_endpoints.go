@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	. "cms.csesoc.unsw.edu.au/endpoints/models"
@@ -100,7 +101,16 @@ func GetPublishedDocument(form ValidGetPublishedDocumentRequest, df DependencyFa
 		log.Write("failed to read from the requested file")
 		buf.WriteString(emptyFile)
 	}
+
+	// Will return "text/..." if file contains text / json
 	contentType := http.DetectContentType(buf.Bytes())
+
+	// TODO: Remove this if statement and modify frontend to account for changed API
+	if strings.Contains(contentType, "text") {
+		wrappedContent := "{Contents: " + strings.TrimSpace(buf.String()) + "}"
+		buf.Reset()
+		buf.WriteString(wrappedContent)
+	}
 	return handlerResponse[[]byte]{
 		Status:      http.StatusOK,
 		Response:    buf.Bytes(),
