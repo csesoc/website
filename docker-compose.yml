@@ -81,7 +81,7 @@ services:
     ports:
       - 1234:5432
     volumes:
-      - './postgres:/docker-entrypoint-initdb.d/'
+      - './postgres/up:/docker-entrypoint-initdb.d/'
       - 'staging_pg_db:/var/lib/postgresql/data'
 volumes:
   pg_data:

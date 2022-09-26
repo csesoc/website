@@ -41,15 +41,15 @@ class UpgradeJob:
 
 # Completely destroy the current state of the DB
 def down(job: UpgradeJob):
-    down_script = open("down.sql", "r").read()
+    down_script = open("down/down.sql", "r").read()
     job.run_script(down_script)
 
 
 # Recreate the database from the defined schema files
 def up(job: UpgradeJob):
-    up_jobs = [x for x in glob.glob('*.sql') if x != "down.sql"]
-    up_jobs.sort()
-    for script in up_jobs: job.run_script(open(script, "r").read())
+    up_jobs = glob.glob('up/*.sql')
+    for script in sorted(up_jobs): 
+        job.run_script(open(script, "r").read())
 
 
 # requires_update determines if the current database requires an update, it does so by querying an update table and comparing the result
@@ -58,16 +58,18 @@ def get_db_versions():
     db = get_db()
 
     git_version_file = open("dbver.txt", "r")
-    git_version = int(git_version_file.readlines()[0])
+    git_version = int(git_version_file.readline())
     container_version = 0
 
     # acquire the db version
     cursor = db.cursor()
     try:
-        cursor.execute("select VersionID from migrations where MigrationID = 0;")
+        cursor.execute("select VersionID from migrations where MigrationID = 1;")
         migration_records = cursor.fetchall()
-        container_version = 0 if len(migration_records) == 0 else migration_records[0]
-    except: pass
+        container_version = 0 if len(migration_records) == 0 else migration_records[0][0]
+    except Exception as e:
+        print(e)
+        pass
     finally:
         cursor.close()        
 
@@ -75,7 +77,7 @@ def get_db_versions():
 
 
 if __name__ == '__main__':
-    container_version, git_version = get_db_versions()
+    (container_version, git_version) = get_db_versions()
 
     if git_version <= container_version:
         print("Container DB is up to date, skipping upgrade :)")
