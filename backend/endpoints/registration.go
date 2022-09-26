@@ -10,6 +10,7 @@ func RegisterFilesystemEndpoints(mux *http.ServeMux) {
 	mux.Handle("/api/filesystem/rename", newHandler("POST", RenameFilesystemEntity, false)) // auth
 	mux.Handle("/api/filesystem/children", newHandler("GET", GetChildren, false))
 	mux.Handle("/api/filesystem/upload-image", newHandler("POST", UploadImage, true))           // auth
+	mux.Handle("/api/filesystem/upload-document", newHandler("POST", UploadImage, true))        // auth
 	mux.Handle("/api/filesystem/publish-document", newHandler("POST", PublishDocument, false))  // auth
 	mux.Handle("/api/filesystem/get/published", newHandler("GET", GetPublishedDocument, false)) // auth
 }

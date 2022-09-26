@@ -13,7 +13,7 @@ import (
 
 // UploadImage takes an image from a request and uploads it to the published docker volume
 func UploadImage(form ValidImageUploadRequest, df DependencyFactory) handlerResponse[NewEntityResponse] {
-	dockerRepository := df.GetUnpublishedVolumeRepo()
+	unpublishedVol := df.GetUnpublishedVolumeRepo()
 	repository := df.GetFilesystemRepo()
 	log := df.GetLogger()
 
@@ -28,22 +28,22 @@ func UploadImage(form ValidImageUploadRequest, df DependencyFactory) handlerResp
 	// Push the new entry into the repository
 	e, err := repository.CreateEntry(entityToCreate)
 	if err != nil {
+		log.Write("failed to create a repository entry")
+		log.Write(err.Error())
 		return handlerResponse[NewEntityResponse]{
 			Status: http.StatusNotAcceptable,
 		}
 	}
 
 	// Create and get a new entry in docker file system
-	dockerRepository.AddToVolume(e.EntityID.String())
-	if dockerFile, err := dockerRepository.GetFromVolume(e.EntityID.String()); err != nil {
+	unpublishedVol.AddToVolume(e.EntityID.String())
+	if dockerFile, err := unpublishedVol.GetFromVolume(e.EntityID.String()); err != nil {
 		return handlerResponse[NewEntityResponse]{Status: http.StatusInternalServerError}
-	} else {
-		_, err := io.Copy(dockerFile, form.Image)
-		if err != nil {
-			log.Write("failed to write image to docker container")
-			return handlerResponse[NewEntityResponse]{
-				Status: http.StatusInternalServerError,
-			}
+	} else if _, err := io.Copy(dockerFile, form.Image); err != nil {
+		log.Write("failed to write image to docker container")
+		log.Write(err.Error())
+		return handlerResponse[NewEntityResponse]{
+			Status: http.StatusInternalServerError,
 		}
 	}
 
@@ -54,28 +54,65 @@ func UploadImage(form ValidImageUploadRequest, df DependencyFactory) handlerResp
 	}
 }
 
-// PublishDocument takes in DocumentID and transfers the document from unpublished to published volume if it exists
-func PublishDocument(form ValidPublishDocumentRequest, df DependencyFactory) handlerResponse[empty] {
+// UploadImage takes an image from a request and uploads it to the published docker volume
+func UploadDocument(form ValidDocumentUploadRequest, df DependencyFactory) handlerResponse[NewEntityResponse] {
 	unpublishedVol := df.GetUnpublishedVolumeRepo()
-	publishedVol := df.GetPublishedVolumeRepo()
+	log := df.GetLogger()
 
 	// fetch the target file form the unpublished volume
 	filename := form.DocumentID.String()
 	file, err := unpublishedVol.GetFromVolume(filename)
 	if err != nil {
+		log.Write(fmt.Sprintf("failed to get file: %s from volume", filename))
+		log.Write(err.Error())
+		return handlerResponse[NewEntityResponse]{
+			Status: http.StatusNotFound,
+		}
+	}
+
+	bytes, err := file.WriteString(form.Content)
+	if (bytes == 0 && len(form.Content) != 0) || err != nil {
+		log.Write("was an error writing to file")
+		log.Write(err.Error())
+		return handlerResponse[NewEntityResponse]{
+			Status: http.StatusInternalServerError,
+		}
+	}
+
+	return handlerResponse[NewEntityResponse]{
+		Response: NewEntityResponse{NewID: form.DocumentID},
+		Status:   http.StatusOK,
+	}
+}
+
+// PublishDocument takes in DocumentID and transfers the document from unpublished to published volume if it exists
+func PublishDocument(form ValidPublishDocumentRequest, df DependencyFactory) handlerResponse[empty] {
+	unpublishedVol := df.GetUnpublishedVolumeRepo()
+	publishedVol := df.GetPublishedVolumeRepo()
+	log := df.GetLogger()
+
+	// fetch the target file form the unpublished volume
+	filename := form.DocumentID.String()
+	file, err := unpublishedVol.GetFromVolume(filename)
+	if err != nil {
+		log.Write(fmt.Sprintf("failed to get file: %s from volume", filename))
+		log.Write(err.Error())
 		return handlerResponse[empty]{
 			Status: http.StatusNotFound,
 		}
 	}
 
 	// Copy over to the target volume
-	if publishedVol.CopyToVolume(file, filename) != nil {
-		return handlerResponse[empty]{
-			Status: http.StatusInternalServerError,
-		}
+	err = publishedVol.CopyToVolume(file, filename)
+	if err != nil {
+		log.Write("failed to copy file to published volume")
+		log.Write(err.Error())
+		return handlerResponse[empty]{}
 	}
 
-	return handlerResponse[empty]{}
+	return handlerResponse[empty]{
+		Status: http.StatusInternalServerError,
+	}
 }
 
 const emptyFile string = "{}"
@@ -86,8 +123,11 @@ func GetPublishedDocument(form ValidGetPublishedDocumentRequest, df DependencyFa
 	log := df.GetLogger()
 
 	// Get file from published volume
-	file, err := publishedVol.GetFromVolume(form.DocumentID.String())
+	filename := form.DocumentID.String()
+	file, err := publishedVol.GetFromVolume(filename)
 	if err != nil {
+		log.Write(fmt.Sprintf("failed to get file: %s from volume", filename))
+		log.Write(err.Error())
 		return handlerResponse[[]byte]{
 			Status: http.StatusNotFound,
 		}
@@ -99,6 +139,7 @@ func GetPublishedDocument(form ValidGetPublishedDocumentRequest, df DependencyFa
 	bytes, err := buf.ReadFrom(file)
 	if err != nil || bytes == 0 {
 		log.Write("failed to read from the requested file")
+		log.Write(err.Error())
 		buf.WriteString(emptyFile)
 	}
 
