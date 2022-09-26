@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        component: [backend, frontend, next]
+        component: [backend, frontend, next, postgres]
         include:
           - component: backend
             name: cms-backend
@@ -17,6 +17,8 @@ jobs:
             name: cms-frontend
           - component: next
             name: website-frontend
+          - component: postgres
+            name: cms-migrations
     permissions:
       contents: read
       packages: write
