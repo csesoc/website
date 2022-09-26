@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { TextStyle } from "./types";
+import { device } from "../../styles/device";
 
 interface ParagraphStyle {
   align?: "left" | "right" | "center";
@@ -21,12 +22,27 @@ const ImagePlaceholder = styled.div`
 `;
 
 const ParagraphBlock = styled.p<ParagraphStyle>`
-  text-align: ${(props) => props.align ?? "left"};
+  // text-align: ${(props) => props.align ?? "left"};
+  text-align: left;
 `;
 
 const BlogContainer = styled.div`
   max-width: 600px;
   font-size: 1.25rem;
+
+  @media (max-width: 768px) {
+    padding: 20px 2vw;
+    margin: 60px;
+  }
+
+
 `;
 
-export { Text, StyledLink, ImagePlaceholder, ParagraphBlock, BlogContainer };
+const BlogHeading = styled.span<TextStyle>`
+  font-weight: 800;
+  font-size: 35px;
+  padding: 20px 0 20px 0;
+
+`
+
+export { Text, StyledLink, ImagePlaceholder, ParagraphBlock, BlogContainer, BlogHeading };

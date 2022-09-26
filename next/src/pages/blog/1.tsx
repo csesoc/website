@@ -5,6 +5,7 @@ import {
   Text,
   StyledLink,
   ImagePlaceholder,
+  BlogHeading,
   ParagraphBlock,
   BlogContainer,
 } from "../../components/blog/Blog-styled";
@@ -28,7 +29,6 @@ const PageContainer = styled.div`
 `;
 
 const MainContainer = styled.div`
-  flex: 1; /* whats this? */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -36,56 +36,6 @@ const MainContainer = styled.div`
 
 `;
 
-// const Logo = styled.div`
-
-//   max-height: 120px;
-//   max-width: 120px;
-
-//   display: flex;
-
-//   @media ${device.tablet} {
-//     width: 75%;
-//   }
-// `;
-
-// const LinkContainer = styled.div`
-//     position: absolute;
-//     right: 50px;
-//     padding-top: 30px;
-//     color: white;
-
-// `
-
-
-
-// const Block = ({ element }: { element: Element }) => {
-//   if (element.type === "image") {
-//     return <ImagePlaceholder>{element.url}</ImagePlaceholder>;
-//   }
-//   return (
-//     <ParagraphBlock align={element.align}>
-//       {element.children.map(({ text, link, ...textStyle }, idx) => (
-//         <Text key={idx} {...textStyle}>
-//           {/* if link attribute is undefined, the current node is plain text */}
-//           {/* if link attribute is string, the curent node is a hyper link, with url link */}
-//           {link ? (
-//             <StyledLink>
-                
-//               <Link href={link} passHref>
-//                 {text}
-//               </Link>
-//             </StyledLink>
-//           ) : (
-//             <>{text}</>
-//           )}
-//         </Text>
-//       ))}
-//     </ParagraphBlock>
-//   );
-// };
-
-
-// { elements }: { elements: Element[][] }
 const BlogPage = () => {
   const [data, setData] = useState<Element[]>([]);
 
@@ -98,7 +48,7 @@ const BlogPage = () => {
     <PageContainer>
       <Navbar open={false} setNavbarOpen={() => {}} /> {/** ignore the styling */}
       <MainContainer>
-          <Text>Blog Title</Text>
+          <BlogHeading>Blog Title</BlogHeading>
           <Blog elements={data}/>
       </MainContainer>
       <Footer/>
