@@ -1,6 +1,8 @@
-FROM python:latest
+FROM python:slim
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
 COPY . .
-RUN pip install -r requirements.txt
 
 ENTRYPOINT [ "python", "migrate.py" ]
