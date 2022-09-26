@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Blog from "../../components/blog/Blog";
 import Link from "next/link";
-import { data } from "../../mock";
+import { useRouter } from "next/router";
 import type { Block } from "../../components/blog/types";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -21,21 +21,27 @@ const MainContainer = styled.div`
 `;
 
 const BlogPage: NextPage = () => {
+  const router = useRouter();
   const [paragraph, setParagraph] = useState<Block[]>([]);
+  const { bid } = router.query;
 
   useEffect(() => {
     async function fetchData() {
+      console.log(bid);
       const data = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URI}/api/filesystem/get/published?DocumentID=e643b5bd-4867-4e9f-911b-40885161ae42`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URI}/api/filesystem/get/published?DocumentID=${bid}`,
         {
           method: "GET",
         }
-      ).then((res) => res.json());
-      console.log(JSON.parse(data.Response.Contents));
-      setParagraph(JSON.parse(data.Response.Contents) as Block[]);
+      ).then((res) => res.text());
+      console.log(data);
+      // console.log(JSON.parse(data.Response.Contents));
+      // setParagraph(JSON.parse(data.Response.Contents) as Block[]);
     }
-    fetchData();
-  }, []);
+    if (bid) {
+      fetchData();
+    }
+  }, [bid]);
 
   return (
     <PageContainer>
