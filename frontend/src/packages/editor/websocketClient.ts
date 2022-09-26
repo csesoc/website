@@ -38,8 +38,8 @@ export default class Client {
     };
 
     // handles violent termination
-    this.socket.close = (___, reason) =>
-      terminatingCallbck(reason as TerminationReason);
+    // this.socket.close = (___, reason) =>
+    //   terminatingCallbck(reason as TerminationReason);
   }
 
   // handles an incoming request to
@@ -62,6 +62,10 @@ export default class Client {
     } else {
       this.messageQueue.push(data);
     }
+  }
+
+  public close() {
+    this.socket.close();
   }
 
   private async sendToSocket(data: string): Promise<void> {

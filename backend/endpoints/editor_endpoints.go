@@ -36,10 +36,12 @@ func EditHandler(form ValidEditRequest, w http.ResponseWriter, r *http.Request, 
 	log.Write("starting editor loop")
 	err = editor.EditorClientLoop(form.DocumentID, unpublishedVol, ws)
 	if err != nil {
-		log.Write(fmt.Sprintf("starting editor loop, message: %v", err.Error()))
+		log.Write(fmt.Sprintf("ending editor loop, message: %v", err.Error()))
 		return handlerResponse[empty]{
 			Status: http.StatusInternalServerError,
 		}
 	}
+
+	fmt.Print("hello!: D")
 	return handlerResponse[empty]{Status: http.StatusOK}
 }

@@ -36,17 +36,18 @@ const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  @media ${device.tablet} {
+  @media ${device.laptop} {
     padding: 0 10vw;
-    
+    max-width: 55vw;
   }
+
 `;
 
 const ImageContainer = styled.div`
-
-
 	position: relative; /* IMPORTANT */
-  width: 70vw;
+  width: 50vw;
+  height: 20vh;
+
 
   @media ${device.laptop} {
     width: 550px;
@@ -59,7 +60,7 @@ const ImageContainer = styled.div`
 const WebsiteImageContainer = styled.div`
 
 	position: relative; /* IMPORTANT */
-  width: 70vw;
+  width: 500px;
 
   @media ${device.laptop} {
     width: 550px;
@@ -71,17 +72,26 @@ const WebsiteImageContainer = styled.div`
 
 `;
 
-const Text1 = styled.p`
+const TextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media ${device.tablet} {
+    gap: 10px;
+  }
+`
+
+const Text1 = styled.div`
 	color: #010033;
 	font-size: 25px;
   display: flex;
-  gap: 1vw;
+  gap: 1vw; /* gives it space */
   @media ${device.tablet} {
     font-size: 36px;
   }
 `;
 
-const Text2 = styled.p`
+const Text2 = styled.div`
 	color: #3977f8;
 	font-size: 25px;
   @media ${device.tablet} {
@@ -89,7 +99,7 @@ const Text2 = styled.p`
   }
 `;
 
-const Text3 = styled.p`
+const Text3 = styled.div`
 	color: #010033;
 	font-style: italic;
 	font-size: 25px;
@@ -97,13 +107,6 @@ const Text3 = styled.p`
   @media ${device.tablet} {
     font-size: 36px;
   }
-`;
-
-const Scroll = styled.p`
-	transform: rotate(90deg);
-	position: absolute;
-	right: 0px;
-	bottom: 10%;
 `;
 
 export default function Homepage({}: Props) {
@@ -117,23 +120,25 @@ export default function Homepage({}: Props) {
                 <Image src="/assets/logo.svg" width="600px" height="300px"/>
               </ImageContainer>
             </FadeIn>
-            <Text1>
-              <Text3>
+            <TextContainer>
+              <Text1>
+                <Text3>
+                  <TypewriterAnimation>
+                    Empowering
+                  </TypewriterAnimation>
+                </Text3>
+                <Text3> 
+                  <TypewriterAnimation>
+                    future
+                  </TypewriterAnimation>
+                </Text3>
+              </Text1>
+              <Text2>
                 <TypewriterAnimation>
-                  Empowering
+                  Technological Leaders
                 </TypewriterAnimation>
-              </Text3>
-              <Text3> 
-                <TypewriterAnimation>
-                  future
-                </TypewriterAnimation>
-              </Text3>
-            </Text1>
-            <Text2>
-              <TypewriterAnimation>
-                Technological Leaders
-              </TypewriterAnimation>
-            </Text2>
+              </Text2>
+            </TextContainer>
           </ColumnContainer>
           {/* <Button>Visit on Blog</Button> */}
           <SlideInFromRight>
