@@ -161,7 +161,7 @@ func GetPublishedDocument(form ValidGetPublishedDocumentRequest, df DependencyFa
 
 	// TODO: Remove this if statement and modify frontend to account for changed API
 	if strings.Contains(contentType, "text") {
-		wrappedContent := "{Contents: " + strings.TrimSpace(buf.String()) + "}"
+		wrappedContent := "{\"Contents\": " + strings.TrimSpace(buf.String()) + "}"
 		buf.Reset()
 		buf.WriteString(wrappedContent)
 	}

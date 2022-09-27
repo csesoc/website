@@ -8,6 +8,8 @@ import EditorBlock from "./components/EditorBlock";
 import { BlockData, UpdateHandler } from "./types";
 import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
 import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
+import SyncDocument from "src/cse-ui-kit/SyncDocument_button";
+import PublishDocument from "src/cse-ui-kit/PublishDocument_button";
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import { addContentBlock } from "./state/actions";
 import { useParams } from "react-router-dom";
@@ -125,17 +127,15 @@ const EditorPage: FC = () => {
               );
             }}
           />
-          <button
+          <SyncDocument
             onClick={() => {
               if (wsClient.current?.socket.readyState === WebSocket.OPEN) {
                 console.log(JSON.stringify(blocks));
                 wsClient.current?.pushDocumentData(JSON.stringify(blocks));
               }
             }}
-          >
-            Sync Document
-          </button>
-          <button
+          />
+          <PublishDocument
             onClick={() => {
               fetch("/api/filesystem/publish-document", {
                 method: "POST",
@@ -147,9 +147,7 @@ const EditorPage: FC = () => {
                 }),
               });
             }}
-          >
-            Publish Content
-          </button>
+          />
         </InsertContentWrapper>
       </Container>
     </div>

@@ -1,8 +1,10 @@
 export interface Document {
   document_name: string;
   document_id: string;
-  content: Element[];
+  content: Block[];
 }
+
+export type Block = Element[];
 
 export type Element = Paragraph | Image;
 
