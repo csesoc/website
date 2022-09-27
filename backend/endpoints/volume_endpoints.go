@@ -57,13 +57,27 @@ func UploadImage(form ValidImageUploadRequest, df DependencyFactory) handlerResp
 // UploadImage takes an image from a request and uploads it to the published docker volume
 func UploadDocument(form ValidDocumentUploadRequest, df DependencyFactory) handlerResponse[NewEntityResponse] {
 	unpublishedVol := df.GetUnpublishedVolumeRepo()
+	fsRepo := df.GetFilesystemRepo()
 	log := df.GetLogger()
 
 	// fetch the target file form the unpublished volume
-	filename := form.DocumentID.String()
-	file, err := unpublishedVol.GetFromVolume(filename)
+	entityToCreate := repositories.FilesystemEntry{
+		LogicalName: form.DocumentName, ParentFileID: form.Parent,
+		IsDocument: true, OwnerUserId: 1,
+	}
+
+	entity, err := fsRepo.CreateEntry(entityToCreate)
 	if err != nil {
-		log.Write(fmt.Sprintf("failed to get file: %s from volume", filename))
+		log.Write("failed to create a repository entry")
+		log.Write(err.Error())
+		return handlerResponse[NewEntityResponse]{
+			Status: http.StatusNotAcceptable,
+		}
+	}
+
+	file, err := unpublishedVol.GetFromVolume(entity.EntityID.String())
+	if err != nil {
+		log.Write(fmt.Sprintf("failed to get file: %s from volume", entity.EntityID.String()))
 		log.Write(err.Error())
 		return handlerResponse[NewEntityResponse]{
 			Status: http.StatusNotFound,
@@ -80,7 +94,7 @@ func UploadDocument(form ValidDocumentUploadRequest, df DependencyFactory) handl
 	}
 
 	return handlerResponse[NewEntityResponse]{
-		Response: NewEntityResponse{NewID: form.DocumentID},
+		Response: NewEntityResponse{NewID: entity.EntityID},
 		Status:   http.StatusOK,
 	}
 }
