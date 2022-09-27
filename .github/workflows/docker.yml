@@ -73,6 +73,7 @@ jobs:
           git checkout -b update/cms/${{ github.sha }}
           yq -i '.items[0].spec.template.spec.containers[0].image = "ghcr.io/csesoc/cms-frontend:${{ github.sha }}"' apps/projects/cms/staging/deploy-cms-frontend.yml
           yq -i '.items[0].spec.template.spec.containers[0].image = "ghcr.io/csesoc/cms-backend:${{ github.sha }}"' apps/projects/cms/staging/deploy-cms-backend.yml
+          yq -i '.items[0].spec.template.spec.initContainers[0].image = "ghcr.io/csesoc/cms-migrations:${{ github.sha }}"' apps/projects/cms/staging/deploy-cms-backend.yml
           yq -i '.items[0].spec.template.spec.containers[0].image = "ghcr.io/csesoc/website-frontend:${{ github.sha }}"' apps/projects/cms/staging/deploy-website-frontend.yml
           git add . 
           git commit -m "feat(cms/staging): update images" 
