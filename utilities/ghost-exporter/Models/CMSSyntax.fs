@@ -1,8 +1,6 @@
 module CMSSyntax
 
 open Fleece
-open Newtonsoft.Json
-open Fleece.Newtonsoft
 open Fleece.Newtonsoft.Operators
 
 // possible allignment of text blocks
@@ -20,18 +18,18 @@ with
         | None -> jobj []
 
 // possible text stylings
-type textStyle = 
-| Bold
-| Italic
-| Underline
-| None
+type textStyle = {
+    bold: bool;
+    italic: bool;
+    underline: bool;
+} 
 with
     static member ToJson (x: textStyle) = 
-        match x with
-        | Bold -> JString "bold"
-        | Italic -> JString "italic"
-        | Underline -> JString "underline"
-        | None -> jobj []
+        jobj [
+            "bold" .= x.bold
+            "italic" .= x.italic
+            "underline" .= x.underline
+        ]
 
 // possible types for textTypes
 type textType = 
