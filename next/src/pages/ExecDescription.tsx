@@ -79,10 +79,11 @@ export default function ExecDescription() {
     return (
       <ImagesContainer>
         {content.map((E, index) =>
-          <IndividualImagesContainer>
+          <IndividualImagesContainer
+            key={index}
+          >
             {E.alt_text}
             <div
-              key={index}
               style={{ height: '23vw', width: '23vw' }}
             >
               <Image

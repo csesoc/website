@@ -2,6 +2,7 @@ import styled from "styled-components";
 import HamburgerIcon from "../../../public/assets/menu_icon.svg";
 import Image from "next/image";
 import { NavbarOpenProps, NavbarType } from "./types";
+import Link from "next/link";
 import WebsitesIcon from "../../../public/assets/WebsitesIcon.png";
 
 import {
@@ -23,21 +24,21 @@ const Navbar = (props: NavbarOpenProps) => {
             <HamburgerButton onClick={props.setNavbarOpen}>
               <Image src={HamburgerIcon} />
             </HamburgerButton>
-            <a href="/AboutUs">
+            <Link href="/AboutUs">
               <NavItem>About Us</NavItem>
-            </a>
-            <a href="/ExecDescription">
+            </Link>
+            <Link href="/ExecDescription">
               <NavItem>History</NavItem>
-            </a>
-            <a href="#events">
+            </Link>
+            <Link href="#events">
               <NavItem>Events</NavItem>
-            </a>
-            <a href="#resources">
+            </Link>
+            <Link href="#resources">
               <NavItem>Resources</NavItem>
-            </a>
-            <a href="/Sponsors">
+            </Link>
+            <Link href="/Sponsors">
               <NavItem>Sponsors</NavItem>
-            </a>
+            </Link>
           </ItemWrapper>
         </Container>
       );
@@ -45,16 +46,16 @@ const Navbar = (props: NavbarOpenProps) => {
       return (
         <MiniPageContainer>
           <ImageWrapper>
-            <a href="/">
+            <Link href="/">
               <Image src="/assets/WebsitesIcon.png" layout="fill" objectFit="contain" objectPosition="left" />
-            </a>
+            </Link>
 
           </ImageWrapper>
 
           <HomepageButton>
-            <a href="/">
+            <Link href="/">
               <div style={{ color: "#FFFFFF" }}>Homepage</div>
-            </a>
+            </Link>
           </HomepageButton>
 
         </MiniPageContainer >
