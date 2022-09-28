@@ -100,16 +100,16 @@ const Index: NextPage = () => {
         <meta name="description" content="CSESoc Website Homepage" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {/* <NavContainer>
-        {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.HOMEPAGE}/>}
+      <NavContainer>
+        {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.HOMEPAGE} />}
         {navbarOpen && <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} />}
-      </NavContainer> */}
-      {/* {(loaded && height && width) && (
+      </NavContainer>
+      {(loaded && height && width) && (
         <>
           <Background>
-            <CurveContainer offset={0}> */}
-      {/* <Image src={HPCurve} objectFit="cover"/> */}
-      {/* <HPCurve/>
+            <CurveContainer offset={0}>
+              {/* <Image src={HPCurve} objectFit="cover"/> */}
+              <HPCurve />
             </CurveContainer>
             <CurveContainer offset={height + 300}>
               <Image src={TopRect} />
@@ -139,8 +139,7 @@ const Index: NextPage = () => {
             <Support />
           </RefLink>
         </>
-      )} */}
-      <ExecDescription />
+      )}
       <Footer />
     </PageContainer>
   );

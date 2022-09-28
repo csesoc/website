@@ -93,7 +93,7 @@ const Button = styled.button`
 `
 
 
-export default function Support({}: Props) {
+export default function Support({ }: Props) {
   return (
     <Container>
       <HeadingContainer>
@@ -104,7 +104,7 @@ export default function Support({}: Props) {
           <TextContainer>
             <H3>Our Sponsors</H3>
             <ButtonContainer>
-              <Link href="/sponsors">
+              <Link href="/Sponsors">
                 <button>view our sponsors</button>
               </Link>
             </ButtonContainer>
@@ -114,7 +114,7 @@ export default function Support({}: Props) {
         <SectionFadeInFromRight>
           <FlexCenter>
             <ImgContainer>
-              <Image src={Otter}/>
+              <Image src={Otter} />
             </ImgContainer>
           </FlexCenter>
         </SectionFadeInFromRight>

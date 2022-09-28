@@ -5,58 +5,61 @@ import { NavbarOpenProps, NavbarType } from "./types";
 import WebsitesIcon from "../../../public/assets/WebsitesIcon.png";
 
 import {
-	Container,
-	ItemWrapper,
-	NavItem,
-	HamburgerButton,
+  Container,
+  ItemWrapper,
+  NavItem,
+  HamburgerButton,
   ImageWrapper,
   MiniPageContainer,
   HomepageButton
 } from "./Navbar-styled";
 
 const Navbar = (props: NavbarOpenProps) => {
-  switch(props.variant) {
+  switch (props.variant) {
     case NavbarType.HOMEPAGE:
-        return (
-          <Container> 
-              <ItemWrapper>
-                  <HamburgerButton onClick={props.setNavbarOpen}>
-                      <Image src={HamburgerIcon} />
-                  </HamburgerButton>
-                  <a href="#aboutus">
-                      <NavItem>About Us</NavItem>
-                  </a>
-                  <a href="#events">
-                      <NavItem>Events</NavItem>
-                  </a>
-                  <a href="#resources">
-                      <NavItem>Resources</NavItem>
-                  </a>
-                  <a href="#support">
-                      <NavItem>Sponsors</NavItem>
-                  </a>
-              </ItemWrapper>
-          </Container>
-        );
+      return (
+        <Container>
+          <ItemWrapper>
+            <HamburgerButton onClick={props.setNavbarOpen}>
+              <Image src={HamburgerIcon} />
+            </HamburgerButton>
+            <a href="/AboutUs">
+              <NavItem>About Us</NavItem>
+            </a>
+            <a href="/ExecDescription">
+              <NavItem>History</NavItem>
+            </a>
+            <a href="#events">
+              <NavItem>Events</NavItem>
+            </a>
+            <a href="#resources">
+              <NavItem>Resources</NavItem>
+            </a>
+            <a href="/Sponsors">
+              <NavItem>Sponsors</NavItem>
+            </a>
+          </ItemWrapper>
+        </Container>
+      );
     case NavbarType.MINIPAGE:
       return (
-          <MiniPageContainer>
-            <ImageWrapper>
-              <a href="#homepage">
-                <Image src="/assets/WebsitesIcon.png" layout="fill" objectFit="contain" objectPosition="left"/>
-              </a>
-              
-            </ImageWrapper>
+        <MiniPageContainer>
+          <ImageWrapper>
+            <a href="/">
+              <Image src="/assets/WebsitesIcon.png" layout="fill" objectFit="contain" objectPosition="left" />
+            </a>
 
-            <HomepageButton>
-              <a href="#homepage">
-                <div style={{color: "#FFFFFF"}}>Homepage</div>
-              </a>
-            </HomepageButton>
+          </ImageWrapper>
 
-          </MiniPageContainer>
+          <HomepageButton>
+            <a href="/">
+              <div style={{ color: "#FFFFFF" }}>Homepage</div>
+            </a>
+          </HomepageButton>
+
+        </MiniPageContainer >
       );
-    }
+  }
 };
 
 export default Navbar;

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import Navbar from "../components/navbar/Navbar";
+import { NavbarOpenHandler, NavbarType } from "../components/navbar/types";
+import Footer from "../components/footer/Footer";
 import { content } from "../assets/execs.js";
-// import currentExecs from "/root/cse/uni/cms.csesoc.unsw.edu.au/next/public/assets/currentExecs/2022.png";
+import currentExecs from "/root/cse/uni/cms.csesoc.unsw.edu.au/next/public/assets/currentExecs/2022.png";
 import Image from "next/image";
 import styled from "styled-components";
 
@@ -24,7 +26,6 @@ export const DescriptionBg = styled.div`
 
 export const Title = styled.div`
   padding-top: 12vh;
-  padding-bottom: 5vh;
   font-family: 'Raleway';
   font-weight: 810;
   font-size: 45px;
@@ -32,9 +33,8 @@ export const Title = styled.div`
 `
 
 export const CurrentExecs = styled.div`
-  background-color: black;
-  height: 40vh;
-  width: 50vw;
+  height: 35vw;
+  width: 35vw;
 `
 
 export const HistoryText = styled.div`
@@ -69,8 +69,6 @@ export const IndividualImagesContainer = styled.div`
   text-align: center;
 `
 
-import { NavbarOpenHandler, NavbarType } from "../components/navbar/types";
-
 export default function ExecDescription() {
   const [navbarOpen, setNavbarOpen] = useState(false);
   const handleToggle: NavbarOpenHandler = () => {
@@ -79,32 +77,25 @@ export default function ExecDescription() {
 
   function SponsorContainers() {
     return (
-      <div>
-        {content.map((E, index) => {
-          <div
-            key={index}
-          >
-            {console.log(E.alt_text)}
-            <p>{E.alt_text}</p>
-          </div>
-          // <IndividualImagesContainer>
-          //   {E.alt_text}
-          //   {console.log("hello")}
-          //   <div
-          //     key={index}
-          //     style={{ height: '23vw', width: '23vw' }}
-          //   >
-          //     <Image
-          //       src={`/assets/execs/${E.execs}`}
-          //       width="100%"
-          //       height="100%"
-          //       layout="responsive"
-          //       objectFit="contain"
-          //     />
-          //   </div>
-          // </IndividualImagesContainer>
-        })}
-      </div>
+      <ImagesContainer>
+        {content.map((E, index) =>
+          <IndividualImagesContainer>
+            {E.alt_text}
+            <div
+              key={index}
+              style={{ height: '23vw', width: '23vw' }}
+            >
+              <Image
+                src={`/assets/execs/${E.execs}`}
+                width="100%"
+                height="100%"
+                layout="responsive"
+                objectFit="contain"
+              />
+            </div>
+          </IndividualImagesContainer>
+        )}
+      </ImagesContainer >
     );
   }
 
@@ -114,14 +105,15 @@ export default function ExecDescription() {
       <PageContainer>
         <DescriptionBg />
         <Title>Our History</Title>
-        <CurrentExecs />
-        {/* <Image
-          src={currentExecs}
-          width="100%"
-          height="100%"
-          layout="responsive"
-          objectFit="contain"
-        /> */}
+        <CurrentExecs >
+          <Image
+            src={currentExecs}
+            width="100%"
+            height="100%"
+            layout="responsive"
+            objectFit="contain"
+          />
+        </CurrentExecs >
         <HistoryText>
           CSESoc was formed in October 2006 from the old CompSoc and SESoc  societies. CompSoc helped represent the interest of students studying  Computer Engineering, Computer Science and postgraduate courses, while  SESoc was the representative body for Software Engineering students.  Both societies provided technical and social support to their members.  In the best interest of everyone, the societies merged to provide a  better experience to all CSE students.
         </HistoryText>
@@ -136,6 +128,7 @@ export default function ExecDescription() {
         </HistoryText>
         <SponsorContainers />
       </PageContainer>
+      <Footer />
     </div>
   );
 }
