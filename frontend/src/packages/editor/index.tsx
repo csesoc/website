@@ -99,8 +99,7 @@ const EditorPage: FC = () => {
                 ...prev,
                 [{ type: "heading", children: [{ text: "" }] }],
               ]);
-              setFocusedId(blocks.length);
-
+              
               // create the initial state of the content block to Redux
               dispatch(
                 addContentBlock({
@@ -108,6 +107,7 @@ const EditorPage: FC = () => {
                   data: headingContent,
                 })
               );
+              setFocusedId(blocks.length);
             }}
           />
           <CreateContentBlock
@@ -116,15 +116,15 @@ const EditorPage: FC = () => {
                 ...prev,
                 [{ type: "paragraph", children: [{ text: "" }] }],
               ]);
-              setFocusedId(blocks.length);
-
+              
               // create the initial state of the content block to Redux
               dispatch(
                 addContentBlock({
                   id: blocks.length,
                   data: defaultContent,
                 })
-              );
+                );
+              setFocusedId(blocks.length);
             }}
           />
           <SyncDocument
