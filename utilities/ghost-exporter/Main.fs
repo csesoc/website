@@ -6,19 +6,20 @@ open Newtonsoft.Json
 
 open FSharpPlus
 open Fleece.Newtonsoft
-open Fleece.Newtonsoft.Operators
 open System.IO
 open Converters
 
 [<EntryPoint>]
 let main args =
-    let ghostDocument: GhostDocument ParseResult = ofJsonText (File.ReadAllText args[0])
+    let ghostDocument = ofJsonText (File.ReadAllText args[0])
 
-    let result = 
-        match Option.ofResult ghostDocument with
-        | Some document -> toJsonText (GhostToCms document) 
-        | _ -> "failed to parse ghost document"
+    match Option.ofResult ghostDocument with
+        | Some document -> 
+            // Write the result to disk
+            let compiledResult = toJsonText (GhostToCms document)
+            let fileName = Path.GetFileNameWithoutExtension (args[0])
+            File.WriteAllText ($"{Path.GetFileNameWithoutExtension (args[0])}__exported.json", compiledResult)
 
-    printfn "%s" result
+        | _ -> printfn "%s" "failed to parse ghost document"
     
     0
