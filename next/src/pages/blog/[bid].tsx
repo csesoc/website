@@ -1,8 +1,13 @@
 import type { NextPage, GetServerSideProps } from "next";
 import Blog from "../../components/blog/Blog";
-import Link from "next/link";
 import type { Block } from "../../components/blog/types";
 import styled from "styled-components";
+
+// import renderer
+import { NavbarType } from "../../components/navbar/types";
+import Navbar from "../../components/navbar/Navbar";
+import { BlogHeading } from "../../components/blog/Blog-styled";
+import Footer from "../../components/footer/Footer";
 
 const PageContainer = styled.div`
   display: flex;
@@ -11,21 +16,26 @@ const PageContainer = styled.div`
 `;
 
 const MainContainer = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  min-height: 80vh;
 `;
 
 const BlogPage: NextPage<{ data: Block[] }> = ({ data }) => {
   return (
     <PageContainer>
+      <Navbar
+        variant={NavbarType.HOMEPAGE}
+        open={false}
+        setNavbarOpen={() => {}}
+      />{" "}
+      {/** ignore the styling */}
       <MainContainer>
-        <h1>blog1</h1>
+        <BlogHeading>Blog Title</BlogHeading>
         <Blog blocks={data} />
-        <Link href="/">home</Link>
       </MainContainer>
+      <Footer />
     </PageContainer>
   );
 };

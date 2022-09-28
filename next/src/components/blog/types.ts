@@ -10,7 +10,6 @@ export type Element = Paragraph | Image;
 
 interface Paragraph {
   type: "paragraph";
-  align?: "left" | "right" | "center";
   children: Text[];
 }
 
@@ -28,4 +27,6 @@ export interface TextStyle {
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;
+  align?: "left" | "right" | "center";
+  textSize: number;
 }
