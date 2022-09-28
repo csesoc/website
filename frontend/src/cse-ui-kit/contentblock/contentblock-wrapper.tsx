@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 /* eslint-disable */
-=======
-/* tslint:disable */
->>>>>>> 872bfd144f265a2ab57008b696d059d5e0494743
 import React from 'react';
 import { StyledContent, StyledContentDots, StyledProps } from './contentblock-Styled';
 import { ReactComponent as Dots } from '../../assets/moveable-content-dots.svg';
