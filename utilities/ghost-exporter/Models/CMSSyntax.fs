@@ -21,14 +21,7 @@ type textStyle = {
     bold: bool;
     italic: bool;
     underline: bool;
-} 
-with
-    static member ToJson (x: textStyle) = 
-        jobj [
-            "bold" .= x.bold
-            "italic" .= x.italic
-            "underline" .= x.underline
-        ]
+}
 
 // possible types for textTypes
 type textType = 
@@ -45,11 +38,15 @@ with
 type text = {
     data: textType;
     style: textStyle;
+    textSize: int
 } with
     static member ToJson (x: text) = 
         jobj [
             "text" .= x.data
-            "style" .= x.style
+            "bold" .= x.style.bold
+            "italic" .= x.style.italic
+            "underline" .= x.style.underline
+            "textSize" .= x.textSize
         ]
 
 // paragraphs are just chunks of text
@@ -59,6 +56,7 @@ type paragraph = {
 } with
     static member ToJson (x: paragraph) = 
         jobj [
+            "type" .= "paragraph"
             "align" .= x.paragraphAllign
             "children" .= x.children
         ]
@@ -67,11 +65,9 @@ type paragraph = {
 type CMSDocument = {
     documentName: string;
     documentId: int;
-    content: paragraph list
+    content: paragraph list list
 } with
     static member ToJson (x: CMSDocument) = 
         jobj [
-            "document_name" .= x.documentName
-            "document_id" .= x.documentId
             "content" .= x.content
         ]
