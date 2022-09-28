@@ -11,6 +11,7 @@ const Text = styled.span<TextStyle>`
   font-style: ${(props) => (props.italic ? "italic" : "normal")};
   text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
 `;
+
 const StyledLink = styled.span`
   color: red;
 `;
@@ -29,8 +30,7 @@ const ParagraphBlock = styled.p<ParagraphStyle>`
 const BlogContainer = styled.div`
   
   font-size: 1.25rem;
-  margin-left: 60px;
-  margin-right: 60px;
+  margin: 0px 60px;
 
   @media ${device.tablet} {
     max-width: 700px;
@@ -46,7 +46,7 @@ const BlogContainer = styled.div`
 const BlogHeading = styled.span<TextStyle>`
   font-weight: 800;
   font-size: 35px;
-  padding: 20px 0 20px 0;
+  padding: 20px 0px;
 
 `
 
