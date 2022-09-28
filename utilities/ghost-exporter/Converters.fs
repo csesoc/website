@@ -9,17 +9,18 @@ let findTextStyle (markups: Markups.markup list) (markup: Markups.markup) : bool
     List.exists (fun m -> m = markup) markups
 
 
-let convertMarkups (markups: Markups.markup list) : textStyle = 
+let convertMarkups (markups: Markups.markup list) isHeading : textStyle = 
     {
-        bold = findTextStyle markups Markups.Strong // Strong seems like a direct translation for bold despite also having a bold markup?
+        bold = findTextStyle markups Markups.Strong || isHeading// Strong seems like a direct translation for bold despite also having a bold markup?
         italic = findTextStyle markups Markups.Emphasis // Emphasis seems like a direct translation with italics despite there being an italics markup?
         underline = false
     }
 
 
-let convertToText (text: string) (styles: bool list) : text = 
+let convertToText (text: string) (textSize: int) (styles: bool list) : text = 
     {
         data = Text text
+        textSize = textSize
         style = {
             bold = styles.Item 0
             italic = styles.Item 1
@@ -30,16 +31,16 @@ let convertToText (text: string) (styles: bool list) : text =
 
 // This needs to be implemented properly once frontend is ready
 let convertCallout (callout: Cards.callout) : text list = 
-    [convertToText callout.calloutText [false; false; false]]
+    [convertToText callout.calloutText 16 [false; false; false]]
 
 
 // This needs to be implemented properly once frontend is ready
 let convertToggle (toggle: Cards.toggle) : text list = 
-    [convertToText toggle.heading [true; false; false]; convertToText toggle.content [false; false; false]]
+    [convertToText toggle.heading 16 [true; false; false]; convertToText toggle.content 16 [false; false; false]]
 
 
 let convertCode (code: Cards.code) : text list = 
-    [convertToText ("=== THIS IS A CODE BLOCK === \n" + code.code) [false; false; false]]
+    [convertToText ("=== THIS IS A CODE BLOCK === \n" + code.code) 16 [false; false; false]]
 
 
 let convertCard (cards: Cards.card list) (cardIndex: int) : text list = 
@@ -73,7 +74,8 @@ let convertValue (sectionBlock : sectionBlock) (openMarkups : Markups.markup lis
     Text <| extractValue openMarkups sectionBlock.value
 
 
-let convertSectionBlocks (markups: Markups.markup list) (sectionBlock: list<sectionBlock>) : text list = 
+let convertSectionBlocks (markups: Markups.markup list) (sectionBlock: list<sectionBlock>) tagType : text list =
+    let isHeading = function | Heading -> true | _ -> false
     let rec convertSectionBlock (sections: list<sectionBlock>) (openMarkups : int list) : text list = 
         match sections with 
             | [] -> []
@@ -82,19 +84,20 @@ let convertSectionBlocks (markups: Markups.markup list) (sectionBlock: list<sect
                 let retrievedMarkups = retrieveMarkups markups openMarkups
                 {
                     data = convertValue x retrievedMarkups
-                    style = convertMarkups retrievedMarkups
+                    style = convertMarkups retrievedMarkups (isHeading tagType)
+                    textSize = if isHeading tagType then 25 else 16
                 } :: (convertSectionBlock xs (removeMarkups openMarkups x.numClosedMarkups))
     
     convertSectionBlock sectionBlock []
 
 
-let convertSection (cards: Cards.card list) (markups: Markups.markup list) (section: Sections.section) : paragraph = 
-    {
+let convertSection (cards: Cards.card list) (markups: Markups.markup list) (section: Sections.section) : paragraph list = 
+    [{
         paragraphAllign = Center
         children = match section.blocks with
-                    | Section sectionBlock -> convertSectionBlocks markups sectionBlock
+                    | Section sectionBlock -> convertSectionBlocks markups sectionBlock section.tag
                     | CardReference index -> convertCard cards index
-    }
+    }]
 
 
 let GhostToCms (document: GhostDocument) : CMSDocument = 
