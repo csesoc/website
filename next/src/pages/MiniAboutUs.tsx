@@ -48,7 +48,7 @@ const args3 = {
 const args4 = {
     left: 72,
     top: 64,
-    leftMobile: 5,
+    leftMobile: 0,
     topMobile: 58,
     sizeMobile: 25,
     size: 16,

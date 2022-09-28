@@ -62,10 +62,14 @@ export const MoreInfoText = styled.div<sphereProps>`
     color: #FFFFFF;
     font-weight: 700;
     line-height: 58px;
-    font-size: 2.3vw;
+    font-size: 3.6vw;
 
     &:hover { 
       cursor: pointer;
       transform: rotate(${props => props.rotation ? -props.rotation : 0}deg) scale(1.1);
+    }
+
+    @media ${device.tablet} {
+      font-size: 2.3vw;
     }
 `;
