@@ -3,7 +3,7 @@ import Navbar from "../components/navbar/Navbar";
 import { NavbarOpenHandler, NavbarType } from "../components/navbar/types";
 import Footer from "../components/footer/Footer";
 import { content } from "../assets/execs.js";
-import currentExecs from "/root/cse/uni/cms.csesoc.unsw.edu.au/next/public/assets/currentExecs/2022.png";
+import currentExecs from "../svgs/2022.png";
 import Image from "next/image";
 import styled from "styled-components";
 
@@ -92,6 +92,7 @@ export default function ExecDescription() {
                 height="100%"
                 layout="responsive"
                 objectFit="contain"
+                alt={`/assets/execs/${E.alt_text}`}
               />
             </div>
           </IndividualImagesContainer>
