@@ -1,0 +1,940 @@
+{
+  "content": [
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Circling Degree Plans Part 1: Teaching Computers How to Read",
+            "bold": true,
+            "italic": false,
+            "underline": true,
+            "textSize": 30
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "So, usually people would think the stuff you do at uni is pretty lame.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "And usually, they are right. Its either a really half-baked idea with not enough experienced developers behind it to pull it off, or the idea just fizzles out because people get bored of it. This is natural. At the beginning of our journeys as CS students, we won't be well advised to create a search engine or a recommendation algorithm on day 1. ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "But, I personally find Circles to be different. Circles has so much we can see, ranging from dense CS theory, front-end development (aka WTF JavaScript), and architecture. ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "For those that don't know, ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "Circles (https://circles.csesoc.app/)",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": " is a tool that helps you plan out your degree. It does this by allowing you to select your courses, check if you have met their prerequisites, and play around with them in a beautiful UI. ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "I will give you an example of what I mean when I say that there is so much to see.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "A Note to the Reader",
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "<p>This is just <em>the first</em> dense challenge we run into, and there is so much more that we can discuss - we can talk about complexity theory, OOP and design principles, how to integrate typing and other dev tools into mature projects, and even stuff like project management and how to manage a team of volunteers. I hope that I can share with you all the cool stuff that we have to show you, in due time.</p>",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "The challenge",
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "textSize": 25
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "One of the challenges that Circles has (somewhat) solved is: how to turn prerequisite strings into something we can check programatically. In other words, how can we convert",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Prerequisite: A mark of at least 65 in COMP1927 or COMP2521",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "into a function which accepts a user's plan and returns whether or not they completed that course?",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "\n",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "For example, we would want to generate a function which, given a user which has not completed 2521, returns false, but will return true if they have both done it and gotten a good mark in it.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Note, we need a general solution to this for all courses. Our initial temptation is of course to write some if statements to check the terms provided and stuff, but this will then need a human to intervene for every course! That is obviously too much work.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "So, since the prerequisite strings are basically written in English, we are left with a fundamental problem - is it possible to parse English instructions? the answer to this, looking at CS theory, is a resounding ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "NO (https://cs.stackexchange.com/questions/116127/why-is-english-not-a-regular-language)",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": ". The easiest problem to understand that we often saw was with ambiguous grammars. In our example, we see this issue - does the \"mark of 65\" apply to both 1927 AND 2521? Or does taking 2521 mean that you can just pass the course, while 1927 students must get a credit? Here, it is impossible to make the right decision every time. Even the handbook uses this same grammar to mean both of these. Only with the context that 1927 was the old course code for the DSA course can we know that the correct interpretation is.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "So, we seem to be at a standstill. How can we make a general solution to making this conversion work?",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "A Note on NLP",
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "<p>I can hear a few of you at the back screaming at me about the virtues of natural language processing (NLP) and how it can be my saviour here. First, we would need a truly enormous training set, which would be vulnrable to overfitting, because we aren't often introducing new data as input. We wont be able to use a normal english training set, because the strings we are processing have too much jargon, and aren't even proper english in a lot of cases.</p><p>The other is more fundamental. When NLP fails (by generating some function which is valid, but semantically incorrect), it fails SILENTLY. We have no clue that it failed, and many students would then go ahead and use our platform without either they or us knowing that there is a problem. This is a disaster, and the worst case scenario. It looks bad on optics if we fail loudly, but this is better than the alternative of having a student trust us and then get a progression check which tells them they can't graduate.</p>",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "We can't exactly give up here - so we do what every good CS student does when confronted with an impossible problem. We instead need to find a parameterised solution, thus limiting our domain. This means that we don't have to parse arbitrary English, since looking at the handbook, lots of patterns show up. We can actually see that there is an (admittedly poor) pattern in how these strings are constructed. There is usually some conjunction of conditions surrounded by AND or OR, and there are some common phrases that come up.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "After a bit of thinking, we found that this problem is actually something that computer scientists have run into before. We want to convert some input - which is ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "semi-structured",
+            "bold": false,
+            "italic": true,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": " - into a more rigid instruction set for computation. We want to be able to abstract away some of the complexities of the rigid instruction set and handle it through some sort of translation layer instead. ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Yup, you said it. A compiler.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Compiling the handbook",
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "textSize": 25
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Again, let us look at our example. To save you from scrolling, here it is again:",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Prerequisite: A mark of at least 65 in COMP1927 or COMP2521",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "now, since English is terrible, we want to get rid of as much English as possible. I should add that - since we use regex to do this, we don't get around the fact that English is not a regular language. By virtue of this, we can't actually come to a completely working regex for the whole handbook. . James Ji covers in more detail what a pain that all is in a ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "showcase (https://youtu.be/-Xb6COQ3ja4?list=PLtdbwEd-4QWEfLvMEi7iTKP-EQPzO7ZcT&t=784)",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": " he did in 2021, and briefly discusses what we do after this processing step. ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "I wanted to focus more on what happens after we obtain something like:",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "65GRADE in (COMP1927 || COMP2521)",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "From here, the real compilation starts, since that first processing has the job of converting it INTO our own handbook prerequisite language.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Tokenisation",
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "textSize": 25
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "In a real language, a tokeniser would have the job of identifying the indevisable ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "items",
+            "bold": false,
+            "italic": true,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": " that make up the program being compiled. This means that it would label \"65GRADE\" as a GradeToken, \"in\" as a keyword, \"(\" as a LParen, COMP1927 as a CourseToken, and so on. It would basically assign names and delineate all the \"units\" into something we can loop through safely. Since our language is very restrictive however, we can do something... different:",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "=== THIS IS A CODE BLOCK === \ndef tokenise(text):\n    # pad out the brackets\n    text = re.sub(r\"\\(\", r\" ( \", text)\n    text = re.sub(r\"\\)\", r\" ) \", text)\n    text = re.sub(r\"\\]\", r\" ] \", text)\n    text = re.sub(r\"\\[\", r\" [ \", text)\n    text = re.sub(r\" +\", r\" \", text)\n    \n    logic = [\"(\"]\n\n    # Split on white space\n    for word in text.split():\n    \tlogic.append(word)\n\n    logic.append(\")\")",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Yea. It's that easy. So, this is a nice easy way to do it because our only delimiter is whitespace, but this gets more complex in bigger compilers. The other drawback with this approach is that we don't have our labels, which complicates our next stage.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Parsing",
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "textSize": 25
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Here, we will consume all our tokens to produce an ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "abstract syntax tree (https://en.wikipedia.org/wiki/Abstract_syntax_tree)",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": " (AST). Having the ability to generate this AST is the whole reason we needed to convert our input into a regular language - when we do this, we will be able to use the ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "composite pattern (https://en.wikipedia.org/wiki/Composite_pattern)",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": ". You cover this in abstract in DSA, and delve into when you cover OOP - despite being able to do this in an arguably cleaner way in functional programming. This can be used to \"evaluate\" values based on the structure. In other words, you can write an ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "attribute grammar (https://en.wikipedia.org/wiki/Attribute_grammar)",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": " for your tree.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "To do this, Circles uses the function ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "createCategory",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": ":",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "=== THIS IS A CODE BLOCK === \ndef create_category(tokens) -> Tuple[Category | None, int]:",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "As you can see, this function will return:",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "either a ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "Category",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": " or ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "None",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": ". This means that if the Category is successfully created, it will be returned, or if it fails, we will return ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "None",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": ". For those that read my NLP note, this is a very important thing to be possible. If we are unable to ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "confidently ",
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "say what the string reads, we should default to saying nothing at all.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "an int indicating where it failed, if any. ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "You can see that we designed this while fully aware of this ability for failure. Delving further, we iterate over our tokens by taking the ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": "Iterable",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          },
+          {
+            "text": " instance of our list, and going through it one by one. for each possible token, we would try to match it, then process it into the AST. For example, to process our GRADE condition, we have:",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "=== THIS IS A CODE BLOCK === \n... # other types of tokens\nelif is_grade(token):\n    # make a grade condition\n    cond = GradeCondition(get_grade(token))\n    if tokens[index + 1] == \"in\":\n        # a category is attatched\n        next(item)  # Skip \"in\" keyword\n        category, sub_index = create_category(tokens[index + 2 :])\n        cond.set_category(category)\n    result.add_condition(cond)",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "you can see that first, we try to match our token and type (because we didn't do this properly in tokenisation) then we create our condition object. We then add the category that is optionally there, then we add it to the composite condition above. ",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Now, you are probably asking what a condition and what a category is. Looking at our code, we got you covered! (you don't need to read this in detail, but its good to take a glance at it)",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "=== THIS IS A CODE BLOCK === \nclass Condition(ABC):\n    @abstractmethod\n    def validate(self, user: User) -> tuple[bool, list[str]]:\n        \"\"\"\n        Returns a tuple first containing whether or not the course is\n        unlocked, and second any warnings about the course's unlocked state\n        - eg that the course needs some wam that the student has not\n        entered.\n        \"\"\"\n        pass\n\n# example inheriter\nclass CourseCondition(Condition):\n    \"\"\"\n    Condition that the student has completed this course before\n    the current term\n    \"\"\"\n\n    def __init__(self, course: str):\n        self.course = course\n\n    def validate(self, user: User) -> tuple[bool, list[str]]:\n        return user.has_taken_course(self.course), []\n\n# composite inheriter\nclass CompositeCondition(Condition):\n    \"\"\" Handles AND/OR clauses comprised of condition objects. \"\"\"\n\n    def __init__(self, logic: Logic = Logic.AND):\n        self.conditions: list[Condition] = []\n        self.logic = logic\n    def validate(self, user: User) -> tuple[bool, list[str]]:\n        \"\"\"\n        Validate user conditions and return the validated conditions and\n        warnings\n        \"\"\"\n        if not self.conditions:\n            return True, []\n\n        validations = [cond.validate(user) for cond in self.conditions]\n        # unzips a zipped list - https://www.geeksforgeeks.org/python-unzip-a-list-of-tuples/\n        unlocked, warnings = list(zip(*validations))\n        satisfied = all(unlocked) if self.logic == Logic.AND else any(unlocked)\n\n        return satisfied, sum(warnings, [])  # warnings are flattened\n",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "So, a condition is simply something we can decide to be true or false using .validate(). This can be a simple operation or a complex one, as shown above. It is simple in the case of a single course, but is more complex in the case of a composite condition, which contains other conditions. This is the crux of the composite pattern.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "As for what a category is, that is even simpler.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "=== THIS IS A CODE BLOCK === \nclass Category(ABC):\n    @abstractmethod\n    def match_definition(self, course: str) -> bool:\n        \"\"\" a definition of how a course fits in a category \"\"\"\n        pass\n",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "It is simply a decider for whether or not a course fits into itself. We can use this to filter courses, for example.",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "So, from that, we are done! After we make our AST and define our categories and conditions, we obtain a way to process our language!",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Conclusion",
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "textSize": 25
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "type": "paragraph",
+        "align": "center",
+        "children": [
+          {
+            "text": "Remember what we started with. We just wanted to make a decider for whether or not a course can be taken by a student, and ended up taking a massive dive into compiler theory, and took some shallow dips into syntax grammars, tree algos, and even CS theory when thinking about the definition of a regular language. And that's just the first step. That doesn't sound like your average uni project to me. (#noBias)",
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "textSize": 16
+          }
+        ]
+      }
+    ]
+  ]
+}
