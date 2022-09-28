@@ -1,7 +1,6 @@
 module CMSSyntax
 
 open Fleece
-open Fleece.Newtonsoft.Operators
 
 // possible allignment of text blocks
 type alignment = 
