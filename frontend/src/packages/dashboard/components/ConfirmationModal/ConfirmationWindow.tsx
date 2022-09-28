@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Modal, Typography, TextField, Box } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { Modal, Typography, TextField, Box } from "@mui/material";
+import { useDispatch } from "react-redux";
 
 // local imports
-import Button from '../../../../cse-ui-kit/buttons/Button';
+import Button from "../../../../cse-ui-kit/buttons/Button";
 import {
   addItemAction,
-  AddPayloadType
-} from 'src/packages/dashboard/state/folders/actions';
+  AddPayloadType,
+} from "src/packages/dashboard/state/folders/actions";
 import { getFolderState } from "../../api/helpers";
 
 type Props = {
   open: boolean;
-  modalState: {open: boolean, type: string};
-  setModalState: (flag: {open: boolean, type: string}) => void;
-}
+  modalState: { open: boolean; type: string };
+  setModalState: (flag: { open: boolean; type: string }) => void;
+};
 
 const Container = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
 
   width: 500px;
   height: 200px;
@@ -35,19 +35,23 @@ const Container = styled.div`
   grid-gap: 20px;
 `;
 
-export default function ConfirmationWindow({open, modalState, setModalState}: Props) {
+export default function ConfirmationWindow({
+  open,
+  modalState,
+  setModalState,
+}: Props) {
   const dispatch = useDispatch();
-  const [inputValue, setInputValue] = useState<string>('')
+  const [inputValue, setInputValue] = useState<string>("");
   const folderState = getFolderState();
 
   const handleSubmit = () => {
-    switch(modalState.type) {
+    switch (modalState.type) {
       case "folder": {
         const folderPayload: AddPayloadType = {
           name: inputValue,
           type: "Folder",
           parentId: folderState.parentFolder,
-        }
+        };
         dispatch(addItemAction(folderPayload));
         break;
       }
@@ -56,7 +60,7 @@ export default function ConfirmationWindow({open, modalState, setModalState}: Pr
           name: inputValue,
           type: "File",
           parentId: folderState.parentFolder,
-        }
+        };
         dispatch(addItemAction(filePayload));
         break;
       }
@@ -64,14 +68,14 @@ export default function ConfirmationWindow({open, modalState, setModalState}: Pr
 
     setModalState({
       open: false,
-      type:""
+      type: "",
     });
-  }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
-  }
+  };
 
   return (
     <Modal
@@ -79,15 +83,21 @@ export default function ConfirmationWindow({open, modalState, setModalState}: Pr
       onClose={() => {
         setModalState({
           open: false,
-          type:""
+          type: "",
         });
       }}
     >
       <Container data-anchor="ConfirmationWindow">
         <Typography variant="h5">Choose your {modalState.type} name</Typography>
-        <Box display="flex">
-          <TextField value={inputValue} onChange={handleChange}/>
-          <Button background="#73EEDC" onClick={handleSubmit}>submit</Button>
+        <Box display="flex" alignItems="center">
+          <TextField
+            value={inputValue}
+            onChange={handleChange}
+            sx={{ marginRight: "10px" }}
+          />
+          <Button background="#73EEDC" onClick={handleSubmit}>
+            submit
+          </Button>
         </Box>
       </Container>
     </Modal>

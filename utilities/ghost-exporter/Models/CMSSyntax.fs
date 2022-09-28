@@ -1,9 +1,6 @@
 module CMSSyntax
 
 open Fleece
-open Newtonsoft.Json
-open Fleece.Newtonsoft
-open Fleece.Newtonsoft.Operators
 
 // possible allignment of text blocks
 type alignment = 
@@ -20,18 +17,11 @@ with
         | None -> jobj []
 
 // possible text stylings
-type textStyle = 
-| Bold
-| Italic
-| Underline
-| None
-with
-    static member ToJson (x: textStyle) = 
-        match x with
-        | Bold -> JString "bold"
-        | Italic -> JString "italic"
-        | Underline -> JString "underline"
-        | None -> jobj []
+type textStyle = {
+    bold: bool;
+    italic: bool;
+    underline: bool;
+}
 
 // possible types for textTypes
 type textType = 
@@ -48,11 +38,15 @@ with
 type text = {
     data: textType;
     style: textStyle;
+    textSize: int
 } with
     static member ToJson (x: text) = 
         jobj [
             "text" .= x.data
-            "style" .= x.style
+            "bold" .= x.style.bold
+            "italic" .= x.style.italic
+            "underline" .= x.style.underline
+            "textSize" .= x.textSize
         ]
 
 // paragraphs are just chunks of text
@@ -62,6 +56,7 @@ type paragraph = {
 } with
     static member ToJson (x: paragraph) = 
         jobj [
+            "type" .= "paragraph"
             "align" .= x.paragraphAllign
             "children" .= x.children
         ]
@@ -70,11 +65,9 @@ type paragraph = {
 type CMSDocument = {
     documentName: string;
     documentId: int;
-    content: paragraph list
+    content: paragraph list list
 } with
     static member ToJson (x: CMSDocument) = 
         jobj [
-            "document_name" .= x.documentName
-            "document_id" .= x.documentId
             "content" .= x.content
         ]

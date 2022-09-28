@@ -28,8 +28,8 @@ const ColumnContainer = styled.div`
     }
 `
 
-const EventsText = styled.div`
-    color: white;
+const HeadingText = styled.div`
+    color: var(--accent-darker-purple);
     font-family: 'Raleway';
     font-weight: 800;
     font-size: 40px;
@@ -42,7 +42,7 @@ const EventsText = styled.div`
 `
 
 const BodyText = styled.div`
-    color: white;
+    color: var(--accent-darker-purple);
     font-weight: 200;
     font-size: 20px;
     @media ${device.tablet} {
@@ -51,18 +51,22 @@ const BodyText = styled.div`
         margin-top: 3vw;
     }
 
+    @media ${device.laptop} {
+        color: white;
+    }
+
 `;
 
 export default function Events() {
     return (
         <Container>
             <ColumnContainer>
-                <EventsText>
+                <HeadingText>
                     Events
-                    <BodyText>
-                        We run a wide-variety of events for fun, learning new skills and careers. For full listings, check out the CSESoc Discord or our Facebook page!
-                    </BodyText>
-                </EventsText>
+                </HeadingText>
+                <BodyText>
+                    We run a wide-variety of events for fun, learning new skills and careers. For full listings, check out the CSESoc Discord or our Facebook page!
+                </BodyText>
             </ColumnContainer>
             <ClearLayeredGlass />
         </Container>

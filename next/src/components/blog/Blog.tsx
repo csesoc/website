@@ -7,7 +7,7 @@ import {
   ParagraphBlock,
   BlogContainer,
 } from "./Blog-styled";
-import type { Element } from "./types";
+import type { Element, Block } from "./types";
 
 const Block = ({ element }: { element: Element }) => {
   if (element.type === "image") {
@@ -34,10 +34,10 @@ const Block = ({ element }: { element: Element }) => {
   );
 };
 
-const Blog = ({ elements }: { elements: Element[] }) => {
+const Blog = ({ blocks }: { blocks: Block[] }) => {
   return (
     <BlogContainer>
-      {elements.flat().map((element, idx) => (
+      {blocks.flat().map((element, idx) => (
         <Block key={idx} element={element} />
       ))}
     </BlogContainer>
