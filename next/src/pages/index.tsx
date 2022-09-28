@@ -11,6 +11,7 @@ import HamburgerMenu from "../components/navbar/HamburgerMenu";
 import HPCurve from "../svgs/HPCurve"
 import TopRect from "../svgs/TopRect.svg"
 import BottomRect from "../svgs/BottomRect.svg"
+import Otter from '../svgs/otter.png'
 
 // local
 import Navbar from "../components/navbar/Navbar";
@@ -22,7 +23,7 @@ import Support from "./MiniSupport";
 
 import Footer from "../components/footer/Footer";
 import { device } from '../styles/device'
-import { SectionFadeInFromLeft, SectionFadeInFromRight } from "../styles/motion"
+import { SectionFadeInFromLeft, SectionFadeInFromRight, Spin } from "../styles/motion"
 import Sponsors from "./Sponsors";
 import ExecDescription from "./ExecDescription";
 
@@ -65,6 +66,13 @@ const Background = styled.div<{ offset?: number }>`
 
 const RefLink = styled.div``
 
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`
+
 
 
 const Index: NextPage = () => {
@@ -72,6 +80,7 @@ const Index: NextPage = () => {
   const [height, setHeight] = useState<undefined | number>();
   const [loaded, setLoaded] = useState(false);
   const [navbarOpen, setNavbarOpen] = useState(false);
+  const [fakeLoading, setFakeLoading] = useState(true);
 
   const handleToggle: NavbarOpenHandler = () => {
     setNavbarOpen(!navbarOpen);
@@ -92,6 +101,22 @@ const Index: NextPage = () => {
     setHeight(window?.innerHeight);
     setWidth(window?.innerWidth)
   }, [width])
+
+  setTimeout(() => {
+    setFakeLoading(false);
+  }, 2000)
+
+  if (fakeLoading) {
+    return (
+      <Spin>
+        <PageContainer>
+          <LoaderContainer>
+            <Image src={Otter} />
+          </LoaderContainer>
+        </PageContainer>
+      </Spin>
+    )
+  }
 
   return (
     <PageContainer>
@@ -138,9 +163,10 @@ const Index: NextPage = () => {
           <RefLink id="support">
             <Support />
           </RefLink>
+          <Footer />
         </>
       )}
-      <Footer />
+
     </PageContainer>
   );
 };

@@ -102,7 +102,7 @@ let convertSection (cards: Cards.card list) (markups: Markups.markup list) (sect
 
 let GhostToCms (document: GhostDocument) : CMSDocument = 
     {
-        documentName = "replace me"
+        documentName = "Circling Degree Plans Part 1: Teaching Computers How to Read"
         documentId = 0
         content = List.map (convertSection document.Cards document.Markups) document.Sections
     }
