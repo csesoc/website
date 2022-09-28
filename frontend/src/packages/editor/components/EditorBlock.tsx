@@ -131,7 +131,7 @@ const EditorBlock: FC<EditorBlockProps> = ({
           <EditorRightAlignButton />
         </ToolbarContainer>
       )}
-      <ContentBlock>
+      <ContentBlock focused={showToolBar}>
         <Editable
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}
