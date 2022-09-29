@@ -8,6 +8,15 @@ type Props = {
   children?: any
 }
 
+export const Spin = ({children}: Props) => (
+  <motion.div
+    animate={{ rotate: 360 }}
+    transition={{ repeat: Infinity, duration: 1 }}
+  >
+    {children}
+  </motion.div>
+)
+
 export const FadeIn = ({children}: Props) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.5 }}

@@ -1,7 +1,13 @@
 import styled from "styled-components";
+import { device } from "../../styles/device";
 
 export type sphereProps = {
+  left? : number;
+  top?: number;
+  leftMobile?: number;
+  topMobile?: number;
   size?: number;
+  sizeMobile?: number;
   colourMain?: string;
   colourSecondary?: string;
   startMainPoint?: number;
@@ -12,8 +18,12 @@ export type sphereProps = {
 }
 
 export const StyledSphere = styled.div<sphereProps>`
-  width: ${props => props.size}vw;
-  height: ${props => props.size}vw;
+  position: absolute;
+  z-index: 0;
+  left: ${props => props.leftMobile}%;
+  top: ${props => props.topMobile}%;
+  width: ${props => props.sizeMobile}vw;
+  height: ${props => props.sizeMobile}vw;
   background: linear-gradient(
     ${props => props.angle}deg, 
     ${props => props.colourMain} ${props => props.startMainPoint}%, 
@@ -26,6 +36,13 @@ export const StyledSphere = styled.div<sphereProps>`
   justify-content: center;
   align-items: center;
   border-radius: 50%;
+
+  @media ${device.tablet} {
+    left: ${props => props.left}%;
+    top: ${props => props.top}%;
+    width: ${props => props.size}vw;
+    height: ${props => props.size}vw;
+  }
 `;
 
 // The default main colour (#969DC7) represents violet whilst the default

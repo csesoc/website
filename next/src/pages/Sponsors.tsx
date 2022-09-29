@@ -5,13 +5,21 @@ import Image from "next/image";
 import Dialog from '@mui/material/Dialog';
 import Fade from '@mui/material/Fade';
 import Footer from "../components/footer/Footer";
+import Navbar from "../components/navbar/Navbar";
+import { NavbarOpenHandler, NavbarType } from "../components/navbar/types";
 
 export default function Sponsors() {
   const [open, setOpen] = useState(false);
   const [sponsorName, setSponsorName] = useState("");
   const [sponsorDescription, setSponsorDescription] = useState("");
+  const [navbarOpen, setNavbarOpen] = useState(false);
   const handleClose = () => setOpen(false);
   const smallLogos = ["CSE", "IMC Trading", "Sig", "Optiver", "Prospa"]
+
+  const handleToggle: NavbarOpenHandler = () => {
+    setNavbarOpen(!navbarOpen);
+  };
+
   function SponsorContainers(tierName: string, tierLevel: string, size: number) {
     let tier = content.filter(S => S.level === tierLevel);
     return (
@@ -55,6 +63,7 @@ export default function Sponsors() {
 
   return (
     <div>
+      <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE} />
       <PageStyle.SponsorsContainer>
         <PageStyle.SponsorsHeading>Sponsors</PageStyle.SponsorsHeading>
         {SponsorContainers('Principal Sponsors', 'P', 210)}

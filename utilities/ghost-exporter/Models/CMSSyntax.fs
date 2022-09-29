@@ -67,7 +67,21 @@ type CMSDocument = {
     documentId: int;
     content: paragraph list list
 } with
-    static member ToJson (x: CMSDocument) = 
+    static member ToJson (x: CMSDocument) =
+        // Create a paragraph block for the heading
+        let titleBlock = [{
+            paragraphAllign = Center
+            children = [{
+                data = Text x.documentName
+                textSize = 30
+                style = {
+                    bold = true
+                    italic = false
+                    underline = true
+                }
+            }]
+        }]
+
         jobj [
-            "content" .= x.content
+            "content" .= titleBlock :: x.content
         ]
