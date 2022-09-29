@@ -24,6 +24,8 @@ import Support from "./MiniSupport";
 import Footer from "../components/footer/Footer";
 import { device } from '../styles/device'
 import { SectionFadeInFromLeft, SectionFadeInFromRight, Spin } from "../styles/motion"
+import Sponsors from "./Sponsors";
+import ExecDescription from "./ExecDescription";
 
 type CurveContainerProps = {
   offset: number;
@@ -104,12 +106,12 @@ const Index: NextPage = () => {
     setFakeLoading(false);
   }, 2000)
 
-  if(fakeLoading) {
+  if (fakeLoading) {
     return (
       <Spin>
         <PageContainer>
           <LoaderContainer>
-            <Image src={Otter}/>
+            <Image src={Otter} />
           </LoaderContainer>
         </PageContainer>
       </Spin>
@@ -124,7 +126,7 @@ const Index: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <NavContainer>
-        {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.HOMEPAGE}/>}
+        {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.HOMEPAGE} />}
         {navbarOpen && <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} />}
       </NavContainer>
       {(loaded && height && width) && (
@@ -132,7 +134,7 @@ const Index: NextPage = () => {
           <Background>
             <CurveContainer offset={0}>
               {/* <Image src={HPCurve} objectFit="cover"/> */}
-              <HPCurve/>
+              <HPCurve />
             </CurveContainer>
             <CurveContainer offset={height + 300}>
               <Image src={TopRect} />
