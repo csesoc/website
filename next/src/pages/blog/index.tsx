@@ -3,12 +3,15 @@ import type { NextPage } from "next";
 import Link from 'next/link'
 import Otter from '../../svgs/otter.png'
 import Image from 'next/image';
+import Footer from "../../components/footer/Footer";
+import Navbar from "../../components/navbar/Navbar";
+import { NavbarOpenHandler, NavbarType } from "../../components/navbar/types";
 
 import styled from "styled-components";
 
 export const StyledSphere = styled.div`
-	width: 18vw;
-	height: 18vw;
+	width: 15vw;
+	height: 15vw;
 	background: #E8DBFF;
 	mix-blend-mode: normal;
 	display: flex;
@@ -24,6 +27,7 @@ export const Content = styled.div`
 	height: 90vh;
 `
 export const StyledBlogLinks = styled.div`
+	padding-right: 10vw;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -37,6 +41,14 @@ export const StyledBlogLinks = styled.div`
 	color: #000000;
 `
 
+export const StyledBlogTitle = styled.div`
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 30pt;
+  padding-bottom: 1vw;
+  
+`
+
 export const LinkTextStyle = styled.a`
 	&:hover {
     color: #44a6c6;
@@ -48,30 +60,38 @@ export const LinkTextStyle = styled.a`
 `
 
 const Index: NextPage = () => {
-	return (
-		<div>
-			<Content>
-				<StyledSphere>
-					<Image src={Otter} />
-				</StyledSphere>
-				<StyledBlogLinks>
-					<LinkTextStyle></LinkTextStyle>
-					<Link href="/blog">
-						<LinkTextStyle>Blog 1</LinkTextStyle>
-					</Link>
-					<Link href="/blog">
-						<LinkTextStyle>Blog 2</LinkTextStyle>
-					</Link>
-					<Link href="/blog">
-						<LinkTextStyle>Blog 3</LinkTextStyle>
-					</Link>
-					<Link href="/blog">
-						<LinkTextStyle>Blog 4</LinkTextStyle>
-					</Link>
-				</StyledBlogLinks>
-			</Content>
-		</div>
+  const [navbarOpen, setNavbarOpen] = useState(false);
+  const handleToggle: NavbarOpenHandler = () => {
+    setNavbarOpen(!navbarOpen);
+  };
+  return (
+    <div>
+      <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE} />
+      <Content>
+        <StyledSphere>
+          <Image src={Otter} />
+        </StyledSphere>
+        <StyledBlogLinks>
+          <StyledBlogTitle>
+            Blogs
+          </StyledBlogTitle>
+          <Link href="/blog">
+            <LinkTextStyle>Blog 1</LinkTextStyle>
+          </Link>
+          <Link href="/blog">
+            <LinkTextStyle>Blog 2</LinkTextStyle>
+          </Link>
+          <Link href="/blog">
+            <LinkTextStyle>Blog 3</LinkTextStyle>
+          </Link>
+          <Link href="/blog">
+            <LinkTextStyle>Blog 4</LinkTextStyle>
+          </Link>
+        </StyledBlogLinks>
+      </Content>
+      <Footer />
+    </div>
 
-	);
+  );
 };
 export default Index;
