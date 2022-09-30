@@ -89,7 +89,11 @@ const Button = styled.button`
   color: white;
   border: none;
   border-radius: 6px;
+  cursor: pointer;
 
+  &:hover {
+    transform: scale(1.05);
+  }
 `
 
 
@@ -105,7 +109,7 @@ export default function Support({ }: Props) {
             <H3>Our Sponsors</H3>
             <ButtonContainer>
               <Link href="/Sponsors">
-                <button>view our sponsors</button>
+                <Button>view our sponsors</Button>
               </Link>
             </ButtonContainer>
             <Text>Check out our very cool sponsors</Text>
