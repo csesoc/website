@@ -80,9 +80,9 @@ func TestValidEntityInfo(t *testing.T) {
 	// ==== test setup =====
 	entityID := uuid.New()
 
-    // Constructing a fake filesystem repository mock
-    // note that we feed it a "fake" implementation, we're basically saying that whenever this fake function is called
-    // return this fake data we set it up with
+	// Constructing a fake filesystem repository mock
+	// note that we feed it a "fake" implementation, we're basically saying that whenever this fake function is called
+	// return this fake data we set it up with
 	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
 	mockFileRepo.EXPECT().GetEntryWithID(entityID).Return(repositories.FilesystemEntry{
 		EntityID:     entityID,
@@ -92,7 +92,7 @@ func TestValidEntityInfo(t *testing.T) {
 		ChildrenIDs:  []uuid.UUID{},
 	}, nil).Times(1)
 
-    // creates a dependecy factory mock
+	// creates a dependecy factory mock
 	mockDepFactory := createMockDependencyFactory(controller, mockFileRepo, true)
 
 	// ==== test execution =====
@@ -100,7 +100,7 @@ func TestValidEntityInfo(t *testing.T) {
 	response := endpoints.GetEntityInfo(form, mockDepFactory)
 
 	assert.Equal(response.Status, http.StatusOK)
-    // and notice down here how we're asserting that the fake data was created
+	// and notice down here how we're asserting that the fake data was created
 	assert.Equal(response.Response, models.EntityInfoResponse{
 		EntityID:   entityID,
 		EntityName: "random name",
