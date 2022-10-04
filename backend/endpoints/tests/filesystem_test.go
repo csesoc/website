@@ -1,9 +1,7 @@
 package tests
 
 import (
-	"io/ioutil"
 	"net/http"
-	"os"
 	"testing"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"

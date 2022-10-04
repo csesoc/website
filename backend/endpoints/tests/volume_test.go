@@ -1,24 +1,25 @@
 package tests
 
 import (
+	"io/ioutil"
+	"net/http"
+	"os"
 	"testing"
+
 	"cms.csesoc.unsw.edu.au/database/repositories"
+	repMocks "cms.csesoc.unsw.edu.au/database/repositories/mocks"
+	"cms.csesoc.unsw.edu.au/endpoints"
+	"cms.csesoc.unsw.edu.au/endpoints/models"
 	"github.com/golang/mock/gomock"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	repMocks "cms.csesoc.unsw.edu.au/database/repositories/mocks"
 )
 
-
 func TestUploadDocument(t *testing.T) {
-
 }
-
 
 func TestGetPublishedDocument(t *testing.T) {
-	
 }
-
 
 func TestUploadImage(t *testing.T) {
 	controller := gomock.NewController(t)
