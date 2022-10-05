@@ -29,6 +29,10 @@
     {
       "managers": ["gomod"],
       "addLabels": ["deps: go"]
+    },
+    {
+      "matchPackageNames": ["go", "golang"],
+      "groupName": "go"
     }
   ]
 }
