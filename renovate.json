@@ -1,13 +1,38 @@
 {
-  "extends": ["config:base"],
+  "extends": ["config:base", ":semanticCommits"],
   "lockFileMaintenance": { "enabled": true, "automerge": true },
-  "prHourlyLimit": 5,
+  "prHourlyLimit": 2,
   "labels": ["dependencies"],
   "packageRules": [
     {
-      "matchUpdateTypes": ["patch", "pin", "digest"],
-      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": false,
       "automergeType": "branch"
+    },
+    {
+      "groupName": "docker-github-actions",
+      "matchPackagePatterns": ["docker/*"],
+      "automerge": true,
+      "automergeType": "branch",
+      "addLabels": ["deps: docker-actions"]
+    },
+    {
+      "matchUpdateTypes": ["patch"],
+      "groupName": "weekly patch updates",
+      "schedule": ["before 5am every monday"],
+      "addLabels": ["deps: patches"]
+    },
+    {
+      "managers": ["npm"],
+      "addLabels": ["deps: javascript"]
+    },
+    {
+      "managers": ["gomod"],
+      "addLabels": ["deps: go"]
+    },
+    {
+      "matchPackageNames": ["go", "golang"],
+      "groupName": "go"
     }
   ]
 }

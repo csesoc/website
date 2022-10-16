@@ -8,6 +8,8 @@ import EditorBlock from "./components/EditorBlock";
 import { BlockData, UpdateHandler } from "./types";
 import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
 import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
+import SyncDocument from "src/cse-ui-kit/SyncDocument_button";
+import PublishDocument from "src/cse-ui-kit/PublishDocument_button";
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import { addContentBlock } from "./state/actions";
 import { useParams } from "react-router-dom";
@@ -42,15 +44,26 @@ const EditorPage: FC = () => {
   };
 
   useEffect(() => {
+    function cleanup() {
+      wsClient.current?.close();
+    }
+
     wsClient.current = new Client(
-      parseInt(id as string), // for testing, documentID=5 and docuemntID=7 should exist
+      id as string,
       (data) => {
+        console.log(id, JSON.stringify(data));
         setBlocks(data as BlockData[]);
       },
       (reason) => {
         console.log(reason);
       }
     );
+    window.addEventListener("beforeunload", cleanup);
+    return () => {
+      console.log("Editor component destroyed");
+      wsClient.current?.close();
+      window.removeEventListener("beforeunload", cleanup);
+    };
   }, []);
 
   return (
@@ -58,30 +71,26 @@ const EditorPage: FC = () => {
       <EditorHeader />
       <Container>
         {blocks.map((block, idx) => {
-          console.log(block[0].type)
-          return (
-            block[0].type === "paragraph" ? (
-              <EditorBlock
-                id={idx}
-                key={idx}
-                initialValue={block}
-                update={updateValues}
-                showToolBar={focusedId === idx}
-                onEditorClick={() => setFocusedId(idx)}
-              />
-            ) : (
-              <HeadingBlock
-                id={idx}
-                key={idx}
-                update={updateValues}
-                showToolBar={focusedId === idx}
-                onEditorClick={() => setFocusedId(idx)}
-              />
-            )
-          )
-        }
-          
-        )}
+          console.log(block[0].type);
+          return block[0].type === "paragraph" ? (
+            <EditorBlock
+              id={idx}
+              key={idx}
+              initialValue={block}
+              update={updateValues}
+              showToolBar={focusedId === idx}
+              onEditorClick={() => setFocusedId(idx)}
+            />
+          ) : (
+            <HeadingBlock
+              id={idx}
+              key={idx}
+              update={updateValues}
+              showToolBar={focusedId === idx}
+              onEditorClick={() => setFocusedId(idx)}
+            />
+          );
+        })}
 
         <InsertContentWrapper>
           <CreateHeadingBlock
@@ -90,8 +99,7 @@ const EditorPage: FC = () => {
                 ...prev,
                 [{ type: "heading", children: [{ text: "" }] }],
               ]);
-              setFocusedId(blocks.length);
-
+              
               // create the initial state of the content block to Redux
               dispatch(
                 addContentBlock({
@@ -99,6 +107,7 @@ const EditorPage: FC = () => {
                   data: headingContent,
                 })
               );
+              setFocusedId(blocks.length);
             }}
           />
           <CreateContentBlock
@@ -107,39 +116,38 @@ const EditorPage: FC = () => {
                 ...prev,
                 [{ type: "paragraph", children: [{ text: "" }] }],
               ]);
-              setFocusedId(blocks.length);
-
+              
               // create the initial state of the content block to Redux
               dispatch(
                 addContentBlock({
                   id: blocks.length,
                   data: defaultContent,
                 })
-              );
+                );
+              setFocusedId(blocks.length);
             }}
           />
-          <button
+          <SyncDocument
             onClick={() => {
               if (wsClient.current?.socket.readyState === WebSocket.OPEN) {
                 console.log(JSON.stringify(blocks));
                 wsClient.current?.pushDocumentData(JSON.stringify(blocks));
               }
             }}
-          >
-            Sync Document
-          </button>
-          <button
+          />
+          <PublishDocument
             onClick={() => {
-              const data = new FormData();
-              data.append("DocumentID", `${id}`);
               fetch("/api/filesystem/publish-document", {
                 method: "POST",
-                body: data,
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({
+                  DocumentID: `${id}`,
+                }),
               });
             }}
-          >
-            Publish Content
-          </button>
+          />
         </InsertContentWrapper>
       </Container>
     </div>

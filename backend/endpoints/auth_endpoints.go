@@ -20,7 +20,7 @@ import (
 
 // LoginHandler is a HTTP login handler
 func LoginHandler(form User, w http.ResponseWriter, r *http.Request, df DependencyFactory) handlerResponse[empty] {
-	if !form.IsValidEmail() || !form.UserExists() {
+	if !form.IsValidEmail() || !form.UserExists(df.GetPersonsRepo()) {
 		return handlerResponse[empty]{
 			Status: http.StatusUnauthorized,
 		}

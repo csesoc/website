@@ -26,9 +26,9 @@ type Document struct {
 }
 
 // NewDocument returns a new instance of a document allocated on the heap
-func newDocument(documentName string, baseText string) *Document {
+func newDocument(documentID uuid.UUID, documentName string, baseText string) *Document {
 	return &Document{
-		id:           uuid.New(),
+		id:           documentID,
 		documentName: documentName,
 		documentState: documentState{
 			baseText:            baseText,
@@ -149,6 +149,6 @@ func (doc *Document) stop() error {
 
 	// finally tell the singleton manager to
 	// delete us for goooood :)
-	GetManagerInstance().closeDocument(doc.documentName)
+	GetManagerInstance().closeDocument(doc.id)
 	return nil
 }

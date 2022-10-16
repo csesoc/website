@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { device } from "../../styles/device";
+import { sphereProps } from "./Sphere-Styled";
 
 export const AboutUsPage = styled.div`
     position: relative;
@@ -15,27 +17,22 @@ export const AboutUsContent = styled.div`
     flex-direction: column;
     justify-content: flex-end;
     margin-bottom: 5vw;
-`
-
-type positionProps = {
-    left?: number;
-    top?: number;
-}
-
-export const SpherePosition = styled.div<positionProps>`
-    position: absolute;
-    z-index: -1;
-    left: ${props => props.left}%;
-    top: ${props => props.top}%;
+    gap: 20px;
+    z-index: 2;
 `
 
 export const AboutUsText = styled.div`
-    color: #A09FE3;
+    color: var(--accent-darker-purple);
     font-family: 'Raleway';
     font-weight: 810;
-    font-size: 3.5vw;
-    line-height: 1.9vw;
-    text-align: right;
+
+    font-size: 40px;
+    @media ${device.tablet} {
+        font-size: 3.5vw;
+        line-height: 1.9vw;
+        text-align: right;
+    }
+
 `
 
 export const MainText = styled.div`
@@ -43,13 +40,36 @@ export const MainText = styled.div`
     background: #A09FE3;
     border-radius: 1vw;
     color: #FFFFFF;
-    font-weight: 300;
-    font-size: 1.3vw;
-    text-align: center;
-    padding: 1.4vw 2vw;
-    margin-top: 2.8vw;
+    font-weight: 400;
+    font-size: 18px;
+    padding: 20px;
+    line-height: 20px;
+    @media ${device.tablet} {
+        font-size: 2vw;
+        text-align: center;
+        padding: 1.4vw 2vw;
+        margin-top: 2.8vw;
+        line-height: 2.5vw;
+    }
 `;
 
 export const BlueText = styled.span`
     color: #3977F8;
 `
+
+export const MoreInfoText = styled.div<sphereProps>`
+    transform: rotate(${props => props.rotation ? -props.rotation : 0}deg);
+    color: #FFFFFF;
+    font-weight: 700;
+    line-height: 58px;
+    font-size: 3.6vw;
+
+    &:hover { 
+      cursor: pointer;
+      transform: rotate(${props => props.rotation ? -props.rotation : 0}deg) scale(1.1);
+    }
+
+    @media ${device.tablet} {
+      font-size: 2.3vw;
+    }
+`;

@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 
 const Container = styled.div`
   height: 50px;
-  background: #2B3648;
+  background: #A09FE3;
   width: 100%;
 `
 const EditorTitle = styled.div`
@@ -43,7 +43,7 @@ const EditorHeader: React.FC = () => {
   return (
     <Container>
       <HeaderFlex>
-        <ButtonGroup>
+        {/* <ButtonGroup>
           <ButtonStyle>
           ←
           </ButtonStyle>
@@ -54,12 +54,12 @@ const EditorHeader: React.FC = () => {
         <EditorTitle>
           Session identifier
         </EditorTitle>
-          <EditorTitle>
-            Preview and text
-          </EditorTitle>
-      </HeaderFlex>    
+        <EditorTitle>
+          Preview and text
+        </EditorTitle> */}
+      </HeaderFlex>
     </Container>
-  );    
+  );
 };
 
 export default EditorHeader;

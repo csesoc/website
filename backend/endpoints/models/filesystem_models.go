@@ -1,17 +1,20 @@
 package models
 
-import "cms.csesoc.unsw.edu.au/database/repositories"
+import (
+	"cms.csesoc.unsw.edu.au/database/repositories"
+	"github.com/google/uuid"
+)
 
 // Request models outline the general model that an incoming request to a handler must satisfy
 type (
 	// ValidInfoRequest is the model accepted by handlers that return information regarding an entity
 	ValidInfoRequest struct {
-		EntityID int `schema:"EntityID"`
+		EntityID uuid.UUID `schema:"EntityID"`
 	}
 
 	// ValidEntityCreationRequest is the model accepted by handlers that will ever create a FS entity
 	ValidEntityCreationRequest struct {
-		Parent      int
+		Parent      uuid.UUID
 		LogicalName string `schema:"LogicalName,required"`
 		OwnerGroup  int    `schema:"OwnerGroup,required"`
 		IsDocument  bool   `schema:"IsDocument,required"`
@@ -24,8 +27,8 @@ type (
 
 	// ValidRenameRequest is the request model accepted by handlers that rename entities
 	ValidRenameRequest struct {
-		EntityID int    `schema:"EntityID,required"`
-		NewName  string `schema:"NewName,required"`
+		EntityID uuid.UUID `schema:"EntityID,required"`
+		NewName  string    `schema:"NewName,required"`
 	}
 )
 
@@ -33,27 +36,27 @@ type (
 type (
 	// NewEntityResponse is the response model for any handler that returns a new entity
 	NewEntityResponse struct {
-		NewID int
+		NewID uuid.UUID
 	}
 
 	// ChildrenRequestResponse is the response model for any handler that will return the children of an entity
 	ChildrenRequestResponse struct {
-		Children []int
+		Children []uuid.UUID
 	}
 
 	// EntityInfoResponse is the response model of any handler that returns information regarding an entity
 	EntityInfoResponse struct {
-		EntityID   int
+		EntityID   uuid.UUID
 		EntityName string
 		IsDocument bool
-		Parent     int
+		Parent     uuid.UUID
 		Children   []EntityInfoResponse
 	}
 )
 
 // FsEntryToEntityInfo just converts an instance of an FS entry to an instance of an entityInfo object
 // entityInfo objects are what is actually displayed to the end user
-func FsEntryToEntityInfo(entity repositories.FilesystemEntry, fsRepo repositories.IFilesystemRepository, expandChildren bool) EntityInfoResponse {
+func FsEntryToEntityInfo(entity repositories.FilesystemEntry, fsRepo repositories.FilesystemRepository, expandChildren bool) EntityInfoResponse {
 	children := []EntityInfoResponse{}
 	if expandChildren {
 		for _, childId := range entity.ChildrenIDs {

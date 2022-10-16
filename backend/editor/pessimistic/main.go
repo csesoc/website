@@ -5,26 +5,26 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"strconv"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
 // This is the main loop that the editor client will run
-func EditorClientLoop(requestedDocument int, fs repositories.IUnpublishedVolumeRepository, ws *websocket.Conn) error {
+func EditorClientLoop(requestedDocument uuid.UUID, fs repositories.UnpublishedVolumeRepository, ws *websocket.Conn) error {
 	manager := getGlobalManagerInstance()
 	err := manager.startDocumentServer(requestedDocument)
 	if err != nil {
 		terminateWs(ws, "locked")
-		return errors.New("unable to open request document")
+		return errors.New("unable to open request document, cannot start document server")
 	}
-
 	defer manager.closeDocumentServer(requestedDocument)
-	file, err := fs.GetFromVolume(strconv.Itoa(requestedDocument))
+
+	file, err := fs.GetFromVolume(requestedDocument.String())
 	if err != nil {
 		terminateWs(ws, "error")
-		return errors.New("unable to open request document")
+		return errors.New("unable to open request document from volume")
 	}
 
 	defer file.Close()
@@ -45,6 +45,8 @@ func EditorClientLoop(requestedDocument int, fs repositories.IUnpublishedVolumeR
 		return errors.New("unable to read request document")
 	}
 
+	log.Print(buf)
+
 	// Empty file
 	if bytes == 0 {
 		buf.WriteString("[]")
@@ -57,8 +59,10 @@ func EditorClientLoop(requestedDocument int, fs repositories.IUnpublishedVolumeR
 		if err != nil {
 			if !websocket.IsCloseError(err, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
 				log.Printf("something went horribly wrong, terminating connection: %v\n", err)
-				break
+				return err
 			}
+
+			break
 		}
 
 		file.Truncate(0)
@@ -69,7 +73,6 @@ func EditorClientLoop(requestedDocument int, fs repositories.IUnpublishedVolumeR
 		ws.WriteMessage(websocket.TextMessage, []byte(`{"type": "acknowledged"}`))
 	}
 
-	terminateWs(ws, "terminating")
 	return nil
 }
 

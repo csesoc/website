@@ -9,11 +9,11 @@ type BooleanOperation struct {
 }
 
 // TransformAgainst is the BooleanOperation implementation of the operationModel interface
-func (boolOp BooleanOperation) TransformAgainst(operation OperationModel) (OperationModel, OperationModel) {
+func (boolOp BooleanOperation) TransformAgainst(operation OperationModel, applicationType EditType) (OperationModel, OperationModel) {
 	return boolOp, operation
 }
 
 // Apply is the BooleanOperation implementation of the OperationModel interface, it does nothing
-func (boolOp BooleanOperation) Apply(ast cmsjson.AstNode) cmsjson.AstNode {
-	return ast
+func (boolOp BooleanOperation) Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) cmsjson.AstNode {
+	return parentNode
 }
