@@ -5,11 +5,15 @@ import { NavbarOpenHandler, NavbarType } from "../components/navbar/types";
 import styled from "styled-components";
 
 const MainContainer = styled.div`
-  padding: '9vw 5vw',
-  fontFamily: 'Raleway',
-  fontWeight: 450,
-  fontSize: '15px',
-`;
+  padding: 9vw 5vw;
+  font-family: 'Raleway';
+  font-weight: 450;
+  font-size: 15px;
+
+  @media (max-width: 768px) {
+    padding: 12vw 10vw;
+    text-align: center;
+`
 
 export default function AboutUs() {
   const [navbarOpen, setNavbarOpen] = useState(false);
@@ -19,14 +23,6 @@ export default function AboutUs() {
   return (
     <div>
       <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE} />
-      {/* <div
-        style={{
-          padding: '9vw 5vw',
-          fontFamily: 'Raleway',
-          fontWeight: 450,
-          fontSize: '15px',
-        }}
-      > */}
       <MainContainer>
           <h1>About</h1>
           <p>
