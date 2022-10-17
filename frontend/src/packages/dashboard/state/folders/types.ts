@@ -1,13 +1,13 @@
 export type baseEntity = {
-  id: number,
-  name: string,
-  parentId: number,
-  type: string,
-}
+  id: string;
+  name: string;
+  parentId: string;
+  type: string;
+};
 
-export type Folder = baseEntity
+export type Folder = baseEntity;
 export type File = {
-  image?: string,
+  image?: string;
 } & baseEntity;
 
 // FileEntity is the type which contains both
@@ -15,8 +15,7 @@ export type File = {
 export type FileEntity = Folder | File;
 
 export type sliceState = {
-  parentFolder: number
-  path: string
-  items: (FileEntity)[];
-}
-
+  parentFolder: string;
+  path: string;
+  items: FileEntity[];
+};

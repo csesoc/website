@@ -3,6 +3,7 @@ import { createGlobalStyle } from "styled-components";
 export const GlobalStyles = createGlobalStyle`
 html,
 body {
+  overflow-x: hidden;
   padding: 0;
   margin: 0;
   font-family: 'Raleway', sans-serif;

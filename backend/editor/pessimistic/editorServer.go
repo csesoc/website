@@ -54,7 +54,7 @@ func (m *manager) closeDocumentServer(documentID uuid.UUID) error {
 	m.openDocumentsLock.Lock()
 	defer m.openDocumentsLock.Unlock()
 
-	if _, ok := m.openDocuments[documentID]; ok {
+	if _, ok := m.openDocuments[documentID]; !ok {
 		return errors.New("document was never opened!!")
 	}
 

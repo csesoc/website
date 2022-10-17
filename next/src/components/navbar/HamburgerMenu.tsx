@@ -4,14 +4,14 @@ import Image from "next/image";
 import CloseIcon from "../../../public/assets/close_icon.svg";
 import LogoImg from "../../../public/assets/logo.svg";
 
-import { NavbarOpenProps } from "./types";
+import { HamburgerMenuProps } from "./types";
 import {
   MenuOverlay, MenuContainer,
   MenuHeader, MenuItemWrapper,
   MenuItem, LogoContainer, CloseButton
 } from "./HamburgerMenu-styled";
 
-const HamburgerMenu = (props: NavbarOpenProps) => {
+const HamburgerMenu = (props: HamburgerMenuProps) => {
   return (
     <MenuOverlay>
       <MenuContainer>

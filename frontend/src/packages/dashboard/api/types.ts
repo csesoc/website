@@ -1,6 +1,6 @@
 export type JSONFileFormat = {
-	EntityID: number,
-	EntityName: string,
-	Parent: number,
-	IsDocument: boolean
-}
+  EntityID: string;
+  EntityName: string;
+  Parent: string;
+  IsDocument: boolean;
+};
