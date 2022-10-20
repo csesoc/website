@@ -1,6 +1,7 @@
 backend/ @Varun-Sethu
 postgres/ @Varun-Sethu
 utilities/ @Varun-Sethu
+services/ @Varun-Sethu
 
 frontend/ @fafnirZ
 next/ @fafnirZ
