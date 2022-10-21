@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import { Transforms, BaseEditor, createEditor } from "slate";
-import React, { FC, useMemo, useCallback } from "react";
+import React, { FC, useMemo, useCallback, useState } from "react";
+import Dialog from '@mui/material/Dialog';
+import Fade from '@mui/material/Fade';
+import Backdrop from '@mui/material/Backdrop';
 import {
   Slate,
   Editable,
@@ -13,6 +16,7 @@ import { BlockData, UpdateHandler } from "../types";
 
 import ContentBlock from "../../../cse-ui-kit/MediaContentBlock/MediaContentBlock";
 import ContentBlockWrapper from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
+import ContentBlockPopup from "../../../cse-ui-kit/contentBlockPopup/contentBlockPopup";
 import { toggleMark, handleKey } from "./buttons/buttonHelpers";
 import { getBlockContent } from "../state/helpers";
 
@@ -120,6 +124,8 @@ const withImages = (editor: BaseEditor & ReactEditor) => {
 //   )
 // }
 
+
+
 const popup = () => {
   return (
     <div>
@@ -139,6 +145,10 @@ const MediaBlock: FC<MediaBlockProps> = ({
 
   const initialValue = getBlockContent(id);
 
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
     <Slate
       editor={editor}
@@ -157,11 +167,34 @@ const MediaBlock: FC<MediaBlockProps> = ({
       <ContentBlockWrapper focused={showToolBar}>
         <ContentBlock
           onClick={() => {
-            popup;
+            handleOpen();
             onMediaClick();
           }}
         />
       </ContentBlockWrapper>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', backgroundColor: 'transparent' }}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          invisible: true,
+          timeout: 500,
+        }}
+        PaperProps={{
+          style: {
+            backgroundColor: 'transparent',
+            borderRadius: 10,
+          },
+        }}
+      >
+        <Fade in={open}>
+          <div>
+            <ContentBlockPopup />
+          </div>
+        </Fade>
+      </Dialog>
     </Slate>
   );
 };

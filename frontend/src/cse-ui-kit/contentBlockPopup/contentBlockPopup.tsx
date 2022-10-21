@@ -20,8 +20,8 @@ export default function ContentBlockPopup({ children }: Props) {
       <StyledDottedContainer>
         <StyledContent>
           <ContentUpload
-            width="10vw"
-            height="10vw"
+            width="5vw"
+            height="5vw"
             fill="#808080"
           />
           <MainText>
