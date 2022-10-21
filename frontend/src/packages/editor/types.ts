@@ -5,6 +5,7 @@ export type BlockData = Descendant[];
 export type UpdateHandler = (idx: number, updatedBlock: BlockData) => void;
 
 type CustomElement = { type: "paragraph" | "heading"; children: CustomText[] };
+type CustomMediaElement = { type: "media"; src: string; children: [{text:""}]};
 type CustomText = {
   textSize?: number;
   text: string;
@@ -18,7 +19,7 @@ type CustomText = {
 declare module "slate" {
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor;
-    Element: CustomElement;
+    Element: CustomElement | CustomMediaElement;
     Text: CustomText;
   }
 }

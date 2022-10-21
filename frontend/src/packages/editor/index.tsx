@@ -5,15 +5,17 @@ import Client from "./websocketClient";
 
 import HeadingBlock from "./components/HeadingBlock";
 import EditorBlock from "./components/EditorBlock";
+import MediaBlock from "./components/MediaBlock";
 import { BlockData, UpdateHandler } from "./types";
 import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
 import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
+import CreateMediaBlock from "src/cse-ui-kit/CreateMediaBlock_button";
 import SyncDocument from "src/cse-ui-kit/SyncDocument_button";
 import PublishDocument from "src/cse-ui-kit/PublishDocument_button";
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import { addContentBlock } from "./state/actions";
 import { useParams } from "react-router-dom";
-import { defaultContent, headingContent } from "./state/helpers";
+import { defaultContent, headingContent, mediaContent } from "./state/helpers";
 
 // Redux
 import { useDispatch } from "react-redux";
@@ -72,24 +74,40 @@ const EditorPage: FC = () => {
       <Container>
         {blocks.map((block, idx) => {
           console.log(block[0].type);
-          return block[0].type === "paragraph" ? (
-            <EditorBlock
-              id={idx}
-              key={idx}
-              initialValue={block}
-              update={updateValues}
-              showToolBar={focusedId === idx}
-              onEditorClick={() => setFocusedId(idx)}
-            />
-          ) : (
-            <HeadingBlock
-              id={idx}
-              key={idx}
-              update={updateValues}
-              showToolBar={focusedId === idx}
-              onEditorClick={() => setFocusedId(idx)}
-            />
-          );
+          switch (block[0].type) {
+            case "heading":
+              return (
+                <HeadingBlock
+                  id={idx}
+                  key={idx}
+                  update={updateValues}
+                  showToolBar={focusedId === idx}
+                  onEditorClick={() => setFocusedId(idx)}
+                />
+              )
+            case "media":
+              return (
+                <MediaBlock
+                  id={idx}
+                  key={idx}
+                  update={updateValues}
+                  showToolBar={focusedId === idx}
+                  onMediaClick={() => setFocusedId(idx)}
+                />
+              )
+            default:
+              return (
+                <EditorBlock
+                  id={idx}
+                  key={idx}
+                  initialValue={block}
+                  update={updateValues}
+                  showToolBar={focusedId === idx}
+                  onEditorClick={() => setFocusedId(idx)}
+                />
+
+              )
+          }
         })}
 
         <InsertContentWrapper>
@@ -99,7 +117,7 @@ const EditorPage: FC = () => {
                 ...prev,
                 [{ type: "heading", children: [{ text: "" }] }],
               ]);
-              
+
               // create the initial state of the content block to Redux
               dispatch(
                 addContentBlock({
@@ -116,14 +134,31 @@ const EditorPage: FC = () => {
                 ...prev,
                 [{ type: "paragraph", children: [{ text: "" }] }],
               ]);
-              
+
               // create the initial state of the content block to Redux
               dispatch(
                 addContentBlock({
                   id: blocks.length,
                   data: defaultContent,
                 })
-                );
+              );
+              setFocusedId(blocks.length);
+            }}
+          />
+          <CreateMediaBlock
+            onClick={() => {
+              setBlocks((prev) => [
+                ...prev,
+                [{ type: "media", src: "", children: [{ text: "" }] }],
+              ]);
+
+              // create the initial state of the content block to Redux
+              dispatch(
+                addContentBlock({
+                  id: blocks.length,
+                  data: mediaContent,
+                })
+              );
               setFocusedId(blocks.length);
             }}
           />

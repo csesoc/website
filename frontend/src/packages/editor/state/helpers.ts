@@ -15,6 +15,14 @@ export const headingContent: Descendant[] = [
   },
 ];
 
+export const mediaContent: Descendant[] = [
+  {
+    type: "media",
+    src: "",
+    children: [{text:""}],
+  },
+];
+
 export const getBlockContent = (id: number) => {
   const contents = getContents();
 
