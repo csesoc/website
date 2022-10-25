@@ -171,7 +171,7 @@ func (node *jsonNode) UpdateOrAddObjectElement(index int, newValue AstNode) erro
 	}
 
 	asJsonNode.key = node.children[index].key
-	node.children[index] = asJsonNode
+	node.children[index] = asJsonNode.children[index]
 	return nil
 }
 
