@@ -9,7 +9,7 @@ import {
   useSlate,
 } from "slate-react";
 
-import { BlockData, UpdateHandler } from "../types";
+import { BlockData, OpPropagator } from "../types";
 import EditorBoldButton from "./buttons/EditorBoldButton";
 import EditorItalicButton from "./buttons/EditorItalicButton";
 import EditorUnderlineButton from "./buttons/EditorUnderlineButton";
@@ -53,7 +53,7 @@ const Text = styled.span<{
 const AlignedText = Text.withComponent("div");
 
 interface EditorBlockProps {
-  update: UpdateHandler;
+  update: OpPropagator;
   initialValue: BlockData;
   id: number;
   showToolBar: boolean;
@@ -110,8 +110,7 @@ const EditorBlock: FC<EditorBlockProps> = ({
       editor={editor}
       value={initialValue}
       onChange={(value) => {
-        update(id, editor.children);
-
+        update(id, editor.children, editor.operations);
         dispatch(
           updateContent({
             id: id,
@@ -131,7 +130,8 @@ const EditorBlock: FC<EditorBlockProps> = ({
           <EditorRightAlignButton />
         </ToolbarContainer>
       )}
-      <ContentBlock focused={showToolBar}>
+      <ContentBlock 
+        focused={showToolBar}>
         <Editable
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}

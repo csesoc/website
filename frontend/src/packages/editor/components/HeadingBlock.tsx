@@ -3,7 +3,7 @@ import { createEditor } from "slate";
 import React, { FC, useMemo, useCallback } from "react";
 import { Slate, Editable, withReact, RenderLeafProps } from "slate-react";
 
-import { UpdateHandler } from "../types";
+import { BlockData, OpPropagator } from "../types";
 import EditorSelectFont from './buttons/EditorSelectFont'
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
 import { handleKey } from "./buttons/buttonHelpers";
@@ -30,9 +30,10 @@ const Text = styled.span<{
 `;
 
 interface HeadingBlockProps {
-  update: UpdateHandler;
+  update: OpPropagator;
   id: number;
   showToolBar: boolean;
+  initialValue: BlockData; 
   onEditorClick: () => void;
 }
 
@@ -40,6 +41,7 @@ const HeadingBlock: FC<HeadingBlockProps> = ({
   id,
   update,
   showToolBar,
+  initialValue,
   onEditorClick,
 }) => {
 
@@ -49,10 +51,8 @@ const HeadingBlock: FC<HeadingBlockProps> = ({
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
       return (
-        <Text
-          // Nullish coalescing operator
-          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator
-          textSize={leaf.textSize ?? defaultTextSize}
+        <Text 
+          textSize={leaf.textSize ?? defaultTextSize} 
           {...attributes}
         >
           {children}
@@ -62,14 +62,12 @@ const HeadingBlock: FC<HeadingBlockProps> = ({
     []
   );
 
-  const initialValue = getBlockContent(id);
-
   return (
     <Slate
       editor={editor}
       value={initialValue}
       onChange={(value) => {
-        update(id, editor.children)
+        update(id, editor.children, editor.operations);
 
         dispatch(updateContent({
           id: id,
