@@ -1,22 +1,20 @@
 import styled from "styled-components";
 import { Transforms, BaseEditor, createEditor } from "slate";
 import React, { FC, useMemo, useCallback, useState } from "react";
-import Dialog from '@mui/material/Dialog';
-import Fade from '@mui/material/Fade';
-import Backdrop from '@mui/material/Backdrop';
+import { useDropzone, FileWithPath } from "react-dropzone";
 import {
   Slate,
   Editable,
   withReact,
-  useSlate,
+  useSlateStatic,
   ReactEditor,
+  RenderElementProps,
 } from "slate-react";
 
 import { BlockData, UpdateHandler } from "../types";
 
 import ContentBlock from "../../../cse-ui-kit/MediaContentBlock/MediaContentBlock";
 import ContentBlockWrapper from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
-import ContentBlockPopup from "../../../cse-ui-kit/contentBlockPopup/contentBlockPopup";
 import { toggleMark, handleKey } from "./buttons/buttonHelpers";
 import { getBlockContent } from "../state/helpers";
 
@@ -36,21 +34,20 @@ const withImages = (editor: BaseEditor & ReactEditor) => {
   const { isVoid } = editor;
 
   editor.isVoid = element => {
-    return element.type === "media" ? true : isVoid(element)
+    return element.type === "image" ? true : isVoid(element)
   }
 
   return editor
 }
 
-// const insertImage = (editor: BaseEditor & ReactEditor, src: string) => {
-//   const image = ({
-//     type: '"media"',
-//     src,
-//     children: [{ text: "" }],
-//   })
-//   // const image  = { type: 'image', src }
-//   Transforms.insertNodes(editor, image);
-// }
+const insertImage = (editor: BaseEditor & ReactEditor, src: string) => {
+  const image: { type: "image"; url: string } = {
+    type: 'image',
+    url: src,
+  }
+  // const image  = { type: 'image', src }
+  Transforms.insertNodes(editor, image);
+}
 
 // const Element = (props: unknown) => {
 //   const { attributes, children, element } = props
@@ -125,14 +122,44 @@ const withImages = (editor: BaseEditor & ReactEditor) => {
 // }
 
 
+function Dropzone() {
+  const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone();
+  const files = acceptedFiles.map((file: FileWithPath) => (
+    <li key={file.path}>
+      {file.path}
+    </li>
+  ));
 
-const popup = () => {
-  return (
-    <div>
-      Hi
-    </div>
-  );
+  if (acceptedFiles.length === 0) {
+    return (
+      <div>
+        <div {...getRootProps({ className: "dropzone" })}>
+          <input className="input-zone" {...getInputProps()} />
+          {isDragActive ? (
+            <ContentBlock
+              textContent="Release to drop the files here"
+            />
+          ) : (
+            <ContentBlock
+              textContent="Upload Images/Gifs"
+            />
+          )}
+        </div>
+        <aside>
+          <ul>{files}</ul>
+        </aside>
+      </div>
+    )
+  }
+  else {
+    const f: FileWithPath = acceptedFiles[0]
+    return <img src={f.path} />
+    // const editor = useSlateStatic()
+    // f.path ? insertImage(editor, f.path) : null
+    // return null
+  }
 }
+
 
 const MediaBlock: FC<MediaBlockProps> = ({
   id,
@@ -145,9 +172,16 @@ const MediaBlock: FC<MediaBlockProps> = ({
 
   const initialValue = getBlockContent(id);
 
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const renderElement: (props: RenderElementProps) => JSX.Element = useCallback(
+    ({ attributes, children, element }) => {
+
+      switch (element.type) {
+        case 'image':
+          return <img src={element.url} />
+        default:
+          return <p {...attributes}>{children}</p>
+      }
+    }, []);
 
   return (
     <Slate
@@ -164,37 +198,12 @@ const MediaBlock: FC<MediaBlockProps> = ({
         );
       }}
     >
-      <ContentBlockWrapper focused={showToolBar}>
-        <ContentBlock
-          onClick={() => {
-            handleOpen();
-            onMediaClick();
-          }}
+      <ContentBlockWrapper focused={showToolBar} onClick={onMediaClick}>
+        <Dropzone />
+        <Editable
+          renderElement={renderElement}
         />
       </ContentBlockWrapper>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', backgroundColor: 'transparent' }}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          invisible: true,
-          timeout: 500,
-        }}
-        PaperProps={{
-          style: {
-            backgroundColor: 'transparent',
-            borderRadius: 10,
-          },
-        }}
-      >
-        <Fade in={open}>
-          <div>
-            <ContentBlockPopup />
-          </div>
-        </Fade>
-      </Dialog>
     </Slate>
   );
 };

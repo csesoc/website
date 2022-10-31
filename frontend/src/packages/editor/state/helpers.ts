@@ -17,9 +17,8 @@ export const headingContent: Descendant[] = [
 
 export const mediaContent: Descendant[] = [
   {
-    type: "media",
-    src: "",
-    children: [{text:""}],
+    type: "image",
+    url: "",
   },
 ];
 

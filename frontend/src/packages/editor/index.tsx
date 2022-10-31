@@ -85,7 +85,7 @@ const EditorPage: FC = () => {
                   onEditorClick={() => setFocusedId(idx)}
                 />
               )
-            case "media":
+            case "image":
               return (
                 <MediaBlock
                   id={idx}
@@ -149,7 +149,7 @@ const EditorPage: FC = () => {
             onClick={() => {
               setBlocks((prev) => [
                 ...prev,
-                [{ type: "media", src: "", children: [{ text: "" }] }],
+                [{ type: "image", url: "" }],
               ]);
 
               // create the initial state of the content block to Redux
