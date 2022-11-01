@@ -11,14 +11,14 @@ export class OperationManager {
         //  drawing upon the editor content as a relative data source
 
         // todo: remove console.logs after completion
-        console.log("operation: ", operation);
+        // console.log("operation: ", operation);
     }
 }
 
 export const slateToCmsOperation = (editorContent: BlockData, operation: BaseOperation[]) : CMSOperation => {
     // TODO: remove console.logs after full completion :D
-    // console.log("content: ", editorContent);
-    // console.log("operation: ", operation);
+    console.log("content: ", editorContent);
+    console.log("operation: ", operation);
 
     // TODO: implement me :D
     return {

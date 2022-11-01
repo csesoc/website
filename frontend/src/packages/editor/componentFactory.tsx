@@ -27,6 +27,7 @@ const constructors: Record<string, (props: CMSBlockProps) => JSX.Element> = {
 export const buildComponentFactory = (opManager: OperationManager, onClick: (id: number) => void, onUpdate: UpdateCallback) => (block: BlockData, blockId: number, isFocused: boolean) : JSX.Element => {
     const componentProps = {
         id: blockId,
+        key: blockId,
         showToolBar: isFocused,
         initialValue: block,
         update: buildUpdateHandler(blockId, opManager, onUpdate),
