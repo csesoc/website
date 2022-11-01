@@ -17,6 +17,15 @@ export type CustomText = {
   align?: string;
 };
 
+export interface CMSBlockProps {
+  update: OpPropagator;
+  initialValue: BlockData;
+  id: number;
+  showToolBar: boolean;
+  onEditorClick: () => void;
+}
+
+
 declare module "slate" {
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor;

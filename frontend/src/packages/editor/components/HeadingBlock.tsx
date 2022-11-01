@@ -3,15 +3,10 @@ import { createEditor } from "slate";
 import React, { FC, useMemo, useCallback } from "react";
 import { Slate, Editable, withReact, RenderLeafProps } from "slate-react";
 
-import { BlockData, OpPropagator } from "../types";
+import { CMSBlockProps } from "../types";
 import EditorSelectFont from './buttons/EditorSelectFont'
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
 import { handleKey } from "./buttons/buttonHelpers";
-import { getBlockContent } from "../state/helpers";
-
-// Redux
-import { useDispatch } from "react-redux";
-import {updateContent} from "../state/actions";
 
 const defaultTextSize = 24;
 
@@ -29,23 +24,14 @@ const Text = styled.span<{
   font-size: ${(props) => (props.textSize)}px;
 `;
 
-interface HeadingBlockProps {
-  update: OpPropagator;
-  id: number;
-  showToolBar: boolean;
-  initialValue: BlockData; 
-  onEditorClick: () => void;
-}
 
-const HeadingBlock: FC<HeadingBlockProps> = ({
+const HeadingBlock: FC<CMSBlockProps> = ({
   id,
   update,
   showToolBar,
   initialValue,
   onEditorClick,
 }) => {
-
-  const dispatch  = useDispatch();
   const editor = useMemo(() => withReact(createEditor()), []);
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
@@ -66,14 +52,7 @@ const HeadingBlock: FC<HeadingBlockProps> = ({
     <Slate
       editor={editor}
       value={initialValue}
-      onChange={(value) => {
-        update(id, editor.children, editor.operations);
-
-        dispatch(updateContent({
-          id: id,
-          data: value,
-        }))
-      }}
+      onChange={(value) => { update(id, editor.children, editor.operations); }}
     >
       {showToolBar && (
         <ToolbarContainer>

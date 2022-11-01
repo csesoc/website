@@ -1,7 +1,7 @@
 import { BaseOperation } from "slate";
 import HeadingBlock from "./components/HeadingBlock";
 import React from "react";
-import { BlockData, UpdateCallback, OpPropagator } from "./types";
+import { BlockData, UpdateCallback, CMSBlockProps } from "./types";
 import EditorBlock from "./components/EditorBlock";
 import { OperationManager, slateToCmsOperation } from "./operationManager";
 
@@ -10,53 +10,41 @@ import { OperationManager, slateToCmsOperation } from "./operationManager";
 //  should come from elsewhere
 
 
-type componentFactory = (block: BlockData, blockId: number, isFocused: boolean, onClick: () => void, onUpdate: OpPropagator) => JSX.Element;
+type callbackHandler = (id: number, update: BlockData) => void;
+
+// registration of all block constructors
+const constructors: Record<string, (props: CMSBlockProps) => JSX.Element> = {
+    "paragraph": (props) => <EditorBlock {...props} />,
+    "heading": (props) => <HeadingBlock {...props} />
+}
 
 /**
  * buildComponentFactory constructs a factory capable of creating CMS components
+ * @param opManager the global operation manager
  * @param clickHandler the handler invoked when the element is clicked
  * @param updateHandler the handler invoked when teh contents is updated (note: will be deprecated after full transition to OT)
  */
 export const buildComponentFactory = (opManager: OperationManager, onClick: (id: number) => void, onUpdate: UpdateCallback) => (block: BlockData, blockId: number, isFocused: boolean) : JSX.Element => {
-    const constructors: Record<string, componentFactory> = {
-        "paragraph": buildParagraphBlock,
-        "heading": buildHeadingBlock
-    }
-    
+    const componentProps = {
+        id: blockId,
+        showToolBar: isFocused,
+        initialValue: block,
+        update: buildUpdateHandler(blockId, opManager, onUpdate),
+        onEditorClick: () => onClick(blockId),
+    };
+
     const blockType = block[0].type ?? "unknown";
     const constructor = constructors[blockType];
     if (constructor === undefined) {
         throw new Error(`unidentified block type: ${blockType}`)
     }
 
-    const updateHandler = buildUpdateHandler(blockId, opManager, onUpdate);
-    return constructor(block, blockId, isFocused, () => onClick(blockId), updateHandler);
+    return constructor(componentProps);
 }
-
-// buildEditorBlock constructs an instance of a normal editor/paragraph block with the specified callback functions
-const buildParagraphBlock = (block: BlockData, blockId: number, isFocused: boolean, onClick: () => void, onUpdate: OpPropagator) =>
-    <EditorBlock
-        id={blockId}
-        key={blockId}
-        initialValue={block}
-        update={onUpdate}
-        showToolBar={isFocused}
-        onEditorClick={onClick} />
-
-// buildHeadingBlock constructs an instance of a heading block with the specified callback functions
-const buildHeadingBlock = (block: BlockData, blockId: number, isFocused: boolean, onClick: () => void, onUpdate: OpPropagator) => 
-    <HeadingBlock 
-        id={blockId}
-        key={blockId}
-        update={onUpdate}
-        showToolBar={isFocused}
-        initialValue={block}
-        onEditorClick={onClick} />
-
 
 // buildUpdateHandler wraps any updates to a component as a nice formatted operation for propagation to the OT server, it then invokes the initial provided handler
 // ie the function is just a decorator function :)
-const buildUpdateHandler = (blockId: number, opManager: OperationManager, updateCallback: (id: number, update: BlockData) => void) => (id: number, editorContent: BlockData, operations: BaseOperation[]) => {
+const buildUpdateHandler = (blockId: number, opManager: OperationManager, updateCallback: callbackHandler) => (id: number, editorContent: BlockData, operations: BaseOperation[]) => {
     updateCallback(id, editorContent);
     const modifiedOperations = operations.map(operation => {
         if (operation.type === "set_selection") { return operation; }
