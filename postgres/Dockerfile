@@ -1,4 +1,4 @@
-FROM python:3.6-alpine
+FROM python:alpine
 
 COPY requirements.txt .
 RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
