@@ -67,7 +67,8 @@ const EditorPage: FC = () => {
       window.removeEventListener("beforeunload", cleanup);
     };
   }, []);
-
+  console.log("blocks: ")
+  blocks.forEach(block => console.log(block))
   return (
     <div style={{ height: "100%" }}>
       <EditorHeader />
