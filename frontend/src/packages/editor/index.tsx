@@ -87,10 +87,13 @@ const EditorPage: FC = () => {
                 />
               )
             case "image":
+              console.log("id that was passed in")
+              console.log(idx)
               return (
                 <MediaBlock
                   id={idx}
                   key={idx}
+                  initialValue={block}
                   update={updateValues}
                   showToolBar={focusedId === idx}
                   onMediaClick={() => setFocusedId(idx)}
@@ -150,7 +153,7 @@ const EditorPage: FC = () => {
             onClick={() => {
               setBlocks((prev) => [
                 ...prev,
-                [{ type: "image", url: "" }],
+                [{ type: "image", url: "", children: [{ text: "" }] }],
               ]);
 
               // create the initial state of the content block to Redux
@@ -160,6 +163,8 @@ const EditorPage: FC = () => {
                   data: mediaContent,
                 })
               );
+              console.log("id that was set:")
+              console.log(blocks.length)
               setFocusedId(blocks.length);
             }}
           />

@@ -5,7 +5,7 @@ export type BlockData = Descendant[];
 export type UpdateHandler = (idx: number, updatedBlock: BlockData) => void;
 
 type CustomElement = { type: "paragraph" | "heading"; children: CustomText[] };
-type CustomMediaElement = { type: "image"; url: string};
+type CustomMediaElement = { type: "image"; url: string; children: CustomText[] };
 type CustomText = {
   textSize?: number;
   text: string;

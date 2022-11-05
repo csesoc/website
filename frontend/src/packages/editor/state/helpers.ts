@@ -19,6 +19,7 @@ export const mediaContent: Descendant[] = [
   {
     type: "image",
     url: "",
+    children: [{ text: "" }],
   },
 ];
 
