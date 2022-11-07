@@ -73,7 +73,7 @@ const CodeBlock: FC<CMSBlockProps> = ({
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
-      if (!leaf.formattable) {
+      if (leaf.type === 'customCode') {
         return (
           <span
             {...attributes}

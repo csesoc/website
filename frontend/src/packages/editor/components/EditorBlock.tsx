@@ -65,7 +65,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
-      if (leaf.formattable) {
+      if (leaf.type === 'customText') {
         const props = {
           bold: leaf.bold ?? false,
           italic: leaf.italic ?? false,
