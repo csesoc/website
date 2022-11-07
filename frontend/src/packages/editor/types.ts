@@ -23,6 +23,10 @@ export type CustomText = {
 };
 
 export type CustomCodeText = {
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  code?: boolean;
   text: string;
   doiexistbutforcodeblocks: boolean;
   type?: string;

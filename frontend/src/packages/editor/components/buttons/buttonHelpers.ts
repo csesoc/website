@@ -32,7 +32,7 @@ const isMarkActive = (
   // https://docs.slatejs.org/concepts/07-editor
   // Editor object exposes properties of the current editor
   // and methods to modify it
-  // const marks = Editor.marks(editor);
+  const marks = Editor.marks(editor);
   // const type = editor.children[0]?.type as "paragraph" | "heading" | "code"
   // if (type === 'paragraph' || type === 'heading') {
   //   return marks ? marks[format] === true : false;
@@ -41,8 +41,8 @@ const isMarkActive = (
 
   // //  check whether selected text is formatted
   // //  e.g. when the selected text is bold, marks["bold"] is true
-  // return marks == null || (format != "code" && (marks[format] ?? false));
-  return true;
+  return marks ? marks[format] === true : false;
+  // return true;
 };
 
 
