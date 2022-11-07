@@ -1,9 +1,6 @@
 import styled from "styled-components";
 
-export const scaleRate = {
-  smallButtonRate: 0.4,
-  underlineRate: 0.6,
-};
+export const scaleRate = 0.5;
 
 export type buttonProps = {
   background?: string;

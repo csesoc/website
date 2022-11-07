@@ -15,8 +15,8 @@ export default function UnderlineButton({
   return (
     <StyledButton onClick={onClick} onMouseDown={onMouseDown} {...styleProps}>
       <Underline
-        height={styleProps.size * scaleRate.underlineRate}
-        width={styleProps.size * scaleRate.underlineRate}
+        height={styleProps.size * 1.1 * scaleRate}
+        width={styleProps.size * 1.1 * scaleRate}
       />
     </StyledButton>
   );
