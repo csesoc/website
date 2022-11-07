@@ -15,6 +15,8 @@ import { buildComponentFactory } from "./componentFactory";
 import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
 import { CMSOperation } from "./api/OTClient/operation";
+import CreateCodeBlock from "src/cse-ui-kit/CreateCodeBlock_button";
+import { Descendant } from "slate";
 
 const Container = styled.div`
   display: flex;
@@ -71,14 +73,21 @@ const EditorPage: FC = () => {
   }
 
   // buildClickHandler builds handlers for events where new blocks are created and propagates them to the OT manager
-  const buildButtonClickHandler = (type: "heading" | "paragraph") => () => {
-    const newElement = { type: type, children: [{ text: "" }] };
+  const buildButtonClickHandler = (type: "heading" | "paragraph" | "code") => () => {
+    let newElement: Descendant
+    switch (type) {
+      case "code":
+        newElement = { type: type, children: [{ text: "", doiexistbutforcodeblocks: true }] }
+        break;
+      default:
+        newElement = { type: type, children: [{ text: "", doiexist: true }] };
+    }
 
     // push and update this creation operation to the operation manager
-    setBlocks((prev) => [...prev, [newElement]]);    
+    setBlocks((prev) => [...prev, [newElement]]);
     setFocusedId(blocks.length);
     opManager.current?.pushToServer(newCreationOperation(newElement, blocks.length));
-  }  
+  }
 
   return (
     <div style={{ height: "100%" }}>
@@ -86,6 +95,7 @@ const EditorPage: FC = () => {
       <Container>
         {blocks.map((block, idx) => createBlock(block, idx, focusedId === idx))}
         <InsertContentWrapper>
+          <CreateCodeBlock onClick={buildButtonClickHandler("code")} />
           <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
           <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />
           <SyncDocument onClick={() => syncDocument()} />
@@ -103,7 +113,7 @@ const newCreationOperation = (newValue: any, index: number): CMSOperation => ({
   IsNoOp: false,
   Operation: {
     "$type": "objectOperation",
-    objectOperation: { newValue }, 
+    objectOperation: { newValue },
   }
 });
 

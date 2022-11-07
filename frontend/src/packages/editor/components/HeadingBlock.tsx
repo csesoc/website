@@ -36,14 +36,18 @@ const HeadingBlock: FC<CMSBlockProps> = ({
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
-      return (
-        <Text 
-          textSize={leaf.textSize ?? defaultTextSize} 
-          {...attributes}
-        >
-          {children}
-        </Text>
-      );
+      if ("doiexist" in leaf) {
+        return (
+          <Text
+            textSize={leaf.textSize ?? defaultTextSize}
+            {...attributes}
+          >
+            {children}
+          </Text>
+        );
+      } else {
+        return <>dsafjl;sk</>
+      }
     },
     []
   );

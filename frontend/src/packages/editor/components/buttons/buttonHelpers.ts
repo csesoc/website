@@ -8,7 +8,7 @@ import { ReactEditor } from "slate-react";
  */
 const toggleMark = (
   editor: BaseEditor & ReactEditor,
-  format: "bold" | "italic" | "underline"
+  format: "bold" | "italic" | "underline" | "code"
 ): void => {
   const isActive = isMarkActive(editor, format);
 
@@ -27,20 +27,27 @@ const toggleMark = (
  */
 const isMarkActive = (
   editor: BaseEditor & ReactEditor,
-  format: "bold" | "italic" | "underline"
+  format: "bold" | "italic" | "underline" | "code"
 ): boolean => {
   // https://docs.slatejs.org/concepts/07-editor
   // Editor object exposes properties of the current editor
   // and methods to modify it
-  const marks = Editor.marks(editor);
-  //  check whether selected text is formatted
-  //  e.g. when the selected text is bold, marks["bold"] is true
-  return marks ? marks[format] === true : false;
+  // const marks = Editor.marks(editor);
+  // const type = editor.children[0]?.type as "paragraph" | "heading" | "code"
+  // if (type === 'paragraph' || type === 'heading') {
+  //   return marks ? marks[format] === true : false;
+  // }
+
+
+  // //  check whether selected text is formatted
+  // //  e.g. when the selected text is bold, marks["bold"] is true
+  // return marks == null || (format != "code" && (marks[format] ?? false));
+  return true;
 };
 
 
 const handleKey = (
-  event: React.KeyboardEvent, 
+  event: React.KeyboardEvent,
   editor: BaseEditor & ReactEditor
 ) => {
   if (!event.ctrlKey) {
@@ -62,6 +69,13 @@ const handleKey = (
     case 'u': {
       event.preventDefault();
       toggleMark(editor, "underline");
+    }
+  }
+  switch (event.key) {
+    case "`": {
+      event.preventDefault();
+      toggleMark(editor, "code");
+      break;
     }
   }
 }

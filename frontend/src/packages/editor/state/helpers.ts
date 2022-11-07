@@ -4,14 +4,14 @@ import { Descendant } from "slate";
 export const defaultContent: Descendant[] = [
   {
     type: "paragraph",
-    children: [{ text: "" }],
+    children: [{ text: "", doiexist: true }],
   },
 ];
 
 export const headingContent: Descendant[] = [
   {
     type: "heading",
-    children: [{ text: "" }],
+    children: [{ text: "", doiexist: true }],
   },
 ];
 

@@ -19,6 +19,7 @@ import EditorRightAlignButton from "./buttons/EditorRightAlignButton";
 
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
 import { handleKey } from "./buttons/buttonHelpers";
+import EditorCodeButton from "./buttons/EditorCodeButton";
 
 const defaultTextSize = 16;
 
@@ -34,6 +35,7 @@ const Text = styled.span<{
   bold: boolean;
   italic: boolean;
   underline: boolean;
+  code: boolean;
   textSize: number;
   align: string;
 }>`
@@ -42,6 +44,12 @@ const Text = styled.span<{
   font-size: ${(props) => props.textSize}px;
   text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
   text-align: ${(props) => props.align};
+  font-family: ${(props) => props.code ? "monospace" : ""} ;
+  background: ${(props) => props.code ? "#d1d1d0" : ""};
+  word-wrap: ${(props) => props.code ? "break-word" : ""};
+  box-decoration-break: ${(props) => props.code ? "clone" : ""};
+  padding: ${(props) => props.code ? "0.1rem 0.3rem 0.2rem" : ""};
+  border-radius: ${(props) => props.code ? "0.2rem" : ""};
 `;
 
 const AlignedText = Text.withComponent("div");
@@ -57,19 +65,24 @@ const EditorBlock: FC<CMSBlockProps> = ({
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
-      const props = {
-        bold: leaf.bold ?? false,
-        italic: leaf.italic ?? false,
-        underline: leaf.underline ?? false,
-        align: leaf.align ?? "left",
-        textSize: leaf.textSize ?? defaultTextSize,
-        ...attributes
+      if ("doiexist" in leaf) {
+        const props = {
+          bold: leaf.bold ?? false,
+          italic: leaf.italic ?? false,
+          underline: leaf.underline ?? false,
+          code: leaf.code ?? false,
+          align: leaf.align ?? "left",
+          textSize: leaf.textSize ?? defaultTextSize,
+          ...attributes
+        }
+
+        return leaf.align == null
+          ? <Text {...props}>{children}</Text>
+          : <AlignedText {...props}>{children}</AlignedText>;
+      } else {
+        return <>hello</>
       }
-      
-      return leaf.align == null 
-              ? <Text {...props}>{children}</Text>
-              : <AlignedText {...props}>{children}</AlignedText>;
-      },
+    },
     []
   );
 
@@ -84,13 +97,14 @@ const EditorBlock: FC<CMSBlockProps> = ({
           <EditorBoldButton />
           <EditorItalicButton />
           <EditorUnderlineButton />
+          <EditorCodeButton />
           <EditorSelectFont />
           <EditorLeftAlignButton />
           <EditorCenterAlignButton />
           <EditorRightAlignButton />
         </ToolbarContainer>
       )}
-      <ContentBlock 
+      <ContentBlock
         focused={showToolBar}>
         <Editable
           renderLeaf={renderLeaf}

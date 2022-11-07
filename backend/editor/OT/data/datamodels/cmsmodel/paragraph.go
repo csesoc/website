@@ -21,6 +21,7 @@ type Text struct {
 	Bold      bool
 	Italic    bool
 	Underline bool
+	Code      bool
 }
 
 // Get returns the reflect.Value corresponding to a specific field
