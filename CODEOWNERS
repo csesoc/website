@@ -1,10 +1,11 @@
-backend/ @Varun-Sethu
-postgres/ @Varun-Sethu
-utilities/ @Varun-Sethu
-services/ @Varun-Sethu
+backend/ @Varun-Sethu @hdphuong
+postgres/ @Varun-Sethu @hdphuong
+utilities/ @Varun-Sethu @hdphuong
+services/ @Varun-Sethu @hdphuong
 
-frontend/ @fafnirZ
-next/ @fafnirZ
+frontend/ @fafnirZ @lauraw0 @james-teng-0
+frontend/src/packages/editor @fafnirZ @lauraw0 @james-teng-0 @Varun-Sethu @hdphuong
+next/ @fafnirZ @lauraw0 @james-teng-0
 
 .github/ @csesoc/technical
 renovate.json @csesoc/technical

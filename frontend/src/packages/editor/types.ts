@@ -1,11 +1,13 @@
 import { ReactEditor } from "slate-react";
-import { BaseEditor, Descendant } from "slate";
+import { BaseEditor, BaseOperation, Descendant } from "slate";
 
 export type BlockData = Descendant[];
-export type UpdateHandler = (idx: number, updatedBlock: BlockData) => void;
+
+export type OpPropagator = (id: number, update: BlockData, operation: BaseOperation[]) => void;
+export type UpdateCallback = (id: number, update: BlockData) => void;
 
 type CustomElement = { type: "paragraph" | "heading"; children: CustomText[] };
-type CustomText = {
+export type CustomText = {
   textSize?: number;
   text: string;
   bold?: boolean;
@@ -14,6 +16,15 @@ type CustomText = {
   type?: string;
   align?: string;
 };
+
+export interface CMSBlockProps {
+  update: OpPropagator;
+  initialValue: BlockData;
+  id: number;
+  showToolBar: boolean;
+  onEditorClick: () => void;
+}
+
 
 declare module "slate" {
   interface CustomTypes {
