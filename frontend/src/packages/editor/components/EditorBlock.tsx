@@ -80,7 +80,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
           ? <Text {...props}>{children}</Text>
           : <AlignedText {...props}>{children}</AlignedText>;
       } else {
-        return <>hello</>
+        return <p {...attributes}>{children}</p>
       }
     },
     []
@@ -90,7 +90,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
     <Slate
       editor={editor}
       value={initialValue}
-      onChange={(value) => update(id, editor.children, editor.operations)}
+      onChange={() => update(id, editor.children, editor.operations)}
     >
       {showToolBar && (
         <ToolbarContainer>

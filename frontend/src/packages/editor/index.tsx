@@ -77,7 +77,7 @@ const EditorPage: FC = () => {
     let newElement: Descendant
     switch (type) {
       case "code":
-        newElement = { type: type, children: [{ text: "", doiexistbutforcodeblocks: true }] }
+        newElement = { type: type, language: "html", children: [{ text: "", doiexistbutforcodeblocks: true }] }
         break;
       default:
         newElement = { type: type, children: [{ text: "", doiexist: true }] };

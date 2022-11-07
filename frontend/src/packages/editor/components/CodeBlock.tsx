@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import { Text, createEditor, Range } from "slate";
 import React, { FC, useMemo, useCallback, useState } from "react";
 import {
@@ -42,7 +41,6 @@ const CodeBlock: FC<CMSBlockProps> = ({
     }
   };
 
-
   // decorate function depends on the language selected
   const decorate = useCallback(
     ([node, path]) => {
@@ -72,7 +70,6 @@ const CodeBlock: FC<CMSBlockProps> = ({
     },
     [language]
   )
-
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
@@ -122,12 +119,11 @@ const CodeBlock: FC<CMSBlockProps> = ({
             color: #dd4a68;
           `}
         `}
-          >
-            {children}
+          >{children}
           </span>
         );
       } else {
-        return <span></span>
+        return <span>{children}</span>
       }
     },
     []
@@ -151,7 +147,7 @@ const CodeBlock: FC<CMSBlockProps> = ({
             onChange={e => setLanguage(e.target.value)}
           >
             <option value="js">JavaScript</option>
-            <option value="css">CSS</option>
+            <option value="css">CSS</option>s
             <option value="html">HTML</option>
             <option value="python">Python</option>
             <option value="sql">SQL</option>
