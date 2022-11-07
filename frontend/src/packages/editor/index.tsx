@@ -77,10 +77,10 @@ const EditorPage: FC = () => {
     let newElement: Descendant
     switch (type) {
       case "code":
-        newElement = { type: type, children: [{ text: "", doiexistbutforcodeblocks: true }] }
+        newElement = { type: type, children: [{ text: "", formattable: false, type: "customCode" }] }
         break;
       default:
-        newElement = { type: type, children: [{ text: "", doiexist: true }] };
+        newElement = { type: type, children: [{ text: "", formattable: true, type: "customText" }] };
     }
 
     // push and update this creation operation to the operation manager

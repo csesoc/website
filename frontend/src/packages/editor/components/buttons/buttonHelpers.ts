@@ -1,5 +1,6 @@
 import { Editor, BaseEditor } from "slate";
 import { ReactEditor } from "slate-react";
+import { FormattableBlock } from "../../types";
 
 /**
  * decorate the selected text with the format
@@ -33,16 +34,13 @@ const isMarkActive = (
   // Editor object exposes properties of the current editor
   // and methods to modify it
   const marks = Editor.marks(editor);
-  // const type = editor.children[0]?.type as "paragraph" | "heading" | "code"
-  // if (type === 'paragraph' || type === 'heading') {
-  //   return marks ? marks[format] === true : false;
-  // }
 
+  if (marks?.formattable ?? false) {
+    const formatSet = marks as FormattableBlock;
+    return format in formatSet;
+  }
 
-  // //  check whether selected text is formatted
-  // //  e.g. when the selected text is bold, marks["bold"] is true
-  return marks ? marks[format] === true : false;
-  // return true;
+  return false;
 };
 
 

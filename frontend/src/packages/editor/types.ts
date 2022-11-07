@@ -10,26 +10,26 @@ type CustomElement = { type: "paragraph" | "heading"; children: CustomText[] };
 
 export type CustomCodeElement = { type: "code"; children: CustomCodeText[] };
 
-export type CustomText = {
-  textSize?: number;
-  text: string;
-  doiexist: boolean;
+export type NonFormattableBlock = { formattable: false; }
+
+export type FormattableBlock = {
+  formattable: true;
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;
+  textSize?: number;
   code?: boolean;
-  type?: string;
   align?: string;
-};
+}
+
+export type CustomText = {
+  type: "customText";
+  text: string;
+} & FormattableBlock;
 
 export type CustomCodeText = {
-  bold?: boolean;
-  italic?: boolean;
-  underline?: boolean;
-  code?: boolean;
+  type: "customCode";
   text: string;
-  doiexistbutforcodeblocks: boolean;
-  type?: string;
   comment?: boolean;
   operator?: boolean;
   url?: boolean;
@@ -48,7 +48,7 @@ export type CustomCodeText = {
   char?: boolean;
   function?: boolean;
   "class-name"?: boolean;
-}
+} & NonFormattableBlock;
 
 export interface CMSBlockProps {
   update: OpPropagator;

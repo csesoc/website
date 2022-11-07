@@ -36,7 +36,7 @@ const HeadingBlock: FC<CMSBlockProps> = ({
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
-      if ("doiexist" in leaf) {
+      if (leaf.type === 'customText') {
         return (
           <Text
             textSize={leaf.textSize ?? defaultTextSize}
@@ -46,7 +46,7 @@ const HeadingBlock: FC<CMSBlockProps> = ({
           </Text>
         );
       } else {
-        return <>dsafjl;sk</>
+        return <></>
       }
     },
     []
@@ -56,7 +56,7 @@ const HeadingBlock: FC<CMSBlockProps> = ({
     <Slate
       editor={editor}
       value={initialValue}
-      onChange={(value) => { update(id, editor.children, editor.operations); }}
+      onChange={() => { update(id, editor.children, editor.operations); }}
     >
       {showToolBar && (
         <ToolbarContainer>
