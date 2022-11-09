@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	"cms.csesoc.unsw.edu.au/editor/OT/data"
-	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels/cmsmodel"
+	"cms.csesoc.unsw.edu.au/editor/OT/datamodel"
+	"cms.csesoc.unsw.edu.au/editor/OT/operations"
 	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -67,15 +67,15 @@ func setupDocument() cmsjson.AstNode {
 
 	config := cmsjson.Configuration{
 		RegisteredTypes: map[reflect.Type]map[string]reflect.Type{
-			reflect.TypeOf((*cmsmodel.Component)(nil)).Elem(): {
-				"Image":      reflect.TypeOf(cmsmodel.Image{}),
-				"Paragraph":  reflect.TypeOf(cmsmodel.Paragraph{}),
+			reflect.TypeOf((*datamodel.Component)(nil)).Elem(): {
+				"Image":      reflect.TypeOf(datamodel.Image{}),
+				"Paragraph":  reflect.TypeOf(datamodel.Paragraph{}),
 				"ArraysData": reflect.TypeOf(ArraysData{}),
 			},
 		},
 	}
 
-	result, err := cmsjson.UnmarshallAST[cmsmodel.Document](config, document)
+	result, err := cmsjson.UnmarshallAST[datamodel.Document](config, document)
 	if err != nil {
 		panic(err)
 	}
@@ -88,7 +88,7 @@ func TestValidStructField(t *testing.T) {
 	// Content/0
 	subpaths := []int{2, 0}
 
-	prev, result, err := data.Traverse(document, subpaths)
+	prev, result, err := operations.Traverse(document, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -112,7 +112,7 @@ func TestValidArrayField(t *testing.T) {
 	// Content/2/Data/0
 	subpaths := []int{2, 2, 0, 0}
 
-	prev, result, err := data.Traverse(document, subpaths)
+	prev, result, err := operations.Traverse(document, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -131,7 +131,7 @@ func TestValidNestedFields(t *testing.T) {
 	// Content/1/ParagraphChildren/0/Bold
 	subpaths := []int{2, 1, 2, 0, 2}
 
-	prev, result, err := data.Traverse(document, subpaths)
+	prev, result, err := operations.Traverse(document, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -162,7 +162,7 @@ func TestValidGetFirstDepth(t *testing.T) {
 	// Content/0/ImageDocumentID
 	subpaths := []int{2, 0, 0}
 
-	_, result, err := data.Traverse(document, subpaths)
+	_, result, err := operations.Traverse(document, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -177,7 +177,7 @@ func TestValidGetNestedPrimitive(t *testing.T) {
 	// Content/1/ParagraphChildren/0/Underline
 	subpaths := []int{2, 1, 2, 0, 4}
 
-	_, result, err := data.Traverse(document, subpaths)
+	_, result, err := operations.Traverse(document, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -205,17 +205,17 @@ func TestInsertStringOperation(t *testing.T) {
 		}
 	}`
 
-	operation, err := data.ParseOperation(jsonOperation)
+	operation, err := operations.ParseOperation(jsonOperation)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	parent, _, err := data.Traverse(document, subpaths)
+	parent, _, err := operations.Traverse(document, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	result, err := operation.Operation.Apply(parent, 1, data.Insert)
+	result, err := operation.Operation.Apply(parent, 1, operations.Insert)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -245,17 +245,17 @@ func TestDeleteStringOperation(t *testing.T) {
 		}
 	}`
 
-	operation, err := data.ParseOperation(jsonOperation)
+	operation, err := operations.ParseOperation(jsonOperation)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	parent, _, err := data.Traverse(document, subpaths)
+	parent, _, err := operations.Traverse(document, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	result, err := operation.Operation.Apply(parent, 1, data.Delete)
+	result, err := operation.Operation.Apply(parent, 1, operations.Delete)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -283,17 +283,17 @@ func TestInsertArrayOperation(t *testing.T) {
 		}
 	}`
 
-	operation, err := data.ParseOperation(jsonOperation)
+	operation, err := operations.ParseOperation(jsonOperation)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	parent, _, err := data.Traverse(document, subpaths)
+	parent, _, err := operations.Traverse(document, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	result, err := operation.Operation.Apply(parent, 3, data.Insert)
+	result, err := operation.Operation.Apply(parent, 3, operations.Insert)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
@@ -326,11 +326,11 @@ func TestUpdateArrayElement(t *testing.T) {
 		}
 	}`
 
-	operation, _ := data.ParseOperation(jsonOperation)
+	operation, _ := operations.ParseOperation(jsonOperation)
 
-	parent, _, _ := data.Traverse(document, subpaths)
+	parent, _, _ := operations.Traverse(document, subpaths)
 
-	result, _ := operation.Operation.Apply(parent, 0, data.Insert)
+	result, _ := operation.Operation.Apply(parent, 0, operations.Insert)
 
 	assert := assert.New(t)
 
@@ -364,17 +364,17 @@ func TestUpdateObjectElement(t *testing.T) {
 		}
 	}`
 
-	operation, err := data.ParseOperation(jsonOperation)
+	operation, err := operations.ParseOperation(jsonOperation)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	parent, _, err := data.Traverse(document, subpaths)
+	parent, _, err := operations.Traverse(document, subpaths)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	result, err := operation.Operation.Apply(parent, 0, data.Insert)
+	result, err := operation.Operation.Apply(parent, 0, operations.Insert)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}

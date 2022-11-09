@@ -1,4 +1,4 @@
-package data
+package operations
 
 import (
 	"cms.csesoc.unsw.edu.au/pkg/cmsjson"

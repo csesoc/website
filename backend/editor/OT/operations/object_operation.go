@@ -1,16 +1,16 @@
-package data
+package operations
 
 import (
 	"errors"
 	"fmt"
 
-	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels"
+	"cms.csesoc.unsw.edu.au/editor/OT/datamodel"
 	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
 )
 
 // ObjectOperation represents an operation we perform on an object
 type ObjectOperation struct {
-	NewValue datamodels.DataType
+	NewValue datamodel.DataType
 }
 
 // TransformAgainst is the ArrayOperation implementation of the operationModel interface

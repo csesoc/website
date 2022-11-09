@@ -1,12 +1,8 @@
-package editor
-
-import (
-	"cms.csesoc.unsw.edu.au/editor/OT/data"
-)
+package operations
 
 // transformPipeline takes an operation and transforms it according to our transformation specification
 // todo: state should not be a string, am assuming that I'm taking a struct that contains operation, pos and
-func transformPipeline(x data.Operation, y data.Operation) (data.Operation, data.Operation) {
+func TransformPipeline(x Operation, y Operation) (Operation, Operation) {
 	// Finally normalise the operations to account for no-op return values
 	needsAppSpecific := false
 	x.Path, y.Path, needsAppSpecific = transformPaths(x.Path, y.Path, x.OperationType, y.OperationType)
@@ -20,17 +16,17 @@ func transformPipeline(x data.Operation, y data.Operation) (data.Operation, data
 }
 
 // transformPaths takes two paths and transforms it according to the paper's tree OT specification
-func transformPaths(pathX, pathY []int, xEditType, yEditType data.EditType) ([]int, []int, bool) {
+func transformPaths(pathX, pathY []int, xEditType, yEditType EditType) ([]int, []int, bool) {
 	transformationPoint := TransformPoint(pathX, pathY)
 	needsAppSpecific := false
 
 	if !EffectIndependent(pathX, pathY, transformationPoint) {
-		if xEditType == data.Insert && yEditType == data.Insert {
+		if xEditType == Insert && yEditType == Insert {
 			pathX, pathY, needsAppSpecific = TransformInserts(pathX, pathY, transformationPoint)
-		} else if xEditType == data.Delete && yEditType == data.Delete {
+		} else if xEditType == Delete && yEditType == Delete {
 			pathX, pathY = TransformDeletes(pathX, pathY, transformationPoint)
 		} else {
-			if xEditType == data.Insert {
+			if xEditType == Insert {
 				pathX, pathY = TransformInsertDelete(pathX, pathY, transformationPoint)
 			} else {
 				pathY, pathX = TransformInsertDelete(pathY, pathX, transformationPoint)
@@ -148,10 +144,10 @@ func min(a, b int) int {
 
 // normaliseOperation converts operations containing nil invalid paths to no-operations
 // no-operations are not applied by the rest of the system to the document :D
-func normaliseOperation(x data.Operation) data.Operation {
+func normaliseOperation(x Operation) Operation {
 	// Make sure to detect for no-ops, internally this is represented by a nil ActualPath
 	if x.Path == nil {
-		return data.NoOperation
+		return NoOperation
 	}
 
 	return x
