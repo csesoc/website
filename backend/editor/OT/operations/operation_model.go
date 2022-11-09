@@ -38,7 +38,7 @@ var NoOperation = Operation{IsNoOp: true, Operation: Noop{}}
 // a Request object
 func ParseOperation(request string) (Operation, error) {
 	var operation Operation
-	if err := cmsjson.Unmarshall[Operation](cmsJsonConf, &operation, []byte(request)); err != nil {
+	if err := cmsjson.Unmarshall[Operation](CmsJsonConf, &operation, []byte(request)); err != nil {
 		return Operation{}, err
 	} else {
 		return operation, nil

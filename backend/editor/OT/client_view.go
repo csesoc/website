@@ -56,13 +56,12 @@ func (c *clientView) run(serverPipe pipe, terminatePipe alertLeaving) {
 				// push the update to the documentServer
 				if request, err := operations.ParseOperation(string(msg)); err == nil {
 					serverPipe(request)
-					continue
 				}
+			} else {
+				// todo: push a terminate signal to the client, also tell the server we're leaving
+				terminatePipe()
+				c.socket.Close()
 			}
-
-			// todo: push a terminate signal to the client, also tell the server we're leaving
-			terminatePipe()
-			c.socket.Close()
 		}
 	}
 }

@@ -28,3 +28,13 @@ func Traverse(document cmsjson.AstNode, subpaths []int) (cmsjson.AstNode, cmsjso
 
 	return prev, curr, nil
 }
+
+func (op Operation) ApplyTo(document cmsjson.AstNode) (cmsjson.AstNode, error) {
+	parent, _, err := Traverse(document, op.Path)
+	if err != nil {
+		return nil, fmt.Errorf("failed to apply operation %v at target site: %w", op, err)
+	}
+
+	applicationIndex := op.Path[len(op.Path)-1]
+	return op.Operation.Apply(parent, applicationIndex, op.OperationType)
+}

@@ -1,10 +1,9 @@
 package endpoints
 
 import (
-	"fmt"
 	"net/http"
 
-	editor "cms.csesoc.unsw.edu.au/editor/pessimistic"
+	editor "cms.csesoc.unsw.edu.au/editor/OT"
 	. "cms.csesoc.unsw.edu.au/endpoints/models"
 	"github.com/gorilla/websocket"
 )
@@ -21,27 +20,6 @@ var Upgrader = websocket.Upgrader{
 // EditHandler is the HTTP handler responsible for dealing with incoming requests to edit a document
 // for the most part this is passed over to the editor package
 func EditHandler(form ValidEditRequest, w http.ResponseWriter, r *http.Request, df DependencyFactory) handlerResponse[empty] {
-	unpublishedVol := df.GetUnpublishedVolumeRepo()
-	log := df.GetLogger()
-
-	ws, err := Upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Write("failed to upgrade websocket connection")
-		return handlerResponse[empty]{
-			Status: http.StatusInternalServerError,
-		}
-	}
-
-	// note: this blocks until completion
-	log.Write("starting editor loop")
-	err = editor.EditorClientLoop(form.DocumentID, unpublishedVol, ws)
-	if err != nil {
-		log.Write(fmt.Sprintf("ending editor loop, message: %v", err.Error()))
-		return handlerResponse[empty]{
-			Status: http.StatusInternalServerError,
-		}
-	}
-
-	fmt.Print("hello!: D")
-	return handlerResponse[empty]{Status: http.StatusOK}
+	editor.EditEndpoint(w, r)
+	return handlerResponse[empty]{}
 }
