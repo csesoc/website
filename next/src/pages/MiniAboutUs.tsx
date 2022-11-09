@@ -1,5 +1,6 @@
 import Sphere from '../components/aboutus/ReusableSpheres';
 import * as PageStyle from '../components/aboutus/AboutUs-Styled';
+import { Fragment } from 'react';
 
 const args1 = {
     left: 11,
@@ -12,6 +13,7 @@ const args1 = {
     angle: 261.11,
     blur: 3.5,
     rotation: 93.47,
+    text: ""
 }
 
 const args2 = {
@@ -24,23 +26,31 @@ const args2 = {
     startSecondaryPoint: 99.56,
     angle: 261.11,
     blur: 3,
+    text: ""
 }
 
 const args3 = {
     left: 14,
     top: 62,
+    leftMobile: 70,
+    topMobile: 40,
     size: 9,
+    sizeMobile: 40,
     colourMain: "#9B9BE1",
     colourSecondary: "#E8CAFF",
     startMainPoint: -12,
     startSecondaryPoint: 76.59,
     angle: 261.11,
     rotation: -74.2,
+    text: ""
 }
 
 const args4 = {
     left: 72,
-    top: 61,
+    top: 64,
+    leftMobile: 0,
+    topMobile: 58,
+    sizeMobile: 25,
     size: 16,
     colourMain: "#0069E7",
     colourSecondary: "#BDDBFF",
@@ -48,15 +58,20 @@ const args4 = {
     startSecondaryPoint: 81.0,
     angle: 155.55,
     rotation: 96.49,
+    text: "more info"
 }
 
 const SphereArgs = [args1, args2, args3, args4];
 
 const CreateSpheres = SphereArgs.map((arg, index) => {
     return (
-        <PageStyle.SpherePosition key={index} left={arg.left} top={arg.top}>
-            <Sphere {...arg} />
-        </PageStyle.SpherePosition>
+      <Fragment key={index}>
+        <Sphere {...arg}>
+          <a href='AboutUs'>
+            <PageStyle.MoreInfoText {...arg}>{arg.text}</PageStyle.MoreInfoText>
+          </a>
+        </Sphere>
+      </Fragment>
     )
 })
 

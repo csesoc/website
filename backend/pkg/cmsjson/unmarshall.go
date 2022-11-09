@@ -96,7 +96,6 @@ func (c Configuration) parseArray(result gjson.Result, underlyingType reflect.Ty
 func (c Configuration) parseInterface(root gjson.Result, underlyingType reflect.Type, dest reflect.Value) error {
 	targetType := root.Get("$type").String()
 	typeRegistration := c.RegisteredTypes[underlyingType]
-
 	alternativeDest := reflect.New(typeRegistration[targetType]).Elem()
 	if err := c.parseStruct(root, typeRegistration[targetType], alternativeDest); err != nil {
 		return err
@@ -134,6 +133,8 @@ func (c Configuration) parsePrimitive(result gjson.Result, expected reflect.Type
 		value = result.Int()
 	case reflect.Float32, reflect.Float64:
 		value = result.Float()
+	case reflect.Bool:
+		value = result.Bool()
 	default:
 		value = nil
 	}

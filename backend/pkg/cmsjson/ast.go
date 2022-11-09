@@ -27,9 +27,9 @@ type (
 
 		// Update functions, if the underlying type does not match then an error is thrown
 		// ie if you perform an "UpdatePrimitive" on a JSONObject node
-		UpdatePrimitive(AstNode) error
-		UpdateArray(int, AstNode) error
-		UpdateObject(int, AstNode) error
+		UpdateOrAddPrimitiveElement(AstNode) error
+		UpdateOrAddArrayElement(int, AstNode) error
+		UpdateOrAddObjectElement(int, AstNode) error
 
 		RemoveArrayElement(int) error
 	}
@@ -93,7 +93,7 @@ func (node *jsonNode) JsonArray() ([]AstNode, reflect.Type) {
 
 // Insertion operations
 // UpdatePrimitive updates a primitive value given an incoming ast node
-func (node *jsonNode) UpdatePrimitive(replacement AstNode) error {
+func (node *jsonNode) UpdateOrAddPrimitiveElement(replacement AstNode) error {
 	value, underlyingType := replacement.JsonPrimitive()
 
 	switch {
@@ -110,7 +110,7 @@ func (node *jsonNode) UpdatePrimitive(replacement AstNode) error {
 }
 
 // UpdateArray updates an array AST node to contain an additional entry :D
-func (node *jsonNode) UpdateArray(index int, newValue AstNode) error {
+func (node *jsonNode) UpdateOrAddArrayElement(index int, newValue AstNode) error {
 	value, underlyingType := newValue.JsonPrimitive()
 	asJsonNode, couldCast := newValue.(*jsonNode)
 
@@ -123,13 +123,16 @@ func (node *jsonNode) UpdateArray(index int, newValue AstNode) error {
 		return errors.New("type mismatch between target node and value to insert")
 	case node.children == nil || node.isObject:
 		return errors.New("ast node is not an array")
-	case len(node.children) > index:
+	case index > len(node.children):
 		return errors.New("cannot insert past the existing size of the array")
 	}
 
 	asJsonNode.key = strconv.Itoa(index)
-	node.children = append(append(node.children[:index], asJsonNode), node.children[index:]...)
-
+	if index == len(node.children) {
+		node.children = append(node.children, asJsonNode)
+	} else {
+		node.children[index] = asJsonNode
+	}
 	return nil
 }
 
@@ -147,8 +150,11 @@ func (node *jsonNode) RemoveArrayElement(index int) error {
 }
 
 // UpdateObject updates a specific object and applies a value at a specific index
-func (node *jsonNode) UpdateObject(index int, newValue AstNode) error {
+func (node *jsonNode) UpdateOrAddObjectElement(index int, newValue AstNode) error {
 	value, underlyingType := newValue.JsonPrimitive()
+	if value == nil {
+		value, underlyingType = newValue.JsonObject()
+	}
 	asJsonNode, couldCast := newValue.(*jsonNode)
 
 	switch {
@@ -160,12 +166,12 @@ func (node *jsonNode) UpdateObject(index int, newValue AstNode) error {
 		return errors.New("type mismatch between target node and value to insert")
 	case node.children == nil || !node.isObject:
 		return errors.New("ast node is not an object")
-	case len(node.children) >= index:
+	case index >= len(node.children):
 		return errors.New("cannot insert past the existing field count of the object")
 	}
 
 	asJsonNode.key = node.children[index].key
-	node.children[index] = asJsonNode
+	node.children[index] = asJsonNode.children[index]
 	return nil
 }
 

@@ -5,12 +5,13 @@ import Image from 'next/image';
 
 import styled from "styled-components";
 
-import { NavbarOpenHandler } from "../components/navbar/types";
+import { NavbarOpenHandler, NavbarType } from "../components/navbar/types";
 import HamburgerMenu from "../components/navbar/HamburgerMenu";
 
 import HPCurve from "../svgs/HPCurve"
 import TopRect from "../svgs/TopRect.svg"
 import BottomRect from "../svgs/BottomRect.svg"
+import Otter from '../svgs/otter.png'
 
 // local
 import Navbar from "../components/navbar/Navbar";
@@ -22,7 +23,9 @@ import Support from "./MiniSupport";
 
 import Footer from "../components/footer/Footer";
 import { device } from '../styles/device'
-import { SectionFadeInFromLeft, SectionFadeInFromRight } from "../styles/motion"
+import { SectionFadeInFromLeft, SectionFadeInFromRight, Spin } from "../styles/motion"
+import Sponsors from "./Sponsors";
+import ExecDescription from "./ExecDescription";
 
 type CurveContainerProps = {
   offset: number;
@@ -35,17 +38,16 @@ const PageContainer = styled.div`
   flex-direction: column;
 `;
 
-const Main = styled.main`
-  // padding-left: 2rem;
-  // padding-right: 2rem;
-`;
-
 const CurveContainer = styled.div<CurveContainerProps>`
   position: absolute;
   top: ${props => props.offset}px;
   right: 0;
   z-index: -1;  
 `;
+
+const NavContainer = styled.div`
+  height: 10vh;
+`
 
 const PurpleBlock = styled.div`
   background: #BEB8EA;
@@ -64,26 +66,21 @@ const Background = styled.div<{ offset?: number }>`
 
 const RefLink = styled.div``
 
-// const Background = styled.div``;
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`
 
-// const Button = styled.button`
-//   background-color:#FFFFFF;
-//   color: #3977F8;
-//   font-size: 22px;
-//   margin-top: 150px;
-//   padding: 0.25em 1em;
-//   border: 1px solid #3977F8;
-//   border-radius: 3px;
-//   position: absolute;
-//   width: 184px;
-//   height: 44px;
-// `;
+
 
 const Index: NextPage = () => {
   const [width, setWidth] = useState<undefined | number>();
   const [height, setHeight] = useState<undefined | number>();
   const [loaded, setLoaded] = useState(false);
   const [navbarOpen, setNavbarOpen] = useState(false);
+  const [fakeLoading, setFakeLoading] = useState(true);
 
   const handleToggle: NavbarOpenHandler = () => {
     setNavbarOpen(!navbarOpen);
@@ -105,6 +102,22 @@ const Index: NextPage = () => {
     setWidth(window?.innerWidth)
   }, [width])
 
+  setTimeout(() => {
+    setFakeLoading(false);
+  }, 2000)
+
+  if (fakeLoading) {
+    return (
+      <Spin>
+        <PageContainer>
+          <LoaderContainer>
+            <Image src={Otter} />
+          </LoaderContainer>
+        </PageContainer>
+      </Spin>
+    )
+  }
+
   return (
     <PageContainer>
       <Head>
@@ -112,47 +125,48 @@ const Index: NextPage = () => {
         <meta name="description" content="CSESoc Website Homepage" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} />}
-      {navbarOpen && <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} />}
-      <Main>
-        {(loaded && height && width) && (
-          <>
-            <Background>
-              <CurveContainer offset={0}>
-                {/* <Image src={HPCurve} objectFit="cover"/> */}
-                <HPCurve/>
-              </CurveContainer>
-              <CurveContainer offset={height + 300}>
-                <Image src={TopRect} />
-                <PurpleBlock />
-                <div style={{ position: 'relative', top: '-10px' }}>
-                  <Image src={BottomRect} />
-                </div>
-              </CurveContainer>
-            </Background>
-            <RefLink id="homepage">
-              <Homepage />
-            </RefLink>
-            <RefLink id="aboutus">
-              <SectionFadeInFromRight>
-                <AboutUs />
-              </SectionFadeInFromRight>
-            </RefLink>
-            <RefLink id="events">
-              <SectionFadeInFromLeft>
-                <Events />
-              </SectionFadeInFromLeft>
-            </RefLink>
-            <RefLink id="resources">
-              <Resources />
-            </RefLink>
-            <RefLink id="support">
-              <Support />
-            </RefLink>
-          </>
-        )}
-      </Main>
-      <Footer />
+      <NavContainer>
+        {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.HOMEPAGE} />}
+        {navbarOpen && <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} />}
+      </NavContainer>
+      {(loaded && height && width) && (
+        <>
+          <Background>
+            <CurveContainer offset={0}>
+              {/* <Image src={HPCurve} objectFit="cover"/> */}
+              <HPCurve />
+            </CurveContainer>
+            <CurveContainer offset={height + 300}>
+              <Image src={TopRect} />
+              <PurpleBlock />
+              <div style={{ position: 'relative', top: '-10px' }}>
+                <Image src={BottomRect} />
+              </div>
+            </CurveContainer>
+          </Background>
+          <RefLink id="homepage">
+            <Homepage />
+          </RefLink>
+          <RefLink id="aboutus">
+            <SectionFadeInFromRight>
+              <AboutUs />
+            </SectionFadeInFromRight>
+          </RefLink>
+          <RefLink id="events">
+            <SectionFadeInFromLeft>
+              <Events />
+            </SectionFadeInFromLeft>
+          </RefLink>
+          <RefLink id="resources">
+            <Resources />
+          </RefLink>
+          <RefLink id="support">
+            <Support />
+          </RefLink>
+          <Footer />
+        </>
+      )}
+
     </PageContainer>
   );
 };

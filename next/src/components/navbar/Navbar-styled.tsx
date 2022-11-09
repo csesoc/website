@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { device } from "../../styles/device"
 
 const Container = styled.div`
 	position: sticky;
@@ -9,6 +10,23 @@ const Container = styled.div`
 	display: flex;
 	z-index: 9000;
 `;
+
+const MiniPageContainer = styled.div`
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 10vh;
+  background: transparent;
+  display: flex;
+  z-index: 9000;
+  background-color: #A09FE3;
+  justify-content: flex-end;
+
+  @media ${device.tablet} {
+    justify-content: space-between;
+  }
+`
+
 const ItemWrapper = styled.ul`
 	display: inline-flex;
 	align-items: center;
@@ -21,6 +39,7 @@ const ItemWrapper = styled.ul`
 		gap: 0;
 	}
 `;
+
 const NavItem = styled.li`
 	font-size: 20px;
 	font-weight: bold;
@@ -35,6 +54,25 @@ const NavItem = styled.li`
 	}
 `;
 
+const HomepageButton = styled.div`
+  font-size: 2vw;
+  font-weight: bold;
+  margin-right: 1.2vw;
+  display: none;
+  align-self: center;
+
+
+  @media ${device.tablet} {
+    font-size: 20px;
+    display: inline-flex;
+  }
+
+  &:hover { 
+		cursor: pointer;
+		transform: scale(1.1);
+	}
+`
+
 const HamburgerButton = styled.button`
 	width: fit-content;
 	height: auto;
@@ -47,4 +85,14 @@ const HamburgerButton = styled.button`
 	}
 `;
 
-export { Container, ItemWrapper, NavItem, HamburgerButton };
+const ImageWrapper = styled.div`
+  position: relative;
+  width: 25vw;
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+  }
+`
+
+
+export { Container, ItemWrapper, NavItem, HamburgerButton, ImageWrapper, MiniPageContainer, HomepageButton };

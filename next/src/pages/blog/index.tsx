@@ -1,51 +1,97 @@
+import React, { useState, useEffect } from "react";
 import type { NextPage } from "next";
-import Blog from "../../components/blog/Blog";
-import Link from "next/link";
-import { data } from "../../mock";
-import type { Element } from "../../components/blog/types";
-import { useEffect, useState } from "react";
+import Link from 'next/link'
+import Otter from '../../svgs/otter.png'
+import Image from 'next/image';
+import Footer from "../../components/footer/Footer";
+import Navbar from "../../components/navbar/Navbar";
+import { NavbarOpenHandler, NavbarType } from "../../components/navbar/types";
+
 import styled from "styled-components";
 
-const PageContainer = styled.div`
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
+export const StyledSphere = styled.div`
+	width: 15vw;
+	height: 15vw;
+	background: #E8DBFF;
+	mix-blend-mode: normal;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
 `;
 
-const MainContainer = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
+export const Content = styled.div`
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+	height: 90vh;
+`
+export const StyledBlogLinks = styled.div`
+	padding-right: 10vw;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 90vh;
+	font-family: 'Raleway';
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 27pt;
+  word-wrap: break-word;
+	color: #000000;
+`
 
-const BlogPage: NextPage = () => {
-  const [paragraph, setParagraph] = useState<Element[][]>([]);
+export const StyledBlogTitle = styled.div`
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 30pt;
+  padding-bottom: 1vw;
+  
+`
 
-  useEffect(() => {
-    async function fetchData() {
-      const data = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URI}/api/filesystem/get/published?DocumentID=7`,
-        {
-          method: "GET",
-        }
-      ).then((res) => res.json());
-      console.log(JSON.parse(data.Response.Contents));
-      setParagraph(JSON.parse(data.Response.Contents) as Element[][]);
-    }
-    fetchData();
-  }, []);
+export const LinkTextStyle = styled.a`
+	&:hover {
+    color: #44a6c6;
+  }
+  &:active {
+    color: #31738a;
+  }
+  cursor: pointer;
+`
 
+const Index: NextPage = () => {
+  const [navbarOpen, setNavbarOpen] = useState(false);
+  const handleToggle: NavbarOpenHandler = () => {
+    setNavbarOpen(!navbarOpen);
+  };
   return (
-    <PageContainer>
-      <MainContainer>
-        <h1>blog1</h1>
-        <Blog elements={paragraph} />
-        <Link href="/">home</Link>
-      </MainContainer>
-    </PageContainer>
+    <div>
+      <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE} />
+      <Content>
+        <StyledSphere>
+          <Image src={Otter} />
+        </StyledSphere>
+        <StyledBlogLinks>
+          <StyledBlogTitle>
+            Blogs
+          </StyledBlogTitle>
+          <Link href="/blog">
+            <LinkTextStyle>Blog 1</LinkTextStyle>
+          </Link>
+          <Link href="/blog">
+            <LinkTextStyle>Blog 2</LinkTextStyle>
+          </Link>
+          <Link href="/blog">
+            <LinkTextStyle>Blog 3</LinkTextStyle>
+          </Link>
+          <Link href="/blog">
+            <LinkTextStyle>Blog 4</LinkTextStyle>
+          </Link>
+        </StyledBlogLinks>
+      </Content>
+      <Footer />
+    </div>
+
   );
 };
-
-export default BlogPage;
+export default Index;

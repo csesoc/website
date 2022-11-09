@@ -1,15 +1,17 @@
 import styled from "styled-components";
 import { TextStyle } from "./types";
-
-interface ParagraphStyle {
-  align?: "left" | "right" | "center";
-}
+import { device } from "../../styles/device";
 
 const Text = styled.span<TextStyle>`
   font-weight: ${(props) => (props.bold ? 600 : 400)};
   font-style: ${(props) => (props.italic ? "italic" : "normal")};
   text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
+  text-align: ${(props) => props.align};
+  font-size: ${(props) => `${props.textSize}px` ?? "16px"};
 `;
+
+const AlignedText = Text.withComponent("div");
+
 const StyledLink = styled.span`
   color: red;
 `;
@@ -20,13 +22,35 @@ const ImagePlaceholder = styled.div`
   background-color: #5a6978;
 `;
 
-const ParagraphBlock = styled.p<ParagraphStyle>`
-  text-align: ${(props) => props.align ?? "left"};
+const ParagraphContainer = styled.div`
+  padding: 10px;
 `;
 
 const BlogContainer = styled.div`
-  max-width: 600px;
   font-size: 1.25rem;
+  margin: 0px 60px;
+
+  @media ${device.tablet} {
+    max-width: 700px;
+  }
+
+  @media (min-width: 1920px) {
+    max-width: 1440px;
+  }
 `;
 
-export { Text, StyledLink, ImagePlaceholder, ParagraphBlock, BlogContainer };
+const BlogHeading = styled.span`
+  font-weight: 800;
+  font-size: 35px;
+  padding: 20px 0px;
+`;
+
+export {
+  Text,
+  StyledLink,
+  AlignedText,
+  ImagePlaceholder,
+  BlogContainer,
+  BlogHeading,
+  ParagraphContainer,
+};

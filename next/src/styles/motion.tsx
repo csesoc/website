@@ -8,6 +8,15 @@ type Props = {
   children?: any
 }
 
+export const Spin = ({children}: Props) => (
+  <motion.div
+    animate={{ rotate: 360 }}
+    transition={{ repeat: Infinity, duration: 1 }}
+  >
+    {children}
+  </motion.div>
+)
+
 export const FadeIn = ({children}: Props) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.5 }}
@@ -43,7 +52,7 @@ export const SectionFadeInFromLeft = ({children}: Props) => (
   <motion.div
     initial={{ opacity: 0, x: "-100%" }}
     whileInView={{ opacity: 1, x: 0 }}
-    // viewport={{ once: true }}
+    viewport={{ once: true }}
     // animate={{ opacity: 1, x: 0 }}
     transition={{ duration: 2, type: "spring", stiffness: 100}}
   >
@@ -55,7 +64,7 @@ export const SectionFadeInFromRight = ({children}: Props) => (
   <motion.div
     initial={{ opacity: 0, x: "100%" }}
     whileInView={{ opacity: 1, x: 0 }}
-    // viewport={{ once: true }}
+    viewport={{ once: true }}
     // animate={{ opacity: 1, x: 0 }}
     transition={{ duration: 2, type: "spring", stiffness: 100}}
   >
@@ -84,7 +93,7 @@ export const TypewriterAnimation = ({ children }: Props) => {
     return (
       <div
         key={children + i}
-        style={{ display: 'inline-block', overflow: 'hidden' }}
+        style={{ display: 'inline-block', overflow: 'hidden', height:"auto" }}
       >
         <motion.div
           {...params}

@@ -67,14 +67,37 @@ const ButtonContainer = styled.div`
   display: flex;
 `
 
-const ImgContainer = styled.div`
+const FlexCenter = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
 `
+const ImgContainer = styled.div`
+  width: 50vw;
+
+  @media ${device.laptop} {
+    width: 350px;
+    height: 400px;
+  }
+`
+
+const Button = styled.button`
+  background-color:  #9B9B9B;
+  margin: 10px;
+  padding: 10px 45px;
+  font-size: 18px;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`
 
 
-export default function Support({}: Props) {
+export default function Support({ }: Props) {
   return (
     <Container>
       <HeadingContainer>
@@ -85,17 +108,19 @@ export default function Support({}: Props) {
           <TextContainer>
             <H3>Our Sponsors</H3>
             <ButtonContainer>
-              <Link href="/sponsors">
-                <button>view our sponsors</button>
+              <Link href="/Sponsors">
+                <Button>view our sponsors</Button>
               </Link>
             </ButtonContainer>
             <Text>Check out our very cool sponsors</Text>
           </TextContainer>
         </SectionFadeInFromLeft>
         <SectionFadeInFromRight>
-          <ImgContainer>
-            <Image src={Otter}/>
-          </ImgContainer>
+          <FlexCenter>
+            <ImgContainer>
+              <Image src={Otter} />
+            </ImgContainer>
+          </FlexCenter>
         </SectionFadeInFromRight>
       </BodyContainer>
     </Container>
