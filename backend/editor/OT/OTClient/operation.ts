@@ -10,12 +10,12 @@ export interface Operation {
 // Represents atomic operations that can be applied to a piece of data of a specific type
 // TODO: in the future update object operation to strictly contain CMS operation data
 export interface AtomicOperation {
-  $type: string;
+  type: string;
   transformAgainst: (op: AtomicOperation) => AtomicOperation[];
 }
 
 export class IntegerOperation implements AtomicOperation {
-  $type = "integerOperation";
+  type = "integerOperation";
   newValue: number;
   constructor(newValue: number) {
     this.newValue = newValue;
@@ -25,7 +25,7 @@ export class IntegerOperation implements AtomicOperation {
 }
 
 export class BooleanOperation implements AtomicOperation {
-  $type = "booleanOperation";
+  type = "booleanOperation";
   newValue: boolean;
   constructor(newValue: boolean) {
     this.newValue = newValue;
@@ -34,7 +34,7 @@ export class BooleanOperation implements AtomicOperation {
 }
 
 export class ObjectOperation implements AtomicOperation {
-  $type = "objectOperation";
+  type = "objectOperation";
   newValue: object;
   constructor(newValue: object) {
     this.newValue = newValue;
@@ -43,7 +43,7 @@ export class ObjectOperation implements AtomicOperation {
 }
 
 export class ArrayOperation implements AtomicOperation {
-  $type = "arrayOperation";
+  type = "arrayOperation";
   newValue: object;
   constructor(newValue: object) {
     this.newValue = newValue;
@@ -52,7 +52,7 @@ export class ArrayOperation implements AtomicOperation {
 }
 
 export class StringOperation implements AtomicOperation {
-  $type = "stringOperation";
+  type = "stringOperation";
   start: number;
   end: number;
   newValue: string;
@@ -167,7 +167,7 @@ const deleteDelete = (
 };
 
 export class NoOp implements AtomicOperation {
-  $type = "noOp";
+  type = "noOp";
   transformAgainst = (op: AtomicOperation): AtomicOperation[] => [this, op];
 }
 

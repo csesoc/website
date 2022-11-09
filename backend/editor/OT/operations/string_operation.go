@@ -1,6 +1,9 @@
 package operations
 
 import (
+	"errors"
+	"fmt"
+
 	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
 )
 
@@ -39,9 +42,38 @@ func (stringOp StringOperation) TransformAgainst(operation OperationModel, appli
 	}
 }
 
-// Apply is the StringOperation implementation of the OperationModel interface, it does nothing
-func (stringOp StringOperation) Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) cmsjson.AstNode {
-	return parentNode
+// Apply is the ArrayOperation implementation of the OperationModel interface, it does nothing
+func (arrOp StringOperation) Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) (cmsjson.AstNode, error) {
+	if children, _ := parentNode.JsonPrimitive(); children != nil {
+		return nil, errors.New("parent node cannot be a primitive")
+	}
+
+	children, _ := parentNode.JsonObject()
+	if children == nil {
+		children, _ = parentNode.JsonArray()
+	}
+
+	maxIndex := len(children) - 1
+	if applicationIndex < 0 || applicationIndex > maxIndex {
+		return nil, fmt.Errorf("application index must be between 0 and %d", maxIndex)
+	}
+
+	resultText, _ := children[applicationIndex].JsonPrimitive()
+	if resultText == nil {
+		return nil, errors.New("child at application index must be a primitive")
+	}
+
+	switch applicationType {
+	case Insert:
+		resultText = resultText.(string)[:arrOp.RangeStart] + arrOp.NewValue + resultText.(string)[arrOp.RangeEnd+1:]
+	case Delete:
+		resultText = resultText.(string)[:arrOp.RangeStart] + resultText.(string)[arrOp.RangeEnd+1:]
+	default:
+		return nil, fmt.Errorf("invalid edit type")
+	}
+
+	children[applicationIndex].UpdateOrAddPrimitiveElement(cmsjson.ASTFromValue(resultText))
+	return parentNode, nil
 }
 
 // Transform o2 when o1 is an insert, and o2 is a insert
