@@ -20,11 +20,11 @@ type TestingClient struct {
 func (tC TestingClient) HasTerminated() bool { return len(tC.underlyingClient.sendTerminateSignal) > 0 }
 func (tC TestingClient) WasAcknowledged() bool {
 	if len(tC.underlyingClient.sendAcknowledgement) > 0 {
-		// potential blocking condition here but for the sake of testing its fine
+		// potential "unexpected" blocking condition here but for the sake of testing its fine
 		// 	consider two goroutines one of them is this function
 		//		- this function reads the length and enters this if statement
 		//		- prior to the next statement another goroutine reads from the sendAck channel emptying it
-		//		- goroutine running this function is blocked until next ack
+		//		- goroutine running this function is blocked until next ack (very tragic btw)
 		// for the purpose of testing tho this should be fine :)
 		<-tC.underlyingClient.sendAcknowledgement
 		return true
