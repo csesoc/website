@@ -17,8 +17,21 @@ type TestingClient struct {
 	terminationPipe  func()
 }
 
-func (tC TestingClient) HasTerminated() bool   { return len(tC.underlyingClient.sendTerminateSignal) > 0 }
-func (tC TestingClient) WasAcknowledged() bool { return len(tC.underlyingClient.sendOp) > 0 }
+func (tC TestingClient) HasTerminated() bool { return len(tC.underlyingClient.sendTerminateSignal) > 0 }
+func (tC TestingClient) WasAcknowledged() bool {
+	if len(tC.underlyingClient.sendAcknowledgement) > 0 {
+		// potential blocking condition here but for the sake of testing its fine
+		// 	consider two goroutines one of them is this function
+		//		- this function reads the length and enters this if statement
+		//		- prior to the next statement another goroutine reads from the sendAck channel emptying it
+		//		- goroutine running this function is blocked until next ack
+		// for the purpose of testing tho this should be fine :)
+		<-tC.underlyingClient.sendAcknowledgement
+		return true
+	}
+	return false
+}
+
 func (tC TestingClient) GetReceivedOp() operations.Operation {
 	if len(tC.underlyingClient.sendOp) == 0 {
 		panic("testing client failure: expected a non-zero amount of received operations")
