@@ -16,6 +16,13 @@ type (
 		Image       multipart.File
 	}
 
+	// ValidImageUploadRequest is the request model for an handler that uploads an IMAGE to a docker volume
+	ValidDocumentUploadRequest struct {
+		Parent       uuid.UUID `schema:"Parent,required"`
+		DocumentName string    `schema:"DocumentName,required"`
+		Content      string    `schema:"Content,required"` // TODO: Add check that content is valid JSON
+	}
+
 	// ValidPublishDocumentRequest is the request model for any handler that publishes a document
 	ValidPublishDocumentRequest struct {
 		DocumentID uuid.UUID `schema:"DocumentID,required"`
@@ -25,13 +32,5 @@ type (
 	// the published volume
 	ValidGetPublishedDocumentRequest struct {
 		DocumentID uuid.UUID `schema:"DocumentID,required"`
-	}
-)
-
-// Response models outline the general format a HTTP handler response follows
-type (
-	// DocumentRetrievalResponse is just the returned response for any handler that fetches the contents of a docker volume
-	DocumentRetrievalResponse struct {
-		Contents string
 	}
 )

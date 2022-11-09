@@ -56,7 +56,7 @@ type (
 
 // FsEntryToEntityInfo just converts an instance of an FS entry to an instance of an entityInfo object
 // entityInfo objects are what is actually displayed to the end user
-func FsEntryToEntityInfo(entity repositories.FilesystemEntry, fsRepo repositories.IFilesystemRepository, expandChildren bool) EntityInfoResponse {
+func FsEntryToEntityInfo(entity repositories.FilesystemEntry, fsRepo repositories.FilesystemRepository, expandChildren bool) EntityInfoResponse {
 	children := []EntityInfoResponse{}
 	if expandChildren {
 		for _, childId := range entity.ChildrenIDs {

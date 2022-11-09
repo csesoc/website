@@ -27,7 +27,7 @@ type FilesystemEntry struct {
 type (
 	// Repository interface that all valid filesystem repositories
 	// mocked/real should implement
-	IFilesystemRepository interface {
+	FilesystemRepository interface {
 		GetEntryWithID(ID uuid.UUID) (FilesystemEntry, error)
 		GetRoot() (FilesystemEntry, error)
 		GetEntryWithParentID(ID uuid.UUID) (FilesystemEntry, error)
@@ -44,7 +44,7 @@ type (
 	// Repository interface representing an underlying connection
 	// to a filesystem within a docker volume containing unpublished
 	// data
-	IUnpublishedVolumeRepository interface {
+	UnpublishedVolumeRepository interface {
 		AddToVolume(filename string) (err error)
 		CopyToVolume(src *os.File, filename string) (err error)
 		GetFromVolume(filename string) (fp *os.File, err error)
@@ -54,24 +54,24 @@ type (
 
 	// Repository interface representing a connection to
 	// the published data docker volume
-	IPublishedVolumeRepository interface {
-		IUnpublishedVolumeRepository
+	PublishedVolumeRepository interface {
+		UnpublishedVolumeRepository
 	}
 
 	// Note: only exists Email and Password
-	IPersonRepository interface {
+	PersonRepository interface {
 		PersonExists(Person) bool
 		GetPersonWithDetails(Person) Person
 	}
 
 	// repository interface for the groups table within the database
-	IGroupsRepository interface {
+	GroupsRepository interface {
 		// Only requires Groups.Name
 		GetGroupInfo(Groups) Groups
 	}
 
 	// repository interface for getting information from the frontend table
-	IFrontendsRepository interface {
+	FrontendsRepository interface {
 		GetFrontendFromURL(url string) int
 	}
 )

@@ -18,9 +18,11 @@ type Manager struct {
 	readingDocuments *sync.RWMutex
 }
 
-var managerInstance *Manager
-var lock = &sync.Mutex{}
-var repo = repositories.GetRepository(repositories.FILESYSTEM).(repositories.IFilesystemRepository)
+var (
+	managerInstance *Manager
+	lock            = &sync.Mutex{}
+	repo            = repositories.NewFilesystemRepo()
+)
 
 // implementation of the singleton pattern :)
 func GetManagerInstance() *Manager {

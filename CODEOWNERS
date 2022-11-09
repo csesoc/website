@@ -1,5 +1,12 @@
-frontend/*   @csesoc/Websites-Frontend
-next/*       @csesoc/Websites-Frontend
-scripts/*    @csesoc/Websites-Backend
-backend/*    @csesoc/Websites-Backend
-postgres/*   @csesoc/Websites-Backend
+backend/ @Varun-Sethu @hdphuong
+postgres/ @Varun-Sethu @hdphuong
+utilities/ @Varun-Sethu @hdphuong
+services/ @Varun-Sethu @hdphuong
+
+frontend/ @fafnirZ @lauraw0 @james-teng-0
+frontend/src/packages/editor @fafnirZ @lauraw0 @james-teng-0 @Varun-Sethu @hdphuong
+next/ @fafnirZ @lauraw0 @james-teng-0
+
+.github/ @csesoc/technical
+renovate.json @csesoc/technical
+Dockerfile @csesoc/technical

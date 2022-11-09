@@ -16,8 +16,8 @@ export default function ItalicButton({
   return (
     <StyledButton onClick={onClick} onMouseDown={onMouseDown} {...styleProps}>
       <Italic
-        height={styleProps.size * scaleRate.smallButtonRate}
-        width={styleProps.size * scaleRate.smallButtonRate}
+        height={styleProps.size * scaleRate}
+        width={styleProps.size * scaleRate}
       />
     </StyledButton>
   );

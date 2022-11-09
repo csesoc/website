@@ -1,10 +1,7 @@
 package tests
 
 import (
-	"io/ioutil"
 	"net/http"
-	"os"
-	"reflect"
 	"testing"
 
 	"cms.csesoc.unsw.edu.au/database/repositories"
@@ -30,7 +27,7 @@ func TestValidEntityInfo(t *testing.T) {
 		EntityID:     entityID,
 		LogicalName:  "random name",
 		IsDocument:   false,
-		ParentFileID: repositories.FILESYSTEM_ROOT_ID,
+		ParentFileID: repositories.FilesystemRootID,
 		ChildrenIDs:  []uuid.UUID{},
 	}, nil).Times(1)
 
@@ -45,7 +42,7 @@ func TestValidEntityInfo(t *testing.T) {
 		EntityID:   entityID,
 		EntityName: "random name",
 		IsDocument: false,
-		Parent:     repositories.FILESYSTEM_ROOT_ID,
+		Parent:     repositories.FilesystemRootID,
 		Children:   []models.EntityInfoResponse{},
 	})
 }
@@ -76,11 +73,9 @@ func TestValidCreateNewEntity(t *testing.T) {
 
 	mockDockerFileSystemRepo := repMocks.NewMockIUnpublishedVolumeRepository(controller)
 	mockDockerFileSystemRepo.EXPECT().AddToVolume(entityID.String()).Return(nil).Times(1)
-	dockerRepoType := reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil))
 
 	mockDepFactory := createMockDependencyFactory(controller, mockFileRepo, true)
-	mockDepFactory.EXPECT().GetDependency(endpoints.UnpublishedVolumeRepository).Return(mockDockerFileSystemRepo)
-	mockDepFactory.EXPECT().GetDepFromType(dockerRepoType).Return(endpoints.UnpublishedVolumeRepository)
+	mockDepFactory.EXPECT().GetUnpublishedVolumeRepo().Return(mockDockerFileSystemRepo)
 
 	form := models.ValidEntityCreationRequest{
 		LogicalName: "random name",
@@ -148,87 +143,14 @@ func TestValidGetChildren(t *testing.T) {
 	})
 }
 
-func TestValidUploadImage(t *testing.T) {
-	controller := gomock.NewController(t)
-	assert := assert.New(t)
-	defer controller.Finish()
-
-	// ==== test setup =====
-	entityID := uuid.New()
-	parentID := uuid.New()
-	entityToCreate := repositories.FilesystemEntry{
-		LogicalName:  "a.png",
-		ParentFileID: parentID,
-		IsDocument:   false,
-		OwnerUserId:  1,
-	}
-
-	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
-	mockFileRepo.EXPECT().CreateEntry(entityToCreate).Return(repositories.FilesystemEntry{
-		EntityID:     entityID,
-		LogicalName:  "a.png",
-		IsDocument:   false,
-		ChildrenIDs:  []uuid.UUID{},
-		ParentFileID: parentID,
-	}, nil).Times(1)
-
-	tempFile, _ := ioutil.TempFile(os.TempDir(), "expected")
-	defer os.Remove(tempFile.Name())
-
-	mockDockerFileSystemRepo := repMocks.NewMockIUnpublishedVolumeRepository(controller)
-	mockDockerFileSystemRepo.EXPECT().AddToVolume(entityID.String()).Return(nil).Times(1)
-	mockDockerFileSystemRepo.EXPECT().GetFromVolume(entityID.String()).Return(tempFile, nil).Times(1)
-
-	dockerRepoType := reflect.TypeOf((*repositories.IUnpublishedVolumeRepository)(nil))
-
-	mockDepFactory := createMockDependencyFactory(controller, mockFileRepo, true)
-	mockDepFactory.EXPECT().GetDependency(endpoints.UnpublishedVolumeRepository).Return(mockDockerFileSystemRepo)
-	mockDepFactory.EXPECT().GetDepFromType(dockerRepoType).Return(endpoints.UnpublishedVolumeRepository)
-
-	// Create request
-	const pngBytes = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
-	garbageFile, _ := ioutil.TempFile(os.TempDir(), "input")
-	if _, err := garbageFile.WriteString(pngBytes); err != nil {
-		panic(err)
-	}
-	garbageFile.Seek(0, 0)
-
-	defer os.Remove(garbageFile.Name())
-
-	form := models.ValidImageUploadRequest{
-		Parent:      parentID,
-		LogicalName: "a.png",
-		OwnerGroup:  1,
-		Image:       garbageFile,
-	}
-
-	// ==== test execution =====
-	response := endpoints.UploadImage(form, mockDepFactory)
-	assert.Equal(response.Status, http.StatusOK)
-	assert.Equal(response.Response, models.NewEntityResponse{
-		NewID: entityID,
-	})
-
-	// Assert that the file was written to
-	content, err := os.ReadFile(tempFile.Name())
-	assert.Nil(err)
-	assert.Equal([]byte(pngBytes), content)
-}
-
 // createMockDependencyFactory just constructs an instance of a dependency factory mock
 func createMockDependencyFactory(controller *gomock.Controller, mockFileRepo *repMocks.MockIFilesystemRepository, needsLogger bool) *mocks.MockDependencyFactory {
 	mockDepFactory := mocks.NewMockDependencyFactory(controller)
-	fsRepositoryTypeInfo := reflect.TypeOf((*repositories.IFilesystemRepository)(nil))
-
-	mockDepFactory.EXPECT().GetDependency(endpoints.FileSystemRepository).Return(mockFileRepo)
-	mockDepFactory.EXPECT().GetDepFromType(fsRepositoryTypeInfo).Return(endpoints.FileSystemRepository)
+	mockDepFactory.EXPECT().GetFilesystemRepo().Return(mockFileRepo)
 
 	if needsLogger {
 		log := logger.OpenLog("new log")
-		logType := reflect.TypeOf((**logger.Log)(nil))
-
-		mockDepFactory.EXPECT().GetDependency(endpoints.Log).Return(log)
-		mockDepFactory.EXPECT().GetDepFromType(logType).Return(endpoints.Log)
+		mockDepFactory.EXPECT().GetLogger().Return(log)
 	}
 
 	return mockDepFactory
