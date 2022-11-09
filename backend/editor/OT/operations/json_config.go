@@ -1,9 +1,9 @@
-package data
+package operations
 
 import (
 	"reflect"
 
-	"cms.csesoc.unsw.edu.au/editor/OT/data/datamodels/cmsmodel"
+	"cms.csesoc.unsw.edu.au/editor/OT/datamodel"
 	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
 )
 
@@ -18,9 +18,14 @@ var cmsJsonConf = cmsjson.Configuration{
 	// this will also contain the registration for their data models
 	RegisteredTypes: map[reflect.Type]map[string]reflect.Type{
 		// TODO: later allow this to be dynamically swapped out for different front-ends
-		reflect.TypeOf((*cmsmodel.Component)(nil)).Elem(): {
-			"image":     reflect.TypeOf(cmsmodel.Image{}),
-			"paragraph": reflect.TypeOf(cmsmodel.Paragraph{}),
+		reflect.TypeOf((*datamodel.Component)(nil)).Elem(): {
+			"image":     reflect.TypeOf(datamodel.Image{}),
+			"paragraph": reflect.TypeOf(datamodel.Paragraph{}),
+		},
+
+		reflect.TypeOf((*datamodel.DataType)(nil)).Elem(): {
+			"image":     reflect.TypeOf(datamodel.Image{}),
+			"paragraph": reflect.TypeOf(datamodel.Paragraph{}),
 		},
 
 		// Type registrations for the OperationModel

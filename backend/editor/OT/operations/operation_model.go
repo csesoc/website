@@ -1,8 +1,6 @@
-package data
+package operations
 
 import (
-	"errors"
-
 	"cms.csesoc.unsw.edu.au/pkg/cmsjson"
 )
 
@@ -13,7 +11,7 @@ type (
 	// OperationModel defines an simple interface an operation must implement
 	OperationModel interface {
 		TransformAgainst(op OperationModel, applicationType EditType) (OperationModel, OperationModel)
-		Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) cmsjson.AstNode
+		Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) (cmsjson.AstNode, error)
 	}
 
 	// Operation is the fundamental incoming type from the frontend
@@ -41,7 +39,7 @@ var NoOperation = Operation{IsNoOp: true, Operation: Noop{}}
 func ParseOperation(request string) (Operation, error) {
 	var operation Operation
 	if err := cmsjson.Unmarshall[Operation](cmsJsonConf, &operation, []byte(request)); err != nil {
-		return Operation{}, errors.New("invalid request format")
+		return Operation{}, err
 	} else {
 		return operation, nil
 	}

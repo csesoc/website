@@ -9,7 +9,7 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-func UnmarshallAST[T any](c Configuration, source string) (*jsonNode, error) {
+func UnmarshallAST[T any](c Configuration, source string) (AstNode, error) {
 	base := gjson.Parse(source)
 	underlyingType := reflect.TypeOf(*new(T))
 	return c.parseASTCore(base, "root", underlyingType)
@@ -111,7 +111,7 @@ func (c Configuration) parseASTCore(result gjson.Result, key string, primitiveTy
 	case _primitive:
 		return c.visitPrimitiveAST(result, key, primitiveType)
 	case _array, _slice:
-		return c.visitArrayAST(result, key, primitiveType.Elem())
+		return c.visitArrayAST(result, key, primitiveType)
 	case _struct:
 		return c.visitStructAST(result, key, primitiveType)
 	case _interface:

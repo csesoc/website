@@ -9,12 +9,12 @@ type noop = {};
 
 // atomicOperation is a single operation that can be applied in our system
 type atomicOperation = 
-| { "$type": "stringOperation", stringOperation: stringOperation }
-| { "$type": "integerOperation", integerOperation: integerOperation }
-| { "$type": "booleanOperation", booleanOperation: booleanOperation }
-| { "$type": "objectOperation", objectOperation: objectOperation }
-| { "$type": "arrayOperation", arrayOperation: arrayOperation }
-| { "$type": "noop", noop: noop}
+| { type: "stringOperation", stringOperation: stringOperation }
+| { type: "integerOperation", integerOperation: integerOperation }
+| { type: "booleanOperation", booleanOperation: booleanOperation }
+| { type: "objectOperation", objectOperation: objectOperation }
+| { type: "arrayOperation", arrayOperation: arrayOperation }
+| { type: "noop", noop: noop}
 
 // operation is the atomic operation that is sent between clients and servers
 export type Operation = {
@@ -30,7 +30,7 @@ export const noop: Operation = {
     OperationType: "insert", 
     IsNoOp: true, 
     Operation:  {
-        "$type": "noop",
+        type: "noop",
         noop: {}
     }
 };
