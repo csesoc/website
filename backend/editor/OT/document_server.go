@@ -1,6 +1,7 @@
 package editor
 
 import (
+	"log"
 	"sync"
 
 	"cms.csesoc.unsw.edu.au/editor/OT/operations"
@@ -28,6 +29,7 @@ type clientState struct {
 	canSendOps bool
 }
 
+// todo: newDocumentServer should take an initial state
 func newDocumentServer() *documentServer {
 	// ideally state shouldn't be a string due to its immutability
 	// any update requires the allocation + copy of a new string in memory
@@ -114,20 +116,21 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 			// apply op to clientView states
 			s.stateLock.Lock()
 
-			// TODO: apply operation
-			//	- Blockers:
-			//		- Gary's TLB
-			//		- Updated Traversal
-
 			// apply the operation locally and log the new operation
 			transformedOperation := s.transformOperation(op)
 			s.operationHistory = append(s.operationHistory, transformedOperation)
 
-			s.stateLock.Unlock()
-
-			if transformedOperation.IsNoOp {
-				return
+			if !transformedOperation.IsNoOp {
+				newState, err := op.ApplyTo(s.state)
+				if err != nil {
+					log.Fatal(err)
+					clientState.sendTerminateSignal <- empty{}
+				} else {
+					s.state = newState
+				}
 			}
+
+			s.stateLock.Unlock()
 
 			// propagate updates to all connected clients except this one
 			// if we send it to this clientView then we may deadlock the server and clientView

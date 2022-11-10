@@ -13,7 +13,7 @@ import (
 // cmsjson works with arbitrary schemas so this model can be changed on a whim
 // note that cmsjson does not check that the provided types implement the interface
 // so please check that everything works prior to running the CMS
-var cmsJsonConf = cmsjson.Configuration{
+var CmsJsonConf = cmsjson.Configuration{
 	// Registration for cmsmodel, when the LP is finally merged with CSESoc Projects
 	// this will also contain the registration for their data models
 	RegisteredTypes: map[reflect.Type]map[string]reflect.Type{
