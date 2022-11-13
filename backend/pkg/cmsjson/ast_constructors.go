@@ -9,7 +9,7 @@ import (
 
 // ASTFromInterface takes some interface value x and constructs an AST from it, this is a helper method that is mostly used
 // by the operation methods to convert a struct into an AST
-func ASTFromInterface(x interface{}) AstNode {
+func ASTFromValue(x interface{}) AstNode {
 	return astFromCore("root", reflect.ValueOf(x))
 }
 

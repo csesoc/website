@@ -1,4 +1,4 @@
-package data
+package operations
 
 import "cms.csesoc.unsw.edu.au/pkg/cmsjson"
 
@@ -12,6 +12,6 @@ func (noop Noop) TransformAgainst(operation OperationModel, applicationType Edit
 }
 
 // Apply is the noop implementation of the OperationModel interface, it does nothing
-func (noop Noop) Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) cmsjson.AstNode {
-	return parentNode
+func (noop Noop) Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) (cmsjson.AstNode, error) {
+	return parentNode, nil
 }

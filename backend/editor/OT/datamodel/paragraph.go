@@ -1,16 +1,13 @@
-package cmsmodel
+package datamodel
 
 import (
 	"errors"
 	"reflect"
-
-	"github.com/google/uuid"
 )
 
 // @implements Component
-// TODO: How do take in specific types words for ParagraphAlign?
 type Paragraph struct {
-	ParagraphID       uuid.UUID
+	ParagraphID       string
 	ParagraphAlign    string
 	ParagraphChildren []Text
 }

@@ -1,6 +1,6 @@
 import React, { MouseEventHandler } from 'react';
 import { StyledButton, buttonProps, scaleRate } from './small_buttons-Styled';
-import AlignHorizontalLeftIcon from '@mui/icons-material/AlignHorizontalLeft';
+import { ReactComponent as LeftAlign } from 'src/cse-ui-kit/assets/leftrightalign-button.svg';
 
 type Props = {
   onClick?: MouseEventHandler<HTMLDivElement>;
@@ -14,9 +14,9 @@ export default function LeftAlignButton({
 }: Props) {
   return (
     <StyledButton onClick={onClick} onMouseDown={onMouseDown} {...styleProps}>
-      <AlignHorizontalLeftIcon
-        height={styleProps.size * scaleRate.smallButtonRate}
-        width={styleProps.size * scaleRate.smallButtonRate}
+      <LeftAlign
+        height={styleProps.size * scaleRate}
+        width={styleProps.size * scaleRate}
       />
     </StyledButton>
   );

@@ -32,7 +32,7 @@ func (u *User) IsValidEmail() bool {
 
 // UserExists just checks if a user has a valid password
 func (u *User) UserExists(personRepo repositories.PersonRepository) bool {
-	hashedPassword := u.hashPassword()
+	hashedPassword := u.HashPassword()
 
 	return personRepo.PersonExists(repositories.Person{
 		Email:    u.Email,
@@ -40,8 +40,8 @@ func (u *User) UserExists(personRepo repositories.PersonRepository) bool {
 	})
 }
 
-// hashPassword hashes a user's password
-func (u *User) hashPassword() string {
+// HashPassword hashes a user's password
+func (u *User) HashPassword() string {
 	hashedBytes := sha256.Sum256([]byte(u.Password))
 	return string(hashedBytes[:])
 }

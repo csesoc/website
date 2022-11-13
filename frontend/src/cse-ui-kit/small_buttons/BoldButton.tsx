@@ -14,9 +14,9 @@ export default function BoldButton({
 }: Props) {
   return (
     <StyledButton onClick={onClick} onMouseDown={onMouseDown} {...styleProps}>
-      <Bold
-        height={styleProps.size * scaleRate.smallButtonRate}
-        width={styleProps.size * scaleRate.smallButtonRate}
+      <Bold        
+        height={styleProps.size * scaleRate}
+        width={styleProps.size * scaleRate}
       />
     </StyledButton>
   );
