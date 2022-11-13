@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import * as PageStyle from '../components/sponsors/Sponsors-Styled';
-import { content } from "../assets/sponsors.js";
 import Image from "next/image";
-import Dialog from '@mui/material/Dialog';
-import Fade from '@mui/material/Fade';
 import Footer from "../components/footer/Footer";
 import Navbar from "../components/navbar/Navbar";
 import { NavbarOpenHandler, NavbarType } from "../components/navbar/types";
@@ -25,10 +21,9 @@ const Grid = styled.div`
   max-width: 75vw;
   margin-left: auto;
   margin-right: auto;
-  background-color: #817fff;
-  border-radius: 2rem;
+  border-radius: 0.5rem;
   margin-bottom: 10vh;
-  background-color: rgba(129, 127, 255, 0.75);
+  background: radial-gradient(50% 50% at 50% 50%, rgba(146, 67, 166, 0.2407) 0%, rgba(119, 158, 237, 0.83) 100%);
 
 `
 
@@ -44,17 +39,21 @@ const SmallGrid = styled.div`
 
 const OurSponsorsCol = styled.div`
   flex: 2;
+  // border-style: solid;
+  
 `
 
 const SponsorCol = styled.div`
   flex: 3;
-
   display: flex; 
   flex-basis: calc(50% - 40px);  
   justify-content: center;
   flex-direction: column;
   padding: 8vh 0;
-  // max-height: 65vh;
+  max-height: 100%;
+  max-width: 100%;
+  border-radius: 0.5rem;
+
 
 `
 
@@ -163,37 +162,37 @@ export default function Sponsors2() {
           </TextContainer>
           </OurSponsorsCol>
           <SmallGrid>
-            <SponsorCol>
+            <SponsorCol style={{ backgroundColor: 'rgba(174, 176, 253, 0.6)' }}>
               <Image
-                src={`/assets/sponsors/atl.webp`}
+                src={`/assets/sponsors_white/atl.svg`}
                 width={100}
                 height={30}
                 objectFit="contain"
                 // style={{filter: invert(1)}}
               />
             </SponsorCol>
-            <SponsorCol>
+            <SponsorCol style={{ backgroundColor: 'rgba(174, 176, 253, 0.5)' }}>
               <Image
-                  src={`/assets/sponsors/goog.webp`}
+                  src={`/assets/sponsors_white/imc.svg`}
                   width={60}
-                  height={60}
+                  height={50}
                   objectFit="contain"
                 />
             </SponsorCol>
          
-            <SponsorCol>
+            <SponsorCol style={{ backgroundColor: 'rgba(174, 176, 253, 0.4)' }}>
             <Image
-                src={`/assets/sponsors/fl.webp`}
-                width={200}
-                height={80}
-                objectFit="cover"
+                src={`/assets/sponsors_white/deloitte.svg`}
+                width={50}
+                height={40}
+                objectFit="contain"
               />
             </SponsorCol>
-            <SponsorCol>
+            <SponsorCol style={{ backgroundColor: 'rgba(174, 176, 253, 0.3)' }}>
             <Image
-                src={`/assets/sponsors/msft.webp`}
-                width={100}
-                height={50}
+                src={`/assets/sponsors_white/js.svg`}
+                width={50}
+                height={55}
                 objectFit="contain"
               />
             </SponsorCol>
