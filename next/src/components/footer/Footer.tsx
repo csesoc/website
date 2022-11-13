@@ -4,7 +4,23 @@ import Image from "next/image";
 import styled from "styled-components";
 
 import CSESocLogo from "../../../public/assets/logo_white.svg";
+import DiscordLogo from "../../../public/assets/socials/discord.svg";
+import FacebookLogo from "../../../public/assets/socials/facebook.svg";
+import InstagramLogo from "../../../public/assets/socials/instagram.svg";
+
 import { device } from "../../styles/device";
+
+export const ImagesContainer = styled.div`
+  width: 100%;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  @media ${device.tablet} {
+    width: 25%;
+    float: right;
+  }
+`
+
 
 const FooterComponent = styled.footer`
   background-color: #A09FE3;
@@ -48,6 +64,18 @@ const Footer: React.FC<{}> = () => {
           B03 CSE Building K17, UNSW
           <br />
           csesoc@csesoc.org.au
+          <br/><br/>
+          <ImagesContainer>
+            <a href="https://discord.gg/AM4GB5zuB6">
+              <Image src={DiscordLogo} alt="Discord" />
+            </a>
+            <a href="https://www.facebook.com/csesoc/">
+              <Image src={FacebookLogo} alt="Facebook" />
+            </a>
+            <a href="https://www.instagram.com/csesoc_unsw/?hl=en">
+              <Image src={InstagramLogo} alt="Instagram" />
+            </a>
+          </ImagesContainer>
           <br /><br />
           © 2021 — CSESoc UNSW
         </p>
