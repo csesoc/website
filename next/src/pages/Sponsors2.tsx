@@ -12,47 +12,56 @@ import Otter from '../svgs/otter.png'
 
 const Text = styled.p`
   color: white;
-  padding: 3vh 0;
+  @media ${device.tablet} {
+    padding: 3vh 0;
+  }
 `
 
 const Grid = styled.div`
   display: flex;
   justify-content: center;
-  max-width: 75vw;
   margin-left: auto;
   margin-right: auto;
+  max-width: 70vw;
+  max-width: 75vw;
   border-radius: 0.5rem;
   margin-bottom: 10vh;
   background: radial-gradient(50% 50% at 50% 50%, rgba(146, 67, 166, 0.2407) 0%, rgba(119, 158, 237, 0.83) 100%);
-
+ 
 `
 
 const SmallGrid = styled.div`
   display: flex;
   justify-content: center;
-  min-height: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  flex: 3;
+  flex-direction: column;
+  flex: 2;
+  @media ${device.tablet} {
+    min-height: 100%;
+    flex-wrap: wrap;
+    flex-direction: row;
+    flex: 3;
+  }
 `
 
 const OurSponsorsCol = styled.div`
   flex: 2;
-  // border-style: solid;
+  padding: 1.5rem;
   
 `
 
 const SponsorCol = styled.div`
   flex: 3;
   display: flex; 
-  flex-basis: calc(50% - 40px);  
   justify-content: center;
-  flex-direction: column;
-  padding: 8vh 0;
   max-height: 100%;
   max-width: 100%;
   border-radius: 0.5rem;
+  padding: 1vw;
+  @media ${device.tablet} {
+    flex-basis: calc(50% - 40px);  
+    flex-direction: column;
+    padding: 8vh 0;
+  }
 
 
 `
@@ -75,7 +84,7 @@ const H3 = styled.div`
   font-weight: 800;
   font-size: 20px;
   @media ${device.tablet} {
-    font-size: 2.5vw;
+    font-size: 2vw;
   }
 `;
 
@@ -83,7 +92,7 @@ const H3 = styled.div`
 const Button = styled.button`
   background-color: white;
   margin: 10px;
-  padding: 10px 45px;
+  padding: 1vh 2vw;
   font-size: 18px;
   color: #817fff;
   border: none;
@@ -92,6 +101,9 @@ const Button = styled.button`
 
   &:hover {
     transform: scale(1.05);
+  }
+  @media ${device.tablet} {
+    padding: 10px 45px;
   }
 `
 
@@ -160,45 +172,44 @@ export default function Sponsors2() {
               </Link>
             </ButtonContainer>
           </TextContainer>
-          </OurSponsorsCol>
-          <SmallGrid>
-            <SponsorCol style={{ backgroundColor: 'rgba(174, 176, 253, 0.6)' }}>
-              <Image
-                src={`/assets/sponsors_white/atl.svg`}
-                width={100}
-                height={30}
-                objectFit="contain"
-                // style={{filter: invert(1)}}
-              />
-            </SponsorCol>
-            <SponsorCol style={{ backgroundColor: 'rgba(174, 176, 253, 0.5)' }}>
-              <Image
-                  src={`/assets/sponsors_white/imc.svg`}
-                  width={60}
-                  height={50}
-                  objectFit="contain"
-                />
-            </SponsorCol>
-         
-            <SponsorCol style={{ backgroundColor: 'rgba(174, 176, 253, 0.4)' }}>
-            <Image
-                src={`/assets/sponsors_white/deloitte.svg`}
-                width={50}
-                height={40}
-                objectFit="contain"
-              />
-            </SponsorCol>
-            <SponsorCol style={{ backgroundColor: 'rgba(174, 176, 253, 0.3)' }}>
-            <Image
-                src={`/assets/sponsors_white/js.svg`}
-                width={50}
-                height={55}
-                objectFit="contain"
-              />
-            </SponsorCol>
-          </SmallGrid>
-        
+        </OurSponsorsCol>
 
+        <SmallGrid>
+          <SponsorCol style={{ backgroundColor: 'rgba(0, 71, 255, 0.33)' }}>
+            <Image
+              src={`/assets/sponsors_white/atl.svg`}
+              width={100}
+              height={30}
+              objectFit="contain"
+            />
+          </SponsorCol>
+          <SponsorCol style={{ backgroundColor: 'rgba(82, 130, 255, 0.47)' }}>
+            <Image
+                src={`/assets/sponsors_white/imc.svg`}
+                width={60}
+                height={50}
+                objectFit="contain"
+              />
+          </SponsorCol>
+        
+          <SponsorCol style={{ backgroundColor: 'rgba(48, 93, 255, 0.2)' }}>
+          <Image
+              src={`/assets/sponsors_white/deloitte.svg`}
+              width={50}
+              height={40}
+              objectFit="contain"
+            />
+          </SponsorCol>
+          <SponsorCol style={{ backgroundColor: 'rgba(122, 137, 236, 0.27)' }}>
+          <Image
+              src={`/assets/sponsors_white/js.svg`}
+              width={50}
+              height={55}
+              objectFit="contain"
+            />
+          </SponsorCol>
+        </SmallGrid>
+      
       </Grid>
 
       <Footer />
