@@ -7,6 +7,9 @@ import CSESocLogo from "../../../public/assets/logo_white.svg";
 import DiscordLogo from "../../../public/assets/socials/discord.svg";
 import FacebookLogo from "../../../public/assets/socials/facebook.svg";
 import InstagramLogo from "../../../public/assets/socials/instagram.svg";
+import YoutubeLogo from "../../../public/assets/socials/youtube.svg";
+import SpotifyLogo from "../../../public/assets/socials/spotify.svg";
+
 
 import { device } from "../../styles/device";
 
@@ -16,7 +19,7 @@ export const ImagesContainer = styled.div`
   display: flex;
   justify-content: space-between;
   @media ${device.tablet} {
-    width: 25%;
+    width: 55%;
     float: right;
   }
 `
@@ -74,6 +77,12 @@ const Footer: React.FC<{}> = () => {
             </a>
             <a href="https://www.instagram.com/csesoc_unsw/?hl=en">
               <Image src={InstagramLogo} alt="Instagram" />
+            </a>
+            <a href="https://www.youtube.com/c/CSESocUNSW">
+              <Image src={YoutubeLogo} alt="Instagram" />
+            </a>
+            <a href="https://open.spotify.com/show/2h9OxTkeKNznIfNqMMYcxj">
+              <Image src={SpotifyLogo} alt="Instagram" />
             </a>
           </ImagesContainer>
           <br /><br />
