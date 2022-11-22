@@ -4,7 +4,7 @@ import { CreateFilesystemEntryResponse, FilesystemEntry, IsCreateFilesystemEntry
 import { APIError, IsEmptyApiResponse } from "../types/general";
 
 // filesystemConsistencyTests ensure that the contract maintained between the frontend and backend regarding endpoint input/response types are consistent
-//  note: requires the BE container to be up and running
+// note: requires the BE container to be up and running
 beforeAll(() => {
     if (process.env.E2E_MODE === "github") {
         configureApiUrl("http://backend:8080");
