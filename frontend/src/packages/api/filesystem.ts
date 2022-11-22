@@ -3,15 +3,15 @@ import { APIError, EmptyAPIResponse } from "./types/general";
 
 // PostBody is an internal discriminated union of supported post bodies
 type PostBody = 
-    | { $type: "Record", body: Record<string, string> }
-    | { $type: "FormData", body: FormData }
+    | { $type: "Record"; body: Record<string, string> }
+    | { $type: "FormData"; body: FormData };
 
 // TODO: not this
 // This was the best way I could figure out how to get actual integration tests to run in the frontend container
-let API_URL = ""
+let API_URL = "";
 
-export const configureApiUrl = (newUrl: string): void => { API_URL = newUrl }
-export const resetApiUrl = (): void => { API_URL = "" }
+export const configureApiUrl = (newUrl: string): void => { API_URL = newUrl };
+export const resetApiUrl = (): void => { API_URL = "" };
 
 // Only interface with the BE FS APIs via this class
 export class FilesystemAPI {
@@ -38,7 +38,7 @@ export class FilesystemAPI {
 
         return FilesystemAPI.SendPostRequest<EmptyAPIResponse>("/api/filesystem/publish-document", {
             $type: "FormData",
-            body: body
+            body: body,
         });
     }
 
@@ -46,15 +46,15 @@ export class FilesystemAPI {
     public static DeleteEntity = (EntityID: string): Promise<EmptyAPIResponse | APIError> =>
         FilesystemAPI.SendPostRequest("/api/filesystem/delete", {
             $type: "Record",
-            body: { EntityID }
+            body: { EntityID },
         });
     
     // RenameEntity renames an entity given is FS entity ID
     public static RenameEntity = (EntityID: string, NewName: string): Promise<EmptyAPIResponse | APIError> =>
         FilesystemAPI.SendPostRequest("/api/filesystem/rename", {
             $type: "Record",
-            body: { EntityID, NewName }
-        })
+            body: { EntityID, NewName },
+        });
 
     // CreateFilesystemEntity is a small helper function for easily creating filesystem entities
     static CreateFilesystemEntity = (LogicalName: string, ParentID: string, IsDocument: boolean, OwnerGroup = 1): Promise<CreateFilesystemEntryResponse | APIError> =>
@@ -65,7 +65,7 @@ export class FilesystemAPI {
                 "Parent": ParentID,
                 "OwnerGroup": `${OwnerGroup}`,
                 "IsDocument": `${IsDocument}`,
-            }
+            },
         });
 
     // SendGetRequest is a small helper functions for sending get request and wrapping the response in an appropriate type
