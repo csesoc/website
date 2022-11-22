@@ -1,7 +1,7 @@
 export type APIError = {
-    Status: number,
-    Message: string
-}
+    Status: number;
+    Message: string;
+};
 
 export type EmptyAPIResponse = Record<string, never>;
 
