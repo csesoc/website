@@ -54,4 +54,4 @@ Our editor uses quite a few algorithms so below is a list of resources you can u
 - A: google docker desktop WSL2 not detecting docker
 
 - Q: Docker is taking up alot of space how to remove?
-- A: docker is a ram/storage drainer but, you can remove useless volumes, run `docker volumes prune`
+- A: docker is a ram/storage drainer but, you can remove useless volumes, run `docker volume prune`
