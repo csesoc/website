@@ -1,15 +1,15 @@
 // FilesystemEntry is the contract for the type of response we receive from the backend
 export type FilesystemEntry = {
-    EntityID: string,
-    EntityName: string,
-    IsDocument: boolean,
-    Parent: string,
-    Children: FilesystemEntry[]
-}
+    EntityID: string;
+    EntityName: string;
+    IsDocument: boolean;
+    Parent: string;
+    Children: FilesystemEntry[];
+};
 
 export type CreateFilesystemEntryResponse = {
-    NewID: string
-}
+    NewID: string;
+};
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const hasFieldOfType = (o: any, fieldName: string, type: string): boolean =>
@@ -27,4 +27,3 @@ export const IsFilesystemEntry = (o: any): o is FilesystemEntry =>
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const IsCreateFilesystemEntryResponse = (o: any): o is CreateFilesystemEntryResponse =>
     hasFieldOfType(o, "NewID", "string");
-    

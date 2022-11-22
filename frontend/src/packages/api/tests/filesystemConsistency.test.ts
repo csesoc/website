@@ -9,13 +9,13 @@ beforeAll(() => {
     if (process.env.E2E_MODE === "github") {
         configureApiUrl("http://backend:8080");
     } else {
-        configureApiUrl("http://localhost:8080")
+        configureApiUrl("http://localhost:8080");
     }
 });
 
 afterAll(() => {
     resetApiUrl();
-})
+});
     
     
 // Ensure that the returned response was actually indeed assignable to FilesystemEntry
@@ -53,4 +53,4 @@ describe("the filesystem api should", () => {
         const deletionResp = await FilesystemAPI.DeleteEntity(newEntityId);
         expect(IsEmptyApiResponse(deletionResp), 'Expected deletion response to be assignable to empty');
     });
-})
+});

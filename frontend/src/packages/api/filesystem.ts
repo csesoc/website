@@ -82,7 +82,7 @@ export class FilesystemAPI {
             method: "POST",
             body: body.$type === "Record"
                     ? new URLSearchParams(body.body)
-                    : body.body
+                    : body.body,
         });
 
         return response.ok
