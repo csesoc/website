@@ -10,7 +10,7 @@ import InstagramLogo from "../../../public/assets/socials/instagram.svg";
 import YoutubeLogo from "../../../public/assets/socials/youtube.svg";
 import SpotifyLogo from "../../../public/assets/socials/spotify.svg";
 
-
+import Link from "next/link";
 import { device } from "../../styles/device";
 
 export const ImagesContainer = styled.div`
@@ -69,24 +69,24 @@ const Footer: React.FC<{}> = () => {
           csesoc@csesoc.org.au
           <br/><br/>
           <ImagesContainer>
-            <a href="https://discord.gg/AM4GB5zuB6">
-              <Image src={DiscordLogo} alt="Discord" />
-            </a>
-            <a href="https://www.facebook.com/csesoc/">
-              <Image src={FacebookLogo} alt="Facebook" />
-            </a>
-            <a href="https://www.instagram.com/csesoc_unsw/?hl=en">
-              <Image src={InstagramLogo} alt="Instagram" />
-            </a>
-            <a href="https://www.youtube.com/c/CSESocUNSW">
-              <Image src={YoutubeLogo} alt="Instagram" />
-            </a>
-            <a href="https://open.spotify.com/show/2h9OxTkeKNznIfNqMMYcxj">
-              <Image src={SpotifyLogo} alt="Instagram" />
-            </a>
+            <Link href="https://discord.gg/AM4GB5zuB6">
+              <Image src={DiscordLogo} alt="CSESoc Discord" />
+            </Link>
+            <Link href="https://www.facebook.com/csesoc/">
+              <Image src={FacebookLogo} alt="CSESoc Facebook" />
+            </Link>
+            <Link href="https://www.instagram.com/csesoc_unsw/?hl=en">
+              <Image src={InstagramLogo} alt="CSESoc Instagram" />
+            </Link>
+            <Link href="https://www.youtube.com/c/CSESocUNSW">
+              <Image src={YoutubeLogo} alt="CSESoc Youtube" />
+            </Link>
+            <Link href="https://open.spotify.com/show/2h9OxTkeKNznIfNqMMYcxj">
+              <Image src={SpotifyLogo} alt="Echo Podcast" />
+            </Link>
           </ImagesContainer>
           <br /><br />
-          © 2021 — CSESoc UNSW
+          © 2022 — CSESoc UNSW
         </p>
       </Details>
     </FooterComponent>
