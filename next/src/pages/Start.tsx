@@ -12,7 +12,7 @@ import useTimelineScroll from "../hooks/TimelineScroll";
 import Timeline from "../components/start/Timeline";
 
 const MainContainer = styled.div`
-  padding: 9vw 5vw;
+  padding: 3vw 3vw;
   font-family: 'Raleway';
   font-weight: 450;
   font-size: 15px;
