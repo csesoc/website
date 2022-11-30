@@ -54,7 +54,7 @@ export default function Start() {
   return (
     <PageContainer>
       <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE} />
-      <MainContainer onWheel={(e) => handleScroll(e.deltaY)}>
+      <MainContainer style={{ backgroundColor: "red" }} onWheel={(e) => handleScroll(e.deltaY)}>
         {Object.values(views)[focusedView]}
       </MainContainer>
       <Timeline focusedView={focusedView} viewNames={Object.keys(views)} />
