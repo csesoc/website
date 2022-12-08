@@ -6,9 +6,11 @@ import { NavbarOpenHandler } from "../components/navbar/types";
 import HamburgerMenu from "../components/navbar/HamburgerMenu";
 import { device } from "../styles/device"
 import { useState } from "react";
+import { Button } from "@mui/material";
 
 
 import { FadeIn, SlideInFromRight, TypewriterAnimation } from '../styles/motion'
+import Link from "next/link";
 
 type Props = {};
 
@@ -35,6 +37,7 @@ const Container = styled.div`
 const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   justify-content: center;
   @media ${device.laptop} {
     padding: 0 10vw;
@@ -75,7 +78,7 @@ const WebsiteImageContainer = styled.div`
 const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
-
+  margin-bottom: 5rem;
   @media ${device.tablet} {
     gap: 10px;
   }
@@ -139,8 +142,8 @@ export default function Homepage({}: Props) {
                 </TypewriterAnimation>
               </Text2>
             </TextContainer>
+            <Link href="/blog"><Button variant="outlined">Visit on Blog</Button></Link>
           </ColumnContainer>
-          {/* <Button>Visit on Blog</Button> */}
           <SlideInFromRight>
             <WebsiteImageContainer>
               <Image src="/assets/WebsitesIcon.png" layout="fill" objectFit="contain" />
