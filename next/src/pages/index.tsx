@@ -19,12 +19,12 @@ import Homepage from "./MiniHomepage";
 import Events from "./MiniEvents";
 import AboutUs from "./MiniAboutUs";
 import Resources from "./MiniResources";
-import Support from "./MiniSupport";
+// import Support from "./MiniSupport";
 
 import Footer from "../components/footer/Footer";
 import { device } from '../styles/device'
 import { SectionFadeInFromLeft, SectionFadeInFromRight, Spin } from "../styles/motion"
-import Sponsors from "./Sponsors";
+import Sponsors from "./Sponsors2";
 import ExecDescription from "./ExecDescription";
 
 type CurveContainerProps = {
@@ -161,7 +161,7 @@ const Index: NextPage = () => {
             <Resources />
           </RefLink>
           <RefLink id="support">
-            <Support />
+            <Sponsors />
           </RefLink>
           <Footer />
         </>

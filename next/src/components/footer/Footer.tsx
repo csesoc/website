@@ -63,7 +63,6 @@ const Footer: React.FC<{}> = () => {
         <Image src={CSESocLogo} alt="CSESoc" />
       </Logo>
       <Details>
-        <p>
           B03 CSE Building K17, UNSW
           <br />
           csesoc@csesoc.org.au
@@ -86,8 +85,9 @@ const Footer: React.FC<{}> = () => {
             </Link>
           </ImagesContainer>
           <br /><br />
-          © 2022 — CSESoc UNSW
-        </p>
+          <div>
+            © 2022 — CSESoc UNSW
+          </div>
       </Details>
     </FooterComponent>
   );

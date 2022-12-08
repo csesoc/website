@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import Footer from "../components/footer/Footer";
-import Navbar from "../components/navbar/Navbar";
 import { NavbarOpenHandler, NavbarType } from "../components/navbar/types";
 import styled from 'styled-components'
 import Link from 'next/link'
@@ -12,6 +10,8 @@ import Otter from '../svgs/otter.png'
 
 const Text = styled.p`
   color: white;
+  width: 75%;
+  text-align: center;
   @media ${device.tablet} {
     padding: 3vh 0;
   }
@@ -140,18 +140,9 @@ const Heading = styled.div`
 
 
 export default function Sponsors2() {
-
-  const [navbarOpen, setNavbarOpen] = useState(false);
-
-
-  const handleToggle: NavbarOpenHandler = () => {
-    setNavbarOpen(!navbarOpen);
-  };
-
   return (
     <div>
 
-      <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE} />
 
       <HeadingContainer>
         <Heading>Support CSESoc</Heading>
@@ -165,7 +156,7 @@ export default function Sponsors2() {
         <OurSponsorsCol>
           <TextContainer>
             <H3>Our Sponsors</H3>
-            <Text>Check out our very cool sponsors</Text>
+            <Text>We are proud to partner with the following sponsors, who share our values and are dedicated to making an impact. </Text>
             <ButtonContainer>
               <Link href="/Sponsors">
                 <Button>View our sponsors</Button>
@@ -211,8 +202,6 @@ export default function Sponsors2() {
         </SmallGrid>
       
       </Grid>
-
-      <Footer />
     </div>
   );
 
