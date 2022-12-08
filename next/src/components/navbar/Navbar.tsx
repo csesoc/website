@@ -12,7 +12,10 @@ import {
   HamburgerButton,
   ImageWrapper,
   MiniPageContainer,
-  HomepageButton
+  HomepageButton,
+  BlogPageContainer,
+  LogoWrapper,
+  BlogLinkWrapper
 } from "./Navbar-styled";
 
 const Navbar = (props: NavbarOpenProps) => {
@@ -60,6 +63,36 @@ const Navbar = (props: NavbarOpenProps) => {
 
         </MiniPageContainer >
       );
+    case NavbarType.BLOG:
+      return (
+        <BlogPageContainer>
+          <LogoWrapper>
+            <Link href="/">
+              <Image src="/assets/logo.svg" width={500} height={90}/>
+            </Link>
+          </LogoWrapper>
+          <BlogLinkWrapper>
+            <HamburgerButton onClick={props.setNavbarOpen}>
+              <Image src={HamburgerIcon} />
+            </HamburgerButton>
+            <Link href="/AboutUs">
+              <NavItem>About Us</NavItem>
+            </Link>
+            <Link href="/ExecDescription">
+              <NavItem>History</NavItem>
+            </Link>
+            <Link href="#events">
+              <NavItem>Events</NavItem>
+            </Link>
+            <Link href="#resources">
+              <NavItem>Resources</NavItem>
+            </Link>
+            <Link href="/Sponsors">
+              <NavItem>Sponsors</NavItem>
+            </Link>
+          </BlogLinkWrapper>
+        </BlogPageContainer>
+      )
   }
 };
 
