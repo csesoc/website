@@ -1,13 +1,14 @@
 export type NavbarOpenHandler = () => void;
 export enum NavbarType {
   HOMEPAGE,
-  MINIPAGE
+  MINIPAGE,
+  BLOG
 }
 
 export type NavbarOpenProps = {
   open: boolean,
   setNavbarOpen: NavbarOpenHandler,
-  variant: NavbarType 
+  variant: NavbarType
 };
 
 export type HamburgerMenuProps = {

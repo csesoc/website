@@ -27,6 +27,34 @@ const MiniPageContainer = styled.div`
   }
 `
 
+const BlogPageContainer = styled.div`
+	position: sticky;
+	top: 0;
+	width: 100%;
+  	padding: 3rem 7rem;
+	background-color: #E8DBFF;
+`
+
+const LogoWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;  
+  cursor: pointer;
+`
+
+const BlogLinkWrapper = styled.ul`
+  width: 100%;
+  display: inline-flex;
+	align-items: center;
+  justify-content: flex-end;
+	gap: 5vw;
+	list-style: none;
+	padding: 0 20px;
+	@media (max-width: 768px) {
+		padding: 0;
+		gap: 0;
+	}
+`
+
 const ItemWrapper = styled.ul`
 	display: inline-flex;
 	align-items: center;
@@ -95,4 +123,4 @@ const ImageWrapper = styled.div`
 `
 
 
-export { Container, ItemWrapper, NavItem, HamburgerButton, ImageWrapper, MiniPageContainer, HomepageButton };
+export { Container, ItemWrapper, NavItem, HamburgerButton, ImageWrapper, MiniPageContainer, LogoWrapper, BlogPageContainer, BlogLinkWrapper, HomepageButton };
