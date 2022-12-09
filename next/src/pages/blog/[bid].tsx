@@ -32,7 +32,7 @@ const BlogPage: NextPage<{ data: Block[] }> = ({ data }) => {
       />{" "}
       {/** ignore the styling */}
       <MainContainer>
-        <BlogHeading>Blog Title</BlogHeading>
+        <BlogHeading>Welcome to CSESoc's 2022 First Year Guide</BlogHeading>
         <Blog blocks={data} />
       </MainContainer>
       <Footer />

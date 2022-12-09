@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import {useState, useEffect} from 'react';
 import analyze from "@ramielcreations/rgbaster"
 import rgbaToRgb from 'rgba-to-rgb'
+import Link from 'next/link';
 
 interface PostProps {
     size: "full" | "l" | "m" | "s",
@@ -21,6 +22,7 @@ const PostWrapper = styled.div<{postSize : string, colour: string}>`
     border-radius: 2em;
     margin: 0 3em;
     min-height: ${props => props.postSize === "full" ? "" : "40rem"};
+    cursor: pointer;
 `
 
 const handleSize = (size : string) => {
@@ -84,14 +86,16 @@ const Post = ({size, img, topic, title, paragraph}: PostProps) => {
       }, []);
 
     return (
-        <PostWrapper postSize={size} colour={useColour}>
-            <ImageWrapper><Image src={img} draggable="false"/></ImageWrapper>
-            <TextWrapper size={size}>
-                <Topic>{topic}</Topic>
-                <Title>{title}</Title>
-                <Paragraph>{paragraph}</Paragraph>
-            </TextWrapper>
-        </PostWrapper>
+        <Link href="/blog/9eadd986-dd69-4d89-b0f1-4b9b12aaedd7">
+            <PostWrapper postSize={size} colour={useColour}>
+                <ImageWrapper><Image src={img} draggable="false"/></ImageWrapper>
+                <TextWrapper size={size}>
+                    <Topic>{topic}</Topic>
+                    <Title>{title}</Title>
+                    <Paragraph>{paragraph}</Paragraph>
+                </TextWrapper>
+            </PostWrapper>
+        </Link>
     )
 }
 
