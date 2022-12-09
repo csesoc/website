@@ -3,9 +3,7 @@ import React, { useState, FC, useRef, useEffect } from "react";
 
 import Client from "./websocketClient";
 
-import HeadingBlock from "./components/HeadingBlock";
-import EditorBlock from "./components/EditorBlock";
-import { BlockData, UpdateHandler } from "./types";
+import { BlockData, UpdateCallback } from "./types";
 import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
 import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
 import { ReactComponent as Tick } from "src/assets/successtick.svg"
@@ -16,10 +14,11 @@ import Dialog from '@mui/material/Dialog';
 import Button from "@mui/material/Button";
 import { addContentBlock } from "./state/actions";
 import { useParams } from "react-router-dom";
-import { defaultContent, headingContent } from "./state/helpers";
 
-// Redux
-import { useDispatch } from "react-redux";
+import { buildComponentFactory } from "./componentFactory";
+import { OperationManager } from "./operationManager";
+import { publishDocument } from "./api/cmsFS/volumes";
+import { CMSOperation } from "./api/OTClient/operation";
 
 const Container = styled.div`
   display: flex;
@@ -85,6 +84,7 @@ const EditorPage: FC = () => {
   const handleClose = () => setOpen(false);
   const { id } = useParams();
   const wsClient = useRef<Client | null>(null);
+  const opManager = useRef<OperationManager | null>(new OperationManager());
 
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [focusedId, setFocusedId] = useState<number>(0);
@@ -119,6 +119,8 @@ const EditorPage: FC = () => {
     );
   };
 
+  const createBlock = buildComponentFactory(opManager.current ?? new OperationManager(), setFocusedId, updateValues);
+
   useEffect(() => {
     function cleanup() {
       wsClient.current?.close();
@@ -126,14 +128,10 @@ const EditorPage: FC = () => {
 
     wsClient.current = new Client(
       id as string,
-      (data) => {
-        console.log(id, JSON.stringify(data));
-        setBlocks(data as BlockData[]);
-      },
-      (reason) => {
-        console.log(reason);
-      }
+      (data) => { setBlocks(data as BlockData[]); },
+      (reason) => { console.log(`Server connection terminated, reason: ${reason}`); }
     );
+
     window.addEventListener("beforeunload", cleanup);
     return () => {
       console.log("Editor component destroyed");
@@ -164,28 +162,7 @@ const EditorPage: FC = () => {
       </Dialog>
       <EditorHeader />
       <Container>
-        {blocks.map((block, idx) => {
-          console.log(block[0].type);
-          return block[0].type === "paragraph" ? (
-            <EditorBlock
-              id={idx}
-              key={idx}
-              initialValue={block}
-              update={updateValues}
-              showToolBar={focusedId === idx}
-              onEditorClick={() => setFocusedId(idx)}
-            />
-          ) : (
-            <HeadingBlock
-              id={idx}
-              key={idx}
-              update={updateValues}
-              showToolBar={focusedId === idx}
-              onEditorClick={() => setFocusedId(idx)}
-            />
-          );
-        })}
-
+        {blocks.map((block, idx) => createBlock(block, idx, focusedId === idx))}
         <InsertContentWrapper>
           <CreateHeadingBlock
             onClick={() => {
@@ -253,5 +230,16 @@ const EditorPage: FC = () => {
     </div>
   );
 };
+
+// constructs a new creation operation in response to the insertion of a new paragraph/heading
+const newCreationOperation = (newValue: any, index: number): CMSOperation => ({
+  Path: [index],
+  OperationType: "insert",
+  IsNoOp: false,
+  Operation: {
+    "$type": "objectOperation",
+    objectOperation: { newValue }, 
+  }
+});
 
 export default EditorPage;

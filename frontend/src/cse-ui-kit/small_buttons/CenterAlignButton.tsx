@@ -1,6 +1,6 @@
 import React, { MouseEventHandler } from 'react';
 import { StyledButton, buttonProps, scaleRate } from './small_buttons-Styled';
-import AlignHorizontalCenterIcon from '@mui/icons-material/AlignHorizontalCenter';
+import { ReactComponent as CenterAlign } from 'src/cse-ui-kit/assets/centeralign-button.svg';
 
 type Props = {
   onClick?: MouseEventHandler<HTMLDivElement>;
@@ -14,9 +14,9 @@ export default function CenterAlignButton({
 }: Props) {
   return (
     <StyledButton onClick={onClick} onMouseDown={onMouseDown} {...styleProps}>
-      <AlignHorizontalCenterIcon
-        height={styleProps.size * scaleRate.smallButtonRate}
-        width={styleProps.size * scaleRate.smallButtonRate}
+      <CenterAlign
+        height={styleProps.size * scaleRate}
+        width={styleProps.size * scaleRate}
       />
     </StyledButton>
   );

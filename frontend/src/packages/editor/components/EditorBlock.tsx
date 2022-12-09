@@ -1,15 +1,14 @@
 import styled from "styled-components";
-import { createEditor, Descendant } from "slate";
+import { createEditor } from "slate";
 import React, { FC, useMemo, useCallback } from "react";
 import {
   Slate,
   Editable,
   withReact,
   RenderLeafProps,
-  useSlate,
 } from "slate-react";
 
-import { BlockData, UpdateHandler } from "../types";
+import { CMSBlockProps } from "../types";
 import EditorBoldButton from "./buttons/EditorBoldButton";
 import EditorItalicButton from "./buttons/EditorItalicButton";
 import EditorUnderlineButton from "./buttons/EditorUnderlineButton";
@@ -19,12 +18,7 @@ import EditorLeftAlignButton from "./buttons/EditorLeftAlignButton";
 import EditorRightAlignButton from "./buttons/EditorRightAlignButton";
 
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
-import { toggleMark, handleKey } from "./buttons/buttonHelpers";
-import { getBlockContent } from "../state/helpers";
-
-// Redux
-import { useDispatch } from "react-redux";
-import { updateContent } from "../state/actions";
+import { handleKey } from "./buttons/buttonHelpers";
 
 const defaultTextSize = 16;
 
@@ -52,73 +46,38 @@ const Text = styled.span<{
 
 const AlignedText = Text.withComponent("div");
 
-interface EditorBlockProps {
-  update: UpdateHandler;
-  initialValue: BlockData;
-  id: number;
-  showToolBar: boolean;
-  onEditorClick: () => void;
-}
-
-const EditorBlock: FC<EditorBlockProps> = ({
+const EditorBlock: FC<CMSBlockProps> = ({
   id,
   update,
   initialValue,
   showToolBar,
   onEditorClick,
 }) => {
-  const dispatch = useDispatch();
   const editor = useMemo(() => withReact(createEditor()), []);
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
-      return leaf.align == null ? (
-        <Text
-          // Nullish coalescing operator
-          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator
-          bold={leaf.bold ?? false}
-          italic={leaf.italic ?? false}
-          underline={leaf.underline ?? false}
-          textSize={leaf.textSize ?? 16}
-          align={leaf.align ?? "left"}
-          {...attributes}
-        >
-          {children}
-        </Text>
-      ) : (
-        <AlignedText
-          // Nullish coalescing operator
-          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator
-          bold={leaf.bold ?? false}
-          italic={leaf.italic ?? false}
-          underline={leaf.underline ?? false}
-          align={leaf.align ?? "left"}
-          textSize={leaf.textSize ?? defaultTextSize}
-          {...attributes}
-        >
-          {children}
-        </AlignedText>
-      );
-    },
+      const props = {
+        bold: leaf.bold ?? false,
+        italic: leaf.italic ?? false,
+        underline: leaf.underline ?? false,
+        align: leaf.align ?? "left",
+        textSize: leaf.textSize ?? defaultTextSize,
+        ...attributes
+      }
+      
+      return leaf.align == null 
+              ? <Text {...props}>{children}</Text>
+              : <AlignedText {...props}>{children}</AlignedText>;
+      },
     []
   );
-
-  // const initialValue = getBlockContent(id);
 
   return (
     <Slate
       editor={editor}
       value={initialValue}
-      onChange={(value) => {
-        update(id, editor.children);
-
-        dispatch(
-          updateContent({
-            id: id,
-            data: value,
-          })
-        );
-      }}
+      onChange={(value) => update(id, editor.children, editor.operations)}
     >
       {showToolBar && (
         <ToolbarContainer>
@@ -131,7 +90,8 @@ const EditorBlock: FC<EditorBlockProps> = ({
           <EditorRightAlignButton />
         </ToolbarContainer>
       )}
-      <ContentBlock focused={showToolBar}>
+      <ContentBlock 
+        focused={showToolBar}>
         <Editable
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}

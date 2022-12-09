@@ -1,4 +1,5 @@
-import { Operation, transform } from "./operation";
+import { Operation } from "./operation";
+import { transform } from "./transform";
 
 /**
  * OperationQueue is a simple data structure of the maintenance of outgoing
@@ -7,6 +8,9 @@ import { Operation, transform } from "./operation";
  * elements of this queue
  */
 export class OperationQueue {
+
+  // operationQueue is our internal operation queue
+  private operationQueue: Operation[] = [];
 
   /**
    * Push an operation to the end of the operation queue
@@ -54,7 +58,4 @@ export class OperationQueue {
    * @returns the operation at the head of the operation queue
    */
   public peekHead = (): Operation | undefined => this.operationQueue[0];
-
-  // operationQueue is our internal operation queue
-  private operationQueue = [] as Operation[];
 }

@@ -1,7 +1,7 @@
 package editor
 
 import (
-	"cms.csesoc.unsw.edu.au/editor/OT/data"
+	"cms.csesoc.unsw.edu.au/editor/OT/operations"
 	"github.com/gorilla/websocket"
 )
 
@@ -14,7 +14,7 @@ import (
 type clientView struct {
 	socket *websocket.Conn
 
-	sendOp              chan data.Operation
+	sendOp              chan operations.Operation
 	sendAcknowledgement chan empty
 	sendTerminateSignal chan empty
 }
@@ -22,7 +22,7 @@ type clientView struct {
 func newClient(socket *websocket.Conn) *clientView {
 	return &clientView{
 		socket:              socket,
-		sendOp:              make(chan data.Operation),
+		sendOp:              make(chan operations.Operation),
 		sendAcknowledgement: make(chan empty),
 		sendTerminateSignal: make(chan empty),
 	}
@@ -54,15 +54,14 @@ func (c *clientView) run(serverPipe pipe, terminatePipe alertLeaving) {
 		default:
 			if _, msg, err := c.socket.ReadMessage(); err == nil {
 				// push the update to the documentServer
-				if request, err := data.ParseOperation(string(msg)); err == nil {
+				if request, err := operations.ParseOperation(string(msg)); err == nil {
 					serverPipe(request)
-					continue
 				}
+			} else {
+				// todo: push a terminate signal to the client, also tell the server we're leaving
+				terminatePipe()
+				c.socket.Close()
 			}
-
-			// todo: push a terminate signal to the client, also tell the server we're leaving
-			terminatePipe()
-			c.socket.Close()
 		}
 	}
 }

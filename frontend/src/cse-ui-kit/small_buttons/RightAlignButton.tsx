@@ -1,6 +1,6 @@
 import React, { MouseEventHandler } from 'react';
 import { StyledButton, buttonProps, scaleRate } from './small_buttons-Styled';
-import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
+import { ReactComponent as RightAlign } from 'src/cse-ui-kit/assets/leftrightalign-button.svg';
 
 type Props = {
   onClick?: MouseEventHandler<HTMLDivElement>;
@@ -14,9 +14,10 @@ export default function RightAlignButton({
 }: Props) {
   return (
     <StyledButton onClick={onClick} onMouseDown={onMouseDown} {...styleProps}>
-      <AlignHorizontalRightIcon
-        height={styleProps.size * scaleRate.smallButtonRate}
-        width={styleProps.size * scaleRate.smallButtonRate}
+      <RightAlign
+        height={styleProps.size * scaleRate}
+        width={styleProps.size * scaleRate}
+        transform={"scale(-1, 1)"}
       />
     </StyledButton>
   );
