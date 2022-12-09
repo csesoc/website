@@ -73,6 +73,7 @@ export default function Sponsors() {
       <Dialog
         open={open}
         onClose={handleClose}
+        disableScrollLock={true}
         style={{
           display: 'flex',
           justifyContent: 'center',
