@@ -78,6 +78,7 @@ export default function Sponsors() {
           justifyContent: 'center',
           alignItems: 'center',
         }}
+        maxWidth={'xl'}
         PaperProps={{
           style: {
             backgroundColor: 'transparent',
