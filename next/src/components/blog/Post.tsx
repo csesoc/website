@@ -18,8 +18,9 @@ const PostWrapper = styled.div<{postSize : string, colour: string}>`
     width: ${({postSize}) => handleSize(postSize)};
     background-color: ${props => props.colour};
     padding: 2em;
-    border-radius: 0.5em;
+    border-radius: 2em;
     margin: 0 3em;
+    min-height: ${props => props.postSize === "full" ? "" : "40rem"};
 `
 
 const handleSize = (size : string) => {
@@ -37,7 +38,11 @@ const handleSize = (size : string) => {
 
 const ImageWrapper = styled.div`
     overflow: hidden;
-    border-radius: 0.5em;
+    border-radius: 1em;
+    transition: all 0.2s ease-in-out;
+    :hover {
+        scale: 1.01;
+    }
 `
 
 const TextWrapper = styled.div<{size : string}>`
@@ -57,13 +62,14 @@ const Title = styled.h1`
 `
 
 const Paragraph = styled.p`
-    font-size: 1em;
+    margin-top: 3rem;
+    font-size: 1.2em;
 `
 
 const imageProcess = async (pic : StaticImageData) => {
     const result = await analyze(pic.src, { scale: 0.5}) // also supports base64 encoded image strings
     let new_col = result[0].color.toString().replace(/rgb/i, "rgba");
-    new_col = new_col.replace(/\)/i,',0.3)');
+    new_col = new_col.replace(/\)/i,',0.4)');
     return rgbaToRgb('rgb(255, 255, 255)', new_col);
 }
 
