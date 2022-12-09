@@ -63,7 +63,7 @@ interface SideBarButtonProps {
   bgcolor: string;
 }
 
-const SidebarButton = styled(Button) <SideBarButtonProps>`
+const SidebarButton = styled(Button)<SideBarButtonProps>`
   && {
     width: 160px;
     variant: contained;
@@ -129,7 +129,7 @@ export default function SideBar({
         <Circle />
         {isOpen ? <ArrowBackIcon /> : <MenuIcon />}
       </IconWrapper>
-      <SidebarTitle>Welcome</SidebarTitle>
+      <SidebarTitle>Welcome \name\</SidebarTitle>
       <ButtonFlex>
         {/* <ButtonGroup>
           <SidebarButton bgcolor="#F88282">
