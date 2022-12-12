@@ -20,7 +20,6 @@ export const Wrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  margin: 30px;
 `;
 
 export const Buttons = styled.div`

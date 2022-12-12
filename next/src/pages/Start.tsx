@@ -16,7 +16,13 @@ const MainContainer = styled.div`
   font-family: "Raleway";
   font-weight: 450;
   font-size: 15px;
+  display: flex;
+  flex-direction: column;
   flex: 1;
+
+  > :first-child {
+    flex: 1;
+  }
 
   @media (max-width: 768px) {
     padding: 12vw 10vw;
@@ -56,8 +62,8 @@ export default function Start() {
       <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE} />
       <MainContainer onWheel={e => handleScroll(e.deltaY)}>
         {Object.values(views)[focusedView]}
+        <Timeline focusedView={focusedView} viewNames={Object.keys(views)} />
       </MainContainer>
-      <Timeline focusedView={focusedView} viewNames={Object.keys(views)} />
     </PageContainer>
   );
 }
