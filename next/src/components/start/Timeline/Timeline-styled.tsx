@@ -1,19 +1,25 @@
 import styled from "styled-components";
 
-const lightPurple = "#BEB8E7";
+const lightPurple = "hsl(248, 50%, 81%)";
 
 type ButtonProps = {
   filled: boolean;
 };
 
 export const Button = styled.button<ButtonProps>`
-  background: ${lightPurple};
+  background: ${({ filled }) => (filled ? "#A09FE3" : lightPurple)};
   border: none;
   color: white;
   font-weight: bold;
   padding: 4px 8px;
   border-radius: 4px;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  :hover {
+    background: #a09fe3;
+  }
 `;
 
 export const Wrapper = styled.div`
@@ -34,13 +40,14 @@ type CircleProps = {
   filled: boolean;
 };
 
-export const Circle = styled.div<CircleProps>`
+export const Circle = styled.button<CircleProps>`
   border-radius: 100%;
-  border: 5px solid ${lightPurple};
+  border: 5px solid ${({ filled }) => (filled ? "#A09FE3" : lightPurple)};
   width: 25px;
   height: 25px;
-  background: #fcf7de;
+  background: ${({ filled }) => (filled ? lightPurple : "#fcf7de")};
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  cursor: pointer;
 `;
 
 export const Line = styled.div`
