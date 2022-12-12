@@ -1,53 +1,53 @@
 import Image from "next/image";
-import Example from "../../../assets/example.png";
+import styled from "styled-components";
+import InfoCard from "./InfoCard";
 
-function InfoCardButton({ text }: { text: string }) {
-  return (
-    <button style={{ borderRadius: "5px", height: "40px", width: "100%", backgroundColor: "yellow", display: "flex", justifyContent: "center", alignItems: "center" }}>
-      {text}
-    </button>
-  )
-}
+const MainButton = styled.button`
+  outline: none;
+  border: 0;
+  border-radius: 5px;
+  height: 100px;
+  width: 440px;
+  background-color: #BEB8E7;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+`;
 
-function MainButton({ text }: { text: string }) {
-  return (
-    <button style={{ borderRadius: "5px", height: "60px", width: "320px", backgroundColor: "yellow", display: "flex", justifyContent: "center", alignItems: "center" }}>
-      {text}
-    </button>
-  )
-}
+const MainContainer = styled.div`
+  flex: 1;
+`;
 
-function InfoCard() {
-  return (
-    <div style={{ borderRadius: "5px", backgroundColor: "green", margin: "0 2%", width: "300px", height: "400px" }}>
-      <div style={{ position: "relative", height: "200px", width: "300px" }}>
-        <Image style={{ borderRadius: "5px 5px 0px 0px" }} src={Example} alt="asdfasdf" objectFit="cover" layout="fill" />
-      </div>
-      <div style={{ padding: "20px" }}>
-        <div style={{ fontSize: "32px" }}>
-          Hello
-        </div>
-        <div style={{ padding: "20px 0px", fontSize: "16px" }}>
-          Some random text hello this is a placeholder something
-        </div>
-        <InfoCardButton text={"Link To Guide"} />
-      </div>
-    </div>
-  )
-}
+const InfoCardsContainer = styled.div`
+  height: 50%;
+  display: flex;
+  justify-content: space-around;
+`;
+
+const MainButtonContainer = styled.div`
+  height: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+`;
 
 export default function AdviceView() {
   return (
-    <div style={{ flex: 1 }}>
-      <div style={{ height: "50%", background: "blue", display: "flex", justifyContent: "space-around" }}>
+    <MainContainer>
+      <InfoCardsContainer>
         <InfoCard />
         <InfoCard />
         <InfoCard />
         <InfoCard />
-      </div>
-      <div style={{ height: "30%", backgroundColor: "orange", display: "flex", alignItems: "center", justifyContent: "space-around" }}>
-        <MainButton text={"Check out our First Year Guide"} />
-      </div>
-    </div>
+      </InfoCardsContainer>
+      <MainButtonContainer>
+        <MainButton>
+          Check out our First Year Guide
+        </MainButton>
+      </MainButtonContainer>
+    </MainContainer >
   );
 }
