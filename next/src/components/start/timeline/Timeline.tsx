@@ -7,7 +7,7 @@ type Props = {
   viewNames: string[];
 };
 
-export default function Timeline({ focusedView, setFocusedView, viewNames }: Props) {
+const Timeline = ({ focusedView, setFocusedView, viewNames }: Props) => {
   return (
     <Wrapper>
       <Buttons>
@@ -25,4 +25,6 @@ export default function Timeline({ focusedView, setFocusedView, viewNames }: Pro
       <Line />
     </Wrapper>
   );
-}
+};
+
+export default Timeline;
