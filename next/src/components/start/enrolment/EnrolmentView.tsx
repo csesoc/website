@@ -4,7 +4,7 @@ import NotanglesIcon from "../assets/notangles.svg";
 import CirclesIcon from "../assets/circles.svg";
 import UNSWIcon from "../assets/unsw.svg"
 import EnrolmentBanner from "../assets/enrolment-guide-banner.png"
-import { device } from "../../../styles/device";
+import Link from "next/link";
 
 const Circle = styled.div`
   display: flex;
@@ -107,6 +107,9 @@ const IconHeading = styled.div`
   border-radius: 4px;
   font-weight: 650;
   display: table-cell;
+  &:hover {
+    transform: scale(1.04);
+  }
 `
 
 const HeadingBlock = styled.div`
@@ -119,6 +122,11 @@ const HeadingBlock = styled.div`
   font-weight: 800;
   font-size: 1.2em;
   top: 32vh;
+
+  &:hover {
+    transform: scale(1.04);
+  }
+
   @media (max-width: 768px) {
     top: 18vh;
   }
@@ -163,7 +171,11 @@ export default function EnrolmentView() {
     return (
         <MainContainer>
             <LeftContainer>
-              <HeadingBlock>Read our Enrolment Guide</HeadingBlock>
+              <HeadingBlock>
+                <Link href="https://media.csesoc.org.au/enrolment-guide/">
+                Read our Enrolment Guide
+                </Link>
+              </HeadingBlock>
               <ImageContainer>
                 <Image src={EnrolmentBanner} alt="Enrolment Banner" objectFit="contain" />
               </ImageContainer> 
@@ -181,27 +193,41 @@ export default function EnrolmentView() {
                   <Image src={NotanglesIcon} alt="Notangles Icon" width='70vw'/>
                 </Circle>
                 <IconInfoContainer>
-                  <IconHeading>Notangles</IconHeading>
+                  <IconHeading>
+                    <Link href="https://notangles.csesoc.app/">
+                      Notangles
+                    </Link>
+                  </IconHeading>
                   <IconDescription>Notangles is a student-led project which helps you <Bold>build your perfect timetable</Bold>, even before class registration opens.</IconDescription>
                 </IconInfoContainer>
               </ResourceContainer>
 
               <ResourceContainer>
                 <Circle>
+    
                   <Image src={CirclesIcon} alt="Circles Icon" width='40vw'/>
+ 
                 </Circle>
                 <IconInfoContainer>
-                    <IconHeading>Circles</IconHeading>
+                    <IconHeading>
+                    <Link href="https://circles.csesoc.app/degree-wizard/">
+                        Circles
+                      </Link>
+                    </IconHeading>
                     <IconDescription>Circles is a student-led project where you can <Bold>explore your degree structure</Bold> and <Bold>plan your degree</Bold> with ease.</IconDescription>
                 </IconInfoContainer>
               </ResourceContainer>
 
               <ResourceContainer>
                 <Circle>
-                  <Image src={UNSWIcon} alt="UNSW Icon" width='40vw'/>
+                    <Image src={UNSWIcon} alt="UNSW Icon" width='40vw'/>
                 </Circle>
                 <IconInfoContainer>
-                      <IconHeading>UNSW Handbook</IconHeading>
+                      <IconHeading> 
+                        <Link href="https://www.handbook.unsw.edu.au/">
+                        UNSW Handbook
+                        </Link>
+                      </IconHeading>
                       <IconDescription>The handbook is a comprehensive <Bold>guide to degree programs, specialisations and courses</Bold> offered at UNSW.</IconDescription>
                 </IconInfoContainer>
               </ResourceContainer>
