@@ -9,7 +9,8 @@ import EnrolmentView from "../components/start/enrolment/EnrolmentView";
 import ConnectView from "../components/start/connect/ConnectView";
 import EventsView from "../components/start/events/EventsView";
 import useTimelineScroll from "../hooks/TimelineScroll";
-import Timeline from "../components/start/Timeline/Timeline";
+import Timeline from "../components/start/timeline/Timeline";
+import View from "../components/start/view/View";
 
 const MainContainer = styled.div`
   padding: 3vw 3vw;
@@ -37,6 +38,11 @@ const PageContainer = styled.div`
   flex-direction: column;
 `;
 
+const Main = styled.main`
+  display: flex;
+  overflow: hidden;
+`;
+
 const views: Record<string, ReactNode> = {
   Welcome: <WelcomeView />,
   Connect: <ConnectView />,
@@ -61,7 +67,13 @@ export default function Start() {
     <PageContainer>
       <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE} />
       <MainContainer onWheel={e => handleScroll(e.deltaY)}>
-        {Object.values(views)[focusedView]}
+        <Main>
+          {Object.values(views).map((view, i) => (
+            <View key={i} idx={i} focusedView={focusedView}>
+              {view}
+            </View>
+          ))}
+        </Main>
         <Timeline
           focusedView={focusedView}
           setFocusedView={setFocusedView}
