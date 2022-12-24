@@ -42,7 +42,7 @@ const BlogPage: NextPage<{ data: Block[] }> = ({ data }) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const data = await fetch(
-    `http://backend:8080/api/filesystem/get/published?DocumentID=${
+    `/api/filesystem/get/published?DocumentID=${
       params && params.bid
     }`,
     {
