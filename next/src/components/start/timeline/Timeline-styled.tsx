@@ -45,9 +45,10 @@ export const Circle = styled.button<CircleProps>`
   border: 5px solid ${({ filled }) => (filled ? "#A09FE3" : lightPurple)};
   width: 25px;
   height: 25px;
-  background: ${({ filled }) => (filled ? lightPurple : "#fcf7de")};
+  background-color: ${({ filled }) => (filled ? lightPurple : "#fcf7de")};
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   cursor: pointer;
+  transition: background-color 0.2s;
 `;
 
 export const Line = styled.div`
