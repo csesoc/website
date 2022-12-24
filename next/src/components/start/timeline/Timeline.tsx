@@ -24,20 +24,18 @@ const Timeline = ({ focusedView, setFocusedView, viewNames }: Props) => {
         />
       </ProgressLineWrapper>
       <Buttons>
-        {viewNames.map((name, idx) => {
-          return (
-            <Fragment key={idx}>
-              <Circle filled={idx <= focusedView} onClick={() => setFocusedView(idx)} />
-              <Button
-                filled={idx <= focusedView}
-                active={idx === focusedView}
-                onClick={() => setFocusedView(idx)}
-              >
-                {name}
-              </Button>
-            </Fragment>
-          );
-        })}
+        {viewNames.map((name, idx) => (
+          <Fragment key={idx}>
+            <Circle filled={idx <= focusedView} onClick={() => setFocusedView(idx)} />
+            <Button
+              filled={idx <= focusedView}
+              active={idx === focusedView}
+              onClick={() => setFocusedView(idx)}
+            >
+              {name}
+            </Button>
+          </Fragment>
+        ))}
       </Buttons>
       <Line />
     </Wrapper>
