@@ -16,14 +16,13 @@ export default function Timeline({ focusedView, setFocusedView, viewNames }: Pro
             <Fragment key={idx}>
               <Circle filled={idx <= focusedView} onClick={() => setFocusedView(idx)} />
               <Button filled={idx <= focusedView} onClick={() => setFocusedView(idx)}>
-                {viewNames[idx]}
+                {name}
               </Button>
             </Fragment>
           );
         })}
       </Buttons>
       <Line />
-      {/* <TimelineButton text={viewNames[focusedView]} /> */}
     </Wrapper>
   );
 }
