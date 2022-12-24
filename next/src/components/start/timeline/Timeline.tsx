@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { Button, Buttons, Circle, Line, Wrapper } from "./Timeline-styled";
 
 type Props = {
@@ -12,12 +13,12 @@ export default function Timeline({ focusedView, setFocusedView, viewNames }: Pro
       <Buttons>
         {viewNames.map((name, idx) => {
           return (
-            <>
+            <Fragment key={idx}>
               <Circle filled={idx <= focusedView} onClick={() => setFocusedView(idx)} />
               <Button filled={idx <= focusedView} onClick={() => setFocusedView(idx)}>
                 {viewNames[idx]}
               </Button>
-            </>
+            </Fragment>
           );
         })}
       </Buttons>
