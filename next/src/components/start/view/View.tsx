@@ -48,7 +48,10 @@ const View = ({ idx, focusedView, children }: PropsWithChildren<ViewProps>) => {
   }, [focusedView, idx]);
 
   return (
-    <StyledView style={{ transform: `translateX(${-100 * focusedView}%)` }}>
+    <StyledView
+      style={{ transform: `translateX(${-100 * focusedView}%)` }}
+      aria-hidden={idx !== focusedView}
+    >
       <Wrapper ref={viewRef}>
         {children}
         {/* Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
