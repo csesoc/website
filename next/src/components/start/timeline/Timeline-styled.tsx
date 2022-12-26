@@ -8,6 +8,15 @@ type ButtonProps = {
   active: boolean;
 };
 
+export const Buttons = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  outline: none;
+`;
+
 export const Button = styled.button<ButtonProps>`
   background: ${({ filled }) => (filled ? darkPurple : lightPurple)};
   border: none;
@@ -15,28 +24,30 @@ export const Button = styled.button<ButtonProps>`
   font-weight: bold;
   padding: 4px 8px;
   border-radius: 4px;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1),
-    0 1px 2px -1px rgb(0 0 0 / 0.1) ${({ active }) => (active ? ", 0 0 0 3px hsla(248, 87%, 73%, 0.5)" : "")};
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
 
   :hover {
-    background: #a09fe3;
+    background: ${({ filled }) => (filled ? "hsl(248, 87%, 65%)" : "#a09fe3")};
   }
+
+  ${({ active }) =>
+    active &&
+    `
+      ${Buttons}:focus-visible && {
+        background: hsl(248, 87%, 65%);
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1),
+          0 0 0 3px hsla(248, 87%, 65%, 0.4);
+        outline: none;
+      }
+    `}
 `;
 
 export const Wrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-`;
-
-export const Buttons = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
 `;
 
 type CircleProps = {
