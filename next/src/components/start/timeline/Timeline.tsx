@@ -34,11 +34,20 @@ const Timeline = ({ focusedView, setFocusedView, viewNames }: Props) => {
           progressPercent={((1 + 2 * focusedView) / (viewNames.length * 2 - 1)) * 100}
         />
       </ProgressLineWrapper>
-      <Buttons onKeyDown={keyHandler} tabIndex={1}>
+      <Buttons
+        onKeyDown={keyHandler}
+        tabIndex={1}
+        role="tablist"
+        aria-label="Getting Started Steps"
+      >
         {viewNames.map((name, idx) => (
           <Fragment key={idx}>
             <Circle filled={idx <= focusedView} onClick={() => setFocusedView(idx)} tabIndex={-1} />
             <Button
+              id={`step${idx}-tab`}
+              role="tab"
+              aria-selected={idx === focusedView}
+              aria-controls={`step${idx}-panel`}
               filled={idx <= focusedView}
               active={idx === focusedView}
               onClick={() => setFocusedView(idx)}

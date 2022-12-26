@@ -2,20 +2,29 @@ import { PropsWithChildren, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { ViewProps } from "./types";
 
-const StyledView = styled.article`
-  display: flex;
-  flex-basis: 100%;
-  flex-shrink: 0;
-  transition: transform 1.25s;
-`;
-
 const Wrapper = styled.div`
   flex: 1;
   flex-direction: column;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  transition: border-color 0.2s, box-shadow 0.2s;
+`;
+
+const StyledView = styled.article`
+  display: flex;
+  flex-basis: 100%;
+  flex-shrink: 0;
+  transition: transform 1.25s;
   padding: 2rem;
+  outline: none;
+
+  :focus-visible ${Wrapper} {
+    border-color: hsl(248, 50%, 81%);
+    box-shadow: 0 0 0 3px hsla(248, 50%, 81%, 0.4);
+  }
 `;
 
 const View = ({ idx, focusedView, children }: PropsWithChildren<ViewProps>) => {
@@ -49,8 +58,11 @@ const View = ({ idx, focusedView, children }: PropsWithChildren<ViewProps>) => {
 
   return (
     <StyledView
-      style={{ transform: `translateX(${-100 * focusedView}%)` }}
+      id={`step${idx}-panel`}
       aria-hidden={idx !== focusedView}
+      aria-labelledby={`step${idx}-tab`}
+      style={{ transform: `translateX(${-100 * focusedView}%)` }}
+      tabIndex={idx === focusedView ? 0 : -1}
     >
       <Wrapper ref={viewRef}>
         {children}
