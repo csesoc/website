@@ -15,7 +15,7 @@ const useTimelineScroll = (
 
   const setFocusedView = useCallback(
     (focusedView: number) => {
-      if (focusedView < 0 || focusedView >= views - 1) {
+      if (focusedView < 0 || focusedView >= views) {
         return;
       }
 
