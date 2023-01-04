@@ -9,20 +9,25 @@ import EnrolmentView from "../components/start/enrolment/EnrolmentView";
 import ConnectView from "../components/start/connect/ConnectView";
 import EventsView from "../components/start/events/EventsView";
 import useTimelineScroll from "../hooks/TimelineScroll";
-import Timeline from "../components/start/Timeline";
+import Timeline from "../components/start/timeline/Timeline";
+import View from "../components/start/view/View";
 
 const MainContainer = styled.div`
-  padding: 3vw 3vw;
+  padding: 20px;
   font-family: "Raleway";
   font-weight: 450;
   font-size: 15px;
   display: flex;
+  flex-direction: column;
   flex: 1;
   max-height: 90vh;
   overflow-y: auto;
 
+  > :first-child {
+    flex: 1;
+  }
+
   @media (max-width: 768px) {
-    padding: 12vw 10vw;
     text-align: center;
   }
 `;
@@ -32,6 +37,11 @@ const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+`;
+
+const Main = styled.main`
+  display: flex;
+  overflow: hidden;
 `;
 
 const views: Record<string, ReactNode> = {
@@ -58,9 +68,19 @@ export default function Start() {
     <PageContainer>
       <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE} />
       <MainContainer onWheel={e => handleScroll(e.deltaY)}>
-        {Object.values(views)[focusedView]}
+        <Main>
+          {Object.values(views).map((view, i) => (
+            <View key={i} idx={i} focusedView={focusedView}>
+              {view}
+            </View>
+          ))}
+        </Main>
+        <Timeline
+          focusedView={focusedView}
+          setFocusedView={setFocusedView}
+          viewNames={Object.keys(views)}
+        />
       </MainContainer>
-      <Timeline focusedView={focusedView} viewNames={Object.keys(views)} />
     </PageContainer>
   );
 }
