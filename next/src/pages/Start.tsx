@@ -13,17 +13,19 @@ import Timeline from "../components/start/Timeline";
 
 const MainContainer = styled.div`
   padding: 3vw 3vw;
-  font-family: 'Raleway';
+  font-family: "Raleway";
   font-weight: 450;
   font-size: 15px;
   display: flex;
   flex: 1;
+  max-height: 90vh;
+  overflow-y: auto;
 
   @media (max-width: 768px) {
     padding: 12vw 10vw;
     text-align: center;
   }
-`
+`;
 
 const PageContainer = styled.div`
   max-width: 100vw;
@@ -37,7 +39,7 @@ const views: Record<string, ReactNode> = {
   Connect: <ConnectView />,
   Advice: <AdviceView />,
   Enrolment: <EnrolmentView />,
-  Events: <EventsView />
+  Events: <EventsView />,
 };
 
 export default function Start() {
@@ -49,16 +51,16 @@ export default function Start() {
   const [scrolling, handleScroll, focusedView, setFocusedView] = useTimelineScroll(
     Object.keys(views).length,
     1000,
-    () => scrolling.current
+    () => scrolling.current,
   );
 
   return (
     <PageContainer>
       <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE} />
-      <MainContainer onWheel={(e) => handleScroll(e.deltaY)}>
+      <MainContainer onWheel={e => handleScroll(e.deltaY)}>
         {Object.values(views)[focusedView]}
       </MainContainer>
       <Timeline focusedView={focusedView} viewNames={Object.keys(views)} />
     </PageContainer>
-  )
+  );
 }

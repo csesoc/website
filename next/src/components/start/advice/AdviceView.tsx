@@ -17,7 +17,7 @@ const MainButton = styled.button`
   border-radius: 5px;
   font-weight: bold;
   color: white;
-  background-color: #BEB8E7;
+  background-color: #beb8e7;
   cursor: pointer;
   :hover {
     background-image: linear-gradient(rgb(0 0 0/40%) 0 0);
@@ -46,34 +46,18 @@ const MainButton = styled.button`
 
 const MainContainer = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
 `;
 
 const InfoCardsContainer = styled.div`
   display: flex;
-  height: 350px;
   flex-direction: column;
   overflow-y: scroll;
 
-  @media ${device.mobileL} {
-    height: 425px;
-  }
-
-  @media ${device.tablet} {
-    height: 900px;
-  }
-
   @media ${device.laptop} {
     justify-content: space-around;
-    height: 360px;
     flex-direction: row;
-  }
-  
-  @media ${device.laptopL} {
-    height: 450px;
-  }
-
-  @media ${device.desktop} {
-    height: 540px;
   }
 `;
 
@@ -96,23 +80,56 @@ const MainButtonContainer = styled.div`
 `;
 
 const info = [
-  { title: 'A Guide to Making Friends at UNSW', text: 'In this video, get all the real tips from your peers on ways to make new friends at UNSW!', image: MakingFriends, link: 'https://media.csesoc.org.au/making-friends/' },
-  { title: 'CSESoc Subcom', text: 'Pack your bag for the first day of uni and we\'ll tell you what CSESoc Subcom to join!', image: FirstDay, link: 'https://media.csesoc.org.au/quiz-subcom/' },
-  { title: 'Optimise Your Study Life: Study Tips and Habits', text: 'The first of a two-part series, Alex has compiled all the tips and habits you need to optimise your study life!', image: StudyTips, link: 'https://media.csesoc.org.au/study-tips-and-habits/' },
-  { title: 'What I wish I knew as a First Year', text: 'Join Raathan, Sunny, Paul, Angeni and Ryan as they discuss their first year university experiences!', image: WishIKnew, link: 'https://media.csesoc.org.au/2020-roundtable/' },
-]
+  {
+    title: "A Guide to Making Friends at UNSW",
+    text: "In this video, get all the real tips from your peers on ways to make new friends at UNSW!",
+    image: MakingFriends,
+    link: "https://media.csesoc.org.au/making-friends/",
+  },
+  {
+    title: "CSESoc Subcom",
+    text: "Pack your bag for the first day of uni and we'll tell you what CSESoc Subcom to join!",
+    image: FirstDay,
+    link: "https://media.csesoc.org.au/quiz-subcom/",
+  },
+  {
+    title: "Optimise Your Study Life: Study Tips and Habits",
+    text: "The first of a two-part series, Alex has compiled all the tips and habits you need to optimise your study life!",
+    image: StudyTips,
+    link: "https://media.csesoc.org.au/study-tips-and-habits/",
+  },
+  {
+    title: "What I wish I knew as a First Year",
+    text: "Join Raathan, Sunny, Paul, Angeni and Ryan as they discuss their first year university experiences!",
+    image: WishIKnew,
+    link: "https://media.csesoc.org.au/2020-roundtable/",
+  },
+];
 
 export default function AdviceView() {
   return (
     <MainContainer>
       <InfoCardsContainer>
-        {info.map((info, index) => <InfoCard key={index} title={info.title} text={info.text} image={info.image} link={info.link} />)}
+        {info.map((info, index) => (
+          <InfoCard
+            key={index}
+            title={info.title}
+            text={info.text}
+            image={info.image}
+            link={info.link}
+          />
+        ))}
       </InfoCardsContainer>
       <MainButtonContainer>
-        <MainButton as="a" href='https://media.csesoc.org.au/first-year-guide/' target="_blank" rel="noreferrer">
+        <MainButton
+          as="a"
+          href="https://media.csesoc.org.au/first-year-guide/"
+          target="_blank"
+          rel="noreferrer"
+        >
           Check out our First Year Guide
         </MainButton>
       </MainButtonContainer>
-    </MainContainer >
+    </MainContainer>
   );
 }
