@@ -20,6 +20,8 @@ const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  max-height: 90vh;
+  overflow-y: auto;
 
   > :first-child {
     flex: 1;
