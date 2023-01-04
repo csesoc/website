@@ -23,11 +23,9 @@ const MainButton = styled.button`
     background-image: linear-gradient(rgb(0 0 0/40%) 0 0);
   }
 
-  @media ${device.mobileS} {
-    height: 48px;
-    width: 288px;
-    font-size: 18px;
-  }
+  height: 48px;
+  width: 288px;
+  font-size: 18px;
 
   @media ${device.laptop} {
     height: 60px;
@@ -52,11 +50,16 @@ const MainContainer = styled.div`
 
 const InfoCardsContainer = styled.div`
   display: flex;
+  height: 350px;
+  flex-direction: column;
+  overflow-y: scroll;
 
-  @media ${device.mobileS} {
-    height: 60vh;
-    flex-direction: column;
-    overflow-y: scroll;
+  @media ${device.mobileL} {
+    height: 425px;
+  }
+
+  @media ${device.tablet} {
+    height: 900px;
   }
 
   @media ${device.laptop} {
@@ -79,9 +82,7 @@ const MainButtonContainer = styled.div`
   align-items: center;
   justify-content: space-around;
 
-  @media ${device.mobileS} {
-    padding-top: 36px;
-  }
+  padding-top: 36px;
 
   @media ${device.laptop} {
     padding-top: 48px;

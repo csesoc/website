@@ -25,10 +25,7 @@ const InfoCardContainer = styled.div`
 
 const InfoCardImageContainer = styled.div`
   position: relative;
-  
-  @media ${device.mobileS} {
-    height: 220px;
-  }
+  height: 220px;
 
   @media ${device.laptop} {
     height: 180px;
@@ -47,11 +44,8 @@ const InfoCardBottomContainer = styled.div`
   display: flex;
   flex-direction: column;  
   border-top: 5px solid #BEB8E7;
-
-  @media ${device.mobileS} {
-    height: 220px;
-    padding: 8px;
-  }
+  height: 220px;
+  padding: 8px;
 
   @media ${device.laptop} {
     height: 180px;
@@ -71,11 +65,8 @@ const InfoCardBottomContainer = styled.div`
 
 const InfoCardHeader = styled.div`
   font-weight: bold;
-
-  @media ${device.mobileS} {
-    font-size: 24px;
-    padding-bottom: 4px;
-  }
+  font-size: 24px;
+  padding-bottom: 4px;
 
   @media ${device.laptop} {
     font-size: 24px;
@@ -92,9 +83,7 @@ const InfoCardHeader = styled.div`
 `
 
 const InfoCardBody = styled.div`
-  @media ${device.mobileS} {
-    font-size: 14px;
-  }
+  font-size: 14px;
 
   @media ${device.laptop} {
     font-size: 12px;
@@ -123,10 +112,8 @@ const Button = styled.button`
     background-image: linear-gradient(rgb(0 0 0/40%) 0 0);
   }
 
-  @media ${device.mobileS} {
-    font-size: 20px;
-    height: 40px;
-  }
+  font-size: 20px;
+  height: 40px;
 
   @media ${device.laptop} {
     font-size: 16px;
