@@ -30,9 +30,7 @@ const Timeline = ({ focusedView, setFocusedView, viewNames }: Props) => {
   return (
     <Wrapper>
       <ProgressLineWrapper>
-        <ProgressLine
-          progressPercent={((1 + 2 * focusedView) / (viewNames.length * 2 - 1)) * 100}
-        />
+        <ProgressLine focusedView={focusedView} numViews={viewNames.length} />
       </ProgressLineWrapper>
       <Buttons
         onKeyDown={keyHandler}

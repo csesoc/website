@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { device } from "../../../styles/device";
 
 const lightPurple = "hsl(248, 50%, 81%)";
 const darkPurple = "hsl(248, 87%, 73%)";
@@ -27,6 +28,12 @@ export const Button = styled.button<ButtonProps>`
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
+
+  display: none;
+
+  @media ${device.tablet} {
+    display: inline-block;
+  }
 
   :hover {
     background: ${({ filled }) => (filled ? "hsl(248, 87%, 65%)" : "#a09fe3")};
@@ -80,12 +87,17 @@ export const ProgressLineWrapper = styled.div`
 `;
 
 type ProgressLineProps = {
-  progressPercent: number;
+  focusedView: number;
+  numViews: number;
 };
 
 export const ProgressLine = styled.div<ProgressLineProps>`
   height: 100%;
   background-color: ${darkPurple};
-  width: ${({ progressPercent }) => progressPercent}%;
+  width: ${({ focusedView, numViews }) => (focusedView / (numViews - 1)) * 100}%;
   transition: width 0.5s;
+
+  @media ${device.tablet} {
+    width: ${({ focusedView, numViews }) => ((1 + 2 * focusedView) / (numViews * 2 - 1)) * 100}%;
+  }
 `;
