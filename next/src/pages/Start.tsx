@@ -9,20 +9,26 @@ import EnrolmentView from "../components/start/enrolment/EnrolmentView";
 import ConnectView from "../components/start/connect/ConnectView";
 import EventsView from "../components/start/events/EventsView";
 import useTimelineScroll from "../hooks/TimelineScroll";
-import Timeline from "../components/start/Timeline";
+import Timeline from "../components/start/timeline/Timeline";
+import View from "../components/start/view/View";
 
 const MainContainer = styled.div`
-  padding: 3vw 3vw;
-  font-family: 'Raleway';
+  padding: 20px;
+  font-family: "Raleway";
   font-weight: 450;
   font-size: 15px;
+  display: flex;
+  flex-direction: column;
   flex: 1;
 
+  > :first-child {
+    flex: 1;
+  }
+
   @media (max-width: 768px) {
-    padding: 12vw 10vw;
     text-align: center;
   }
-`
+`;
 
 const PageContainer = styled.div`
   max-width: 100vw;
@@ -31,12 +37,17 @@ const PageContainer = styled.div`
   flex-direction: column;
 `;
 
+const Main = styled.main`
+  display: flex;
+  overflow: hidden;
+`;
+
 const views: Record<string, ReactNode> = {
   Welcome: <WelcomeView />,
   Connect: <ConnectView />,
   Advice: <AdviceView />,
   Enrolment: <EnrolmentView />,
-  Events: <EventsView />
+  Events: <EventsView />,
 };
 
 export default function Start() {
@@ -48,16 +59,26 @@ export default function Start() {
   const [scrolling, handleScroll, focusedView, setFocusedView] = useTimelineScroll(
     Object.keys(views).length,
     1000,
-    () => scrolling.current
+    () => scrolling.current,
   );
 
   return (
     <PageContainer>
       <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE} />
-      <MainContainer onWheel={(e) => handleScroll(e.deltaY)}>
-        {Object.values(views)[focusedView]}
+      <MainContainer onWheel={e => handleScroll(e.deltaY)}>
+        <Main>
+          {Object.values(views).map((view, i) => (
+            <View key={i} idx={i} focusedView={focusedView}>
+              {view}
+            </View>
+          ))}
+        </Main>
+        <Timeline
+          focusedView={focusedView}
+          setFocusedView={setFocusedView}
+          viewNames={Object.keys(views)}
+        />
       </MainContainer>
-      <Timeline focusedView={focusedView} viewNames={Object.keys(views)} />
     </PageContainer>
-  )
+  );
 }
