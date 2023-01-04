@@ -2,9 +2,16 @@ import Image from "next/image";
 import styled from "styled-components";
 import InfoCard from "./InfoCard";
 import Example from "../../../assets/example.png";
+import MakingFriends from "../../../assets/makingfriends.png";
+import FirstDay from "../../../assets/firstday.png";
+import WishIKnew from "../../../assets/wishiknew.png";
+import StudyTips from "../../../assets/studytips.png";
 import { device } from "../../../styles/device";
 
 const MainButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   outline: none;
   border: 0;
   border-radius: 5px;
@@ -88,20 +95,20 @@ const MainButtonContainer = styled.div`
 `;
 
 const info = [
-  { title: 'Title1', text: 'text1', image: Example },
-  { title: 'Title2', text: 'text2', image: Example },
-  { title: 'Title3', text: 'text3', image: Example },
-  { title: 'Title4', text: 'text4', image: Example },
+  { title: 'A Guide to Making Friends at UNSW', text: 'In this video, get all the real tips from your peers on ways to make new friends at UNSW!', image: MakingFriends, link: 'https://media.csesoc.org.au/making-friends/' },
+  { title: 'CSESoc Subcom', text: 'Pack your bag for the first day of uni and we\'ll tell you what CSESoc Subcom to join!', image: FirstDay, link: 'https://media.csesoc.org.au/quiz-subcom/' },
+  { title: 'Optimise Your Study Life: Study Tips and Habits', text: 'The first of a two-part series, Alex has compiled all the tips and habits you need to optimise your study life!', image: StudyTips, link: 'https://media.csesoc.org.au/study-tips-and-habits/' },
+  { title: 'What I wish I knew as a First Year', text: 'Join Raathan, Sunny, Paul, Angeni and Ryan as they discuss their first year university experiences!', image: WishIKnew, link: 'https://media.csesoc.org.au/2020-roundtable/' },
 ]
 
 export default function AdviceView() {
   return (
     <MainContainer>
       <InfoCardsContainer>
-        {info.map((info, index) => <InfoCard key={index} title={info.title} text={info.text} image={info.image} />)}
+        {info.map((info, index) => <InfoCard key={index} title={info.title} text={info.text} image={info.image} link={info.link} />)}
       </InfoCardsContainer>
       <MainButtonContainer>
-        <MainButton>
+        <MainButton as="a" href='https://media.csesoc.org.au/first-year-guide/' target="_blank" rel="noreferrer">
           Check out our First Year Guide
         </MainButton>
       </MainButtonContainer>

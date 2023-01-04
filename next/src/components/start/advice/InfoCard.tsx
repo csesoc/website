@@ -108,12 +108,15 @@ const InfoCardBody = styled.div`
 `;
 
 const Button = styled.button`
+  display: flex;
   margin-top: auto;
 	outline: none;
   border: 0;
   border-radius: 5px;
 	font-weight: bold;
   color: white;
+  justify-content: center;
+  align-items: center;
   background-color: #BEB8E7;
   cursor: pointer;
   :hover {
@@ -143,9 +146,10 @@ type Props = {
   title: string;
   text: string;
   image: StaticImageData;
+  link: string;
 };
 
-export default function InfoCard({ title, text, image }: Props) {
+export default function InfoCard({ title, text, image, link }: Props) {
   return (
     <InfoCardContainer>
       <InfoCardImageContainer>
@@ -158,7 +162,7 @@ export default function InfoCard({ title, text, image }: Props) {
         <InfoCardBody>
           {text}
         </InfoCardBody>
-        <Button>
+        <Button as="a" href={link} target="_blank" rel="noreferrer">
           Read More
         </Button>
       </InfoCardBottomContainer>
