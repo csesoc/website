@@ -13,7 +13,7 @@ import Timeline from "../components/start/timeline/Timeline";
 import View from "../components/start/view/View";
 
 const MainContainer = styled.div`
-  padding: 3vw 3vw;
+  padding: 20px;
   font-family: "Raleway";
   font-weight: 450;
   font-size: 15px;
@@ -26,7 +26,6 @@ const MainContainer = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 12vw 10vw;
     text-align: center;
   }
 `;

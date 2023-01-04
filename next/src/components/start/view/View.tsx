@@ -1,5 +1,6 @@
 import { PropsWithChildren, useEffect, useRef } from "react";
 import styled from "styled-components";
+import { device } from "../../../styles/device";
 import { ViewProps } from "./types";
 
 const Wrapper = styled.div`
@@ -18,8 +19,11 @@ const StyledView = styled.article`
   flex-basis: 100%;
   flex-shrink: 0;
   transition: transform 1.25s;
-  padding: 2rem;
   outline: none;
+
+  @media ${device.laptop} {
+    padding: 2rem;
+  }
 
   :focus-visible ${Wrapper} {
     border-color: hsl(248, 50%, 81%);
