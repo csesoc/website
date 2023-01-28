@@ -85,7 +85,7 @@ const IconDescription = styled.p`
   }
 `;
 
-const IconHeading = styled.div`
+const IconHeading = styled.button`
   background: #beb8e7;
   color: #fff;
   padding: 10px;
@@ -97,7 +97,7 @@ const IconHeading = styled.div`
   }
 `;
 
-const HeadingBlock = styled.div`
+const HeadingBlock = styled.button`
   margin-bottom: -20px;
   z-index: 3;
   background: #beb8e7;
@@ -150,8 +150,8 @@ export default function EnrolmentView() {
   return (
     <MainContainer>
       <LeftContainer>
-        <HeadingBlock>
-          <Link href="https://media.csesoc.org.au/enrolment-guide/">Read our Enrolment Guide</Link>
+        <HeadingBlock as="a" href="https://media.csesoc.org.au/cse-enrol/" rel="noreferrer" target="_blank">
+          Read our Enrolment Guide
         </HeadingBlock>
         <ImageContainer>
           <Image src={EnrolmentBanner} alt="Enrolment Banner" objectFit="contain" />
@@ -173,8 +173,8 @@ export default function EnrolmentView() {
             <Image src={NotanglesIcon} alt="Notangles Icon" width="70vw" />
           </Circle>
           <IconInfoContainer>
-            <IconHeading>
-              <Link href="https://notangles.csesoc.app/">Notangles</Link>
+            <IconHeading as="a" href="https://notangles.csesoc.app/" rel="noreferrer" target="_blank">
+              Notangles
             </IconHeading>
             <IconDescription>
               Notangles is a student-led project which helps you{" "}
@@ -188,8 +188,8 @@ export default function EnrolmentView() {
             <Image src={CirclesIcon} alt="Circles Icon" width="40vw" />
           </Circle>
           <IconInfoContainer>
-            <IconHeading>
-              <Link href="https://circles.csesoc.app/degree-wizard/">Circles</Link>
+            <IconHeading as="a" href="https://circles.csesoc.app/degree-wizard/" rel="noreferrer" target="_blank">
+              Circles
             </IconHeading>
             <IconDescription>
               Circles is a student-led project where you can{" "}
@@ -201,19 +201,20 @@ export default function EnrolmentView() {
 
         <ResourceContainer>
           <Circle>
-            <Image src={UNSWIcon} alt="UNSW Icon" width="40vw" />
-          </Circle>
+            <Image src={UNSWIcon} alt="UNSW Icon" width='40vw' />
+          </Circle >
           <IconInfoContainer>
-            <IconHeading>
-              <Link href="https://www.handbook.unsw.edu.au/">UNSW Handbook</Link>
+            <IconHeading as="a" href="https://www.handbook.unsw.edu.au/" rel="noreferrer" target="_blank">
+              UNSW Handbook
             </IconHeading>
-            <IconDescription>
-              The handbook is a comprehensive{" "}
-              <Bold>guide to degree programs, specialisations and courses</Bold> offered at UNSW.
-            </IconDescription>
+            <IconDescription>The handbook is a comprehensive
+              <Bold>guide to degree programs, specialisations and courses</Bold>
+              offered at UNSW.</IconDescription>
           </IconInfoContainer>
-        </ResourceContainer>
-      </RightContainer>
-    </MainContainer>
+        </ResourceContainer >
+
+      </RightContainer >
+
+    </MainContainer >
   );
 }
