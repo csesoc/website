@@ -67,7 +67,7 @@ export default function Start() {
   return (
     <PageContainer>
       <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE} />
-      <MainContainer onWheel={e => handleScroll(e.deltaY)}>
+      <MainContainer onWheel={e => handleScroll(e.deltaX)}>
         <Main>
           {Object.values(views).map((view, i) => (
             <View key={i} idx={i} focusedView={focusedView}>

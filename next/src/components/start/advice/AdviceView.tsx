@@ -30,7 +30,7 @@ const MainButton = styled.button`
   @media ${device.laptop} {
     height: 60px;
     width: 320px;
-    font-size: 22px;
+    font-size: 20px;
   }
   @media ${device.laptopL} {
     height: 80px;
@@ -53,11 +53,19 @@ const MainContainer = styled.div`
 const InfoCardsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
+  overflow-y: auto;
 
+  // This is to set the bounds of the container to allow the scrollbar to show up
+  position:absolute;
+  left: 0;
+  right: 0;
+  top:0;
+  bottom: 30px;
+  
   @media ${device.laptop} {
     justify-content: space-around;
     flex-direction: row;
+    position: relative;
   }
 `;
 
@@ -93,7 +101,7 @@ const info = [
     link: "https://media.csesoc.org.au/quiz-subcom/",
   },
   {
-    title: "Optimise Your Study Life: Study Tips and Habits",
+    title: "Optimise Your Study Life",
     text: "The first of a two-part series, Alex has compiled all the tips and habits you need to optimise your study life!",
     image: StudyTips,
     link: "https://media.csesoc.org.au/study-tips-and-habits/",
