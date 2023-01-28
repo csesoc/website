@@ -9,7 +9,6 @@ const Countdown: FC = () => {
         if (date === null) return;
 
         const timeLeft = Math.max(calculateTimeLeft(date), 0);
-        console.log("timeleft is " + timeLeft);
         setValue(timeLeft);
         if (!timeLeft) return;
 
@@ -39,7 +38,6 @@ export default Countdown;
 const calculateTimeLeft = (date: Date) => {
     const now = new Date();
     const diff = date.getTime() - now.getTime();
-    console.log(`diff is ${diff} between ${now} and ${date}`);
     return diff;
 };
 
