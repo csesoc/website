@@ -4,7 +4,6 @@ import NotanglesIcon from "../assets/notangles.svg";
 import CirclesIcon from "../assets/circles.svg";
 import UNSWIcon from "../assets/unsw.svg"
 import EnrolmentBanner from "../assets/enrolment-guide-banner.png"
-import Link from "next/link";
 
 const Circle = styled.div`
   display: flex;
@@ -100,7 +99,7 @@ const IconDescription = styled.p`
   
 `
 
-const IconHeading = styled.div`
+const IconHeading = styled.button`
   background: #BEB8E7;
   color: #FFF;
   padding: 10px;
@@ -112,7 +111,7 @@ const IconHeading = styled.div`
   }
 `
 
-const HeadingBlock = styled.div`
+const HeadingBlock = styled.button`
   position: absolute;
   z-index: 3;
   background: #BEB8E7;
@@ -157,7 +156,7 @@ const EnrolmentDescriptionContainer = styled.div`
 
 `
 
-const EnrolmentDescription= styled.p`
+const EnrolmentDescription = styled.p`
   position: absolute;
   bottom: 0;
   padding: 2vw;
@@ -168,72 +167,62 @@ const Bold = styled.b`
 `
 
 export default function EnrolmentView() {
-    return (
-        <MainContainer>
-            <LeftContainer>
-              <HeadingBlock>
-                <Link href="https://media.csesoc.org.au/enrolment-guide/">
-                Read our Enrolment Guide
-                </Link>
-              </HeadingBlock>
-              <ImageContainer>
-                <Image src={EnrolmentBanner} alt="Enrolment Banner" objectFit="contain" />
-              </ImageContainer> 
-              <EnrolmentDescriptionContainer>
-                <EnrolmentDescription>
-                  Just entering a CSE degree at UNSW, and feeling overwhelmed? <br/> <br/>
-                  CSESoc has created the <Bold>CSE Enrolment Guide</Bold> help you make sense of it all! Check it out for a comprehensive rundown on everything you need to know about getting started with your degree - including understanding common terms, how majors work, and advice on subject selection and enrolment.
-                </EnrolmentDescription>
-              </EnrolmentDescriptionContainer>
-            </LeftContainer>
+  return (
+    <MainContainer>
+      <LeftContainer>
+        <HeadingBlock as="a" href="https://media.csesoc.org.au/cse-enrol/" rel="noreferrer" target="_blank">
+          Read our Enrolment Guide
+        </HeadingBlock>
+        <ImageContainer>
+          <Image src={EnrolmentBanner} alt="Enrolment Banner" objectFit="contain" />
+        </ImageContainer>
+        <EnrolmentDescriptionContainer>
+          <EnrolmentDescription>
+            Just entering a CSE degree at UNSW, and feeling overwhelmed? <br /> <br />
+            CSESoc has created the <Bold>CSE Enrolment Guide</Bold> help you make sense of it all! Check it out for a comprehensive rundown on everything you need to know about getting started with your degree - including understanding common terms, how majors work, and advice on subject selection and enrolment.
+          </EnrolmentDescription>
+        </EnrolmentDescriptionContainer>
+      </LeftContainer>
 
-            <RightContainer>
-              <ResourceContainer>
-                <Circle>
-                  <Image src={NotanglesIcon} alt="Notangles Icon" width='70vw'/>
-                </Circle>
-                <IconInfoContainer>
-                  <IconHeading>
-                    <Link href="https://notangles.csesoc.app/">
-                      Notangles
-                    </Link>
-                  </IconHeading>
-                  <IconDescription>Notangles is a student-led project which helps you <Bold>build your perfect timetable</Bold>, even before class registration opens.</IconDescription>
-                </IconInfoContainer>
-              </ResourceContainer>
+      <RightContainer>
+        <ResourceContainer>
+          <Circle>
+            <Image src={NotanglesIcon} alt="Notangles Icon" width='70vw' />
+          </Circle>
+          <IconInfoContainer>
+            <IconHeading as="a" href="https://notangles.csesoc.app/" rel="noreferrer" target="_blank">
+              Notangles
+            </IconHeading>
+            <IconDescription>Notangles is a student-led project which helps you <Bold>build your perfect timetable</Bold>, even before class registration opens.</IconDescription>
+          </IconInfoContainer>
+        </ResourceContainer>
 
-              <ResourceContainer>
-                <Circle>
-    
-                  <Image src={CirclesIcon} alt="Circles Icon" width='40vw'/>
- 
-                </Circle>
-                <IconInfoContainer>
-                    <IconHeading>
-                    <Link href="https://circles.csesoc.app/degree-wizard/">
-                        Circles
-                      </Link>
-                    </IconHeading>
-                    <IconDescription>Circles is a student-led project where you can <Bold>explore your degree structure</Bold> and <Bold>plan your degree</Bold> with ease.</IconDescription>
-                </IconInfoContainer>
-              </ResourceContainer>
+        <ResourceContainer>
+          <Circle>
+            <Image src={CirclesIcon} alt="Circles Icon" width='40vw' />
+          </Circle>
+          <IconInfoContainer>
+            <IconHeading as="a" href="https://circles.csesoc.app/degree-wizard/" rel="noreferrer" target="_blank">
+              Circles
+            </IconHeading>
+            <IconDescription>Circles is a student-led project where you can <Bold>explore your degree structure</Bold> and <Bold>plan your degree</Bold> with ease.</IconDescription>
+          </IconInfoContainer>
+        </ResourceContainer>
 
-              <ResourceContainer>
-                <Circle>
-                    <Image src={UNSWIcon} alt="UNSW Icon" width='40vw'/>
-                </Circle>
-                <IconInfoContainer>
-                      <IconHeading> 
-                        <Link href="https://www.handbook.unsw.edu.au/">
-                        UNSW Handbook
-                        </Link>
-                      </IconHeading>
-                      <IconDescription>The handbook is a comprehensive <Bold>guide to degree programs, specialisations and courses</Bold> offered at UNSW.</IconDescription>
-                </IconInfoContainer>
-              </ResourceContainer>
+        <ResourceContainer>
+          <Circle>
+            <Image src={UNSWIcon} alt="UNSW Icon" width='40vw' />
+          </Circle>
+          <IconInfoContainer>
+            <IconHeading as="a" href="https://www.handbook.unsw.edu.au/" rel="noreferrer" target="_blank">
+              UNSW Handbook
+            </IconHeading>
+            <IconDescription>The handbook is a comprehensive <Bold>guide to degree programs, specialisations and courses</Bold> offered at UNSW.</IconDescription>
+          </IconInfoContainer>
+        </ResourceContainer>
 
-            </RightContainer>
+      </RightContainer>
 
-        </MainContainer>
-    );
+    </MainContainer>
+  );
 }
