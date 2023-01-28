@@ -114,7 +114,8 @@ export default function EventsView() {
                   key={index}
                   title={info.title}
                   date={info.date}
-                  onClick={() => {setImage(info.imageName); 
+                  onClick={() => {
+                    setImage(info.imageName); 
                     setDesc(info.desc);
                   }}
                 />
@@ -122,8 +123,8 @@ export default function EventsView() {
           </Sidebar>
           <RightContainer>
             <ImageContainer>
-              { image !== null ? 
-              <Image src={image} objectFit="contain" alt="event banner"/>
+              { image !== null 
+                ? <Image src={image} objectFit="contain" alt="event banner"/>
                 : <p> More Info Coming Soon</p>
               }
             </ImageContainer>
