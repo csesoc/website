@@ -156,7 +156,7 @@ export default function WelcomeView() {
         rel="noreferrer"
       >
         <CountdownLink>
-          See what&apos; on at O-Week!
+          See what&apos;s on at O-Week!
         </CountdownLink>
         <CountdownTimer>
           <Countdown />
