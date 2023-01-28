@@ -15,7 +15,13 @@ const ImageContainer = styled.div`
   max-width: 700px;
   object-fit: contain;
   overflow: hidden;
-  padding: 10px 0px;
+  padding: 12px 0px;
+
+  &:hover { 
+		cursor: pointer;
+		transform: scale(1.1);
+	}
+
 `;
 
 const RightContainer = styled.div`
@@ -24,7 +30,8 @@ const RightContainer = styled.div`
   max-width: 2000px;
   object-fit: contain;
   overflow: hidden;
-  border: 4px solid #beb8e7;
+  background: #beb8e7;
+  // border: 4px solid #beb8e7;
   border-radius: 8px;
   max-height: 70vh;
   justify-content: center;
@@ -39,11 +46,17 @@ const Sidebar = styled.div`
   align-items: center;
   flex-direction: column;
   max-height: 40vh;
+  @media (max-width: 768px) {
+    min-width: 35vw;
+    min-height: 70vh;
+    padding: 10px;
+    align-items: center;
+  }
 `
 
 const DescContainer = styled.div`
   display: flex;
-  padding: 0 20px;
+  padding: 0 25px;
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -82,7 +95,7 @@ const events = [
     date: "TBD",
     imageName: null,
     // "./assets/subcom.png"
-    desc: ""
+    desc: "Want to make a contribution to CSESoc and make friends while doing so? Then we would suggest applying to one of CSESoc's many teams! Keep your eyes peeled on our social media so you don't miss out on recruitment."
   },
 ];
 
