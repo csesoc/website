@@ -12,7 +12,7 @@ import {
   HamburgerButton,
   ImageWrapper,
   MiniPageContainer,
-  HomepageButton
+  HomepageButton,
 } from "./Navbar-styled";
 
 const Navbar = (props: NavbarOpenProps) => {
@@ -47,9 +47,14 @@ const Navbar = (props: NavbarOpenProps) => {
         <MiniPageContainer>
           <ImageWrapper>
             <Link href="/">
-              <Image src="/assets/WebsitesIcon.png" layout="fill" objectFit="contain" objectPosition="left" />
+              <Image
+                src="/assets/WebsitesIcon.png"
+                layout="fill"
+                objectFit="contain"
+                objectPosition="left"
+                style={{ paddingLeft: "1rem", paddingTop: "1rem" }}
+              />
             </Link>
-
           </ImageWrapper>
 
           <HomepageButton>
@@ -57,8 +62,7 @@ const Navbar = (props: NavbarOpenProps) => {
               <div style={{ color: "#FFFFFF" }}>Homepage</div>
             </Link>
           </HomepageButton>
-
-        </MiniPageContainer >
+        </MiniPageContainer>
       );
   }
 };
