@@ -16,6 +16,56 @@ import (
 )
 
 func TestUploadDocument(t *testing.T) {
+	controller := gomock.NewController(t)
+	assert := assert.New(t)
+	defer controller.Finish()
+
+	// ==== test setup =====
+	entityID := uuid.New()
+	parentID := uuid.New()
+	entityToCreate := repositories.FilesystemEntry{
+		LogicalName:  "file",
+		ParentFileID: parentID,
+		IsDocument:   true,
+		OwnerUserId:  1,
+	}
+
+	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
+	mockFileRepo.EXPECT().CreateEntry(entityToCreate).Return(repositories.FilesystemEntry{
+		EntityID:     entityID,
+		LogicalName:  "file",
+		ParentFileID: parentID,
+		IsDocument:   true,
+		OwnerUserId:  1,
+	}, nil).Times(1)
+
+	temp, _ := ioutil.TempFile(os.TempDir(), "expected")
+	defer os.Remove(temp.Name())
+
+	mockDockerFileSystemRepo := repMocks.NewMockIUnpublishedVolumeRepository(controller)
+	mockDockerFileSystemRepo.EXPECT().GetFromVolume(entityID.String()).Return(temp, nil).Times(1)
+
+	mockDepFactory := createMockDependencyFactory(controller, mockFileRepo, true)
+	mockDepFactory.EXPECT().GetUnpublishedVolumeRepo().Return(mockDockerFileSystemRepo)
+
+	const fileContent = "Hello World"
+
+	form := models.ValidDocumentUploadRequest{
+		Parent:       parentID,
+		DocumentName: "file",
+		Content:      fileContent,
+	}
+
+	response := endpoints.UploadDocument(form, mockDepFactory)
+	assert.Equal(response.Status, http.StatusOK)
+	assert.Equal(response.Response, models.NewEntityResponse{
+		NewID: entityID,
+	})
+
+	// check that the file was written to the docker volume
+	actual, _ := ioutil.ReadFile(temp.Name())
+	assert.Equal(actual, []byte(fileContent))
+
 }
 
 func TestGetPublishedDocument(t *testing.T) {

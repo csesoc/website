@@ -11,6 +11,7 @@ import (
 // @implementations of OperationModel
 type IntegerOperation struct {
 	NewValue int
+	operationType EditType
 }
 
 // TransformAgainst is the IntegerOperation implementation of the operationModel interface
@@ -31,3 +32,9 @@ func (intOp IntegerOperation) Apply(parentNode cmsjson.AstNode, applicationIndex
 	}
 	return nil, errors.New("invalid application of a primitive operation, expected parent node to be a primitive")
 }
+
+// getEditType is the IntegerOperation implementation of the OperationModel interface
+func (intOp IntegerOperation) GetEditType() EditType {
+	return intOp.operationType
+}
+
