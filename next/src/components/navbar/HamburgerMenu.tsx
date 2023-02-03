@@ -15,15 +15,16 @@ const HamburgerMenu = (props: HamburgerMenuProps) => {
   return (
     <MenuOverlay>
       <MenuContainer>
-        { props.open ? (
+        {props.open ? (
           <MenuHeader>
             <LogoContainer>
               <Image src={LogoImg} />
             </LogoContainer>
             <CloseButton onClick={props.setNavbarOpen}><Image src={CloseIcon} /></CloseButton>
           </MenuHeader>
-        ) : <></> }
+        ) : <></>}
         <MenuItemWrapper>
+          <MenuItem>Future Students</MenuItem>
           <MenuItem>About Us</MenuItem>
           <MenuItem>Contact</MenuItem>
           <MenuItem>Events</MenuItem>

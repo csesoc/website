@@ -24,6 +24,9 @@ const Navbar = (props: NavbarOpenProps) => {
             <HamburgerButton onClick={props.setNavbarOpen}>
               <Image src={HamburgerIcon} />
             </HamburgerButton>
+            <Link href="/Start">
+              <NavItem>Future Students</NavItem>
+            </Link>
             <Link href="/AboutUs">
               <NavItem>About Us</NavItem>
             </Link>
