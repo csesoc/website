@@ -14,6 +14,8 @@ import InstagramScreenshot from "../../../../public/assets/csesoc_instagram.png"
 import YoutubeScreenshot from "../../../../public/assets/csesoc_youtube.png";
 import SpotifyScreenshot from "../../../../public/assets/csesoc_spotify.png";
 
+import { device } from "../../../styles/device";
+
 const MainContainer = styled.div`
   display: flex;
   flex-direction: column-reverse;
@@ -40,7 +42,25 @@ const Preview = styled.div`
 const SocialIcons = styled.div`
   display: flex;
   justify-content: center;
-  gap: 2rem;
+
+  gap: 0.5rem;
+
+  @media ${device.tablet} {
+    gap: 2rem;
+  }
+
+  
+`;
+
+const SocialIconImageContainer = styled.div`
+  position: relative;
+  height: 40px;
+  width: 40px;
+
+  @media ${device.tablet} {
+    height: 60px;
+    width: 60px;
+  }
 `;
 
 const Button = styled.button<{ active?: boolean }>`
@@ -50,15 +70,18 @@ const Button = styled.button<{ active?: boolean }>`
   background: none;
   border: none;
   cursor: pointer;
-  width: 60px;
-  height: 60px;
   border-radius: 100%;
+  padding: 0.5rem;
 
   ${({ active }) =>
     active &&
     `
       box-shadow: 0 0 0 4px var(--primary-purple);
     `}
+
+  @media ${device.tablet} {
+    padding: 1rem;
+  }
 `;
 
 const socialIcons = [
@@ -83,7 +106,7 @@ const socialIcons = [
   {
     name: "YouTube",
     icon: YoutubeLogo,
-    link: "cseso.cc/youtube",
+    link: "https://cseso.cc/youtube",
     screenshot: YoutubeScreenshot,
   },
   {
@@ -102,7 +125,9 @@ export default function ConnectView() {
       <SocialIcons>
         {socialIcons.map(({ name, icon }) => (
           <Button active={name === activeTab} key={name} onClick={() => setActiveTab(name)}>
-            <Image src={icon.src} alt={name} width={50} height={50} />
+            <SocialIconImageContainer>
+              <Image src={icon.src} alt={name} objectFit="cover" layout="fill" />
+            </SocialIconImageContainer>
           </Button>
         ))}
       </SocialIcons>

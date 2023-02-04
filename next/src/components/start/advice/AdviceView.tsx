@@ -48,6 +48,8 @@ const MainContainer = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  width: 100%;
 `;
 
 const InfoCardsContainer = styled.div`
@@ -61,6 +63,7 @@ const InfoCardsContainer = styled.div`
   right: 0;
   top:0;
   bottom: 30px;
+
   
   @media ${device.laptop} {
     justify-content: space-around;
