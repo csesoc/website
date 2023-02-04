@@ -1,6 +1,7 @@
 import Sphere from '../components/aboutus/ReusableSpheres';
 import * as PageStyle from '../components/aboutus/AboutUs-Styled';
 import { Fragment } from 'react';
+import { device } from '../styles/device';
 
 const args1 = {
     left: 11,
@@ -65,13 +66,13 @@ const SphereArgs = [args1, args2, args3, args4];
 
 const CreateSpheres = SphereArgs.map((arg, index) => {
     return (
-      <Fragment key={index}>
-        <Sphere {...arg}>
-          <a href='AboutUs'>
-            <PageStyle.MoreInfoText {...arg}>{arg.text}</PageStyle.MoreInfoText>
-          </a>
-        </Sphere>
-      </Fragment>
+        <Fragment key={index}>
+            <Sphere {...arg}>
+                <a href='AboutUs'>
+                    <PageStyle.MoreInfoText {...arg}>{arg.text}</PageStyle.MoreInfoText>
+                </a>
+            </Sphere>
+        </Fragment>
     )
 })
 
@@ -83,14 +84,10 @@ const AboutUs = () => (
                     About Us
                 </PageStyle.AboutUsText>
                 <PageStyle.MainText>
-                        We are one of the biggest and most active societies at
-                        <PageStyle.BlueText> UNSW</PageStyle.BlueText>
-                        , catering to over
-                        <PageStyle.BlueText> 3500 CSE students </PageStyle.BlueText>
-                        spanning across degrees in Computer Science, Software Engineering, Bioinformatics and Computer Engineering.
-                    </PageStyle.MainText>
+                    We are one of the biggest and most active societies at UNSW, catering to over 3500 CSE students spanning across degrees in Computer Science, Software Engineering, Bioinformatics and Computer Engineering.
+                </PageStyle.MainText>
             </PageStyle.AboutUsContent>
-            {CreateSpheres}
+            {(device.mobileL || device.mobileM || device.mobileS) ? undefined : CreateSpheres}
         </PageStyle.AboutUsPage>
     </div>
 )

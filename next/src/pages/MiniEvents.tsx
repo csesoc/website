@@ -9,12 +9,13 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 100px;
+    gap: 10vmin;
+    
     @media ${device.laptop} {
         flex-direction: row;
         justify-content: space-evenly;
         align-items: center;
-        margin: 30vh 10vw;
+        margin: 50vmin 15vmin 10vmin 15vmin;
     }
     z-index: 100;
 `
@@ -22,7 +23,7 @@ const Container = styled.div`
 const ColumnContainer = styled.div`
     display: flex;
     flex-direction: column;
-    width: 60vw;
+    width: 60%;
     @media ${device.laptop} {
         padding: 30px;
     }
@@ -33,24 +34,18 @@ const HeadingText = styled.div`
     font-family: 'Raleway';
     font-weight: 800;
     font-size: 40px;
-    @media ${device.laptop} {
-        font-size: 3.5vw;
-        line-height: 0vw;
-        text-align: left;
-        margin-top: 2vw;
-    }
+    font-size: 4vmin;
+    line-height: 3vmin;
+    text-align: center;
 `
 
 const BodyText = styled.div`
     color: var(--accent-darker-purple);
-    font-weight: 200;
-    font-size: 20px;
-    @media ${device.tablet} {
-        font-size: 1.9vw;
-        line-height: 2.5vw;
-        margin-top: 3vw;
-    }
-
+    font-weight: 400;
+    font-size: 3vmin;
+    text-align: center;
+    padding: 20px;
+    margin-top: 2.8vmin;
     @media ${device.laptop} {
         color: white;
     }

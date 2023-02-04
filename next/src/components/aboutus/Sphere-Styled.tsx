@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { device } from "../../styles/device";
 
 export type sphereProps = {
-  left? : number;
+  left?: number;
   top?: number;
   leftMobile?: number;
   topMobile?: number;
@@ -37,6 +37,8 @@ export const StyledSphere = styled.div<sphereProps>`
   align-items: center;
   border-radius: 50%;
 
+  max-width: 400px;
+  max-height: 400px;
   @media ${device.tablet} {
     left: ${props => props.left}%;
     top: ${props => props.top}%;

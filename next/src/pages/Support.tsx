@@ -56,11 +56,11 @@ const SponsorCol = styled.div`
   max-height: 100%;
   max-width: 100%;
   border-radius: 0.5rem;
-  padding: 1vw;
+  padding: 1vmin;
   @media ${device.tablet} {
     flex-basis: calc(50% - 40px);  
     flex-direction: column;
-    padding: 8vh 0;
+    padding: 8vmin 0;
   }
 
 
@@ -84,7 +84,7 @@ const H3 = styled.div`
   font-weight: 800;
   font-size: 20px;
   @media ${device.tablet} {
-    font-size: 2vw;
+    font-size: 3.5vmin;
   }
 `;
 
@@ -127,19 +127,15 @@ const HeadingContainer = styled.div`
 `
 
 const Heading = styled.div`
-  color: #A09FE3;
+  color: var(--accent-darker-purple);
   font-family: 'Raleway';
   font-weight: 800;
-  font-size: 30px;
-  padding: 5vh 0;
-  @media ${device.tablet} {
-    font-size: 2.8vw;
-  }
+  font-size: 4vmin;
 `;
 
 
 
-export default function Sponsors2() {
+export default function Support() {
 
   const [navbarOpen, setNavbarOpen] = useState(false);
 
@@ -150,9 +146,6 @@ export default function Sponsors2() {
 
   return (
     <div>
-
-      <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.MINIPAGE} />
-
       <HeadingContainer>
         <Heading>Support CSESoc</Heading>
       </HeadingContainer>
@@ -161,7 +154,7 @@ export default function Sponsors2() {
       </ImgContainer>
 
       <Grid>
-        
+
         <OurSponsorsCol>
           <TextContainer>
             <H3>Our Sponsors</H3>
@@ -185,15 +178,15 @@ export default function Sponsors2() {
           </SponsorCol>
           <SponsorCol style={{ backgroundColor: 'rgba(82, 130, 255, 0.47)' }}>
             <Image
-                src={`/assets/sponsors_white/imc.svg`}
-                width={60}
-                height={50}
-                objectFit="contain"
-              />
+              src={`/assets/sponsors_white/imc.svg`}
+              width={60}
+              height={50}
+              objectFit="contain"
+            />
           </SponsorCol>
-        
+
           <SponsorCol style={{ backgroundColor: 'rgba(48, 93, 255, 0.2)' }}>
-          <Image
+            <Image
               src={`/assets/sponsors_white/deloitte.svg`}
               width={50}
               height={40}
@@ -201,7 +194,7 @@ export default function Sponsors2() {
             />
           </SponsorCol>
           <SponsorCol style={{ backgroundColor: 'rgba(122, 137, 236, 0.27)' }}>
-          <Image
+            <Image
               src={`/assets/sponsors_white/js.svg`}
               width={50}
               height={55}
@@ -209,10 +202,7 @@ export default function Sponsors2() {
             />
           </SponsorCol>
         </SmallGrid>
-      
       </Grid>
-
-      <Footer />
     </div>
   );
 

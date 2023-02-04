@@ -8,7 +8,7 @@ export default function ClearLayeredGlass() {
       <GlassContainer position="relative">
         <GlassContainer position="absolute" top={1} left={1} />
         <ImgContainer>
-          <Image src="/assets/CSESocEventsCP.png" layout="fill" objectFit="contain" />
+          <Image alt="Events" src="/assets/CSESocEventsCP.png" layout="fill" objectFit="contain" />
         </ImgContainer>
       </GlassContainer>
     </div>

@@ -18,6 +18,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 30vh 0;
+  width: 100%;
 
   @media ${device.laptop} {
     height: 100vh;
@@ -27,11 +28,8 @@ const Heading = styled.div`
   color: var(--accent-darker-purple);
   font-family: 'Raleway';
   font-weight: 800;
-  font-size: 30px;
+  font-size: 4vmin;
   text-align: center;
-  @media ${device.tablet} {
-    font-size: 3.5vw;
-  }
 `
 
 const HeadingContainer = styled.div`
@@ -42,11 +40,11 @@ const HeadingContainer = styled.div`
 const BodyContainer = styled.div`
   display:flex;
   padding: 10vh 20vw;
-
+  width: 50%;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 20vw;
+  gap: 20vmin;
   @media ${device.laptop} {
     flex-direction: row;
   }
@@ -80,7 +78,7 @@ const ImgContainer = styled.div`
 const imgs = [YT, FB, DC, SPOT]
 const urls = ["https://www.youtube.com/c/CSESocUNSW", "https://www.facebook.com/csesoc/", "https://bit.ly/CSESocDiscord", "https://open.spotify.com/show/2h9OxTkeKNznIfNqMMYcxj"]
 
-export default function Resources({}: Props) {
+export default function Resources({ }: Props) {
   return (
     <Container>
       <HeadingContainer>
@@ -96,12 +94,12 @@ export default function Resources({}: Props) {
           <ColumnContainer>
             {imgs.map((src) => (
               <ImgContainer key="imgContainer">
-                <a href={urls[imgs.indexOf(src)]}>    
-                  <Image src={src}/>
+                <a href={urls[imgs.indexOf(src)]}>
+                  <Image src={src} />
                 </a>
-            </ImgContainer>
+              </ImgContainer>
             ))}
-        </ColumnContainer>
+          </ColumnContainer>
         </SectionFadeInFromRight>
       </BodyContainer>
     </Container>

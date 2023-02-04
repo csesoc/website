@@ -27,6 +27,8 @@ export const ImagesContainer = styled.div`
 
 const FooterComponent = styled.footer`
   background-color: #A09FE3;
+  
+  width: 100vw;
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -63,11 +65,11 @@ const Footer: React.FC<{}> = () => {
         <Image src={CSESocLogo} alt="CSESoc" />
       </Logo>
       <Details>
-        <p>
+        <div>
           B03 CSE Building K17, UNSW
           <br />
           csesoc@csesoc.org.au
-          <br/><br/>
+          <br /><br />
           <ImagesContainer>
             <Link href="https://discord.gg/AM4GB5zuB6">
               <Image src={DiscordLogo} alt="CSESoc Discord" />
@@ -87,7 +89,7 @@ const Footer: React.FC<{}> = () => {
           </ImagesContainer>
           <br /><br />
           © 2022 — CSESoc UNSW
-        </p>
+        </div>
       </Details>
     </FooterComponent>
   );

@@ -5,7 +5,7 @@ import { sphereProps } from "./Sphere-Styled";
 export const AboutUsPage = styled.div`
     position: relative;
     top: -50px;
-    height: 100vh;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,14 +25,9 @@ export const AboutUsText = styled.div`
     color: var(--accent-darker-purple);
     font-family: 'Raleway';
     font-weight: 810;
-
-    font-size: 40px;
-    @media ${device.tablet} {
-        font-size: 3.5vw;
-        line-height: 1.9vw;
-        text-align: right;
-    }
-
+    font-size: 4vmin;
+    line-height: 1.9vmin;
+    text-align: right;
 `
 
 export const MainText = styled.div`
@@ -41,16 +36,11 @@ export const MainText = styled.div`
     border-radius: 1vw;
     color: #FFFFFF;
     font-weight: 400;
-    font-size: 18px;
     padding: 20px;
-    line-height: 20px;
-    @media ${device.tablet} {
-        font-size: 2vw;
-        text-align: center;
-        padding: 1.4vw 2vw;
-        margin-top: 2.8vw;
-        line-height: 2.5vw;
-    }
+    font-size: 3vmin;
+    text-align: center;
+    padding: 1.4vw 2vw;
+    margin-top: 2.8vmin;
 `;
 
 export const BlueText = styled.span`
@@ -62,14 +52,14 @@ export const MoreInfoText = styled.div<sphereProps>`
     color: #FFFFFF;
     font-weight: 700;
     line-height: 58px;
-    font-size: 3.6vw;
-
+    font-size: 3vmin;
+    
     &:hover { 
       cursor: pointer;
       transform: rotate(${props => props.rotation ? -props.rotation : 0}deg) scale(1.1);
     }
 
     @media ${device.tablet} {
-      font-size: 2.3vw;
+        font-size: 3vmin;
     }
 `;

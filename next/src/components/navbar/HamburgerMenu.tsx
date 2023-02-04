@@ -24,12 +24,12 @@ const HamburgerMenu = (props: HamburgerMenuProps) => {
           </MenuHeader>
         ) : <></>}
         <MenuItemWrapper>
-          <MenuItem>Future Students</MenuItem>
-          <MenuItem>About Us</MenuItem>
-          <MenuItem>Contact</MenuItem>
-          <MenuItem>Events</MenuItem>
-          <MenuItem>Resources</MenuItem>
-          <MenuItem>Sponsors</MenuItem>
+          <MenuItem as="a" href="/Start">Future Students</MenuItem>
+          <MenuItem as="a" href="/AboutUs">About Us</MenuItem>
+          <MenuItem as="a" href="/ExecDescription">History</MenuItem>
+          <MenuItem as="a" href="#events">Events</MenuItem>
+          <MenuItem as="a" href="#resources">Resources</MenuItem>
+          <MenuItem as="a" href="/Sponsors">Sponsors</MenuItem>
         </MenuItemWrapper>
       </MenuContainer>
     </MenuOverlay>
