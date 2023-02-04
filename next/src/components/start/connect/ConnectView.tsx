@@ -42,7 +42,6 @@ const Preview = styled.div`
 const SocialIcons = styled.div`
   display: flex;
   justify-content: center;
-
   gap: 0.5rem;
 
   @media ${device.tablet} {
@@ -126,7 +125,7 @@ export default function ConnectView() {
         {socialIcons.map(({ name, icon }) => (
           <Button active={name === activeTab} key={name} onClick={() => setActiveTab(name)}>
             <SocialIconImageContainer>
-              <Image src={icon.src} alt={name} objectFit="cover" layout="fill" />
+              <Image src={icon.src} alt={name} objectFit="contain" layout="fill" />
             </SocialIconImageContainer>
           </Button>
         ))}
