@@ -9,7 +9,7 @@ export const AboutUsPage = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 22vh;
+    margin-top: 50vmin;
 `
 
 export const AboutUsContent = styled.div`
@@ -24,9 +24,9 @@ export const AboutUsContent = styled.div`
 export const AboutUsText = styled.div`
     color: var(--accent-darker-purple);
     font-family: 'Raleway';
-    font-weight: 810;
-    font-size: 4vmin;
-    line-height: 1.9vmin;
+    font-weight: 800;
+    font-size: 5vmin;
+    line-height: 2vmin;
     text-align: right;
 `
 
@@ -57,9 +57,5 @@ export const MoreInfoText = styled.div<sphereProps>`
     &:hover { 
       cursor: pointer;
       transform: rotate(${props => props.rotation ? -props.rotation : 0}deg) scale(1.1);
-    }
-
-    @media ${device.tablet} {
-        font-size: 3vmin;
     }
 `;

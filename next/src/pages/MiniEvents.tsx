@@ -10,7 +10,7 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     gap: 10vmin;
-    
+    margin: 30vmin 0vmin;
     @media ${device.laptop} {
         flex-direction: row;
         justify-content: space-evenly;
@@ -34,8 +34,8 @@ const HeadingText = styled.div`
     font-family: 'Raleway';
     font-weight: 800;
     font-size: 40px;
-    font-size: 4vmin;
-    line-height: 3vmin;
+    font-size: 5vmin;
+    line-height: 2vmin;
     text-align: center;
 `
 

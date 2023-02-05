@@ -18,7 +18,7 @@ import Homepage from "./MiniHomepage";
 import Events from "./MiniEvents";
 import AboutUs from "./MiniAboutUs";
 import Resources from "./MiniResources";
-import Support from "./Support";
+import Support from "./MiniSupport";
 
 import Footer from "../components/footer/Footer";
 import { size as deviceSize, device } from '../styles/device'

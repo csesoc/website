@@ -17,7 +17,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 30vh 0;
+  margin: 30vmin 0;
   width: 100%;
 
   @media ${device.laptop} {
@@ -28,7 +28,7 @@ const Heading = styled.div`
   color: var(--accent-darker-purple);
   font-family: 'Raleway';
   font-weight: 800;
-  font-size: 4vmin;
+  font-size: 5vmin;
   text-align: center;
 `
 

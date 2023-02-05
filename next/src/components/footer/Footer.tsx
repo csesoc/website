@@ -27,20 +27,19 @@ export const ImagesContainer = styled.div`
 
 const FooterComponent = styled.footer`
   background-color: #A09FE3;
-  
   width: 100vw;
   padding: 2rem;
   display: flex;
   flex-direction: column;
-
   @media ${device.tablet} {
     flex-direction: row;
   }
 `;
 
 const Logo = styled.div`
-  width: 100%;
+  width: 50%;
   display: flex;
+  padding-bottom: 5vmin;
 
   @media ${device.tablet} {
     width: 75%;
@@ -51,6 +50,7 @@ const Details = styled.div`
   width: 100%;
   text-align: left;
   color: white;
+  font-size: 3vmin;
 
   @media ${device.tablet} {
     width: 25%;

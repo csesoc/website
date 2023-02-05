@@ -4,9 +4,9 @@ import { Fragment } from 'react';
 import { device } from '../styles/device';
 
 const args1 = {
-    left: 11,
-    top: 7,
-    size: 13,
+    left: 15,
+    top: -25,
+    size: 20,
     colourMain: "#969DC7",
     colourSecondary: "#DAE9FB",
     startMainPoint: -12,
@@ -19,8 +19,8 @@ const args1 = {
 
 const args2 = {
     left: 45,
-    top: 23,
-    size: 9,
+    top: -15,
+    size: 15,
     colourMain: "#D0E0ED",
     colourSecondary: "#498AC1",
     startMainPoint: 10.97,
@@ -31,11 +31,11 @@ const args2 = {
 }
 
 const args3 = {
-    left: 14,
-    top: 62,
-    leftMobile: 70,
-    topMobile: 40,
-    size: 9,
+    left: 18,
+    top: 70,
+    leftMobile: 10,
+    topMobile: 0,
+    size: 15,
     sizeMobile: 40,
     colourMain: "#9B9BE1",
     colourSecondary: "#E8CAFF",
@@ -47,12 +47,12 @@ const args3 = {
 }
 
 const args4 = {
-    left: 72,
-    top: 64,
-    leftMobile: 0,
-    topMobile: 58,
-    sizeMobile: 25,
-    size: 16,
+    left: 75,
+    top: 75,
+    leftMobile: 70,
+    topMobile: 70,
+    sizeMobile: 20,
+    size: 20,
     colourMain: "#0069E7",
     colourSecondary: "#BDDBFF",
     startMainPoint: -10.14,
@@ -87,7 +87,7 @@ const AboutUs = () => (
                     We are one of the biggest and most active societies at UNSW, catering to over 3500 CSE students spanning across degrees in Computer Science, Software Engineering, Bioinformatics and Computer Engineering.
                 </PageStyle.MainText>
             </PageStyle.AboutUsContent>
-            {(device.mobileL || device.mobileM || device.mobileS) ? undefined : CreateSpheres}
+            {CreateSpheres}
         </PageStyle.AboutUsPage>
     </div>
 )
