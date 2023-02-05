@@ -19,7 +19,7 @@ export const ImagesContainer = styled.div`
   display: flex;
   justify-content: space-between;
   @media ${device.tablet} {
-    width: 55%;
+    width: 75%;
     float: right;
   }
 `
@@ -42,7 +42,10 @@ const Logo = styled.div`
   padding-bottom: 5vmin;
 
   @media ${device.tablet} {
+    padding-bottom: 0vmin;
+
     width: 75%;
+    padding-left: 10vmin;
   }
 `;
 
@@ -53,8 +56,9 @@ const Details = styled.div`
   font-size: 3vmin;
 
   @media ${device.tablet} {
-    width: 25%;
+    width: 40%;
     text-align: right;
+    padding-right: 10vmin;
   }
 `;
 

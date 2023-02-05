@@ -45,7 +45,9 @@ const SmallGrid = styled.div`
 const OurSponsorsCol = styled.div`
   flex: 2;
   padding: 0vmin 2.5vmin;
-  
+  @media ${device.tablet} {
+    padding: 5vmin 2.5vmin;
+  }
 `
 
 const SponsorCol = styled.div`

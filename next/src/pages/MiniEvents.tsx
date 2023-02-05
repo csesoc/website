@@ -41,7 +41,7 @@ const HeadingText = styled.div`
 
 const BodyText = styled.div`
     color: var(--accent-darker-purple);
-    font-weight: 400;
+    font-weight: 500;
     font-size: 3vmin;
     text-align: center;
     padding: 20px;

@@ -35,7 +35,7 @@ export const MainText = styled.div`
     background: #A09FE3;
     border-radius: 1vw;
     color: #FFFFFF;
-    font-weight: 400;
+    font-weight: 500;
     padding: 20px;
     font-size: 3vmin;
     text-align: center;
