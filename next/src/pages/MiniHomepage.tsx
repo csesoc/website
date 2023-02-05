@@ -109,7 +109,7 @@ const Text3 = styled.div`
   }
 `;
 
-export default function Homepage({}: Props) {
+export default function Homepage({ }: Props) {
   return (
     <>
       <HomepageContainer>
@@ -117,7 +117,7 @@ export default function Homepage({}: Props) {
           <ColumnContainer>
             <FadeIn>
               <ImageContainer>
-                <Image src="/assets/logo.svg" width="600px" height="300px"/>
+                <Image src="/assets/logo.svg" width="600px" height="300px" />
               </ImageContainer>
             </FadeIn>
             <TextContainer>
@@ -127,7 +127,7 @@ export default function Homepage({}: Props) {
                     Empowering
                   </TypewriterAnimation>
                 </Text3>
-                <Text3> 
+                <Text3>
                   <TypewriterAnimation>
                     future
                   </TypewriterAnimation>

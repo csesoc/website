@@ -12,7 +12,8 @@ import Otter from '../svgs/otter.png'
 
 const Text = styled.p`
   color: white;
-  font-size: 3vmin;
+  font-size: min(3vmin, 32px);
+  line-height: min(3.5vmin, 45px);
   text-align: center;
 `
 
@@ -83,7 +84,8 @@ const H3 = styled.div`
   color: white;
   font-family: 'Raleway';
   font-weight: 800;
-  font-size: 4vmin;
+  font-size: min(4vmin, 36px);
+  line-height: min(2vmin, 20px);
 `;
 
 
@@ -91,7 +93,8 @@ const Button = styled.button`
   background-color: white;
   margin: 10px;
   padding: 1.5vmin 2.5vmin;
-  font-size: 2.5vmin;
+  font-size: min(3vmin, 32px);
+  line-height: min(3.5vmin, 45px);
   color: #817fff;
   border: none;
   border-radius: 6px;
@@ -101,7 +104,7 @@ const Button = styled.button`
     transform: scale(1.05);
   }
   @media ${device.tablet} {
-    padding: 2vmin 3vmin;
+    padding: min(2vmin, 20px) min(3vmin, 32px);
   }
 `
 
@@ -128,7 +131,8 @@ const Heading = styled.div`
   color: var(--accent-darker-purple);
   font-family: 'Raleway';
   font-weight: 800;
-  font-size: 5vmin;
+  font-size: min(5vmin, 40px);
+  line-height: min(2vmin, 20px);
 `;
 
 

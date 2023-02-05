@@ -25,8 +25,8 @@ export const AboutUsText = styled.div`
     color: var(--accent-darker-purple);
     font-family: 'Raleway';
     font-weight: 800;
-    font-size: 5vmin;
-    line-height: 2vmin;
+    font-size: min(5vmin, 40px);
+    line-height: min(2vmin, 20px);
     text-align: right;
 `
 
@@ -36,11 +36,11 @@ export const MainText = styled.div`
     border-radius: 1vw;
     color: #FFFFFF;
     font-weight: 500;
-    padding: 20px;
-    font-size: 3vmin;
+    font-size: min(3vmin, 32px);
+    line-height: min(3.5vmin, 45px);
     text-align: center;
-    padding: 1.4vw 2vw;
-    margin-top: 2.8vmin;
+    padding: min(2.5vmin, 25px) min(2vmin, 20px);
+    margin-top: min(2.8vmin, 25px);
 `;
 
 export const BlueText = styled.span`
@@ -51,8 +51,9 @@ export const MoreInfoText = styled.div<sphereProps>`
     transform: rotate(${props => props.rotation ? -props.rotation : 0}deg);
     color: #FFFFFF;
     font-weight: 700;
-    line-height: 58px;
-    font-size: 3vmin;
+    font-size: min(3vmin, 32px);
+    line-height: min(3.5vmin, 40px);
+    text-align: center;
     
     &:hover { 
       cursor: pointer;

@@ -23,8 +23,8 @@ export const GlassContainer = styled.div<positionProps>`
     border-width: 0.15vw;
     border-style: solid;
     border-color: #FAFCFF;
-    width: 70vmin;
-    height: 40vmin;
+    width: min(70vmin, 700px);
+    height: min(40vmin, 400px);
 `;
 
 export const ImgContainer = styled.div`

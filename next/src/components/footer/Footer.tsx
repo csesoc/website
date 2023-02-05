@@ -55,7 +55,8 @@ const Details = styled.div`
   width: 100%;
   text-align: left;
   color: white;
-  font-size: 3vmin;
+  font-size: min(3vmin, 32px);
+  line-height: min(3.5vmin, 45px);
 
   @media ${device.tablet} {
     width: 40%;

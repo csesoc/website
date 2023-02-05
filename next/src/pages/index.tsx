@@ -24,16 +24,18 @@ import Footer from "../components/footer/Footer";
 import { size as deviceSize, device } from '../styles/device'
 import { SectionFadeInFromLeft, SectionFadeInFromRight } from "../styles/motion"
 import ExecDescription from "./ExecDescription";
+import { relative } from "path";
 
 type CurveContainerProps = {
   offset: number;
 };
 
 const PageContainer = styled.div`
-  max-width: 2560px;
   min-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const CurveContainer = styled.div<CurveContainerProps>`
@@ -42,12 +44,9 @@ const CurveContainer = styled.div<CurveContainerProps>`
   flex-direction: column;
   align-items: flex-end;
   justify-content: flex-start;
-  top: ${props => props.offset}/3px;
+  top: -${props => props.offset}/2px;
   right: 0;
 	z-index: -1;
-  @media ${device.tablet} {
-    top: -${props => props.offset}px;
-  }
 `;
 
 const NavContainer = styled.div`
@@ -57,12 +56,14 @@ const NavContainer = styled.div`
 const PurpleBlock = styled.div`
   background: #BEB8EA;
   width: 100%;
+  height: 50vmin;
   @media ${device.tablet} {
-    height: 135vmin;
+    height: min(250vmin, 2560px);
   }
 `;
 
 const Background = styled.div<{ offset?: number }>`
+  width: 100%;
 	position: absolute;
 	right: 0;
 	z-index: -1;
@@ -124,31 +125,45 @@ const Index: NextPage = () => {
                   {/* <Image src={HPCurve} objectFit="cover"/> */}
                   <HPCurve />
                 </CurveContainer>
-                <CurveContainer offset={height}>
-                  <Image alt="purple-top-bg" src={TopRect} />
-                  <PurpleBlock />
-                  <Image alt="purple-bottom-bg" src={BottomRect} />
-                </CurveContainer>
               </Background>
-              <RefLink id="homepage">
-                <Homepage />
-              </RefLink>
-              <RefLink id="aboutus">
-                {/* <SectionFadeInFromRight> */}
-                <AboutUs />
-                {/* </SectionFadeInFromRight> */}
-              </RefLink>
-              <RefLink id="events">
-                {/* <SectionFadeInFromLeft> */}
-                <Events />
-                {/* </SectionFadeInFromLeft> */}
-              </RefLink>
-              <RefLink id="resources">
-                <Resources />
-              </RefLink>
-              <RefLink id="support">
-                <Support />
-              </RefLink>
+              <div style={{ maxWidth: "2560px" }}>
+
+                <RefLink id="homepage">
+                  <Homepage />
+                </RefLink>
+                <RefLink id="aboutus">
+                  {/* <SectionFadeInFromRight> */}
+                  <AboutUs />
+                  {/* </SectionFadeInFromRight> */}
+                </RefLink>
+              </div>
+              <div style={{ position: "relative", width: "100%", top: -height / 2 }}>
+                <Background>
+                  <CurveContainer offset={height}>
+                    <div style={{ position: "relative", width: width, height: width * 0.503 }}>
+                      <Image alt="purple-top-bg" src={TopRect} layout="fill" />
+                    </div>
+                    <PurpleBlock />
+                    <div style={{ position: "relative", width: width, height: width * 0.4767 }}>
+                      <Image alt="purple-bottom-bg" src={BottomRect} layout="fill" />
+                    </div>
+                  </CurveContainer>
+                </Background>
+              </div>
+              <div style={{ maxWidth: "2560px" }}>
+
+                <RefLink id="events">
+                  {/* <SectionFadeInFromLeft> */}
+                  <Events />
+                  {/* </SectionFadeInFromLeft> */}
+                </RefLink>
+                <RefLink id="resources">
+                  <Resources />
+                </RefLink>
+                <RefLink id="support">
+                  <Support />
+                </RefLink>
+              </div>
             </>
           )}
 

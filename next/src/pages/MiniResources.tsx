@@ -17,18 +17,18 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 30vmin 0;
+  margin-bottom: 30vmin;
   width: 100%;
-
   @media ${device.laptop} {
-    height: 100vh;
+    height: min(100vmin, 1000px);
   }
 `
 const Heading = styled.div`
   color: var(--accent-darker-purple);
   font-family: 'Raleway';
   font-weight: 800;
-  font-size: 5vmin;
+  font-size: min(5vmin, 40px);
+  line-height: min(2vmin, 20px);
   text-align: center;
 `
 
@@ -39,12 +39,12 @@ const HeadingContainer = styled.div`
 
 const BodyContainer = styled.div`
   display:flex;
-  padding: 10vh 20vw;
+  padding: min(10vh, 100px) min(20vw, 100px);
   width: 50%;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 20vmin;
+  gap: min(20vmin, 400px);
   @media ${device.laptop} {
     flex-direction: row;
   }
@@ -58,7 +58,7 @@ const ColumnContainer = styled.div`
   justify-content: center;
   @media ${device.laptop} {
     flex-direction: column;
-    gap: 10vh;
+    gap: min(10vh, 100px);
   }
 
 `

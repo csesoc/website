@@ -10,12 +10,13 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     gap: 10vmin;
-    margin: 30vmin 0vmin;
+    margin: 40vmin 0vmin;
+    max-width: 100%;
     @media ${device.laptop} {
         flex-direction: row;
         justify-content: space-evenly;
         align-items: center;
-        margin: 50vmin 15vmin 10vmin 15vmin;
+        margin: 50vmin 15vmin;
     }
     z-index: 100;
 `
@@ -33,20 +34,20 @@ const HeadingText = styled.div`
     color: var(--accent-darker-purple);
     font-family: 'Raleway';
     font-weight: 800;
-    font-size: 40px;
-    font-size: 5vmin;
-    line-height: 2vmin;
+    font-size: min(5vmin, 40px);
+    line-height: min(2vmin, 20px);
     text-align: left;
 `
 
 const BodyText = styled.div`
     color: var(--accent-darker-purple);
-    font-weight: 500;
-    font-size: 3vmin;
+    font-weight: 600;
+    font-size: min(3vmin, 32px);
+    line-height: min(3.5vmin, 45px);
     text-align: left;
     padding: 20px 0;
-    margin-top: 2.8vmin;
-    @media ${device.laptop} {
+    margin-top: min(2.8vmin, 25px);
+    @media ${device.tablet} {
         color: white;
     }
 
