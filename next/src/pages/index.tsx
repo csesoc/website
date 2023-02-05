@@ -37,13 +37,17 @@ const PageContainer = styled.div`
 `;
 
 const CurveContainer = styled.div<CurveContainerProps>`
-  position: absolute;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  top: ${props => props.offset}px;
+  justify-content: flex-start;
+  top: ${props => props.offset}/3px;
   right: 0;
-  z-index: -1;  
+	z-index: -1;
+  @media ${device.tablet} {
+    top: -${props => props.offset}px;
+  }
 `;
 
 const NavContainer = styled.div`
@@ -52,18 +56,17 @@ const NavContainer = styled.div`
 
 const PurpleBlock = styled.div`
   background: #BEB8EA;
-  width: 100vw;
-  height: 135vh;
-  position: relative;
-  right: 0;
-  top: -10px;
+  width: 100%;
+  @media ${device.tablet} {
+    height: 135vmin;
+  }
 `;
 
 const Background = styled.div<{ offset?: number }>`
 	position: absolute;
-	top: ${(props) => props.offset}px;
 	right: 0;
 	z-index: -1;
+  height: auto;
 `;
 
 const RefLink = styled.div``
@@ -104,8 +107,9 @@ const Index: NextPage = () => {
       </NavContainer>
       <div style={{
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
       }}>
         <PageContainer>
           <Head>
@@ -120,12 +124,10 @@ const Index: NextPage = () => {
                   {/* <Image src={HPCurve} objectFit="cover"/> */}
                   <HPCurve />
                 </CurveContainer>
-                <CurveContainer offset={height + 300}>
+                <CurveContainer offset={height}>
                   <Image alt="purple-top-bg" src={TopRect} />
                   <PurpleBlock />
-                  <div style={{ position: 'relative', top: '-10px' }}>
-                    <Image alt="purple-bottom-bg" src={BottomRect} />
-                  </div>
+                  <Image alt="purple-bottom-bg" src={BottomRect} />
                 </CurveContainer>
               </Background>
               <RefLink id="homepage">
@@ -151,8 +153,8 @@ const Index: NextPage = () => {
           )}
 
         </PageContainer >
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 };

@@ -31,6 +31,8 @@ const FooterComponent = styled.footer`
   padding: 2rem;
   display: flex;
   flex-direction: column;
+  position: static;
+  bottom: 0;
   @media ${device.tablet} {
     flex-direction: row;
   }

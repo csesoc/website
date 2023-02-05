@@ -23,7 +23,7 @@ const Container = styled.div`
 const ColumnContainer = styled.div`
     display: flex;
     flex-direction: column;
-    width: 60%;
+    width: 40%;
     @media ${device.laptop} {
         padding: 30px;
     }
@@ -36,15 +36,15 @@ const HeadingText = styled.div`
     font-size: 40px;
     font-size: 5vmin;
     line-height: 2vmin;
-    text-align: center;
+    text-align: left;
 `
 
 const BodyText = styled.div`
     color: var(--accent-darker-purple);
     font-weight: 500;
     font-size: 3vmin;
-    text-align: center;
-    padding: 20px;
+    text-align: left;
+    padding: 20px 0;
     margin-top: 2.8vmin;
     @media ${device.laptop} {
         color: white;
