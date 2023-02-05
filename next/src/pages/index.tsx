@@ -60,6 +60,9 @@ const PurpleBlock = styled.div`
   @media ${device.tablet} {
     height: min(250vmin, 2560px);
   }
+  @media ${device.laptop} {
+    height: min(150vmin, 2560px);
+  }
 `;
 
 const Background = styled.div<{ offset?: number }>`
