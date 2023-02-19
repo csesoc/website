@@ -22,7 +22,8 @@ run:
 
 ## Environment Variables
 
-Please note that you have to add /Config/.env.dev and include the env secrets. Please contact `@Jaaaa#9606` or `@Flying McCartney Monster#1172` on discord for these if you don't have them :)
+Please note that you have to add /Config/.env.dev and include the env secrets. Please contact `laurlala#1696`, `jumbo#9999` or `Mae#6758
+` on discord for these if you don't have them :)
 
 ## Postgres Instructions
 access interactive terminal by running `docker exec -it pg_container bash`
