@@ -11,7 +11,7 @@ import (
 // ObjectOperation represents an operation we perform on an object
 type ObjectOperation struct {
 	NewValue datamodel.DataType
-	operationType EditType
+	OperationType EditType
 }
 
 // TransformAgainst is the ArrayOperation implementation of the operationModel interface
@@ -41,6 +41,6 @@ func (objOp ObjectOperation) Apply(parentNode cmsjson.AstNode, applicationIndex 
 
 // getEditType is the ArrayOperation implementation of the OperationModel interface
 func (objOp ObjectOperation) GetEditType() EditType {
-	return objOp.operationType
+	return objOp.OperationType
 }
 

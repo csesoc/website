@@ -85,7 +85,7 @@ func (c Configuration) marshallInterface(source reflect.Value) string {
 	generatedJson := c.marshallStruct(source.Elem())
 	generatedJson = generatedJson[1:]
 
-	return fmt.Sprintf(`{"$type": "%s", %s`, typeName, generatedJson)
+	return fmt.Sprintf(`{"type": "%s", %s`, typeName, generatedJson)
 }
 
 // Helper type constants just to make conversion a little cleaner

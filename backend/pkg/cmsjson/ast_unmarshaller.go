@@ -45,7 +45,7 @@ func (c Configuration) visitStructAST(node gjson.Result, key string, underlyingT
 
 // visitInterfaceAST visits a gjson.Result under the assumption that its an interface type
 func (c Configuration) visitInterfaceAST(node gjson.Result, key string, underlyingType reflect.Type) (*jsonNode, error) {
-	targetType := node.Get("$type").String()
+	targetType := node.Get("type").String()
 	typeRegistration := c.RegisteredTypes[underlyingType]
 
 	parsedStruct, err := c.visitStructAST(node, key, typeRegistration[targetType])

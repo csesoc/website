@@ -5,7 +5,7 @@ import "cms.csesoc.unsw.edu.au/pkg/cmsjson"
 // Noop represents a non-existent operation
 // @implements OperationModel
 type Noop struct {
-	operationType EditType
+	OperationType EditType
 }
 
 // TransformAgainst is the noop implementation of the operationModel interface
@@ -20,5 +20,5 @@ func (noop Noop) Apply(parentNode cmsjson.AstNode, applicationIndex int, applica
 
 // getEditType is the noop implementation of the OperationModel interface
 func (noop Noop) GetEditType() EditType {
-	return noop.operationType
+	return noop.OperationType
 }

@@ -11,7 +11,7 @@ import (
 // @implements OperationModel
 type BooleanOperation struct {
 	NewValue bool
-	operationType EditType
+	OperationType EditType
 }
 
 // TransformAgainst is the BooleanOperation implementation of the operationModel interface
@@ -35,6 +35,6 @@ func (boolOp BooleanOperation) Apply(parentNode cmsjson.AstNode, applicationInde
 
 // getEditType is the BooleanOperation implementation of the OperationModel interface
 func (boolOp BooleanOperation) GetEditType() EditType {
-	return boolOp.operationType
+	return boolOp.OperationType
 }
 

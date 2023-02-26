@@ -11,7 +11,7 @@ import (
 // @implements OperationModel
 type ArrayOperation struct {
 	NewValue float64
-	operationType EditType
+	OperationType EditType
 }
 
 // TransformAgainst is the ArrayOperation implementation of the operationModel interface
@@ -42,6 +42,6 @@ func (arrOp ArrayOperation) Apply(parentNode cmsjson.AstNode, applicationIndex i
 
 // getEditType is the ArrayOperation implementation of the OperationModel interface
 func (arrOp ArrayOperation) GetEditType() EditType {
-	return arrOp.operationType
+	return arrOp.OperationType
 }
 
