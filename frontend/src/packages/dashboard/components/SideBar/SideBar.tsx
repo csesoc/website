@@ -4,6 +4,9 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MenuIcon from "@mui/icons-material/Menu";
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 
 const Container = styled.div`
   position: relative;
@@ -57,6 +60,10 @@ const ButtonGroup = styled.div`
   flex-direction: column;
   align-items: center;
   grid-gap: 30px;
+`;
+
+const ButtonIcon = styled.span`
+  margin: 0.1rem 0.6rem 0 0;
 `;
 
 interface SideBarButtonProps {
@@ -145,6 +152,9 @@ export default function SideBar({
             onClick={handleNewFile}
             data-anchor="NewPageButton"
           >
+            <ButtonIcon>
+              <DescriptionOutlinedIcon/>
+            </ButtonIcon>
             New page
           </SidebarButton>
           <SidebarButton
@@ -152,11 +162,17 @@ export default function SideBar({
             onClick={handleNewFolder}
             data-anchor="NewFolderButton"
           >
+            <ButtonIcon>
+              <FolderOutlinedIcon/>
+            </ButtonIcon>
             New folder
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
           <SidebarButton bgcolor="white" onClick={handleEdit}>
+            <ButtonIcon>
+              <EditOutlinedIcon/>
+            </ButtonIcon>
             Edit
           </SidebarButton>
           {/* <SidebarButton bgcolor="#B8E8E8">
