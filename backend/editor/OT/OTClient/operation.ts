@@ -1,8 +1,6 @@
 // operation is the atomic operation that is sent between clients and servers
 export interface Operation {
   path: number[];
-  opType: "insert" | "delete";
-
   isNoOp: boolean;
   atomicOp: AtomicOperation;
 }
@@ -11,24 +9,28 @@ export interface Operation {
 // TODO: in the future update object operation to strictly contain CMS operation data
 export interface AtomicOperation {
   type: string;
+  opType: "insert" | "delete";
   transformAgainst: (op: AtomicOperation) => AtomicOperation[];
 }
 
 export class IntegerOperation implements AtomicOperation {
   type = "integerOperation";
   newValue: number;
-  constructor(newValue: number) {
+  opType: "insert" | "delete";
+  constructor(newValue: number, opType: "insert" | "delete") {
     this.newValue = newValue;
+    this.opType = opType;
   }
-
   transformAgainst = (op: AtomicOperation): AtomicOperation[] => [this, op];
 }
 
 export class BooleanOperation implements AtomicOperation {
   type = "booleanOperation";
   newValue: boolean;
-  constructor(newValue: boolean) {
+  opType: "insert" | "delete";
+  constructor(newValue: boolean, opType: "insert" | "delete") {
     this.newValue = newValue;
+    this.opType = opType;
   }
   transformAgainst = (op: AtomicOperation): AtomicOperation[] => [this, op];
 }
@@ -36,8 +38,10 @@ export class BooleanOperation implements AtomicOperation {
 export class ObjectOperation implements AtomicOperation {
   type = "objectOperation";
   newValue: object;
-  constructor(newValue: object) {
+  opType: "insert" | "delete";
+  constructor(newValue: object, opType: "insert" | "delete") {
     this.newValue = newValue;
+    this.opType = opType;
   }
   transformAgainst = (op: AtomicOperation): AtomicOperation[] => [this, op];
 }
@@ -45,8 +49,10 @@ export class ObjectOperation implements AtomicOperation {
 export class ArrayOperation implements AtomicOperation {
   type = "arrayOperation";
   newValue: object;
-  constructor(newValue: object) {
+  opType: "insert" | "delete";
+  constructor(newValue: object, opType: "insert" | "delete") {
     this.newValue = newValue;
+    this.opType = opType;
   }
   transformAgainst = (op: AtomicOperation): AtomicOperation[] => [this, op];
 }
@@ -56,11 +62,13 @@ export class StringOperation implements AtomicOperation {
   start: number;
   end: number;
   newValue: string;
+  opType: "insert" | "delete";
 
-  constructor(start: number, end: number, newValue: string) {
+  constructor(start: number, end: number, newValue: string, opType: "insert" | "delete") {
     this.start = start;
     this.end = end;
     this.newValue = newValue;
+    this.opType = opType;
   }
 
   transformAgainst = (op: AtomicOperation): AtomicOperation[] => {
@@ -169,11 +177,11 @@ const deleteDelete = (
 export class NoOp implements AtomicOperation {
   type = "noOp";
   transformAgainst = (op: AtomicOperation): AtomicOperation[] => [this, op];
+  opType: "insert" | "delete" = "insert";
 }
 
 export const noOp: Operation = {
   path: [],
-  opType: "insert",
   isNoOp: true,
   atomicOp: new NoOp(),
 };

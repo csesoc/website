@@ -8,15 +8,13 @@ describe("Transform operation", () => {
   test("two insert operations on same path result in a string transformation", () => {
     const a: Operation = {
       path: [0],
-      opType: "insert",
       isNoOp: false,
-      atomicOp: new StringOperation(1, 2, "1"),
+      atomicOp: new StringOperation(1, 2, "1", "insert"),
     };
     const b: Operation = {
       path: [0],
-      opType: "insert",
       isNoOp: false,
-      atomicOp: new StringOperation(2, 3, "2"),
+      atomicOp: new StringOperation(2, 3, "2", "insert"),
     };
 
     // Apply transformation
@@ -24,10 +22,10 @@ describe("Transform operation", () => {
 
     // Check other fields are constant
     expect(transformedA.path).toBe(a.path);
-    expect(transformedA.opType).toBe(a.opType);
+    expect(transformedA.atomicOp.opType).toBe(a.atomicOp.opType);
     expect(transformedA.isNoOp).toBe(a.isNoOp);
     expect(transformedB.path).toBe(b.path);
-    expect(transformedB.opType).toBe(b.opType);
+    expect(transformedB.atomicOp.opType).toBe(b.atomicOp.opType);
     expect(transformedB.isNoOp).toBe(b.isNoOp);
 
     // Check that atomic operation was changed
