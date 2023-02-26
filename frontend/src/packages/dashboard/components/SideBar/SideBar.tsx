@@ -62,8 +62,16 @@ const ButtonGroup = styled.div`
   grid-gap: 30px;
 `;
 
-const ButtonIcon = styled.span`
-  margin: 0.1rem 0.6rem 0 0;
+const ButtonIcon = styled.div`
+  margin: 0 1rem 0;
+  display: flex;
+  align-items: center
+`;
+
+const ButtonText = styled.p`
+  flex-grow: 2;
+  text-align: left;
+  margin: 0.2rem 0;
 `;
 
 interface SideBarButtonProps {
@@ -79,6 +87,7 @@ const SidebarButton = styled(Button)<SideBarButtonProps>`
     border-radius: 20px;
     text-transform: none;
     color: black;
+    display: flex;
     &:hover {
       transform: scale(1.04);
       background-color: darkgrey;
@@ -155,7 +164,9 @@ export default function SideBar({
             <ButtonIcon>
               <DescriptionOutlinedIcon/>
             </ButtonIcon>
-            New page
+            <ButtonText>
+              New page
+            </ButtonText>
           </SidebarButton>
           <SidebarButton
             bgcolor="#b4c6ff"
@@ -165,7 +176,9 @@ export default function SideBar({
             <ButtonIcon>
               <FolderOutlinedIcon/>
             </ButtonIcon>
-            New folder
+            <ButtonText>
+              New folder
+            </ButtonText>
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
@@ -173,7 +186,9 @@ export default function SideBar({
             <ButtonIcon>
               <EditOutlinedIcon/>
             </ButtonIcon>
-            Edit
+            <ButtonText>
+              Edit
+            </ButtonText>
           </SidebarButton>
           {/* <SidebarButton bgcolor="#B8E8E8">
             Feature
