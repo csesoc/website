@@ -194,7 +194,6 @@ func TestInsertStringOperation(t *testing.T) {
 
 	jsonOperation := `{
 		"Path": [2, 0, 1],
-		"OperationType": 0,
 		"AcknowledgedServerOps": 0,
 		"IsNoOp": false,
 		"Operation": {
