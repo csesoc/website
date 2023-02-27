@@ -201,7 +201,7 @@ func TestInsertStringOperation(t *testing.T) {
 			"RangeStart": 5,
 			"RangeEnd": 5,
 			"NewValue": "0"
-			"OperationType": 0,
+			"OperationType": "Insert",
 		}
 	}`
 
@@ -241,7 +241,7 @@ func TestDeleteStringOperation(t *testing.T) {
 			"RangeStart": 5,
 			"RangeEnd": 5,
 			"NewValue": "0"
-			"OperationType": 1,
+			"OperationType": "Delete",
 		}
 	}`
 
@@ -279,7 +279,7 @@ func TestInsertArrayOperation(t *testing.T) {
 		"Operation": {
 			"type": "arrayOperation",
 			"NewValue": 6
-			"OperationType": 0,
+			"OperationType": "Insert",
 		}
 	}`
 
@@ -322,7 +322,7 @@ func TestUpdateArrayElement(t *testing.T) {
 		"Operation": {
 			"type": "arrayOperation",
 			"NewValue": 6
-			"OperationType": 0,
+			"OperationType": "Insert",
 		}
 	}`
 
@@ -355,7 +355,7 @@ func TestUpdateObjectElement(t *testing.T) {
 		"IsNoOp": false,
 		"Operation": {
 			"type": "objectOperation",
-			"OperationType": 0,
+			"OperationType": "Insert",
 			"NewValue": {
 				"type": "image",
 				"ImageDocumentID": "NEW_UUID",
