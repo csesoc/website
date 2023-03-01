@@ -6,6 +6,7 @@
 
 import React from "react";
 import styled, { css } from "styled-components";
+import { useNavigate } from "react-router-dom";
 import Renamable from "./Renamable";
 
 type Props = {
@@ -42,6 +43,15 @@ function FileContainer({ name, id, selectedFile, setSelectedFile }: Props) {
     setSelectedFile(id);
   };
 
+  const navigate = useNavigate();
+  const handleDoubleClick = () => {
+    console.log(id);
+    setSelectedFile(id);
+    if (selectedFile !== null) {
+      navigate("/editor/" + selectedFile, { replace: false }), [navigate];
+    }
+  };
+
   return (
     <div
       style={{
@@ -51,7 +61,11 @@ function FileContainer({ name, id, selectedFile, setSelectedFile }: Props) {
         padding: "35px",
       }}
     >
-      <IconContainer onClick={handleClick} active={selectedFile == id} />
+      <IconContainer
+        onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
+        active={selectedFile == id}
+      />
       <Renamable name={name} id={id} />
     </div>
   );
