@@ -77,6 +77,12 @@ export default function ConfirmationWindow({
     setInputValue(value);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
+  }
+
   return (
     <Modal
       open={open}
@@ -93,6 +99,7 @@ export default function ConfirmationWindow({
           <TextField
             value={inputValue}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             sx={{ marginRight: "10px" }}
           />
           <Button background="#73EEDC" onClick={handleSubmit}>
