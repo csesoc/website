@@ -82,14 +82,15 @@ const EditorPage: FC = () => {
 
   return (
     <div style={{ height: "100%" }}>
-      <EditorHeader />
+      <EditorHeader>
+          <SyncDocument onClick={() => syncDocument()} />
+          <PublishDocument onClick={() => publishDocument(id ?? "")} />
+      </EditorHeader>
       <Container>
         {blocks.map((block, idx) => createBlock(block, idx, focusedId === idx))}
         <InsertContentWrapper>
           <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
           <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />
-          <SyncDocument onClick={() => syncDocument()} />
-          <PublishDocument onClick={() => publishDocument(id ?? "")} />
         </InsertContentWrapper>
       </Container>
     </div>
