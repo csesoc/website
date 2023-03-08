@@ -100,12 +100,26 @@ const EditorPage: FC = () => {
           <PublishDocument onClick={() => publishDocument(id ?? "")} />
       </EditorHeader>
       <Container>
+          {
+            // TODO Make this not ugly
+          }
           {blocks.map((block, idx) => 
             <BlockWrapper key={idx}>
               <IconButton
                 sx={{
                   display: focusedId == idx ? "block" : "none"
                 }}
+
+                onClick={
+                  () => {
+                    console.log(idx);
+                    console.log(blocks);
+                    setBlocks((prev) => prev.filter((block, i) => i != idx));
+                    console.log(blocks);
+                    setFocusedId(-1);
+                    // opManager.current?.pushToServer(deletionOperation(idx))
+                  }
+                }
                 >
                 <CloseIcon/>
               </IconButton>
@@ -115,9 +129,6 @@ const EditorPage: FC = () => {
             </BlockWrapper>
             )
           }
-        {
-          // TODO Make this not ugly
-        }
         <InsertContentWrapper>
           <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
           <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />
@@ -135,6 +146,17 @@ const newCreationOperation = (newValue: any, index: number): CMSOperation => ({
   Operation: {
     "$type": "objectOperation",
     objectOperation: { newValue }, 
+  }
+});
+
+// constructs a new deletion operation in response to the deletion of an existing block
+const deletionOperation = (index: number): CMSOperation => ({
+  Path: [index],
+  OperationType: "delete",
+  IsNoOp: false,
+  Operation: {
+    "$type": "noop",
+    noop: {},
   }
 });
 
