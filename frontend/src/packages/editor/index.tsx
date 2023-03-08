@@ -93,6 +93,14 @@ const EditorPage: FC = () => {
     opManager.current?.pushToServer(newCreationOperation(newElement, blocks.length));
   }  
 
+
+  const deleteButtonClickHandler = (idx : number) => () => {
+    setFocusedId(-1);
+    const newBlocks = [...blocks];
+    newBlocks.splice(idx, 1);
+    setBlocks(newBlocks);
+  }
+
   return (
     <div style={{ height: "100%" }}>
       <EditorHeader>
@@ -109,18 +117,8 @@ const EditorPage: FC = () => {
                 sx={{
                   display: focusedId == idx ? "block" : "none"
                 }}
-
-                onClick={
-                  () => {
-                    console.log(idx);
-                    console.log(blocks);
-                    setBlocks((prev) => prev.filter((block, i) => i != idx));
-                    console.log(blocks);
-                    setFocusedId(-1);
-                    // opManager.current?.pushToServer(deletionOperation(idx))
-                  }
-                }
-                >
+                onClick={deleteButtonClickHandler(idx)}
+              >
                 <CloseIcon/>
               </IconButton>
               <BlockContainer>
