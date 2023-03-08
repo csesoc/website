@@ -16,6 +16,9 @@ import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
 import { CMSOperation } from "./api/OTClient/operation";
 
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -24,6 +27,16 @@ const Container = styled.div`
 
 const InsertContentWrapper = styled.div`
   display: flex;
+`;
+
+const BlockWrapper = styled.div`
+  display: flex;
+  width: 70%;
+  justify-content: center
+`;
+
+const BlockContainer = styled.div`
+  flex-grow: 3
 `;
 
 const EditorPage: FC = () => {
@@ -87,7 +100,24 @@ const EditorPage: FC = () => {
           <PublishDocument onClick={() => publishDocument(id ?? "")} />
       </EditorHeader>
       <Container>
-        {blocks.map((block, idx) => createBlock(block, idx, focusedId === idx))}
+          {blocks.map((block, idx) => 
+            <BlockWrapper key={idx}>
+              <IconButton
+                sx={{
+                  display: focusedId == idx ? "block" : "none"
+                }}
+                >
+                <CloseIcon/>
+              </IconButton>
+              <BlockContainer>
+                {createBlock(block, idx, focusedId === idx)}
+              </BlockContainer>
+            </BlockWrapper>
+            )
+          }
+        {
+          // TODO Make this not ugly
+        }
         <InsertContentWrapper>
           <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
           <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />
