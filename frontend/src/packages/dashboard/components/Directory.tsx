@@ -7,8 +7,12 @@ import { useDispatch } from "react-redux";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-import { traverseBackFolder } from "../state/folders/actions";
+import {
+  traverseBackFolder,
+  traverseIntoFolder,
+} from "../state/folders/actions";
 import { getFolderState } from "../api/helpers";
+import { setDirectory } from "../state/folders/reducers";
 
 const DirectoryFlex = styled.div`
   display: flex;
@@ -22,7 +26,7 @@ const DirectoryFlex = styled.div`
 
 const BreadcrumbItem = customStyle(Chip)(({ theme }) => {
   const backgroundColor =
-    theme.palette.mode === 'light'
+    theme.palette.mode === "light"
       ? theme.palette.grey[200]
       : theme.palette.grey[800];
   return {
@@ -48,6 +52,15 @@ export default function Directory() {
     dispatch(traverseBackFolder(parentFolder));
   };
 
+  const folderState = getFolderState();
+
+  const handleClickBreadcrumbItem = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    dispatch(traverseIntoFolder("3f4b7ac5-2b08-43fe-87cd-4dd1d1be8455"));
+    console.log("getFolderState", folderState);
+  };
+
   return (
     <DirectoryFlex>
       <IconButton aria-label="back" onClick={() => handleClick()}>
@@ -57,7 +70,13 @@ export default function Directory() {
         {getFolderState()
           .path.split("/")
           .map((folder, i) => {
-            return <BreadcrumbItem key={i} label={folder} />;
+            return (
+              <BreadcrumbItem
+                key={i}
+                label={folder}
+                onClick={handleClickBreadcrumbItem}
+              />
+            );
           })}
       </Breadcrumbs>
     </DirectoryFlex>
