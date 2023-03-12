@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { GlobalStore } from "src/redux-state/index";
 
@@ -13,12 +13,10 @@ const App: React.FC = () => {
     <div className="App">
       <GlobalStyle />
       <Provider store={GlobalStore}>
-        <Router>
           <Routes>
             <Route path="/" element={<Dashboard/>}/>
             <Route path="/editor/:id" element={<Editor/>}/>
           </Routes>
-        </Router>
       </Provider>
     </div>
   );

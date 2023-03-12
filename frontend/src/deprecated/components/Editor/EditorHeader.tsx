@@ -48,7 +48,7 @@ const EditorHeader: React.FC = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/");
+    navigate(-1);
   };
 
   return (
