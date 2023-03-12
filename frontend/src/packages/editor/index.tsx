@@ -26,7 +26,7 @@ const InsertContentWrapper = styled.div`
   display: flex;
 `;
 
-const EditorPage: FC = () => {
+export default function EditorPage() {
   const { id } = useParams();
   const wsClient = useRef<Client | null>(null);
   const opManager = useRef<OperationManager | null>(new OperationManager());
@@ -95,7 +95,7 @@ const EditorPage: FC = () => {
       </Container>
     </div>
   );
-};
+}
 
 // constructs a new creation operation in response to the insertion of a new paragraph/heading
 const newCreationOperation = (newValue: any, index: number): CMSOperation => ({
@@ -108,4 +108,4 @@ const newCreationOperation = (newValue: any, index: number): CMSOperation => ({
   }
 });
 
-export default EditorPage;
+// export default EditorPage;
