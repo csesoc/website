@@ -26,6 +26,7 @@ export default function Renamable({ name, id }: Props) {
     dispatch(renameFileEntityAction(newPayload));
   };
 
+ 
   return (
     <>
       {toggle ? (
@@ -38,7 +39,7 @@ export default function Renamable({ name, id }: Props) {
           }}
           type="text"
           value={inputName}
-          onChange={(event) => setInputName(event.target.value)}
+          onChange={(event) => {setInputName(event.target.value)}}
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === "Escape") {
               if (event.key === "Enter") {
@@ -49,6 +50,14 @@ export default function Renamable({ name, id }: Props) {
               event.stopPropagation();
             }
           }}
+
+          onBlur={(event) => {
+              handleRename(inputName);
+              setToggle(true);
+              event.preventDefault();
+              event.stopPropagation();
+          }}
+        autoFocus
         />
       )}
     </>
