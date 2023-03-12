@@ -4,6 +4,9 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MenuIcon from "@mui/icons-material/Menu";
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 
 const Container = styled.div`
   position: relative;
@@ -59,6 +62,18 @@ const ButtonGroup = styled.div`
   grid-gap: 30px;
 `;
 
+const ButtonIcon = styled.div`
+  margin: 0 1rem 0;
+  display: flex;
+  align-items: center
+`;
+
+const ButtonText = styled.p`
+  flex-grow: 2;
+  text-align: left;
+  margin: 0.2rem 0;
+`;
+
 interface SideBarButtonProps {
   bgcolor: string;
 }
@@ -72,6 +87,7 @@ const SidebarButton = styled(Button)<SideBarButtonProps>`
     border-radius: 20px;
     text-transform: none;
     color: black;
+    display: flex;
     &:hover {
       transform: scale(1.04);
       background-color: darkgrey;
@@ -145,19 +161,34 @@ export default function SideBar({
             onClick={handleNewFile}
             data-anchor="NewPageButton"
           >
-            New page
+            <ButtonIcon>
+              <DescriptionOutlinedIcon/>
+            </ButtonIcon>
+            <ButtonText>
+              New page
+            </ButtonText>
           </SidebarButton>
           <SidebarButton
             bgcolor="#b4c6ff"
             onClick={handleNewFolder}
             data-anchor="NewFolderButton"
           >
-            New folder
+            <ButtonIcon>
+              <FolderOutlinedIcon/>
+            </ButtonIcon>
+            <ButtonText>
+              New folder
+            </ButtonText>
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
           <SidebarButton bgcolor="white" onClick={handleEdit}>
-            Edit
+            <ButtonIcon>
+              <EditOutlinedIcon/>
+            </ButtonIcon>
+            <ButtonText>
+              Edit
+            </ButtonText>
           </SidebarButton>
           {/* <SidebarButton bgcolor="#B8E8E8">
             Feature

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 const Container = styled.div`
-  height: 50px;
+  height: 65px;
   background: #A09FE3;
   width: 100%;
 `
@@ -20,7 +20,7 @@ const HeaderFlex = styled.div`
 display: flex;
 flex-direction: row;
 flex-wrap: nowrap;
-justify-content: space-between;
+justify-content: flex-end;
 align-items: center;
 padding: 0.3rem 0.5rem;
 `
@@ -43,7 +43,7 @@ const ButtonStyle = styled(Button)`
 `
 /* Preview and text to be changed into a dropdown menu */
 
-const EditorHeader: React.FC = () => {
+const EditorHeader: React.FC = (props) => {
 
   const navigate = useNavigate();
 
@@ -54,10 +54,10 @@ const EditorHeader: React.FC = () => {
   return (
     <Container>
       <HeaderFlex>
+        {props.children}
         <IconButton aria-label="back" onClick={() => handleClick()}>
           <ArrowBackIcon fontSize="inherit" />
         </IconButton>
-
         {/* <ButtonGroup>
           <ButtonStyle>
           ←
