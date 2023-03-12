@@ -27,12 +27,13 @@ const constructors: Record<string, (props: CMSBlockProps) => JSX.Element> = {
 export const buildComponentFactory = (opManager: OperationManager, onClick: (id: number) => void, onUpdate: UpdateCallback) => (block: BlockData, blockId: number, isFocused: boolean) : JSX.Element => {
     const componentProps = {
         id: blockId,
-        key: blockId,
+        key: block[0].key,
         showToolBar: isFocused,
         initialValue: block,
         update: buildUpdateHandler(blockId, opManager, onUpdate),
         onEditorClick: () => onClick(blockId),
     };
+
 
     const blockType = block[0].type ?? "unknown";
     const constructor = constructors[blockType];

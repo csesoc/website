@@ -6,8 +6,9 @@ export type BlockData = Descendant[];
 export type OpPropagator = (id: number, update: BlockData, operation: BaseOperation[]) => void;
 export type UpdateCallback = (id: number, update: BlockData) => void;
 
-type CustomElement = { type: "paragraph" | "heading"; children: CustomText[] };
+type CustomElement = { type: "paragraph" | "heading"; key?: string; children: CustomText[] };
 export type CustomText = {
+  key?: string;
   textSize?: number;
   text: string;
   bold?: boolean;
@@ -23,6 +24,7 @@ export interface CMSBlockProps {
   id: number;
   showToolBar: boolean;
   onEditorClick: () => void;
+  key: string | undefined;
 }
 
 

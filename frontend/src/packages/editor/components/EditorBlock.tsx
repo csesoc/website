@@ -52,6 +52,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
   initialValue,
   showToolBar,
   onEditorClick,
+  key
 }) => {
   const editor = useMemo(() => withReact(createEditor()), []);
 
@@ -65,7 +66,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
         textSize: leaf.textSize ?? defaultTextSize,
         ...attributes
       }
-      
+
       return leaf.align == null 
               ? <Text {...props}>{children}</Text>
               : <AlignedText {...props}>{children}</AlignedText>;
@@ -78,6 +79,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
       editor={editor}
       value={initialValue}
       onChange={(value) => update(id, editor.children, editor.operations)}
+      key={key}
     >
       {showToolBar && (
         <ToolbarContainer>

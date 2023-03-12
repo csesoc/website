@@ -11,6 +11,8 @@ import PublishDocument from "src/cse-ui-kit/PublishDocument_button";
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import { useParams } from "react-router-dom";
 
+// import {v4 as uuidv4} from 'uuid';
+
 import { buildComponentFactory } from "./componentFactory";
 import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
@@ -85,13 +87,13 @@ const EditorPage: FC = () => {
 
   // buildClickHandler builds handlers for events where new blocks are created and propagates them to the OT manager
   const buildButtonClickHandler = (type: "heading" | "paragraph") => () => {
-    const newElement = { type: type, children: [{ text: "" }] };
+    const newElement = { type: type, key: Math.random().toString(), children: [{ text: "" }] };
 
     // push and update this creation operation to the operation manager
     setBlocks((prev) => [...prev, [newElement]]);    
     setFocusedId(blocks.length);
     opManager.current?.pushToServer(newCreationOperation(newElement, blocks.length));
-  }  
+  }
 
 
   const deleteButtonClickHandler = (idx : number) => () => {
