@@ -4,7 +4,7 @@ import { ReactEditor } from 'slate-react';
 /**
  * decorate the selected text with the format
  * @param editor the current editor
- * @param format string from set {"bold", "italic", "underline"}
+ * @param format string from set {"bold", "italic", "underline", "quote"}
  */
 const toggleMark = (
   editor: BaseEditor & ReactEditor,
@@ -22,7 +22,7 @@ const toggleMark = (
 /**
  *
  * @param editor the current editor
- * @param format string from set {"bold", "italic", "underline"}
+ * @param format string from set {"bold", "italic", "underline", "quote "}
  * @returns whether the seleted text is bold or italic or underline based on parameter
  */
 const isMarkActive = (
@@ -66,6 +66,7 @@ const handleKey = (
   switch (event.key) {
     case 'q': {
       event.preventDefault();
+      toggleMark(editor, 'italic');
       toggleMark(editor, 'quote');
     }
   }

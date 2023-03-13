@@ -30,17 +30,21 @@ const Text = styled.span<{
   bold: boolean;
   italic: boolean;
   underline: boolean;
+  quote: boolean;
   textSize: number;
   align: string;
 }>`
   font-weight: ${(props) => (props.bold ? 600 : 400)};
   font-style: ${(props) => (props.italic ? 'italic' : 'normal')};
+  color: ${(props) => (props.quote ? '#DDDDDD' : 'black')};
+  border-left: ${(props) => (props.quote ? '3px solid #DDDDDD' : 'none')};
   font-size: ${(props) => props.textSize}px;
   text-decoration-line: ${(props) => (props.underline ? 'underline' : 'none')};
   text-align: ${(props) => props.align};
 `;
 
 const AlignedText = Text.withComponent('div');
+const QuoteText = Text.withComponent('blockquote');
 
 const EditorBlock: FC<CMSBlockProps> = ({
   id,
@@ -57,6 +61,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
         bold: leaf.bold ?? false,
         italic: leaf.italic ?? false,
         underline: leaf.underline ?? false,
+        quote: leaf.quote ?? false,
         align: leaf.align ?? 'left',
         textSize: leaf.textSize ?? defaultTextSize,
         ...attributes,
@@ -65,7 +70,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
       return leaf.align == null ? (
         <Text {...props}>{children}</Text>
       ) : (
-        <AlignedText {...props}>{children}</AlignedText>
+        <AlignedText {...props}>{console.log(props)}{children}</AlignedText>
       );
     },
     []
