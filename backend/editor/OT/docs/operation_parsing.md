@@ -74,30 +74,30 @@ Interally the `cmsjson` library determines what struct to unmarshall into based 
 ### More on `cmsjson`
 This should ideally be under the `cmsjson` documentation but the library not only handles JSON unmarhsalling/marshalling but also exposes methods for constructing ASTs from a specific JSON document, this is used rather extensively by the `object_operation.go` object model to convert a document component to an AST. Once again, this is further documented within the `cmsjson` package, for the most part the package gives us the following interface for interacting with ASTs.
 ```go
-	// jsonNode is the internal implementation of AstNode, *jsonNode @implements AstNode
-	// AstNode is a simple interface that represents a node in our JSON AST, we have a few important constraints that should be enforced by any implementation of the AstNode, those constraints are:
-	//	- An ASTNode is either a: JsonPrimitive, JsonObject or a JsonArray
-	//		- GetKey can return nil indicating that it is JUST a value
-	//		- Since a node can be either a JsonPrimitive, JsonObject or a JsonArray:
-	// 			- 2 of the three functions: JsonPrimitive(), JsonObject(), JsonArray() will return nil (indicating the node is not of that type) while one will return an actual value
-	//			- We are guaranteed that one of these functions will return a value
-	//	- All implementations of AstNode must conform to this specification (there is no way within the Go type system to enforce this unfortunately :( )
-	//	- Note that the reflect.Type returned by JsonArray is the type of the array, ie if it was an array of integers then the reflect.type is an integer
-	//  - Note that jsonNode implements AstNode (indirectly), AstNode is of the form:
-	AstNode interface {
-		GetKey() string
+// jsonNode is the internal implementation of AstNode, *jsonNode @implements AstNode
+// AstNode is a simple interface that represents a node in our JSON AST, we have a few important constraints that should be enforced by any implementation of the AstNode, those constraints are:
+//	- An ASTNode is either a: JsonPrimitive, JsonObject or a JsonArray
+//		- GetKey can return nil indicating that it is JUST a value
+//		- Since a node can be either a JsonPrimitive, JsonObject or a JsonArray:
+// 			- 2 of the three functions: JsonPrimitive(), JsonObject(), JsonArray() will return nil (indicating the node is not of that type) while one will return an actual value
+//			- We are guaranteed that one of these functions will return a value
+//	- All implementations of AstNode must conform to this specification (there is no way within the Go type system to enforce this unfortunately :( )
+//	- Note that the reflect.Type returned by JsonArray is the type of the array, ie if it was an array of integers then the reflect.type is an integer
+//  - Note that jsonNode implements AstNode (indirectly), AstNode is of the form:
+AstNode interface {
+	GetKey() string
 
-		JsonPrimitive() (interface{}, reflect.Type)
-		JsonObject() ([]AstNode, reflect.Type)
-		JsonArray() ([]AstNode, reflect.Type)
+	JsonPrimitive() (interface{}, reflect.Type)
+	JsonObject() ([]AstNode, reflect.Type)
+	JsonArray() ([]AstNode, reflect.Type)
 
-		// Update functions, if the underlying type does not match then an error is thrown
-		// ie if you perform an "UpdatePrimitive" on a JSONObject node
-		UpdateOrAddPrimitiveElement(AstNode) error
-		UpdateOrAddArrayElement(int, AstNode) error
-		UpdateOrAddObjectElement(int, AstNode) error
+	// Update functions, if the underlying type does not match then an error is thrown
+	// ie if you perform an "UpdatePrimitive" on a JSONObject node
+	UpdateOrAddPrimitiveElement(AstNode) error
+	UpdateOrAddArrayElement(int, AstNode) error
+	UpdateOrAddObjectElement(int, AstNode) error
 
-		RemoveArrayElement(int) error
-	}
+	RemoveArrayElement(int) error
+}
 ```
 If you look carefully, you can see how we attempted to emulate sum types using interfaces 😛.
