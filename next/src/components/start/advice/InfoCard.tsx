@@ -115,6 +115,7 @@ const Button = styled.button`
   font-size: 20px;
   height: 40px;
 
+
   @media ${device.laptop} {
     font-size: 16px;
     height: 32px;

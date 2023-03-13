@@ -48,6 +48,8 @@ const MainContainer = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  width: 100%;
 `;
 
 const InfoCardsContainer = styled.div`
@@ -55,17 +57,14 @@ const InfoCardsContainer = styled.div`
   flex-direction: column;
   overflow-y: auto;
 
-  // This is to set the bounds of the container to allow the scrollbar to show up
-  position:absolute;
-  left: 0;
-  right: 0;
-  top:0;
-  bottom: 30px;
+  height: 70vh;
   
+
   @media ${device.laptop} {
     justify-content: space-around;
     flex-direction: row;
     position: relative;
+    height: fit-content;
   }
 `;
 
@@ -74,16 +73,16 @@ const MainButtonContainer = styled.div`
   align-items: center;
   justify-content: space-around;
 
-  padding-top: 36px;
+  padding-top: 12px;
 
   @media ${device.laptop} {
-    padding-top: 48px;
+    padding-top: 36px;
   }
   @media ${device.laptopL} {
-    padding-top: 56px;
+    padding-top: 48px;
   }
   @media ${device.desktop} {
-    padding-top: 64px;
+    padding-top: 56px;
   }
 `;
 
