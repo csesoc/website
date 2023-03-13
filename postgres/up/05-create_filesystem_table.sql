@@ -13,21 +13,18 @@ CREATE TABLE filesystem (
   IsPublished   BOOLEAN DEFAULT false,
   CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW(),
 
-  OwnedBy       INT,
-  /* Pain */
-  Parent        uuid REFERENCES filesystem(EntityID) DEFAULT NULL,
+  /* Cannot be constrained because parent could be a root (foreign key to 
+  frontend table) OR another file/directory (entity) in this table */
+  Parent        uuid NOT NULL,
 
-  /* FK Constraint */
-  CONSTRAINT fk_owner FOREIGN KEY (OwnedBy) 
-    REFERENCES groups(UID),
-  /* Unique name constraint: there should not exist an entity of the same type with the
+  /* There should not exist an entity of the same type with the
      same parent and logical name. */
   CONSTRAINT unique_name UNIQUE (Parent, LogicalName, IsDocument)        
 );
 
 /* Utility procedure :) */
 DROP FUNCTION IF EXISTS new_entity;
-CREATE OR REPLACE FUNCTION new_entity (parentP uuid, logicalNameP VARCHAR, ownedByP INT, isDocumentP BOOLEAN DEFAULT false) RETURNS uuid
+CREATE OR REPLACE FUNCTION new_entity (parentP uuid, logicalNameP VARCHAR, isDocumentP BOOLEAN DEFAULT false) RETURNS uuid
 LANGUAGE plpgsql
 AS $$
 DECLARE
@@ -35,12 +32,12 @@ DECLARE
   parentIsDocument BOOLEAN := (SELECT IsDocument FROM filesystem WHERE EntityID = parentP LIMIT 1);
 BEGIN
   IF parentIsDocument THEN
-    /* We shouldnt be delcaring that a document is our parent */
+    /* We shouldn't be declaring that a document is our parent */
     RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'cannot make parent a document';
   END If;
   WITH newEntity AS (
-    INSERT INTO filesystem (LogicalName, IsDocument, OwnedBy, Parent)
-      VALUES (logicalNameP, isDocumentP, ownedByP, parentP)
+    INSERT INTO filesystem (LogicalName, IsDocument, Parent)
+      VALUES (logicalNameP, isDocumentP, parentP)
       RETURNING EntityID
   )
 
@@ -71,3 +68,16 @@ BEGIN
 
   DELETE FROM filesystem WHERE EntityID = entityIDP;
 END $$;
+
+/* All entities have differing permissions based on the group 
+   Access in ascending permission: read -> write -> delete
+*/
+
+CREATE TYPE permissions_enum as ENUM ('read', 'write', 'delete');
+DROP TABLE IF EXISTS permissions;
+CREATE TABLE permissions (
+    /* Note: Directories can have permissions, they are overarching */
+    EntityID                    uuid NOT NULL,
+    GroupID                     INT REFERENCES groups(GroupID),
+    Permission permissions_enum NOT NULL
+);
