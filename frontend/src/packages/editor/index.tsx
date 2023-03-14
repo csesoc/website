@@ -32,12 +32,12 @@ const InsertContentWrapper = styled.div`
 
 const BlockWrapper = styled.div`
   display: flex;
-  width: 70%;
-  justify-content: center
+  width: fit-content;
+  align-items: center;
 `;
 
 const BlockContainer = styled.div`
-  flex-grow: 3
+  min-width: 640px;
 `;
 
 const EditorPage: FC = () => {
@@ -111,9 +111,6 @@ const EditorPage: FC = () => {
           <PublishDocument onClick={() => publishDocument(id ?? "")} />
       </EditorHeader>
       <Container>
-          {
-            // TODO Make this not ugly
-          }
           {blocks.map((block, idx) => 
             <BlockWrapper key={idx}>
               <DeleteBlock onClick={deleteButtonClickHandler(idx)} isFocused={focusedId == idx}/>
