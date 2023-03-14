@@ -34,6 +34,8 @@ export const buildComponentFactory = (opManager: OperationManager, onClick: (id:
         onEditorClick: () => onClick(blockId),
     };
 
+    console.log(block[0].key);
+
 
     const blockType = block[0].type ?? "unknown";
     const constructor = constructors[blockType];

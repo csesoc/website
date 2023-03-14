@@ -87,7 +87,9 @@ const EditorPage: FC = () => {
 
   // buildClickHandler builds handlers for events where new blocks are created and propagates them to the OT manager
   const buildButtonClickHandler = (type: "heading" | "paragraph") => () => {
+    // TODO: More robust key creation
     const newElement = { type: type, key: Math.random().toString(), children: [{ text: "" }] };
+    console.log(newElement.key);
 
     // push and update this creation operation to the operation manager
     setBlocks((prev) => [...prev, [newElement]]);    

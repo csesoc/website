@@ -24,7 +24,7 @@ export interface CMSBlockProps {
   id: number;
   showToolBar: boolean;
   onEditorClick: () => void;
-  key: string | undefined;
+  key?: string;
 }
 
 
