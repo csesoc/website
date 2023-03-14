@@ -6,7 +6,7 @@ export type BlockData = Descendant[];
 export type OpPropagator = (id: number, update: BlockData, operation: BaseOperation[]) => void;
 export type UpdateCallback = (id: number, update: BlockData) => void;
 
-type CustomElement = { type: "paragraph" | "heading"; children: CustomText[] };
+export type CustomElement = { type: "paragraph" | "heading"; children: CustomText[] };
 export type CustomText = {
   textSize?: number;
   text: string;
@@ -16,6 +16,13 @@ export type CustomText = {
   type?: string;
   align?: string;
 };
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const IsCustomTextBlock = (o: any): o is CustomText => 'text' in o;
+export const IsCustomElement = (o: any): o is CustomElement => 'type' in o && ["paragraph", "heading"].includes(o.type);
+
+export type CMSEditorNode = CustomElement | CustomText;
+
 
 export interface CMSBlockProps {
   update: OpPropagator;
