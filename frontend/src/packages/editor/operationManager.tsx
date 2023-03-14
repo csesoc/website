@@ -51,7 +51,7 @@ const normalizePath = (editorContent: BlockData, op: NodeOperation | TextOperati
     }
 
     // resolve what type we're studying and fetch the field mappings for it
-    return []
+    return [];
 }
 
 const convertTextInsertionOp = (editorContent: BlockData, op: InsertTextOperation): CMSOperation => (
@@ -64,9 +64,9 @@ const convertTextInsertionOp = (editorContent: BlockData, op: InsertTextOperatio
             stringOperation: {
                 rangeStart: op.offset,
                 rangeEnd: op.offset + op.text.length,
-                newValue: op.text
-            }
-        }
+                newValue: op.text,
+            },
+        },
     }
 );
 
@@ -82,17 +82,15 @@ const convertTextRemovalOp = (editorContent: BlockData, op: RemoveTextOperation)
                 rangeStart: op.offset - op.text.length,
                 rangeEnd: op.offset,
                 newValue: op.text,
-            }
-        }
+            },
+        },
     }
 );
 
 
 const normalizeElementPath = (contentBlock: CMSEditorNode, op: NodeOperation | TextOperation): number[] => {
-    switch (true) {
-        case IsCustomElement(contentBlock): return normalizeCustomElementPath(contentBlock as CustomElement, op);
-        case IsCustomTextBlock(contentBlock): return normalizeCustomTextPath(contentBlock as CustomText, op);
-    }
+    if (IsCustomElement(contentBlock)) return normalizeCustomElementPath(contentBlock as CustomElement, op);
+    if (IsCustomTextBlock(contentBlock)) return normalizeCustomTextPath(contentBlock as CustomText, op);
 
     return [];
 }
