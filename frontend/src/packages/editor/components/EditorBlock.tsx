@@ -52,7 +52,6 @@ const EditorBlock: FC<CMSBlockProps> = ({
   initialValue,
   showToolBar,
   onEditorClick,
-  key
 }) => {
   const editor = useMemo(() => withReact(createEditor()), []);
 
@@ -79,7 +78,6 @@ const EditorBlock: FC<CMSBlockProps> = ({
       editor={editor}
       value={initialValue}
       onChange={(value) => update(id, editor.children, editor.operations)}
-      key={key}
     >
       {showToolBar && (
         <ToolbarContainer>
