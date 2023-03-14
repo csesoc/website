@@ -7,6 +7,7 @@ import { BlockData, UpdateCallback } from "./types";
 import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
 import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
 import SyncDocument from "src/cse-ui-kit/SyncDocument_button";
+import DeleteBlock from "src/cse-ui-kit/DeleteBlock_button";
 import PublishDocument from "src/cse-ui-kit/PublishDocument_button";
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import { useParams } from "react-router-dom";
@@ -18,9 +19,6 @@ import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
 import { CMSOperation } from "./api/OTClient/operation";
 
-import CloseIcon from '@mui/icons-material/Close';
-import IconButton from '@mui/material/IconButton';
-import DeleteBlock from "src/cse-ui-kit/DeleteBlock_button";
 
 const Container = styled.div`
   display: flex;
@@ -118,14 +116,6 @@ const EditorPage: FC = () => {
           }
           {blocks.map((block, idx) => 
             <BlockWrapper key={idx}>
-              {/* <IconButton
-                sx={{
-                  display: focusedId == idx ? "block" : "none"
-                }}
-                
-              >
-                <CloseIcon/>
-              </IconButton> */}
               <DeleteBlock onClick={deleteButtonClickHandler(idx)} isFocused={focusedId == idx}/>
               <BlockContainer>
                 {createBlock(block, idx, focusedId === idx)}
