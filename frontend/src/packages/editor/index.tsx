@@ -20,6 +20,7 @@ import { CMSOperation } from "./api/OTClient/operation";
 
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
+import DeleteBlock from "src/cse-ui-kit/DeleteBlock_button";
 
 const Container = styled.div`
   display: flex;
@@ -117,14 +118,15 @@ const EditorPage: FC = () => {
           }
           {blocks.map((block, idx) => 
             <BlockWrapper key={idx}>
-              <IconButton
+              {/* <IconButton
                 sx={{
                   display: focusedId == idx ? "block" : "none"
                 }}
-                onClick={deleteButtonClickHandler(idx)}
+                
               >
                 <CloseIcon/>
-              </IconButton>
+              </IconButton> */}
+              <DeleteBlock onClick={deleteButtonClickHandler(idx)} isFocused={focusedId == idx}/>
               <BlockContainer>
                 {createBlock(block, idx, focusedId === idx)}
               </BlockContainer>
