@@ -86,7 +86,8 @@ const EditorPage: FC = () => {
 
   // buildClickHandler builds handlers for events where new blocks are created and propagates them to the OT manager
   const buildButtonClickHandler = (type: "heading" | "paragraph") => () => {
-    // TODO: More robust key creation
+    // TODO: More robust key creation; Math.random is unique enough for its purpose, but it still feels
+    // quite clunky
     const newElement = { type: type, key: Math.random().toString(), children: [{ text: "" }] };
     console.log(newElement.key);
 
@@ -102,6 +103,8 @@ const EditorPage: FC = () => {
     const newBlocks = [...blocks];
     newBlocks.splice(idx, 1);
     setBlocks(newBlocks);
+
+    // TODO OT Client integration
   }
 
   return (
@@ -141,6 +144,7 @@ const newCreationOperation = (newValue: any, index: number): CMSOperation => ({
 });
 
 // constructs a new deletion operation in response to the deletion of an existing block
+// TODO: implement me :D
 const deletionOperation = (index: number): CMSOperation => ({
   Path: [index],
   OperationType: "delete",
