@@ -13,7 +13,7 @@ export const StyledButton = styled.div<buttonProps>`
   display: ${(props) => props.isFocused ? "flex" : "none"};
   justify-content: center;
   align-items: center;
-  border-radius: 10px;
+  border-radius: 30px;
   user-select: none;
 
   &:hover {
