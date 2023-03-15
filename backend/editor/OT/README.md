@@ -1,12 +1,12 @@
 # The Concurrent Editor
-This is a rather full on package so this README document will outline how exactly the (OT) Concurrent Editor. As a high level overview though the concurrent editor is an OT based editor thats heavily influenced by Google's WAVE algorithm, Wave was Google's predecessor to Google docs and heavily inspired the architecture for Google Docs. Our editor uses the same underlying architecture as Wave except the difference lies in the type of operations we are sending back and forth between the server. Wave was originally designed to operate with operations that modified unstructured data, our operations modify structured JSON data.
+As a high level overview though the concurrent editor is an OT based editor thats heavily influenced by Google's Wave algorithm, Wave was Google's predecessor to Google docs and heavily inspired the architecture for Google Docs. Our editor uses the same underlying architecture as Wave except the difference lies in the type of operations we are sending between the server and client. Wave was designed to operate with operations that modified unstructured data, while our operations modify structured JSON data.
 
 Before reading the rest of this document I highly recommend you read through the resources linked in the base [README.md](../../README.md).
 
 ## High Level Architecture
 At a very high level our editor server consists of 3 distinct layers.
  - **The data layer**
-    - This layer is basically the server's copy of the current state of the document. This is what all incoming operations will end up modifying. Our initial design for the data layer involved a singular struct modelling the entire document that we modified using reflection, this however proved rather tricky due to the intricacies of Go's reflection system so we ended up moving to an AST based approach. Currently the data layer is just the AST for the JSON within the document, operations modify this AST directly. To prevent corrupted documents we have various data integrity checks utilising reflection.
+    - This layer is the server's copy of the current state of the document. This layer is what all incoming operations will modify. Our initial design for the data layer involved a singular struct modelling the entire document that we modified using reflection. This proved tricky due to the intricacies of Go's reflection system so we moved to an AST based approach. Currently the data layer is just the AST for the JSON of the document, and operations modify this AST directly. To prevent corrupted documents we have various data integrity checks utilising reflection.
  - **The client layer**
     - The client layer is an internal representation of an active client connection. Whenever a client connects to our server a new client object is allocated to represent their connection.
  - **The document server layer**
