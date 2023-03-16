@@ -26,6 +26,6 @@ const Template: ComponentStory<typeof DeleteBlock> = (args) =>
 
 export const Primary = Template.bind({});
 Primary.args = {
-  background: "#90c2e7",
+  background: "#FFF",
   isFocused: true
 }
