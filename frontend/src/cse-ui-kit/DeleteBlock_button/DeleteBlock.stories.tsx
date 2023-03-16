@@ -1,34 +1,31 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-// TODO
+import DeleteBlock from './DeleteBlock';
 
-// import CreateMediaBlock from './CreateMediaBlock';
+export default {
+  title: 'CSE-UIKIT/DeleteBlockButton',
+  component: DeleteBlock,
 
-// import { AiFillPicture } from "react-icons/ai";
+  argTypes: {
+    backgroundColor: { control: 'color' },
+  },
+} as ComponentMeta<typeof DeleteBlock>;
 
-// export default {
-//   title: 'CSE-UIKIT/CreateMediaBlockButton',
-//   component: CreateMediaBlock,
+const Template: ComponentStory<typeof DeleteBlock> = (args) =>
+(
+  <div
+    style={{
+      margin: "30px"
+    }}
+  >
+    Delete Button
+    <DeleteBlock {...args}></DeleteBlock>
+  </div>
+)
 
-//   argTypes: {
-//     backgroundColor: { control: 'color' },
-//   },
-// } as ComponentMeta<typeof CreateMediaBlock>;
-
-// const Template: ComponentStory<typeof CreateMediaBlock> = (args) =>
-// (
-//   <div
-//     style={{
-//       margin: "30px"
-//     }}
-//   >
-//     Insert Button
-//     <CreateMediaBlock {...args}></CreateMediaBlock>
-//   </div>
-// )
-
-// export const Primary = Template.bind({});
-// Primary.args = {
-//   background: "#90c2e7",
-// }
+export const Primary = Template.bind({});
+Primary.args = {
+  background: "#90c2e7",
+  isFocused: true
+}
