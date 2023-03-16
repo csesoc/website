@@ -66,7 +66,6 @@ const handleKey = (
   switch (event.key) {
     case 'q': {
       event.preventDefault();
-      toggleMark(editor, 'italic');
       toggleMark(editor, 'quote');
     }
   }

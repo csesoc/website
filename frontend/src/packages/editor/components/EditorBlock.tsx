@@ -35,16 +35,20 @@ const Text = styled.span<{
   align: string;
 }>`
   font-weight: ${(props) => (props.bold ? 600 : 400)};
-  font-style: ${(props) => (props.italic ? 'italic' : 'normal')};
+  font-style: ${(props) => (props.italic || props.quote ? 'italic' : 'normal')};
   color: ${(props) => (props.quote ? '#DDDDDD' : 'black')};
-  border-left: ${(props) => (props.quote ? '3px solid #DDDDDD' : 'none')};
   font-size: ${(props) => props.textSize}px;
   text-decoration-line: ${(props) => (props.underline ? 'underline' : 'none')};
   text-align: ${(props) => props.align};
 `;
 
+const Quote = styled.blockquote`
+  border-left: 3px solid #dddddd;
+  margin: 0px;
+  padding-left: 10px;
+`;
+const QuoteText = Text.withComponent(Quote);
 const AlignedText = Text.withComponent('div');
-const QuoteText = Text.withComponent('blockquote');
 
 const EditorBlock: FC<CMSBlockProps> = ({
   id,
@@ -67,10 +71,12 @@ const EditorBlock: FC<CMSBlockProps> = ({
         ...attributes,
       };
 
-      return leaf.align == null ? (
+      return leaf.quote ? (
+        <QuoteText {...props}>{children}</QuoteText>
+      ) : leaf.align == null ? (
         <Text {...props}>{children}</Text>
       ) : (
-        <AlignedText {...props}>{console.log(props)}{children}</AlignedText>
+        <AlignedText {...props}>{children}</AlignedText>
       );
     },
     []

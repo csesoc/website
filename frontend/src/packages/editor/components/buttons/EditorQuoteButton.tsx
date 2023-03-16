@@ -10,7 +10,6 @@ const EditorQuoteButton: FC = () => {
       size={30}
       onMouseDown={(event) => {
         event.preventDefault();
-        toggleMark(editor, 'italic');
         toggleMark(editor, 'quote');
       }}
     />
