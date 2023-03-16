@@ -36,14 +36,14 @@ const Text = styled.span<{
 }>`
   font-weight: ${(props) => (props.bold ? 600 : 400)};
   font-style: ${(props) => (props.italic || props.quote ? 'italic' : 'normal')};
-  color: ${(props) => (props.quote ? '#DDDDDD' : 'black')};
+  color: ${(props) => (props.quote ? '#9e9e9e' : 'black')};
   font-size: ${(props) => props.textSize}px;
   text-decoration-line: ${(props) => (props.underline ? 'underline' : 'none')};
   text-align: ${(props) => props.align};
 `;
 
 const Quote = styled.blockquote`
-  border-left: 3px solid #dddddd;
+  border-left: 3px solid #9e9e9e;
   margin: 0px;
   padding-left: 10px;
 `;
