@@ -12,8 +12,6 @@ import PublishDocument from "src/cse-ui-kit/PublishDocument_button";
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import { useParams } from "react-router-dom";
 
-// import {v4 as uuidv4} from 'uuid';
-
 import { buildComponentFactory } from "./componentFactory";
 import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
@@ -86,8 +84,7 @@ const EditorPage: FC = () => {
 
   // buildClickHandler builds handlers for events where new blocks are created and propagates them to the OT manager
   const buildButtonClickHandler = (type: "heading" | "paragraph") => () => {
-    // TODO: More robust key creation; Math.random is unique enough for its purpose, but it still feels
-    // quite clunky
+    // TODO: More robust key creation; Math.random is unique enough for its purpose, but it still feels a little clunky
     const newElement = { type: type, key: Math.random().toString(), children: [{ text: "" }] };
     console.log(newElement.key);
 
