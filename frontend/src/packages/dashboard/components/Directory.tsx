@@ -45,6 +45,7 @@ const BreadcrumbItem = customStyle(Chip)(({ theme }) => {
   };
 });
 
+// Wrapper used for breadcrumb to individualise onClick for each pill
 type BreadcrumbItemWrapperProps = {
   folderObject: PathObject;
 };
