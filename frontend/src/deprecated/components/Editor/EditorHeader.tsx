@@ -43,7 +43,7 @@ const ButtonStyle = styled(Button)`
 `
 
 const ButtonContainer = styled.div`
-display: flex;
+  display: flex;
   justify-content: flex-end;
   flex-direction: row;
   align-items: center;
