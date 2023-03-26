@@ -47,15 +47,11 @@ const EditorHeader: React.FC = (props) => {
 
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate(-1);
-  };
-
   return (
     <Container>
       <HeaderFlex>
         {props.children}
-        <IconButton aria-label="back" onClick={() => handleClick()}>
+        <IconButton aria-label="back" onClick={() => navigate(-1)}>
           <ArrowBackIcon fontSize="inherit" />
         </IconButton>
         {/* <ButtonGroup>
