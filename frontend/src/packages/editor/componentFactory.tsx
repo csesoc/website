@@ -13,9 +13,9 @@ import { OperationManager, slateToCmsOperation } from "./operationManager";
 type callbackHandler = (id: number, update: BlockData) => void;
 
 // registration of all block constructors
-const constructors: Record<string, (props: CMSBlockProps, ref?: React.MutableRefObject<any>) => JSX.Element> = {
-    "paragraph": (props, ref) => <EditorBlock {...props} ref={ref}/>,
-    "heading": (props, ref) => <HeadingBlock {...props} ref={ref}/>
+const constructors: Record<string, (props: CMSBlockProps) => JSX.Element> = {
+    "paragraph": (props) => <EditorBlock {...props}/>,
+    "heading": (props) => <HeadingBlock {...props}/>
 }
 
 /**
@@ -43,7 +43,7 @@ export const buildComponentFactory = (opManager: OperationManager, onClick: (id:
     }
         
 
-    return constructor(componentProps, ref);
+    return constructor(componentProps);
 }
 
 // buildUpdateHandler wraps any updates to a component as a nice formatted operation for propagation to the OT server, it then invokes the initial provided handler

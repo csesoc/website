@@ -35,12 +35,12 @@ const EditorPage: FC = () => {
   const [focusedId, setFocusedId] = useState<number>(0);
 
 
-  // TODO fix any
-  const lastRef = useRef<any>(null);
-  useEffect(() => {
-    if (lastRef.current)
-      lastRef.current.focus();
-  }, [blocks]);
+  // // TODO fix any
+  // const lastRef = useRef<any>(null);
+  // useEffect(() => {
+  //   if (lastRef.current)
+  //     lastRef.current.focus();
+  // }, [blocks]);
 
   const updateValues: UpdateCallback = (idx, updatedBlock) => {
     const requiresUpdate = JSON.stringify(blocks[idx]) !== JSON.stringify(updateValues);
@@ -96,10 +96,8 @@ const EditorPage: FC = () => {
       </EditorHeader>
       <Container>
         {blocks.map((block, idx) => 
-          createBlock(block, idx, focusedId === idx, 
-                      idx === blocks.length - 1 ? lastRef : undefined)
-          )
-          }
+          createBlock(block, idx, focusedId === idx)
+        )}
         <InsertContentWrapper>
           <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
           <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />
