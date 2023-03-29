@@ -23,6 +23,7 @@ export interface CMSBlockProps {
   id: number;
   showToolBar: boolean;
   onEditorClick: () => void;
+  ref?: React.MutableRefObject<any>
 }
 
 

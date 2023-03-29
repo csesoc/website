@@ -34,6 +34,14 @@ const EditorPage: FC = () => {
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [focusedId, setFocusedId] = useState<number>(0);
 
+
+  // TODO fix any
+  const lastRef = useRef<any>(null);
+  useEffect(() => {
+    if (lastRef.current)
+      lastRef.current.focus();
+  }, [blocks]);
+
   const updateValues: UpdateCallback = (idx, updatedBlock) => {
     const requiresUpdate = JSON.stringify(blocks[idx]) !== JSON.stringify(updateValues);
     if (!requiresUpdate) return;
@@ -87,7 +95,11 @@ const EditorPage: FC = () => {
           <PublishDocument onClick={() => publishDocument(id ?? "")} />
       </EditorHeader>
       <Container>
-        {blocks.map((block, idx) => createBlock(block, idx, focusedId === idx))}
+        {blocks.map((block, idx) => 
+          createBlock(block, idx, focusedId === idx, 
+                      idx === blocks.length - 1 ? lastRef : undefined)
+          )
+          }
         <InsertContentWrapper>
           <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
           <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />

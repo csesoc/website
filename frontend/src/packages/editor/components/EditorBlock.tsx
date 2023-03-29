@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { createEditor } from "slate";
-import React, { FC, useMemo, useCallback } from "react";
+import React, { FC, useMemo, useCallback, useRef, useEffect, forwardRef } from "react";
 import {
   Slate,
   Editable,
@@ -52,6 +52,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
   initialValue,
   showToolBar,
   onEditorClick,
+  ref
 }) => {
   const editor = useMemo(() => withReact(createEditor()), []);
 
@@ -97,6 +98,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
           onClick={() => onEditorClick()}
           style={{ width: "100%", height: "100%" }}
           onKeyDown={(event) => handleKey(event, editor)}
+
         />
       </ContentBlock>
     </Slate>
