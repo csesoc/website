@@ -1,12 +1,11 @@
 import styled from "styled-components";
 import { createEditor } from "slate";
-import React, { FC, useMemo, useCallback, useRef, useEffect, forwardRef } from "react";
+import React, { FC, useMemo, useCallback} from "react";
 import {
   Slate,
   Editable,
   withReact,
   RenderLeafProps,
-  ReactEditor,
 } from "slate-react";
 
 import { CMSBlockProps } from "../types";

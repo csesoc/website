@@ -1,6 +1,6 @@
 import { BaseOperation } from "slate";
 import HeadingBlock from "./components/HeadingBlock";
-import React, { forwardRef } from "react";
+import React from "react";
 import { BlockData, UpdateCallback, CMSBlockProps } from "./types";
 import EditorBlock from "./components/EditorBlock";
 import { OperationManager, slateToCmsOperation } from "./operationManager";
@@ -14,8 +14,8 @@ type callbackHandler = (id: number, update: BlockData) => void;
 
 // registration of all block constructors
 const constructors: Record<string, (props: CMSBlockProps) => JSX.Element> = {
-    "paragraph": (props) => <EditorBlock {...props}/>,
-    "heading": (props) => <HeadingBlock {...props}/>
+    "paragraph": (props) => <EditorBlock {...props} />,
+    "heading": (props) => <HeadingBlock {...props} />
 }
 
 /**
@@ -24,9 +24,7 @@ const constructors: Record<string, (props: CMSBlockProps) => JSX.Element> = {
  * @param clickHandler the handler invoked when the element is clicked
  * @param updateHandler the handler invoked when teh contents is updated (note: will be deprecated after full transition to OT)
  */
-export const buildComponentFactory = (opManager: OperationManager, onClick: (id: number) => void, onUpdate: UpdateCallback) => 
-(block: BlockData, blockId: number, isFocused: boolean, ref? : React.MutableRefObject<any>) : JSX.Element => {
-
+export const buildComponentFactory = (opManager: OperationManager, onClick: (id: number) => void, onUpdate: UpdateCallback) => (block: BlockData, blockId: number, isFocused: boolean) : JSX.Element => {
     const componentProps = {
         id: blockId,
         key: blockId,
@@ -35,13 +33,12 @@ export const buildComponentFactory = (opManager: OperationManager, onClick: (id:
         update: buildUpdateHandler(blockId, opManager, onUpdate),
         onEditorClick: () => onClick(blockId),
     };
-    
+
     const blockType = block[0].type ?? "unknown";
     const constructor = constructors[blockType];
     if (constructor === undefined) {
         throw new Error(`unidentified block type: ${blockType}`)
     }
-        
 
     return constructor(componentProps);
 }
