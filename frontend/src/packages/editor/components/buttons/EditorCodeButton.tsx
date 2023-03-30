@@ -11,7 +11,7 @@ const EditorCodeButton: FC = () => {
       onMouseDown={(event) => {
         event.preventDefault();
         // TODO switch mark to code (not sure if this has to be defined)
-        toggleMark(editor, "bold");
+        toggleMark(editor, "code");
       }}
     />
   );

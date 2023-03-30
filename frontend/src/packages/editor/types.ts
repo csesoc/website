@@ -15,6 +15,7 @@ export type CustomText = {
   underline?: boolean;
   type?: string;
   align?: string;
+  code?: string;
 };
 
 export interface CMSBlockProps {

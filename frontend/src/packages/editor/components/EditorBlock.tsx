@@ -35,6 +35,7 @@ const Text = styled.span<{
   bold: boolean;
   italic: boolean;
   underline: boolean;
+  code: boolean | string;
   textSize: number;
   align: string;
 }>`
@@ -43,9 +44,11 @@ const Text = styled.span<{
   font-size: ${(props) => props.textSize}px;
   text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
   text-align: ${(props) => props.align};
+  background-color: ${(props) => props.code ? "grey" : "white"}
 `;
 
 const AlignedText = Text.withComponent("div");
+const CodeText = Text.withComponent("code");
 
 const EditorBlock: FC<CMSBlockProps> = ({
   id,
@@ -62,14 +65,25 @@ const EditorBlock: FC<CMSBlockProps> = ({
         bold: leaf.bold ?? false,
         italic: leaf.italic ?? false,
         underline: leaf.underline ?? false,
+        code: leaf.code ?? false,
         align: leaf.align ?? "left",
         textSize: leaf.textSize ?? defaultTextSize,
         ...attributes
       }
       
-      return leaf.align == null 
-              ? <Text {...props}>{children}</Text>
-              : <AlignedText {...props}>{children}</AlignedText>;
+      return leaf.code ? (
+        <CodeText {...props}>{children}</CodeText>
+      ) : leaf.align == null ? (
+        <Text {...props}>{children}</Text>
+      ) : (
+        <AlignedText {...props}>{children}</AlignedText>
+      );
+      // return leaf.align == null 
+      //         ? <Text {...props}>{children}</Text>
+      //       : leaf.code
+      //         ? <CodeText {...props}>{children}</CodeText>
+      //       : 
+      //         <AlignedText {...props}>{children}</AlignedText>;
       },
     []
   );
