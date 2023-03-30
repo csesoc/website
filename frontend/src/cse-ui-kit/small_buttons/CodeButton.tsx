@@ -1,6 +1,6 @@
 import React, { MouseEventHandler } from 'react';
 import { StyledButton, buttonProps, scaleRate } from './small_buttons-Styled';
-import { ReactComponent as Bold } from 'src/cse-ui-kit/assets/bold-button.svg';
+import { ReactComponent as Code } from 'src/cse-ui-kit/assets/code-button.svg';
 
 type Props = {
   onClick?: MouseEventHandler<HTMLDivElement>;
@@ -14,7 +14,7 @@ export default function CodeButton({
 }: Props) {
   return (
     <StyledButton onClick={onClick} onMouseDown={onMouseDown} {...styleProps}>
-      <Bold        
+      <Code        
         height={styleProps.size * scaleRate}
         width={styleProps.size * scaleRate}
       />

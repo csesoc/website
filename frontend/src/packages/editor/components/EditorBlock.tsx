@@ -19,6 +19,7 @@ import EditorRightAlignButton from "./buttons/EditorRightAlignButton";
 
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
 import { handleKey } from "./buttons/buttonHelpers";
+import EditorCodeButton from "./buttons/EditorCodeButton";
 
 const defaultTextSize = 16;
 
@@ -84,6 +85,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
           <EditorBoldButton />
           <EditorItalicButton />
           <EditorUnderlineButton />
+          <EditorCodeButton />
           <EditorSelectFont />
           <EditorLeftAlignButton />
           <EditorCenterAlignButton />

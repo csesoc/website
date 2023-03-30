@@ -1,12 +1,12 @@
 import React, { FC } from "react";
 import { useSlate } from "slate-react";
-import BoldButton from "src/cse-ui-kit/small_buttons/BoldButton";
+import CodeButton from "src/cse-ui-kit/small_buttons/CodeButton";
 import { toggleMark } from "./buttonHelpers";
 
 const EditorCodeButton: FC = () => {
   const editor = useSlate();
   return (
-    <BoldButton
+    <CodeButton
       size={30}
       onMouseDown={(event) => {
         event.preventDefault();
