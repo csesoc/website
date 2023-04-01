@@ -48,10 +48,6 @@ const Text = styled.span<{
   background-color: ${(props) => props.code ? "#eee" : "#fff"};
 `;
 
-const InlineDiv = styled.div`
-  display: inline-flex;
-`;
-
 const AlignedText = Text.withComponent('div');
 
 const EditorBlock: FC<CMSBlockProps> = ({
