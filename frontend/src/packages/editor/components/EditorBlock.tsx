@@ -42,13 +42,17 @@ const Text = styled.span<{
   font-weight: ${(props) => (props.bold ? 600 : 400)};
   font-style: ${(props) => (props.italic ? "italic" : "normal")};
   font-size: ${(props) => props.textSize}px;
+  font-family: ${(props) => props.code ? "monospace" : "inherit"};
   text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
   text-align: ${(props) => props.align};
-  background-color: ${(props) => props.code ? "grey" : "white"}
+  background-color: ${(props) => props.code ? "#eee" : "#fff"};
 `;
 
-const AlignedText = Text.withComponent("div");
-const CodeText = Text.withComponent("code");
+const InlineDiv = styled.div`
+  display: inline-flex;
+`;
+
+const AlignedText = Text.withComponent('div');
 
 const EditorBlock: FC<CMSBlockProps> = ({
   id,
@@ -70,20 +74,12 @@ const EditorBlock: FC<CMSBlockProps> = ({
         textSize: leaf.textSize ?? defaultTextSize,
         ...attributes
       }
-      
-      return leaf.code ? (
-        <CodeText {...props}>{children}</CodeText>
-      ) : leaf.align == null ? (
+
+      return leaf.align == null 
+      ? 
         <Text {...props}>{children}</Text>
-      ) : (
-        <AlignedText {...props}>{children}</AlignedText>
-      );
-      // return leaf.align == null 
-      //         ? <Text {...props}>{children}</Text>
-      //       : leaf.code
-      //         ? <CodeText {...props}>{children}</CodeText>
-      //       : 
-      //         <AlignedText {...props}>{children}</AlignedText>;
+      : 
+        <AlignedText {...props}>{children}</AlignedText>;
       },
     []
   );
