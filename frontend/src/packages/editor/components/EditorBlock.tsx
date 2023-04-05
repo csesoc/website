@@ -72,10 +72,8 @@ const EditorBlock: FC<CMSBlockProps> = ({
       }
 
       return leaf.align == null 
-      ? 
-        <Text {...props}>{children}</Text>
-      : 
-        <AlignedText {...props}>{children}</AlignedText>;
+        ? <Text {...props}>{children}</Text>
+        : <AlignedText {...props}>{children}</AlignedText>;
       },
     []
   );
