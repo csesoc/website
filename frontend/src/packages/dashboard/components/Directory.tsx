@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Breadcrumbs } from "@mui/material";
 import Chip from "@mui/material/Chip";
 import { emphasize, styled as customStyle } from "@mui/material/styles";
@@ -7,8 +7,12 @@ import { useDispatch } from "react-redux";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-import { traverseBackFolder } from "../state/folders/actions";
+import {
+  traverseBackFolder,
+  traverseIntoFolder,
+} from "../state/folders/actions";
 import { getFolderState } from "../api/helpers";
+import { PathObject } from "../state/folders/types";
 
 const DirectoryFlex = styled.div`
   display: flex;
@@ -22,9 +26,10 @@ const DirectoryFlex = styled.div`
 
 const BreadcrumbItem = customStyle(Chip)(({ theme }) => {
   const backgroundColor =
-    theme.palette.mode === 'light'
+    theme.palette.mode === "light"
       ? theme.palette.grey[200]
       : theme.palette.grey[800];
+
   return {
     backgroundColor,
     height: theme.spacing(3),
@@ -40,6 +45,28 @@ const BreadcrumbItem = customStyle(Chip)(({ theme }) => {
   };
 });
 
+// Wrapper used for breadcrumb to individualise onClick for each pill
+type BreadcrumbItemWrapperProps = {
+  folderObject: PathObject;
+};
+
+const BreadcrumbItemWrapper = ({
+  folderObject,
+}: BreadcrumbItemWrapperProps) => {
+  const dispatch = useDispatch();
+  const handleClickBreadcrumbItem = () => {
+    dispatch(traverseIntoFolder(folderObject.folderId));
+  };
+  return (
+    <div>
+      <BreadcrumbItem
+        label={folderObject.folderName}
+        onClick={handleClickBreadcrumbItem}
+      />
+    </div>
+  );
+};
+
 export default function Directory() {
   const dispatch = useDispatch();
   const parentFolder = getFolderState().parentFolder;
@@ -47,18 +74,15 @@ export default function Directory() {
   const handleClick = () => {
     dispatch(traverseBackFolder(parentFolder));
   };
-
   return (
     <DirectoryFlex>
       <IconButton aria-label="back" onClick={() => handleClick()}>
         <ArrowBackIcon fontSize="inherit" />
       </IconButton>
       <Breadcrumbs aria-label="breadcrumb">
-        {getFolderState()
-          .path.split("/")
-          .map((folder, i) => {
-            return <BreadcrumbItem key={i} label={folder} />;
-          })}
+        {getFolderState().path.map((folderObject, i) => {
+          return <BreadcrumbItemWrapper folderObject={folderObject} key={i} />;
+        })}
       </Breadcrumbs>
     </DirectoryFlex>
   );

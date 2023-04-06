@@ -13,6 +13,7 @@ export type CustomText = {
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;
+  quote?: boolean;
   type?: string;
   align?: string;
   code?: string;
