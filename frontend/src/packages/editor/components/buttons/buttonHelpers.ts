@@ -8,11 +8,7 @@ import { ReactEditor } from 'slate-react';
  */
 const toggleMark = (
   editor: BaseEditor & ReactEditor,
-<<<<<<< HEAD
-  format: "bold" | "italic" | "underline" | "code"
-=======
-  format: 'bold' | 'italic' | 'underline' | 'quote'
->>>>>>> main
+  format: 'bold' | 'italic' | 'underline' | 'quote' | 'code'
 ): void => {
   const isActive = isMarkActive(editor, format);
 
@@ -31,11 +27,7 @@ const toggleMark = (
  */
 const isMarkActive = (
   editor: BaseEditor & ReactEditor,
-<<<<<<< HEAD
-  format: "bold" | "italic" | "underline" | "code"
-=======
-  format: 'bold' | 'italic' | 'underline' | 'quote'
->>>>>>> main
+  format: 'bold' | 'italic' | 'underline' | 'quote' | 'code'
 ): boolean => {
   // https://docs.slatejs.org/concepts/07-editor
   // Editor object exposes properties of the current editor
@@ -77,7 +69,6 @@ const handleKey = (
       toggleMark(editor, 'quote');
     }
   }
-<<<<<<< HEAD
   switch (event.key) {
     case '`': {
       event.preventDefault();
@@ -85,8 +76,5 @@ const handleKey = (
     }
   }
 }
-=======
-};
->>>>>>> main
 
 export { toggleMark, isMarkActive, handleKey };
