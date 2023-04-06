@@ -14,8 +14,15 @@ export type File = {
 // folders and files
 export type FileEntity = Folder | File;
 
+// PathObject is the type which specifies the name AND id of the
+// folder we are currently in
+export type PathObject = {
+  folderName: string;
+  folderId: string;
+};
+
 export type sliceState = {
   parentFolder: string;
-  path: string;
+  path: PathObject[];
   items: FileEntity[];
 };
