@@ -112,6 +112,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
           onClick={() => onEditorClick()}
           style={{ width: '100%', height: '100%' }}
           onKeyDown={(event) => handleKey(event, editor)}
+          autoFocus
         />
       </ContentBlock>
     </Slate>
