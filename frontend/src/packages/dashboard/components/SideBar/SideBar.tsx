@@ -130,7 +130,12 @@ export default function SideBar({
   const navigate = useNavigate();
   const handleEdit = () => {
     if (selectedFile !== null) {
-      navigate("/editor/" + selectedFile, { replace: false }), [navigate];
+      navigate("/editor/" + selectedFile, { 
+        replace: false,
+        state: {
+          filename: "REPLACE ME"
+        } 
+      }), [navigate];
     }
   };
 

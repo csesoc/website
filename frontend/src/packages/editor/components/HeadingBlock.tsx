@@ -59,6 +59,7 @@ const HeadingBlock: FC<CMSBlockProps> = ({
           <EditorSelectFont />
         </ToolbarContainer>
       )}
+      poop
       <ContentBlock>
         <Editable
           renderLeaf={renderLeaf}

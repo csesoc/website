@@ -16,7 +16,7 @@ const HeaderFlex = styled.div`
 display: flex;
 flex-direction: row;
 flex-wrap: nowrap;
-justify-content: flex-end;
+justify-content: space-between;
 align-items: center;
 padding: 0.3rem 0.5rem;
 `

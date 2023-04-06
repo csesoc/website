@@ -26,6 +26,19 @@ const InsertContentWrapper = styled.div`
   display: flex;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+`
+
+const NameContainer = styled.div`
+  display: flex;
+  padding: 10px;
+`
+
+type LocationState = {
+  filename: string;
+};
+
 const EditorPage: FC = () => {
   const { id } = useParams();
   const wsClient = useRef<Client | null>(null);
@@ -34,8 +47,8 @@ const EditorPage: FC = () => {
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [focusedId, setFocusedId] = useState<number>(0);
 
-  const location = useLocation();
-  console.log("filename", location.state);
+  const state = useLocation().state as LocationState;
+  const filename = state.filename;
 
   const updateValues: UpdateCallback = (idx, updatedBlock) => {
     const requiresUpdate = JSON.stringify(blocks[idx]) !== JSON.stringify(updateValues);
@@ -83,11 +96,17 @@ const EditorPage: FC = () => {
     opManager.current?.pushToServer(newCreationOperation(newElement, blocks.length));
   }  
 
+
   return (
     <div style={{ height: "100%" }}>
       <EditorHeader>
-          <SyncDocument onClick={() => syncDocument()} />
-          <PublishDocument onClick={() => publishDocument(id ?? "")} />
+          <NameContainer>
+          {filename}
+          </NameContainer>
+          <ButtonContainer>
+            <SyncDocument onClick={() => syncDocument()} />
+            <PublishDocument onClick={() => publishDocument(id ?? "")} />
+          </ButtonContainer>
       </EditorHeader>
       <Container>
         {blocks.map((block, idx) => createBlock(block, idx, focusedId === idx))}
