@@ -65,7 +65,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
         textSize: leaf.textSize ?? defaultTextSize,
         ...attributes
       }
-      
+
       return leaf.align == null 
               ? <Text {...props}>{children}</Text>
               : <AlignedText {...props}>{children}</AlignedText>;

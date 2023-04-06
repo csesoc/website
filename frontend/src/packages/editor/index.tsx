@@ -7,6 +7,7 @@ import { BlockData, UpdateCallback } from "./types";
 import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
 import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
 import SyncDocument from "src/cse-ui-kit/SyncDocument_button";
+import DeleteBlock from "src/cse-ui-kit/DeleteBlock_button";
 import PublishDocument from "src/cse-ui-kit/PublishDocument_button";
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import { useParams } from "react-router-dom";
@@ -16,6 +17,7 @@ import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
 import { CMSOperation } from "./api/OTClient/operation";
 
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -24,6 +26,16 @@ const Container = styled.div`
 
 const InsertContentWrapper = styled.div`
   display: flex;
+`;
+
+const BlockWrapper = styled.div`
+  display: flex;
+  width: fit-content;
+  align-items: center;
+`;
+
+const BlockContainer = styled.div`
+  min-width: 640px;
 `;
 
 const EditorPage: FC = () => {
@@ -72,13 +84,25 @@ const EditorPage: FC = () => {
 
   // buildClickHandler builds handlers for events where new blocks are created and propagates them to the OT manager
   const buildButtonClickHandler = (type: "heading" | "paragraph") => () => {
-    const newElement = { type: type, children: [{ text: "" }] };
+    // TODO: More robust key creation; Math.random is unique enough for its purpose, but it still feels a little clunky
+    const newElement = { type: type, key: Math.random().toString(), children: [{ text: "" }] };
+    console.log(newElement.key);
 
     // push and update this creation operation to the operation manager
     setBlocks((prev) => [...prev, [newElement]]);    
     setFocusedId(blocks.length);
     opManager.current?.pushToServer(newCreationOperation(newElement, blocks.length));
-  }  
+  }
+
+
+  const deleteButtonClickHandler = (idx : number) => () => {
+    setFocusedId(-1);
+    const newBlocks = [...blocks];
+    newBlocks.splice(idx, 1);
+    setBlocks(newBlocks);
+
+    // TODO OT Client integration
+  }
 
   return (
     <div style={{ height: "100%" }}>
@@ -87,7 +111,15 @@ const EditorPage: FC = () => {
           <PublishDocument onClick={() => publishDocument(id ?? "")} />
       </EditorHeader>
       <Container>
-        {blocks.map((block, idx) => createBlock(block, idx, focusedId === idx))}
+          {blocks.map((block, idx) => 
+            <BlockWrapper key={idx}>
+              <DeleteBlock onClick={deleteButtonClickHandler(idx)} isFocused={focusedId == idx}/>
+              <BlockContainer>
+                {createBlock(block, idx, focusedId === idx)}
+              </BlockContainer>
+            </BlockWrapper>
+            )
+          }
         <InsertContentWrapper>
           <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
           <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />
@@ -105,6 +137,18 @@ const newCreationOperation = (newValue: any, index: number): CMSOperation => ({
   Operation: {
     "$type": "objectOperation",
     objectOperation: { newValue }, 
+  }
+});
+
+// constructs a new deletion operation in response to the deletion of an existing block
+// TODO: implement me :D
+const deletionOperation = (index: number): CMSOperation => ({
+  Path: [index],
+  OperationType: "delete",
+  IsNoOp: false,
+  Operation: {
+    "$type": "noop",
+    noop: {},
   }
 });
 
