@@ -16,6 +16,7 @@ export type CustomText = {
   quote?: boolean;
   type?: string;
   align?: string;
+  code?: string;
 };
 
 export interface CMSBlockProps {

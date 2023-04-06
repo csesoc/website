@@ -13,8 +13,9 @@ import EditorCenterAlignButton from './buttons/EditorCenterAlignButton';
 import EditorLeftAlignButton from './buttons/EditorLeftAlignButton';
 import EditorRightAlignButton from './buttons/EditorRightAlignButton';
 
-import ContentBlock from '../../../cse-ui-kit/contentblock/contentblock-wrapper';
-import { handleKey } from './buttons/buttonHelpers';
+import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
+import { handleKey } from "./buttons/buttonHelpers";
+import EditorCodeButton from "./buttons/EditorCodeButton";
 
 const defaultTextSize = 16;
 
@@ -30,6 +31,7 @@ const Text = styled.span<{
   bold: boolean;
   italic: boolean;
   underline: boolean;
+  code: boolean | string;
   quote: boolean;
   textSize: number;
   align: string;
@@ -38,8 +40,10 @@ const Text = styled.span<{
   font-style: ${(props) => (props.italic || props.quote ? 'italic' : 'normal')};
   color: ${(props) => (props.quote ? '#9e9e9e' : 'black')};
   font-size: ${(props) => props.textSize}px;
-  text-decoration-line: ${(props) => (props.underline ? 'underline' : 'none')};
+  font-family: ${(props) => props.code ? "monospace" : "inherit"};
+  text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
   text-align: ${(props) => props.align};
+  background-color: ${(props) => props.code ? "#eee" : "#fff"};
 `;
 
 const Quote = styled.blockquote`
@@ -66,6 +70,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
         italic: leaf.italic ?? false,
         underline: leaf.underline ?? false,
         quote: leaf.quote ?? false,
+        code: leaf.code ?? false,
         align: leaf.align ?? 'left',
         textSize: leaf.textSize ?? defaultTextSize,
         ...attributes,
@@ -93,6 +98,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
           <EditorBoldButton />
           <EditorItalicButton />
           <EditorUnderlineButton />
+          <EditorCodeButton />
           <EditorQuoteButton />
           <EditorSelectFont />
           <EditorLeftAlignButton />
