@@ -10,7 +10,6 @@ const EditorCodeButton: FC = () => {
       size={30}
       onMouseDown={(event) => {
         event.preventDefault();
-        // TODO switch mark to code (not sure if this has to be defined)
         toggleMark(editor, "code");
       }}
     />
