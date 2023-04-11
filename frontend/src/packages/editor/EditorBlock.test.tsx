@@ -5,6 +5,7 @@ import EditorPage from "./index";
 
 describe("Editor Block tests", () => {
   it("On CreateContentBlockButton click should create content block", () => {
+    
     const { queryByDataAnchor, queryAllByDataAnchor } = render(<EditorPage/>);
     const CreateContentBlockButton = queryByDataAnchor("CreateContentBlockButton");
 
