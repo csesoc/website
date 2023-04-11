@@ -48,7 +48,7 @@ const EditorPage: FC = () => {
   const [focusedId, setFocusedId] = useState<number>(0);
 
   const state = useLocation().state as LocationState;
-  const filename = state.filename;
+  const filename = state != null ? state.filename : "";
 
   const updateValues: UpdateCallback = (idx, updatedBlock) => {
     const requiresUpdate = JSON.stringify(blocks[idx]) !== JSON.stringify(updateValues);

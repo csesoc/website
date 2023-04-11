@@ -6,9 +6,14 @@ import { Breadcrumbs, Link } from "@mui/material";
 // local imports
 import SideBar from "src/packages/dashboard/components/SideBar/SideBar";
 import Renderer from "./components/FileRenderer/Renderer";
-import { initAction, traverseBackFolder } from "./state/folders/actions";
+import {
+  initAction,
+  traverseBackFolder,
+  traverseIntoFolder,
+} from "./state/folders/actions";
 import ConfirmationWindow from "./components/ConfirmationModal/ConfirmationWindow";
 import Directory from "./components/Directory";
+import { getFolderState } from "./api/helpers";
 
 const Container = styled.div`
   display: flex;
@@ -33,12 +38,12 @@ export default function Dashboard() {
   );
 
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
-  // const parentFolder = getFolderState().parentFolder;
+  const parentFolder = getFolderState().parentFolder;
   const dispatch = useDispatch();
-
   useEffect(() => {
     // fetches all folders and files from backend and displays it
-    dispatch(initAction());
+    // dispatch(initAction());
+    dispatch(traverseIntoFolder(parentFolder));
   }, []);
 
   return (
