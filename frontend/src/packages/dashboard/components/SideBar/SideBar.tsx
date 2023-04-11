@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { useSelector } from "react-redux";
+import { RootState } from "src/redux-state/reducers";
+import { folderSelectors } from "../../state/folders";
 
 const Container = styled.div`
   position: relative;
@@ -113,6 +116,12 @@ export default function SideBar({
   isOpen,
   setOpen,
 }: Props) {
+
+    const folders = useSelector((state: RootState) =>
+      folderSelectors.getFolderState(state)
+    ).items;
+
+
   const handleNewFile = () => {
     setModalState({
       open: true,
@@ -130,10 +139,12 @@ export default function SideBar({
   const navigate = useNavigate();
   const handleEdit = () => {
     if (selectedFile !== null) {
+      const fileItem = folders.find((item) => item.id == selectedFile);
+      const filename = fileItem != null ? fileItem.name : "";
       navigate("/editor/" + selectedFile, { 
         replace: false,
         state: {
-          filename: "REPLACE ME"
+          filename: filename
         } 
       }), [navigate];
     }
