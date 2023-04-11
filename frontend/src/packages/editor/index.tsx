@@ -9,12 +9,15 @@ import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
 import SyncDocument from "src/cse-ui-kit/SyncDocument_button";
 import PublishDocument from "src/cse-ui-kit/PublishDocument_button";
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 
 import { buildComponentFactory } from "./componentFactory";
 import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
 import { CMSOperation } from "./api/OTClient/operation";
+
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const Container = styled.div`
   display: flex;
@@ -30,9 +33,9 @@ const ButtonContainer = styled.div`
   display: flex;
 `
 
-const NameContainer = styled.div`
+const LeftContainer = styled.div`
   display: flex;
-  padding: 10px;
+  align-items: center;
 `
 
 type LocationState = {
@@ -96,13 +99,17 @@ const EditorPage: FC = () => {
     opManager.current?.pushToServer(newCreationOperation(newElement, blocks.length));
   }  
 
-
+  const navigate = useNavigate();
+  
   return (
     <div style={{ height: "100%" }}>
       <EditorHeader>
-          <NameContainer>
-          {filename}
-          </NameContainer>
+          <LeftContainer>
+            <IconButton aria-label="back" onClick={() => navigate(-1)} sx={{ 'paddingRight': '20px' }}>
+              <ArrowBackIcon fontSize="inherit"/>
+            </IconButton>
+            {filename}
+          </LeftContainer>
           <ButtonContainer>
             <SyncDocument onClick={() => syncDocument()} />
             <PublishDocument onClick={() => publishDocument(id ?? "")} />

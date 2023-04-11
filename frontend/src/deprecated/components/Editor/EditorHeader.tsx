@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from 'react-router-dom';
+import { ReactNode } from 'react'
 
 
 const Container = styled.div`
@@ -51,20 +52,26 @@ const ButtonContainer = styled.div`
 
 /* Preview and text to be changed into a dropdown menu */
 
+// type Props = {
+//   filename?: string;
+//   children: ReactNode;
+// }
+
 const EditorHeader: React.FC = (props) => {
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <Container>
       <HeaderFlex>
 
-        <IconButton aria-label="back" onClick={() => navigate(-1)}>
+        {/* <IconButton aria-label="back" onClick={() => navigate(-1)}>
           <ArrowBackIcon fontSize="inherit" />
-        </IconButton>
-        <ButtonContainer>
-          {props.children}
-        </ButtonContainer>
+        </IconButton> */}
+  
+        {/* <ButtonContainer> */}
+        {props.children}
+        {/* </ButtonContainer> */}
         {/* <ButtonGroup>
           <ButtonStyle>
           ←
