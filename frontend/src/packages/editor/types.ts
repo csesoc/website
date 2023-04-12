@@ -6,7 +6,7 @@ export type BlockData = Descendant[];
 export type OpPropagator = (id: number, update: BlockData, operation: BaseOperation[]) => void;
 export type UpdateCallback = (id: number, update: BlockData) => void;
 
-type CustomElement = { type: "paragraph" | "heading"; children: CustomText[] };
+type CustomElement = { type: "paragraph" | "heading" | "code"; children: CustomText[] };
 export type CustomText = {
   textSize?: number;
   text: string;
