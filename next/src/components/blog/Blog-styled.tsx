@@ -29,6 +29,8 @@ const ParagraphContainer = styled.div`
 const BlogContainer = styled.div`
   font-size: 1.25rem;
   margin: 0px 60px;
+  display: flex;
+  flex-wrap: wrap;
 
   @media ${device.tablet} {
     max-width: 700px;
