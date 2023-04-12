@@ -8,6 +8,7 @@ const Text = styled.span<TextStyle>`
   text-decoration-line: ${(props) => (props.underline ? "underline" : "none")};
   text-align: ${(props) => props.align};
   font-size: ${(props) => `${props.textSize}px` ?? "16px"};
+  word-wrap: break-word;
 `;
 
 const AlignedText = Text.withComponent("div");
@@ -29,8 +30,6 @@ const ParagraphContainer = styled.div`
 const BlogContainer = styled.div`
   font-size: 1.25rem;
   margin: 0px 60px;
-  display: flex;
-  flex-wrap: wrap;
 
   @media ${device.tablet} {
     max-width: 700px;
