@@ -10,7 +10,7 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import storageSession from 'redux-persist/lib/storage/session';
 
 import createSagaMiddleware from '@redux-saga/core';
 import { all, call } from 'redux-saga/effects';
@@ -36,7 +36,7 @@ function* getSagas() {
 // Define the persistConfig object
 const persistConfig = {
   key: 'root',
-  storage,
+  storage: storageSession,
   blacklist: ['register'],
 };
 
