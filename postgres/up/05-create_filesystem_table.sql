@@ -13,6 +13,9 @@ CREATE TABLE filesystem (
   IsPublished   BOOLEAN DEFAULT false,
   CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW(),
 
+  /* MetaData */
+  MetaID        uuid NOT NULL,
+
   OwnedBy       INT,
   /* Pain */
   Parent        uuid REFERENCES filesystem(EntityID) DEFAULT NULL,
@@ -20,6 +23,7 @@ CREATE TABLE filesystem (
   /* FK Constraint */
   CONSTRAINT fk_owner FOREIGN KEY (OwnedBy) 
     REFERENCES groups(UID),
+
   /* Unique name constraint: there should not exist an entity of the same type with the
      same parent and logical name. */
   CONSTRAINT unique_name UNIQUE (Parent, LogicalName, IsDocument)        
@@ -31,13 +35,19 @@ CREATE TABLE filesystem (
 DROP TABLE IF EXISTS metadata;
 CREATE TABLE metadata (
   
-  EntityID      uuid,
+  MetaID        uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  EntityID      uuid NOT NULL,
+  CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW(),
 
-  CONSTRAINT fk_attached FOREIGN KEY (EntityID)
+  CONSTRAINT fk_file FOREIGN KEY (EntityID)
     REFERENCES filesystem(EntityID),
 
   CONSTRAINT unique_id UNIQUE (EntityID)
 );
+/* Have to do this because metadata and filesystem references each other. */
+ALTER TABLE filesystem add CONSTRAINT fk_meta 
+    FOREIGN KEY (MetaID) 
+    REFERENCES metadata(MetaID);
 
 /* Utility procedure :) */
 DROP FUNCTION IF EXISTS new_entity;
