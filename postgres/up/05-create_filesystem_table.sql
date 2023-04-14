@@ -25,6 +25,20 @@ CREATE TABLE filesystem (
   CONSTRAINT unique_name UNIQUE (Parent, LogicalName, IsDocument)        
 );
 
+/**
+  Metadata table
+**/
+DROP TABLE IF EXISTS metadata;
+CREATE TABLE metadata (
+  
+  EntityID      uuid,
+
+  CONSTRAINT fk_attached FOREIGN KEY (EntityID)
+    REFERENCES filesystem(EntityID),
+
+  CONSTRAINT unique_id UNIQUE (EntityID)
+);
+
 /* Utility procedure :) */
 DROP FUNCTION IF EXISTS new_entity;
 CREATE OR REPLACE FUNCTION new_entity (parentP uuid, logicalNameP VARCHAR, ownedByP INT, isDocumentP BOOLEAN DEFAULT false) RETURNS uuid
