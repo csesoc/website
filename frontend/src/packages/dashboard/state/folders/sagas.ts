@@ -55,18 +55,18 @@ function* addItemSaga({ payload }: { payload: actions.AddPayloadType }) {
   }
 }
 
-// function* deleteFileEntitySaga({
-//   payload,
-// }: {
-//   payload: actions.DeletePayloadType;
-// }) {
-//   yield call(API.deleteFileEntity, payload.id);
-//   // now put results to redux store
-//   const deleteFileEntityPayload: actions.DeletePayloadType = {
-//     id: payload.id,
-//   };
-//   yield put(actions.deleteFileEntityAction(deleteFileEntityPayload));
-// }
+function* deleteFileEntitySaga({
+  payload,
+}: {
+  payload: actions.DeletePayloadType;
+}) {
+  yield call(API.deleteFileEntity, payload.id);
+  // now put results to redux store
+  const deleteFileEntityPayload: actions.DeletePayloadType = {
+    id: payload.id,
+  };
+  yield put(actions.deleteFileEntityAction(deleteFileEntityPayload));
+}
 
 function* renameFileEntitySaga({
   payload: renamePayload,
@@ -119,7 +119,7 @@ export function* rootFoldersSaga() {
   // runs in parallel
   yield takeEvery(actions.initAction, initSaga);
   yield takeEvery(actions.addItemAction, addItemSaga);
-  // yield takeEvery(actions.deleteFileEntityAction, deleteFileEntitySaga);
+  yield takeEvery(actions.deleteFileEntityAction, deleteFileEntitySaga);
   yield takeEvery(actions.renameFileEntityAction, renameFileEntitySaga);
   yield takeLatest(actions.traverseIntoFolder, traverseIntoFolderSaga);
   yield takeLatest(actions.traverseBackFolder, traverseBackFolderSaga);

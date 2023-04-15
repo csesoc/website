@@ -61,6 +61,6 @@ export const renameFileEntityAction = createAction<RenamePayloadType>(
 
 // TODO deleteFolderItemAction
 // TODO removeFileItemAction
-// export const deleteFileEntityAction = createAction<DeletePayloadType>(
-//   'folders/deleteFileEntity'
-// );
+export const deleteFileEntityAction = createAction<DeletePayloadType>(
+  'folders/deleteFileEntity'
+);

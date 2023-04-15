@@ -88,21 +88,21 @@ export const newFolder = async (
   return response.Response.NewID;
 };
 
-// export const deleteFileEntity = async (fileEntityID: string): Promise<void> => {
-//   const delete_resp = await fetch('/api/filesystem/delete', {
-//     method: 'POST',
-//     body: new URLSearchParams({
-//       EntityID: fileEntityID,
-//     }),
-//   });
+export const deleteFileEntity = async (fileEntityID: string): Promise<void> => {
+  const delete_resp = await fetch('/api/filesystem/delete', {
+    method: 'POST',
+    body: new URLSearchParams({
+      EntityID: fileEntityID,
+    }),
+  });
 
-//   if (!delete_resp.ok) {
-//     const message = `An error has occured: ${delete_resp.status}`;
-//     throw new Error(message);
-//   }
-//   const response = await delete_resp.json();
+  if (!delete_resp.ok) {
+    const message = `An error has occured: ${delete_resp.status}`;
+    throw new Error(message);
+  }
+  const response = await delete_resp.json();
 
-//   console.log(response);
-//   console.log(JSON.stringify(response));
-//   return;
-// };
+  console.log(response);
+  console.log(JSON.stringify(response));
+  return;
+};

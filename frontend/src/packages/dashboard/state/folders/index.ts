@@ -12,10 +12,10 @@ const reducer = createReducer(initialState, (builder) => {
     reducerFns.addFolderItems
   );
   builder.addCase(foldersActions.addFileItemAction, reducerFns.addFileItems);
-  // builder.addCase(
-  //   foldersActions.deleteFileEntityAction,
-  //   reducerFns.deleteFileEntityItems
-  // );
+  builder.addCase(
+    foldersActions.deleteFileEntityAction,
+    reducerFns.deleteFileEntityItems
+  );
   builder.addCase(
     foldersActions.renameFileEntityAction,
     reducerFns.renameFileEntity

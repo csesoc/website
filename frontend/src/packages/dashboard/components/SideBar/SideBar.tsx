@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  // deleteFileEntityAction,
+  deleteFileEntityAction,
   DeletePayloadType,
 } from '../../state/folders/actions';
 
@@ -133,17 +133,17 @@ export default function SideBar({
     });
   };
 
-  // // temporary delete file entity button
-  // const dispatch = useDispatch();
-  // console.log('deleteFileEntity loop');
-  // const handleDeleteFile = () => {
-  //   if (selectedFile !== null) {
-  //     const folderPayload: DeletePayloadType = {
-  //       id: selectedFile,
-  //     };
-  //     dispatch(deleteFileEntityAction(folderPayload));
-  //   }
-  // };
+  // temporary delete file entity button
+  const dispatch = useDispatch();
+  console.log('deleteFileEntity loop 1');
+  const handleDeleteFile = () => {
+    if (selectedFile !== null) {
+      const folderPayload: DeletePayloadType = {
+        id: selectedFile,
+      };
+      dispatch(deleteFileEntityAction(folderPayload));
+    }
+  };
 
   const navigate = useNavigate();
   const handleEdit = () => {
@@ -196,7 +196,7 @@ export default function SideBar({
           </SidebarButton>
           <SidebarButton
             bgcolor="#b4c6ff"
-            // onClick={handleDeleteFile}
+            onClick={handleDeleteFile}
             data-anchor="NewFolderButton"
           >
             <ButtonIcon>

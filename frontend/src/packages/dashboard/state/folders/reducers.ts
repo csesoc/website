@@ -40,17 +40,18 @@ export function addFileItems(state: sliceState, action: PayloadAction<File>) {
   };
 }
 
-// export function deleteFileEntityItems(
-//   state: sliceState,
-//   action: PayloadAction<DeletePayloadType>
-// ) {
-//   const { id } = action.payload;
-
-//   return {
-//     ...state,
-//     items: [...state.items].filter((item) => item.id !== id),
-//   };
-// }
+export function deleteFileEntityItems(
+  state: sliceState,
+  action: PayloadAction<DeletePayloadType>
+) {
+  const { id } = action.payload;
+  return {
+    ...state,
+    items: [...state.items]
+      .map((item) => ({ ...item }))
+      .filter((item) => item.id !== id),
+  };
+}
 
 export function renameFileEntity(
   state: sliceState,
