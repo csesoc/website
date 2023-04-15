@@ -1,9 +1,9 @@
-import { call, put, takeEvery, takeLatest, select } from "redux-saga/effects";
+import { call, put, takeEvery, takeLatest, select } from 'redux-saga/effects';
 // local
-import * as API from "../../api/index";
-import * as actions from "./actions";
-import { Folder, File, FileEntity, sliceState } from "./types";
-import { getFolderState } from "./selectors";
+import * as API from '../../api/index';
+import * as actions from './actions';
+import { Folder, File, FileEntity, sliceState } from './types';
+import { getFolderState } from './selectors';
 
 function* initSaga() {
   try {
@@ -20,7 +20,7 @@ function* initSaga() {
 
 function* addItemSaga({ payload }: { payload: actions.AddPayloadType }) {
   switch (payload.type) {
-    case "Folder": {
+    case 'Folder': {
       const newID: string = yield call(
         API.newFolder,
         payload.name,
@@ -36,7 +36,7 @@ function* addItemSaga({ payload }: { payload: actions.AddPayloadType }) {
       yield put(actions.addFolderItemAction(folderPayload));
       break;
     }
-    case "File": {
+    case 'File': {
       const newID: string = yield call(
         API.newFile,
         payload.name,
@@ -55,13 +55,26 @@ function* addItemSaga({ payload }: { payload: actions.AddPayloadType }) {
   }
 }
 
+// function* deleteFileEntitySaga({
+//   payload,
+// }: {
+//   payload: actions.DeletePayloadType;
+// }) {
+//   yield call(API.deleteFileEntity, payload.id);
+//   // now put results to redux store
+//   const deleteFileEntityPayload: actions.DeletePayloadType = {
+//     id: payload.id,
+//   };
+//   yield put(actions.deleteFileEntityAction(deleteFileEntityPayload));
+// }
+
 function* renameFileEntitySaga({
   payload: renamePayload,
 }: {
   payload: actions.RenamePayloadType;
 }) {
   // todo call backend rename filename/foldername API call
-  yield call(console.log, "saga rename fired");
+  yield call(console.log, 'saga rename fired');
 }
 
 /**
@@ -92,7 +105,7 @@ function* traverseBackFolderSaga({ payload: id }: { payload: string }) {
   );
   const dirPayload: actions.SetDirPayloadType = {
     parentFolder: parentOfParentFolder.id,
-    folderName: "",
+    folderName: '',
   };
 
   // change path
@@ -106,6 +119,7 @@ export function* rootFoldersSaga() {
   // runs in parallel
   yield takeEvery(actions.initAction, initSaga);
   yield takeEvery(actions.addItemAction, addItemSaga);
+  // yield takeEvery(actions.deleteFileEntityAction, deleteFileEntitySaga);
   yield takeEvery(actions.renameFileEntityAction, renameFileEntitySaga);
   yield takeLatest(actions.traverseIntoFolder, traverseIntoFolderSaga);
   yield takeLatest(actions.traverseBackFolder, traverseBackFolderSaga);

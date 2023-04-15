@@ -1,9 +1,15 @@
-import React from "react";
-import styled from "styled-components";
-import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import MenuIcon from "@mui/icons-material/Menu";
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  // deleteFileEntityAction,
+  DeletePayloadType,
+} from '../../state/folders/actions';
+
+import styled from 'styled-components';
+import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import MenuIcon from '@mui/icons-material/Menu';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
@@ -65,7 +71,7 @@ const ButtonGroup = styled.div`
 const ButtonIcon = styled.div`
   margin: 0 1rem 0;
   display: flex;
-  align-items: center
+  align-items: center;
 `;
 
 const ButtonText = styled.p`
@@ -116,21 +122,33 @@ export default function SideBar({
   const handleNewFile = () => {
     setModalState({
       open: true,
-      type: "file",
+      type: 'file',
     }); // sets modal to be open
   };
 
   const handleNewFolder = () => {
     setModalState({
       open: true,
-      type: "folder",
+      type: 'folder',
     });
   };
+
+  // // temporary delete file entity button
+  // const dispatch = useDispatch();
+  // console.log('deleteFileEntity loop');
+  // const handleDeleteFile = () => {
+  //   if (selectedFile !== null) {
+  //     const folderPayload: DeletePayloadType = {
+  //       id: selectedFile,
+  //     };
+  //     dispatch(deleteFileEntityAction(folderPayload));
+  //   }
+  // };
 
   const navigate = useNavigate();
   const handleEdit = () => {
     if (selectedFile !== null) {
-      navigate("/editor/" + selectedFile, { replace: false }), [navigate];
+      navigate('/editor/' + selectedFile, { replace: false }), [navigate];
     }
   };
 
@@ -140,7 +158,7 @@ export default function SideBar({
   };
 
   return (
-    <Container style={{ left: isOpen ? "0px" : "-250px" }}>
+    <Container style={{ left: isOpen ? '0px' : '-250px' }}>
       <IconWrapper onClick={() => setOpen(!isOpen)}>
         <Circle />
         {isOpen ? <ArrowBackIcon /> : <MenuIcon />}
@@ -162,11 +180,9 @@ export default function SideBar({
             data-anchor="NewPageButton"
           >
             <ButtonIcon>
-              <DescriptionOutlinedIcon/>
+              <DescriptionOutlinedIcon />
             </ButtonIcon>
-            <ButtonText>
-              New page
-            </ButtonText>
+            <ButtonText>New page</ButtonText>
           </SidebarButton>
           <SidebarButton
             bgcolor="#b4c6ff"
@@ -174,21 +190,27 @@ export default function SideBar({
             data-anchor="NewFolderButton"
           >
             <ButtonIcon>
-              <FolderOutlinedIcon/>
+              <FolderOutlinedIcon />
             </ButtonIcon>
-            <ButtonText>
-              New folder
-            </ButtonText>
+            <ButtonText>New folder</ButtonText>
+          </SidebarButton>
+          <SidebarButton
+            bgcolor="#b4c6ff"
+            // onClick={handleDeleteFile}
+            data-anchor="NewFolderButton"
+          >
+            <ButtonIcon>
+              <FolderOutlinedIcon />
+            </ButtonIcon>
+            <ButtonText>Delete File Temp</ButtonText>
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
           <SidebarButton bgcolor="white" onClick={handleEdit}>
             <ButtonIcon>
-              <EditOutlinedIcon/>
+              <EditOutlinedIcon />
             </ButtonIcon>
-            <ButtonText>
-              Edit
-            </ButtonText>
+            <ButtonText>Edit</ButtonText>
           </SidebarButton>
           {/* <SidebarButton bgcolor="#B8E8E8">
             Feature

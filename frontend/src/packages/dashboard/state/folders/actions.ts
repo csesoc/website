@@ -1,5 +1,5 @@
-import { createAction } from "@reduxjs/toolkit";
-import { FileEntity, Folder, File } from "./types";
+import { createAction } from '@reduxjs/toolkit';
+import { FileEntity, Folder, File } from './types';
 
 /**
  * Payload Types
@@ -16,6 +16,10 @@ export type AddPayloadType = {
   parentId: string;
 };
 
+export type DeletePayloadType = {
+  id: string;
+};
+
 export type SetDirPayloadType = {
   parentFolder: string;
   folderName: string;
@@ -24,36 +28,39 @@ export type SetDirPayloadType = {
 /**
  * Init Actions
  */
-export const initAction = createAction("folders/init");
+export const initAction = createAction('folders/init');
 // this one sets all children of current folder
-export const initItemsAction = createAction<FileEntity[]>("folders/initItems");
+export const initItemsAction = createAction<FileEntity[]>('folders/initItems');
 
 /**
  * Directory Traversal actions
  */
 export const traverseIntoFolder = createAction<string>(
-  "folders/traverseIntoFolder"
+  'folders/traverseIntoFolder'
 );
 export const traverseBackFolder = createAction<string>(
-  "folders/traverseBackFolder"
+  'folders/traverseBackFolder'
 );
 export const setDirectory = createAction<SetDirPayloadType>(
-  "folders/setDirectory"
+  'folders/setDirectory'
 );
 
 /**
  * CRUD actions
  */
-export const addItemAction = createAction<AddPayloadType>("folders/addItem");
+export const addItemAction = createAction<AddPayloadType>('folders/addItem');
 export const addFolderItemAction = createAction<Folder>(
-  "folders/addFolderItem"
+  'folders/addFolderItem'
 );
-export const addFileItemAction = createAction<File>("folders/addFileItem");
+export const addFileItemAction = createAction<File>('folders/addFileItem');
 
 // FileEntity = Folder | File
 export const renameFileEntityAction = createAction<RenamePayloadType>(
-  "folders/renameFileEntity"
+  'folders/renameFileEntity'
 );
 
-// TODO removeFolderItemAction
+// TODO deleteFolderItemAction
 // TODO removeFileItemAction
+// export const deleteFileEntityAction = createAction<DeletePayloadType>(
+//   'folders/deleteFileEntity'
+// );
