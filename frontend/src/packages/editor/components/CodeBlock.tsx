@@ -1,5 +1,20 @@
+// import Prism from 'prismjs';
+// import 'prismjs/components/prism-javascript';
+// import 'prismjs/components/prism-jsx';
+// import 'prismjs/components/prism-typescript';
+// import 'prismjs/components/prism-tsx';
+// import 'prismjs/components/prism-markdown';
+// import 'prismjs/components/prism-python';
+// import 'prismjs/components/prism-php';
+// import 'prismjs/components/prism-sql';
+// import 'prismjs/components/prism-java';
+
 import styled from 'styled-components';
-import { createEditor } from 'slate';
+import { 
+  createEditor,
+  Editor,
+  Element, 
+} from 'slate';
 import React, { FC, useMemo, useCallback } from 'react';
 import { Slate, Editable, withReact, RenderLeafProps } from 'slate-react';
 
@@ -13,11 +28,14 @@ import EditorCenterAlignButton from './buttons/EditorCenterAlignButton';
 import EditorLeftAlignButton from './buttons/EditorLeftAlignButton';
 import EditorRightAlignButton from './buttons/EditorRightAlignButton';
 
-import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
+import CodeContentBlock from "../../../cse-ui-kit/codeblock/codecontentblock-wrapper";
 import { handleKey } from "./buttons/buttonHelpers";
 import EditorCodeButton from "./buttons/EditorCodeButton";
 
 const defaultTextSize = 16;
+
+const CodeBlockType = 'code';
+const CodeLineType = 'code';
 
 const ToolbarContainer = styled.div`
   display: flex;
@@ -25,6 +43,15 @@ const ToolbarContainer = styled.div`
   width: 100%;
   max-width: 660px;
   margin: 5px;
+`;
+
+const CodeBlockWrapper = styled.div`
+  font-family: monospace;
+  font-size: 16px;
+  line-height: 20px;
+  margin-top: 0;
+  background: rgba(0, 20, 60, .03);
+  padding: 5px 13px;
 `;
 
 const Text = styled.span<{
@@ -93,20 +120,8 @@ const CodeBlock: FC<CMSBlockProps> = ({
       value={initialValue}
       onChange={(value) => update(id, editor.children, editor.operations)}
     >
-      {showToolBar && (
-        <ToolbarContainer>
-          <EditorBoldButton />
-          <EditorItalicButton />
-          <EditorUnderlineButton />
-          <EditorCodeButton />
-          <EditorQuoteButton />
-          <EditorSelectFont />
-          <EditorLeftAlignButton />
-          <EditorCenterAlignButton />
-          <EditorRightAlignButton />
-        </ToolbarContainer>
-      )}
-      <ContentBlock focused={showToolBar}>
+      {/* insert drop down menu  */}
+      <CodeContentBlock focused={showToolBar}>
         <Editable
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}
@@ -114,9 +129,10 @@ const CodeBlock: FC<CMSBlockProps> = ({
           onKeyDown={(event) => handleKey(event, editor)}
           autoFocus
         />
-      </ContentBlock>
+      </CodeContentBlock>
     </Slate>
   );
 };
+
 
 export default CodeBlock;
