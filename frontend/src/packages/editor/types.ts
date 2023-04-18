@@ -6,7 +6,6 @@ export type BlockData = Descendant[];
 export type OpPropagator = (id: number, update: BlockData, operation: BaseOperation[]) => void;
 export type UpdateCallback = (id: number, update: BlockData) => void;
 
-type CustomElement = { type: "paragraph" | "heading" | "code"; children: CustomText[] };
 export type CustomText = {
   textSize?: number;
   text: string;
@@ -19,6 +18,36 @@ export type CustomText = {
   code?: string;
 };
 
+export type ParagraphElement = {
+  type: "paragraph",
+  children: CustomText[]
+}
+
+export type HeadingElement = {
+  type: "heading",
+  children: CustomText[]
+}
+
+
+export type CodeBlockElement = {
+  type: 'code-block'
+  language?: string
+  children: CustomText[]
+}
+
+export type CodeLineElement = {
+  type: 'code-line'
+  children: CustomText[]
+}
+
+type CustomElement = { type: "paragraph" | "heading" | "code-line" | "code-block"; children: CustomText[] };
+
+// type CustomElement = 
+//   | ParagraphElement
+//   | HeadingElement
+//   | CodeBlockElement
+//   | CodeLineElement
+
 export interface CMSBlockProps {
   update: OpPropagator;
   initialValue: BlockData;
@@ -27,10 +56,14 @@ export interface CMSBlockProps {
   onEditorClick: () => void;
 }
 
+export type CustomEditor = BaseEditor &
+  ReactEditor & {
+    nodeToDecorations?: Map<Element, Range[]>
+  }
 
 declare module "slate" {
   interface CustomTypes {
-    Editor: BaseEditor & ReactEditor;
+    Editor: CustomEditor;
     Element: CustomElement;
     Text: CustomText;
   }
