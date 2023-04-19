@@ -27,6 +27,8 @@ export interface TextStyle {
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;
+  code?: boolean;
+  quote?: boolean;
   align?: "left" | "right" | "center";
   textSize: number;
 }
