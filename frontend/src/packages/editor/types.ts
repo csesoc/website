@@ -1,5 +1,5 @@
 import { ReactEditor } from "slate-react";
-import { BaseEditor, BaseOperation, Descendant } from "slate";
+import { BaseEditor, BaseOperation, Range, Descendant, BaseRange } from "slate";
 
 export type BlockData = Descendant[];
 
@@ -40,10 +40,10 @@ export type CustomText = {
 //   children: Descendant[]
 // }
 
-type CustomElement = { 
+export type CustomElement = { 
   type: "paragraph" | "heading" | "code-line" | "code-block"; 
   language?: string, 
-  children: Descendant[] 
+  children: CustomText[] 
 };
 
 // type CustomElement = 
@@ -70,5 +70,8 @@ declare module "slate" {
     Editor: CustomEditor;
     Element: CustomElement;
     Text: CustomText;
+    Range: BaseRange & {
+      [key: string] : unknown
+    };
   }
 }

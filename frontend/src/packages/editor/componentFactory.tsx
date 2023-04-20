@@ -17,7 +17,7 @@ type callbackHandler = (id: number, update: BlockData) => void;
 const constructors: Record<string, (props: CMSBlockProps) => JSX.Element> = {
     "paragraph": (props) => <EditorBlock {...props} />,
     "heading": (props) => <HeadingBlock {...props} />,
-    "code" : (props) => <CodeBlock {...props} />
+    "code-block" : (props) => <CodeBlock {...props} />
 }
 
 /**

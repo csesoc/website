@@ -1,5 +1,15 @@
 import React, { FC, useMemo, useCallback } from 'react';
-import { Slate, Editable, withReact, RenderLeafProps } from 'slate-react';
+import { 
+  Slate,
+  Editable,
+  withReact,
+  RenderLeafProps,
+  RenderElementProps,
+  useSlateStatic,
+  ReactEditor,
+  useSlate, } from 'slate-react';
+
+import { CustomElement, CustomText } from '../types';
 
 import Prism from 'prismjs';
 // import 'prismjs/components/prism-javascript';
@@ -14,10 +24,14 @@ import Prism from 'prismjs';
 
 import styled from 'styled-components';
 import { 
+  // BaseRange,
+  Range,
   createEditor,
+  Descendant,
   Editor,
   Element, 
-  NodeEntry
+  NodeEntry,
+  Transforms
 } from 'slate';
 
 import { CMSBlockProps } from '../types';
@@ -25,6 +39,7 @@ import { CMSBlockProps } from '../types';
 import CodeContentBlock from "../../../cse-ui-kit/codeblock/codecontentblock-wrapper";
 import { handleKey } from "./buttons/buttonHelpers";
 import EditorCodeButton from "./buttons/EditorCodeButton";
+import { normalizeTokens } from './util/normalize-tokens';
 
 const defaultTextSize = 16;
 
@@ -89,39 +104,31 @@ const CodeBlock: FC<CMSBlockProps> = ({
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
       const props = {
-        // bold: leaf.bold ?? false,
-        // italic: leaf.italic ?? false,
-        // underline: leaf.underline ?? false,
-        // quote: leaf.quote ?? false,
-        // code: leaf.code ?? false,
-        // align: leaf.align ?? 'left',
-        // textSize: leaf.textSize ?? defaultTextSize,
         ...attributes,
       };
       
       return <StyledCodeBlock {...props}>{children}</StyledCodeBlock>
-      // return leaf.quote ? (
-      //   <QuoteText {...props}>{children}</QuoteText>
-      // ) : leaf.align == null ? (
-      //   <Text {...props}>{children}</Text>
-      // ) : (
-      //   <AlignedText {...props}>{children}</AlignedText>
-      // );
     },
     []
   );
 
+  const decorate = useDecorate(editor);
+
   return (
     <Slate
       editor={editor}
+      
       value={initialValue}
       onChange={(value) => update(id, editor.children, editor.operations)}
     >
-      {showToolBar && <LanguageSelect/>}
+      {/* {showToolBar && <LanguageSelect/>} */}
       {/* insert drop down menu  */}
+      <SetNodeToDecorations/>
       <CodeContentBlock focused={showToolBar}>
 
         <Editable
+          decorate={decorate}
+          renderElement={ElementWrapper}
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}
           style={{ width: '100%', height: '100%' }}
@@ -133,64 +140,136 @@ const CodeBlock: FC<CMSBlockProps> = ({
   );
 };
 
-// const useDecorate = (editor: Editor) => {
-//   return useCallback(
-//     ([node, path]) => {
-//       if (Element.isElement(node) && node.type === CodeLineType) {
-//         const ranges = editor.nodeToDecorations.get(node) || []
-//         return ranges
-//       }
+const ElementWrapper = (props: RenderElementProps) => {
+  const { attributes, children, element } = props;
+  const editor = useSlateStatic();
 
-//       return []
-//     },
-//     [editor.nodeToDecorations]
-//   )
-// }
+  if (element.type === 'code-block') {
 
-// const getChildNodeToDecorations = ([block, blockPath]: NodeEntry<
-//   CodeBlockElement
-// >) => {
-//   const nodeToDecorations = new Map<Element, Range[]>()
+    // Define way to change language
+    const setLanguage = (language : string) => {
+      const path = ReactEditor.findPath(editor, element);
+      Transforms.setNodes(editor, { language }, { at: path });
+    }
 
-//   const text = block.children.map(line => Node.string(line)).join('\n')
-//   const language = block.language
-//   const tokens = Prism.tokenize(text, Prism.languages[language])
-//   const normalizedTokens = normalizeTokens(tokens) // make tokens flat and grouped by line
-//   const blockChildren = block.children as Element[]
+    return (
+      <StyledCodeBlock>
+        <LanguageSelect
+          value={element.language}
+          onChange = {e => setLanguage(e.target.value)}
+        />
+        {children}
+      </StyledCodeBlock>
+    )
+  }
 
-//   for (let index = 0; index < normalizedTokens.length; index++) {
-//     const tokens = normalizedTokens[index]
-//     const element = blockChildren[index]
+  // If we reach this point, it is a code line type
+  return (
+    <div {...attributes} style={{ position: 'relative' }}>
+        {children}
+      </div>
+  );
+}
 
-//     if (!nodeToDecorations.has(element)) {
-//       nodeToDecorations.set(element, [])
-//     }
+const useDecorate = (editor: Editor) => {
+  return useCallback(
+    ([node, path]) => {
+      if (Element.isElement(node) && node.type === "code-line") {
+        const ranges = editor.nodeToDecorations?.get(node) || [];
+        return ranges;
+      }
 
-//     let start = 0
-//     for (const token of tokens) {
-//       const length = token.content.length
-//       if (!length) {
-//         continue
-//       }
+      return []
+    },
+    [editor.nodeToDecorations]
+  )
+}
 
-//       const end = start + length
+const getChildNodeToDecorations = ([block, blockPath]: NodeEntry<
+  CustomElement
+>) => {
+  const nodeToDecorations = new Map<Element, Range[]>()
 
-//       const path = [...blockPath, index, 0]
-//       const range = {
-//         anchor: { path, offset: start },
-//         focus: { path, offset: end },
-//         token: true,
-//         ...Object.fromEntries(token.types.map(type => [type, true])),
-//       }
+  const text = block.children.map((line : CustomText) => line.text).join('\n')
+  const language = block.language ?? "JavaScript";
+  const tokens = Prism.tokenize(text, Prism.languages[language])
+  const normalizedTokens = normalizeTokens(tokens) // make tokens flat and grouped by line
+  const blockChildren = block.children as unknown as Element[];
 
-//       nodeToDecorations.get(element)!.push(range)
+  for (let index = 0; index < normalizedTokens.length; index++) {
+    const tokens = normalizedTokens[index];
+    const element = blockChildren[index];
 
-//       start = end
-//     }
-//   }
+    if (!nodeToDecorations.has(element)) {
+      nodeToDecorations.set(element, []);
+    }
 
-//   return nodeToDecorations
-// }
+    let start = 0;
+    for (const token of tokens) {
+      const length = token.content.length;
+      if (!length) {
+        continue;
+      }
+
+      const end = start + length;
+
+      const path = [...blockPath, index, 0];
+      const range = {
+        anchor: { path, offset: start },
+        focus: { path, offset: end },
+        token: true,
+        ...Object.fromEntries(token.types.map(type => [type, true])),
+      };
+
+      nodeToDecorations.get(element)?.push(range);
+
+      start = end;
+    }
+  }
+
+  return nodeToDecorations
+}
+
+
+// precalculate editor.nodeToDecorations map to use it inside decorate function then
+const SetNodeToDecorations = () => {
+  const editor = useSlate();
+
+  const blockEntries = Array.from(
+    Editor.nodes(editor, {
+      at: [],
+      mode: 'highest',
+      //  Find all code block nodes
+      match: n => Element.isElement(n) && n.type === 'code-block',
+    })
+  );
+  
+  const nodeToDecorations = mergeMaps<Element, Range[]>(
+    ...blockEntries.map(getChildNodeToDecorations)
+  );
+  
+  editor.nodeToDecorations = nodeToDecorations;
+  
+  return null
+}
+    
+const mergeMaps = <K, V>(...maps: Map<K, V>[]) => {
+  const map = new Map<K, V>();
+
+  for (const m of maps) {
+    for (const item of m) {
+      map.set(...item);
+    }
+  }
+
+  return map;
+}
+// const toChildren = (content: string) => [{ text: content }]
+// const toCodeLines = (content: string): Element[] =>
+//   content
+//     .split('\n')
+//     .map(line => ({ type: 'code-line', children: toChildren(line) }))
+
 
 
 export default CodeBlock;
