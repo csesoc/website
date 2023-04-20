@@ -20,7 +20,7 @@ import {
   NodeEntry
 } from 'slate';
 
-import { CMSBlockProps, CodeBlockElement } from '../types';
+import { CMSBlockProps } from '../types';
 
 import CodeContentBlock from "../../../cse-ui-kit/codeblock/codecontentblock-wrapper";
 import { handleKey } from "./buttons/buttonHelpers";

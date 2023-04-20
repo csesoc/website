@@ -18,32 +18,36 @@ export type CustomText = {
   code?: string;
 };
 
-export type ParagraphElement = {
-  type: "paragraph",
-  children: CustomText[]
-}
+// export type ParagraphElement = {
+//   type: "paragraph",
+//   children: CustomText[]
+// }
 
-export type HeadingElement = {
-  type: "heading",
-  children: CustomText[]
-}
+// export type HeadingElement = {
+//   type: "heading",
+//   children: CustomText[]
+// }
 
 
-export type CodeBlockElement = {
-  type: 'code-block'
-  language?: string
-  children: CustomText[]
-}
+// export type CodeBlockElement = {
+//   type: 'code-block'
+//   language?: string
+//   children: CustomText[]
+// }
 
-export type CodeLineElement = {
-  type: 'code-line'
-  children: CustomText[]
-}
+// export type CodeLineElement = {
+//   type: 'code-line'
+//   children: Descendant[]
+// }
 
-type CustomElement = { type: "paragraph" | "heading" | "code-line" | "code-block"; children: CustomText[] };
+type CustomElement = { 
+  type: "paragraph" | "heading" | "code-line" | "code-block"; 
+  language?: string, 
+  children: Descendant[] 
+};
 
 // type CustomElement = 
-//   | ParagraphElement
+//     ParagraphElement 
 //   | HeadingElement
 //   | CodeBlockElement
 //   | CodeLineElement
