@@ -7,27 +7,26 @@ import {
   RenderElementProps,
   useSlateStatic,
   ReactEditor,
-  useSlate, } from 'slate-react';
+  useSlate
+} from 'slate-react';
 
 import { CustomElement, CustomText } from '../types';
 
 import Prism from 'prismjs';
-// import 'prismjs/components/prism-javascript';
-// import 'prismjs/components/prism-jsx';
-// import 'prismjs/components/prism-typescript';
-// import 'prismjs/components/prism-tsx';
-// import 'prismjs/components/prism-markdown';
-// import 'prismjs/components/prism-python';
-// import 'prismjs/components/prism-php';
-// import 'prismjs/components/prism-sql';
-// import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-jsx';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-tsx';
+import 'prismjs/components/prism-markdown';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-php';
+import 'prismjs/components/prism-sql';
+import 'prismjs/components/prism-java';
 
 import styled from 'styled-components';
 import { 
-  // BaseRange,
   Range,
   createEditor,
-  Descendant,
   Editor,
   Element, 
   NodeEntry,
@@ -43,8 +42,8 @@ import { normalizeTokens } from './util/normalize-tokens';
 
 const defaultTextSize = 16;
 
-const CodeBlockType = 'code';
-const CodeLineType = 'code';
+// const CodeBlockType = 'code';
+// const CodeLineType = 'code';
 
 
 const StyledCodeBlock = styled.span`
@@ -106,6 +105,8 @@ const CodeBlock: FC<CMSBlockProps> = ({
       const props = {
         ...attributes,
       };
+
+      const {text, ...rest} = leaf;
       
       return <StyledCodeBlock {...props}>{children}</StyledCodeBlock>
     },
@@ -236,7 +237,7 @@ const SetNodeToDecorations = () => {
   const editor = useSlate();
 
   const blockEntries = Array.from(
-    Editor.nodes(editor, {
+    Editor.nodes<CustomElement>(editor, {
       at: [],
       mode: 'highest',
       //  Find all code block nodes
@@ -244,8 +245,8 @@ const SetNodeToDecorations = () => {
     })
   );
   
-  const nodeToDecorations = mergeMaps<Element, Range[]>(
-    ...blockEntries.map(getChildNodeToDecorations)
+  const nodeToDecorations = mergeMaps(
+    ...blockEntries.map(block => getChildNodeToDecorations(block))
   );
   
   editor.nodeToDecorations = nodeToDecorations;

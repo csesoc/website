@@ -62,7 +62,7 @@ export interface CMSBlockProps {
 
 export type CustomEditor = BaseEditor &
   ReactEditor & {
-    nodeToDecorations?: Map<Element, Range[]>
+    nodeToDecorations?: Map<CustomElement, Range[]>
   }
 
 declare module "slate" {
