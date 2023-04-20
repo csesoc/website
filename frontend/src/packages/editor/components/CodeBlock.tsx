@@ -10,6 +10,8 @@ import {
   useSlate
 } from 'slate-react';
 
+// import './styles/prism-theme.css';
+
 import { CustomElement, CustomText } from '../types';
 
 import Prism from 'prismjs';
@@ -74,7 +76,7 @@ const LanguageSelectWrapper = styled.select`
 
 const LanguageSelect = (props: JSX.IntrinsicElements['select']) => {
   return (
-    <LanguageSelectWrapper>
+    <LanguageSelectWrapper onChange={props.onChange}>
       <option value="css">CSS</option>
       <option value="html">HTML</option>
       <option value="java">Java</option>
@@ -126,16 +128,16 @@ const CodeBlock: FC<CMSBlockProps> = ({
       {/* insert drop down menu  */}
       <SetNodeToDecorations/>
       <CodeContentBlock focused={showToolBar}>
-
         <Editable
           decorate={decorate}
           renderElement={ElementWrapper}
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}
-          style={{ width: '100%', height: '100%' }}
+          // style={{ width: '100%', height: '100%' }}
           // onKeyDown={(event) => handleKey(event, editor)}
           autoFocus
-        />
+          />
+          <style>{prismThemeCss}</style>
       </CodeContentBlock>
     </Slate>
   );
@@ -149,6 +151,7 @@ const ElementWrapper = (props: RenderElementProps) => {
 
     // Define way to change language
     const setLanguage = (language : string) => {
+      console.log("setting language to ", language);
       const path = ReactEditor.findPath(editor, element);
       Transforms.setNodes(editor, { language }, { at: path });
     }
@@ -157,11 +160,17 @@ const ElementWrapper = (props: RenderElementProps) => {
       <StyledCodeBlock>
         <LanguageSelect
           value={element.language}
-          onChange = {e => setLanguage(e.target.value)}
+          onChange={e => setLanguage(e.target.value)}
         />
         {children}
       </StyledCodeBlock>
     )
+  } else if (element.type == "code-line") {
+    return (
+      <div {...attributes} style={{ position: 'relative' }}>
+          {children}
+      </div>
+    );
   }
 
   // If we reach this point, it is a code line type
@@ -192,7 +201,7 @@ const getChildNodeToDecorations = ([block, blockPath]: NodeEntry<
   const nodeToDecorations = new Map<Element, Range[]>()
 
   const text = block.children.map((line : CustomText) => line.text).join('\n')
-  const language = block.language ?? "JavaScript";
+  const language = block.language ?? "javascript";
   const tokens = Prism.tokenize(text, Prism.languages[language])
   const normalizedTokens = normalizeTokens(tokens) // make tokens flat and grouped by line
   const blockChildren = block.children as unknown as Element[];
@@ -271,6 +280,128 @@ const mergeMaps = <K, V>(...maps: Map<K, V>[]) => {
 //     .split('\n')
 //     .map(line => ({ type: 'code-line', children: toChildren(line) }))
 
+const prismThemeCss = `
+/**
+ * prism.js default theme for JavaScript, CSS and HTML
+ * Based on dabblet (http://dabblet.com)
+ * @author Lea Verou
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+    color: black;
+    background: none;
+    text-shadow: 0 1px white;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: 1em;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+}
+pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
+code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
+    text-shadow: none;
+    background: #b3d4fc;
+}
+pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
+code[class*="language-"]::selection, code[class*="language-"] ::selection {
+    text-shadow: none;
+    background: #b3d4fc;
+}
+@media print {
+    code[class*="language-"],
+    pre[class*="language-"] {
+        text-shadow: none;
+    }
+}
+/* Code blocks */
+pre[class*="language-"] {
+    padding: 1em;
+    margin: .5em 0;
+    overflow: auto;
+}
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+    background: #f5f2f0;
+}
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+    padding: .1em;
+    border-radius: .3em;
+    white-space: normal;
+}
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: slategray;
+}
+.token.punctuation {
+    color: #999;
+}
+.token.namespace {
+    opacity: .7;
+}
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+    color: #905;
+}
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+    color: #690;
+}
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+    color: #9a6e3a;
+    /* This background color was intended by the author of this theme. */
+    background: hsla(0, 0%, 100%, .5);
+}
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+    color: #07a;
+}
+.token.function,
+.token.class-name {
+    color: #DD4A68;
+}
+.token.regex,
+.token.important,
+.token.variable {
+    color: #e90;
+}
+.token.important,
+.token.bold {
+    font-weight: bold;
+}
+.token.italic {
+    font-style: italic;
+}
+.token.entity {
+    cursor: help;
+}
+`;
 
 
 export default CodeBlock;
