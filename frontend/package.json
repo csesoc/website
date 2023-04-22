@@ -93,7 +93,7 @@
     "eslint": "7.32.0",
     "eslint-plugin-react": "7.29.4",
     "eslint-plugin-storybook": "0.5.12",
-    "typescript": "4.8.3",
+    "typescript": "4.9.5",
     "webpack": "5.74.0"
   },
   "overrides": {
