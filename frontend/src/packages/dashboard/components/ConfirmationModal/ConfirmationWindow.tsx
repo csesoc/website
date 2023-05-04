@@ -108,20 +108,33 @@ export default function ConfirmationWindow({
         });
       }}
     >
-      <Container data-anchor="ConfirmationWindow">
-        <Typography variant="h5">Choose your {modalState.type} name</Typography>
-        <Box display="flex" alignItems="center">
-          <TextField
-            value={inputValue}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            sx={{ marginRight: '10px' }}
-          />
-          <Button background="#73EEDC" onClick={handleSubmit}>
-            submit
-          </Button>
-        </Box>
-      </Container>
+      {modalState.type !== 'delete' ? (
+        <Container data-anchor="ConfirmationWindow">
+          <Typography variant="h5">
+            Choose your {modalState.type} name
+          </Typography>
+          <Box display="flex" alignItems="center">
+            <TextField
+              value={inputValue}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              sx={{ marginRight: '10px' }}
+            />
+            <Button background="#73EEDC" onClick={handleSubmit}>
+              submit
+            </Button>
+          </Box>
+        </Container>
+      ) : (
+        <Container data-anchor="ConfirmationWindow">
+          <Typography variant="h5">Are you sure you want to delete?</Typography>
+          <Box display="flex" alignItems="center">
+            <Button background="#73EEDC" onClick={handleSubmit}>
+              continue
+            </Button>
+          </Box>
+        </Container>
+      )}
     </Modal>
   );
 }
