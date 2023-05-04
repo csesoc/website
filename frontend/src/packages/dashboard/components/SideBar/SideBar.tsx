@@ -1,10 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import {
-  deleteFileEntityAction,
-  DeletePayloadType,
-} from '../../state/folders/actions';
-
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
@@ -106,7 +100,11 @@ const SidebarButton = styled(Button)<SideBarButtonProps>`
 `;
 
 type Props = {
-  setModalState: (state: { open: boolean; type: string }) => void;
+  setModalState: (state: {
+    open: boolean;
+    selectedFile: string;
+    type: string;
+  }) => void;
   selectedFile: string | null;
   isOpen: boolean;
   setOpen: (state: boolean) => void;
@@ -122,6 +120,7 @@ export default function SideBar({
   const handleNewFile = () => {
     setModalState({
       open: true,
+      selectedFile: '',
       type: 'file',
     }); // sets modal to be open
   };
@@ -129,19 +128,15 @@ export default function SideBar({
   const handleNewFolder = () => {
     setModalState({
       open: true,
+      selectedFile: '',
       type: 'folder',
     });
   };
 
   // temporary delete file entity button
-  const dispatch = useDispatch();
-  console.log('deleteFileEntity loop 1');
   const handleDeleteFile = () => {
     if (selectedFile !== null) {
-      const folderPayload: DeletePayloadType = {
-        id: selectedFile,
-      };
-      dispatch(deleteFileEntityAction(folderPayload));
+      setModalState({ open: true, selectedFile, type: 'delete' });
     }
   };
 
@@ -202,7 +197,7 @@ export default function SideBar({
             <ButtonIcon>
               <FolderOutlinedIcon />
             </ButtonIcon>
-            <ButtonText>Delete File Temp</ButtonText>
+            <ButtonText>Delete File</ButtonText>
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>

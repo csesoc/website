@@ -61,11 +61,6 @@ function* deleteFileEntitySaga({
   payload: actions.DeletePayloadType;
 }) {
   yield call(API.deleteFileEntity, payload.id);
-  // now put results to redux store
-  const deleteFileEntityPayload: actions.DeletePayloadType = {
-    id: payload.id,
-  };
-  yield put(actions.deleteFileEntityAction(deleteFileEntityPayload));
 }
 
 function* renameFileEntitySaga({

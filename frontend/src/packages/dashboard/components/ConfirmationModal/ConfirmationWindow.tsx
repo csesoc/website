@@ -1,20 +1,26 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { Modal, Typography, TextField, Box } from "@mui/material";
-import { useDispatch } from "react-redux";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { Modal, Typography, TextField, Box } from '@mui/material';
+import { useDispatch } from 'react-redux';
 
 // local imports
-import Button from "../../../../cse-ui-kit/buttons/Button";
+import Button from '../../../../cse-ui-kit/buttons/Button';
 import {
   addItemAction,
   AddPayloadType,
-} from "src/packages/dashboard/state/folders/actions";
-import { getFolderState } from "../../api/helpers";
+  deleteFileEntityAction,
+  DeletePayloadType,
+} from 'src/packages/dashboard/state/folders/actions';
+import { getFolderState } from '../../api/helpers';
 
 type Props = {
   open: boolean;
-  modalState: { open: boolean; type: string };
-  setModalState: (flag: { open: boolean; type: string }) => void;
+  modalState: { open: boolean; selectedFile: string; type: string };
+  setModalState: (flag: {
+    open: boolean;
+    selectedFile: string;
+    type: string;
+  }) => void;
 };
 
 const Container = styled.div`
@@ -41,34 +47,42 @@ export default function ConfirmationWindow({
   setModalState,
 }: Props) {
   const dispatch = useDispatch();
-  const [inputValue, setInputValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState<string>('');
   const folderState = getFolderState();
 
   const handleSubmit = () => {
     switch (modalState.type) {
-      case "folder": {
+      case 'folder': {
         const folderPayload: AddPayloadType = {
           name: inputValue,
-          type: "Folder",
+          type: 'Folder',
           parentId: folderState.parentFolder,
         };
         dispatch(addItemAction(folderPayload));
         break;
       }
-      case "file": {
+      case 'file': {
         const filePayload: AddPayloadType = {
           name: inputValue,
-          type: "File",
+          type: 'File',
           parentId: folderState.parentFolder,
         };
         dispatch(addItemAction(filePayload));
+        break;
+      }
+      case 'delete': {
+        const folderPayload: DeletePayloadType = {
+          id: modalState.selectedFile,
+        };
+        dispatch(deleteFileEntityAction(folderPayload));
         break;
       }
     }
 
     setModalState({
       open: false,
-      type: "",
+      selectedFile: '',
+      type: '',
     });
   };
 
@@ -81,7 +95,7 @@ export default function ConfirmationWindow({
     if (e.key === 'Enter') {
       handleSubmit();
     }
-  }
+  };
 
   return (
     <Modal
@@ -89,7 +103,8 @@ export default function ConfirmationWindow({
       onClose={() => {
         setModalState({
           open: false,
-          type: "",
+          selectedFile: '',
+          type: '',
         });
       }}
     >
@@ -100,7 +115,7 @@ export default function ConfirmationWindow({
             value={inputValue}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            sx={{ marginRight: "10px" }}
+            sx={{ marginRight: '10px' }}
           />
           <Button background="#73EEDC" onClick={handleSubmit}>
             submit

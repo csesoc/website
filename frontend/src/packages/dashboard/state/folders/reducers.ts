@@ -45,11 +45,12 @@ export function deleteFileEntityItems(
   action: PayloadAction<DeletePayloadType>
 ) {
   const { id } = action.payload;
+  const stateItems = [...state.items]
+    .map((item) => ({ ...item }))
+    .filter((item) => item.id !== id);
   return {
     ...state,
-    items: [...state.items]
-      .map((item) => ({ ...item }))
-      .filter((item) => item.id !== id),
+    items: stateItems,
   };
 }
 
