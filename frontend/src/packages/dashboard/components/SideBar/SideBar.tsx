@@ -197,7 +197,7 @@ export default function SideBar({
             <ButtonIcon>
               <FolderOutlinedIcon />
             </ButtonIcon>
-            <ButtonText>Delete File</ButtonText>
+            <ButtonText>Delete Folder/File</ButtonText>
           </SidebarButton>
         </ButtonGroup>
         <ButtonGroup>
