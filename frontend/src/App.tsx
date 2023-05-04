@@ -1,7 +1,8 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import { Provider } from "react-redux";
-import { GlobalStore } from "src/redux-state/index";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { GlobalStore, persistor } from 'src/redux-state/index';
+import { PersistGate } from 'redux-persist/integration/react';
 
 // imports
 import Dashboard from './packages/dashboard/Dashboard';
@@ -13,10 +14,12 @@ const App: React.FC = () => {
     <div className="App">
       <GlobalStyle />
       <Provider store={GlobalStore}>
+        <PersistGate loading={null} persistor={persistor}>
           <Routes>
-            <Route path="/" element={<Dashboard/>}/>
-            <Route path="/editor/:id" element={<Editor/>}/>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/editor/:id" element={<Editor />} />
           </Routes>
+        </PersistGate>
       </Provider>
     </div>
   );
