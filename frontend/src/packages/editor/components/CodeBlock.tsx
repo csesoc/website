@@ -15,6 +15,10 @@ import './styles/prism.css';
 import { CustomElement } from '../types';
 
 import Prism from 'prismjs';
+
+// Supported Languages
+//
+// For all languages supported by Prism, visit https://prismjs.com/
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-jsx';
 import 'prismjs/components/prism-typescript';
@@ -33,13 +37,8 @@ import 'prismjs/components/prism-latex';
 import 'prismjs/components/prism-rust';
 import 'prismjs/components/prism-go'
 import 'prismjs/components/prism-haskell';
+import 'prismjs/components/prism-perl';
 
-
-{/* <option value="bash">Shell</option>
-<option value="latex">LaTeX</option>
-<option value="rust">Rust</option>
-<option value="go">Go</option>
-<option value="haskell">Haskell</option> */}
 import styled from 'styled-components';
 import { 
   Range,
@@ -57,6 +56,7 @@ import CodeContentBlock from "../../../cse-ui-kit/codeblock/codecontentblock-wra
 import { handleKey } from "./buttons/buttonHelpers";
 import EditorCodeButton from "./buttons/EditorCodeButton";
 import { normalizeTokens } from './util/normalize-tokens';
+import isHotkey from 'is-hotkey';
 
 
 const ToolbarContainer = styled.div`
@@ -96,6 +96,7 @@ const LanguageSelect = (props: JSX.IntrinsicElements['select']) => {
       <option value="rust">Rust</option>
       <option value="go">Go</option>
       <option value="haskell">Haskell</option>
+      <option value="perl">Perl</option>
     </LanguageSelectWrapper>
   )
 }
@@ -169,6 +170,7 @@ const CodeBlock: FC<CMSBlockProps> = ({
           autoFocus
           style={{ width: "100%", height: "100%" }}
           spellCheck={false}
+          onKeyDown={useOnKeydown(editor)}
         />
         <style>{prismThemeCss}</style>
       </CodeContentBlock>
@@ -193,6 +195,22 @@ const useDecorate = (editor: Editor) => {
     },
     [editor.nodeToDecorations]
   )
+}
+
+const useOnKeydown = (editor: Editor) => {
+  const onKeyDown: React.KeyboardEventHandler = useCallback(
+    e => {
+      if (isHotkey('tab', e)) {
+        // handle tab key, insert spaces
+        e.preventDefault();
+
+        Editor.insertText(editor, '  ');
+      }
+    },
+    [editor]
+  )
+
+  return onKeyDown;
 }
 
 const getChildNodeToDecorations = ([block, blockPath]: NodeEntry<
