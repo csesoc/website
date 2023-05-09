@@ -44,22 +44,33 @@ import EditorCodeButton from "./buttons/EditorCodeButton";
 import { normalizeTokens } from './util/normalize-tokens';
 
 
-const StyledCodeBlock = styled.span`
-  font-family: monospace;
-  font-size: 16px;
-  line-height: 20px;
-  margin-top: 0;
-  padding: 5px 13px;
-  spell-check: false;
+// const StyledCodeBlock = styled.span`
+//   font-family: monospace;
+//   font-size: 16px;
+//   line-height: 20px;
+//   margin-top: 0;
+//   padding: 5px 13px;
+//   spell-check: false;
+// `;
+const ToolbarContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 600px;
+  margin: 5px;
+  justify-content: flex-end;
 `;
 
 const LanguageSelectWrapper = styled.select`
   content-editable: false;
-  display: flex;
-  justify-content: flex-end;
   right: 5px;
   top: 5px;
   z-index: 1;
+`;
+
+const LanguageSelectContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const LanguageSelect = (props: JSX.IntrinsicElements['select']) => {
@@ -110,10 +121,8 @@ const CodeBlock: FC<CMSBlockProps> = ({
 
   const decorate = useDecorate(editor);
 
-  console.log(language);
   const setLanguage = (newLanguage : string) => {
-    console.log("setting language to ", newLanguage);
-    // const path = ReactEditor.findPath(editor, element);
+    // Select entire editor and change all lines to have language `newLanguage`.
     Transforms.select(editor, {
       anchor: Editor.start(editor, []),
       focus: Editor.end(editor, []),
@@ -129,12 +138,13 @@ const CodeBlock: FC<CMSBlockProps> = ({
       onChange={(value) => update(id, editor.children, editor.operations)}
     >
       {showToolBar && 
-        <LanguageSelect 
-          value={language}
-          onChange={event => setLanguage(event.target.value)}
-        />
+        <ToolbarContainer>
+          <LanguageSelect 
+            value={language}
+            onChange={event => setLanguage(event.target.value)}
+          />
+        </ToolbarContainer>
       }
-      {/* insert drop down menu  */}
       <SetNodeToDecorations/>
       <CodeContentBlock focused={showToolBar}>
         <Editable
@@ -142,9 +152,8 @@ const CodeBlock: FC<CMSBlockProps> = ({
           renderElement={ElementWrapper}
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}
-          // style={{ width: '100%', height: '100%' }}
-          // onKeyDown={(event) => handleKey(event, editor)}
           autoFocus
+          style={{ width: "100%", height: "100%" }}
         />
         <style>{prismThemeCss}</style>
       </CodeContentBlock>
@@ -154,7 +163,6 @@ const CodeBlock: FC<CMSBlockProps> = ({
 
 const ElementWrapper = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
-  console.log(element.type);
   return (
     <div {...attributes} style={{ position: 'relative' }}>
         {children}
@@ -178,7 +186,6 @@ const getChildNodeToDecorations = ([block, blockPath]: NodeEntry<
   const nodeToDecorations = new Map<Element, Range[]>()
 
   const text = block.children.map((line) => Node.string(line)).join('\n');
-  console.log(block, block.language);
   const language = block.language ?? "javascript";
   const tokens = Prism.tokenize(text, Prism.languages[language])
   const normalizedTokens = normalizeTokens(tokens) // make tokens flat and grouped by line
