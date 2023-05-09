@@ -10,9 +10,9 @@ import {
   useSlate
 } from 'slate-react';
 
-// import './styles/prism-theme.css';
+import './styles/prism.css';
 
-import { CustomElement, CustomText } from '../types';
+import { CustomElement } from '../types';
 
 import Prism from 'prismjs';
 import 'prismjs/components/prism-javascript';
@@ -32,7 +32,8 @@ import {
   Editor,
   Element, 
   NodeEntry,
-  Transforms
+  Transforms,
+  Node
 } from 'slate';
 
 import { CMSBlockProps } from '../types';
@@ -42,7 +43,6 @@ import { handleKey } from "./buttons/buttonHelpers";
 import EditorCodeButton from "./buttons/EditorCodeButton";
 import { normalizeTokens } from './util/normalize-tokens';
 
-const defaultTextSize = 16;
 
 // const CodeBlockType = 'code';
 // const CodeLineType = 'code';
@@ -65,14 +65,6 @@ const LanguageSelectWrapper = styled.select`
   top: 5px;
   z-index: 1;
 `;
-
-// const Quote = styled.blockquote`
-//   border-left: 3px solid #9e9e9e;
-//   margin: 0px;
-//   padding-left: 10px;
-// `;
-// const QuoteText = Text.withComponent(Quote);
-// const AlignedText = Text.withComponent('div');\
 
 const LanguageSelect = (props: JSX.IntrinsicElements['select']) => {
   return (
@@ -99,6 +91,7 @@ const CodeBlock: FC<CMSBlockProps> = ({
   initialValue,
   showToolBar,
   onEditorClick,
+  language
 }) => {
   const editor = useMemo(() => withReact(createEditor()), []);
 
@@ -117,27 +110,31 @@ const CodeBlock: FC<CMSBlockProps> = ({
 
   const decorate = useDecorate(editor);
 
+  const initValue = {
+    
+  };
+
   return (
     <Slate
       editor={editor}
       
       value={initialValue}
-      onChange={(value) => update(id, editor.children, editor.operations)}
+      // onChange={(value) => update(id, editor.children, editor.operations)}
     >
-      {/* {showToolBar && <LanguageSelect/>} */}
+      {showToolBar && <LanguageSelect/>}
       {/* insert drop down menu  */}
       <SetNodeToDecorations/>
       <CodeContentBlock focused={showToolBar}>
         <Editable
           decorate={decorate}
-          renderElement={ElementWrapper}
+          renderElement={ElementWrapper} // maybe don't need a wrapper?
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}
           // style={{ width: '100%', height: '100%' }}
           // onKeyDown={(event) => handleKey(event, editor)}
           autoFocus
-          />
-          <style>{prismThemeCss}</style>
+        />
+        <style>{prismThemeCss}</style>
       </CodeContentBlock>
     </Slate>
   );
@@ -145,40 +142,40 @@ const CodeBlock: FC<CMSBlockProps> = ({
 
 const ElementWrapper = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
-  const editor = useSlateStatic();
+  // const editor = useSlateStatic();
 
-  if (element.type === 'code-block') {
+  // if (element.type === 'code-block') {
+  //   // Define way to change language
+  //   const setLanguage = (language : string) => {
+  //     console.log("setting language to ", language);
+  //     const path = ReactEditor.findPath(editor, element);
+  //     Transforms.setNodes(editor, { language }, { at: path });
+  //   };
 
-    // Define way to change language
-    const setLanguage = (language : string) => {
-      console.log("setting language to ", language);
-      const path = ReactEditor.findPath(editor, element);
-      Transforms.setNodes(editor, { language }, { at: path });
-    }
-
-    return (
-      <StyledCodeBlock>
-        <LanguageSelect
-          value={element.language}
-          onChange={e => setLanguage(e.target.value)}
-        />
-        {children}
-      </StyledCodeBlock>
-    )
-  } else if (element.type == "code-line") {
-    return (
-      <div {...attributes} style={{ position: 'relative' }}>
-          {children}
-      </div>
-    );
-  }
-
-  // If we reach this point, it is a code line type
+  //   return (
+  //     <StyledCodeBlock>
+  //       {/* <LanguageSelect
+  //         value={element.language}
+  //         onChange={e => setLanguage(e.target.value)}
+  //       /> */}
+  //       {children}
+  //     </StyledCodeBlock>
+  //   );
+  // } else if (element.type == "code-line") {
   return (
     <div {...attributes} style={{ position: 'relative' }}>
         {children}
-      </div>
+    </div>
   );
+  // }
+
+  // // If we reach this point, it is a code line type
+  // const Tag = editor.isInline(element) ? 'span' : 'div';
+  // return (
+  //   <Tag {...attributes} style={{ position: 'relative' }}>
+  //     {children}
+  //   </Tag>
+  // );
 }
 
 const useDecorate = (editor: Editor) => {
@@ -200,7 +197,7 @@ const getChildNodeToDecorations = ([block, blockPath]: NodeEntry<
 >) => {
   const nodeToDecorations = new Map<Element, Range[]>()
 
-  const text = block.children.map((line : CustomText) => line.text).join('\n')
+  const text = block.children.map((line) => Node.string(line)).join('\n')
   const language = block.language ?? "javascript";
   const tokens = Prism.tokenize(text, Prism.languages[language])
   const normalizedTokens = normalizeTokens(tokens) // make tokens flat and grouped by line
@@ -246,7 +243,7 @@ const SetNodeToDecorations = () => {
   const editor = useSlate();
 
   const blockEntries = Array.from(
-    Editor.nodes<CustomElement>(editor, {
+    Editor.nodes<Element>(editor, {
       at: [],
       mode: 'highest',
       //  Find all code block nodes
@@ -255,7 +252,7 @@ const SetNodeToDecorations = () => {
   );
   
   const nodeToDecorations = mergeMaps(
-    ...blockEntries.map(block => getChildNodeToDecorations(block))
+    ...blockEntries.map(getChildNodeToDecorations)
   );
   
   editor.nodeToDecorations = nodeToDecorations;
@@ -273,12 +270,35 @@ const mergeMaps = <K, V>(...maps: Map<K, V>[]) => {
   }
 
   return map;
+
 }
-// const toChildren = (content: string) => [{ text: content }]
-// const toCodeLines = (content: string): Element[] =>
-//   content
-//     .split('\n')
-//     .map(line => ({ type: 'code-line', children: toChildren(line) }))
+const toChildren = (content: string) => [{ text: content }]
+const toCodeLines = (content: string): Element[] =>
+  content
+    .split('\n')
+    .map(line => ({ type: 'code-line', children: toChildren(line) }))
+
+const exampleInitialValue: Element[] = [
+  {
+    type: 'code-block',
+    language: 'jsx',
+    children: toCodeLines(`// Add the initial value.
+const initialValue = [
+  {
+    type: 'paragraph',
+    children: [{ text: 'A line of text in a paragraph.' }]
+  }
+]
+const App = () => {
+  const [editor] = useState(() => withReact(createEditor()))
+  return (
+    <Slate editor={editor} value={initialValue}>
+      <Editable />
+    </Slate>
+  )
+}`),
+  }
+]
 
 const prismThemeCss = `
 /**

@@ -23,27 +23,32 @@ export type CustomText = {
 //   children: CustomText[]
 // }
 
-// export type HeadingElement = {
-//   type: "heading",
-//   children: CustomText[]
-// }
+export type HeadingElement = {
+  type: "heading",
+  children: CustomText[]
+}
+
+export type ParagraphElement = {
+  type: "heading",
+  children: CustomText[]
+}
 
 
-// export type CodeBlockElement = {
-//   type: 'code-block'
-//   language?: string
-//   children: CustomText[]
-// }
+export type CodeBlockElement = {
+  type: 'code-block'
+  language?: string
+  children: CustomText[]
+}
 
-// export type CodeLineElement = {
-//   type: 'code-line'
-//   children: Descendant[]
-// }
+export type CodeLineElement = {
+  type: 'code-line'
+  children: Descendant[]
+}
 
 export type CustomElement = { 
   type: "paragraph" | "heading" | "code-line" | "code-block"; 
   language?: string, 
-  children: CustomText[] 
+  children: Descendant[] 
 };
 
 // type CustomElement = 
@@ -57,6 +62,7 @@ export interface CMSBlockProps {
   initialValue: BlockData;
   id: number;
   showToolBar: boolean;
+  language?: string;
   onEditorClick: () => void;
 }
 
