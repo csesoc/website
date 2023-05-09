@@ -44,10 +44,6 @@ import EditorCodeButton from "./buttons/EditorCodeButton";
 import { normalizeTokens } from './util/normalize-tokens';
 
 
-// const CodeBlockType = 'code';
-// const CodeLineType = 'code';
-
-
 const StyledCodeBlock = styled.span`
   font-family: monospace;
   font-size: 16px;
@@ -109,7 +105,6 @@ const CodeBlock: FC<CMSBlockProps> = ({
         </span>
       )
     },
-      
     []
   );
 
@@ -119,6 +114,10 @@ const CodeBlock: FC<CMSBlockProps> = ({
   const setLanguage = (newLanguage : string) => {
     console.log("setting language to ", newLanguage);
     // const path = ReactEditor.findPath(editor, element);
+    Transforms.select(editor, {
+      anchor: Editor.start(editor, []),
+      focus: Editor.end(editor, []),
+    })
     Transforms.setNodes(editor, { language: newLanguage });
   };
 
@@ -166,12 +165,8 @@ const ElementWrapper = (props: RenderElementProps) => {
 const useDecorate = (editor: Editor) => {
   return useCallback(
     ([node, path]) => {
-      // if (Element.isElement(node) && node.type === "code-line") {
-        const ranges = editor.nodeToDecorations?.get(node) || [];
-        return ranges;
-      // }
-
-      // return []
+      const ranges = editor.nodeToDecorations?.get(node) || [];
+      return ranges;
     },
     [editor.nodeToDecorations]
   )
