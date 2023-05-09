@@ -103,7 +103,6 @@ const CodeBlock: FC<CMSBlockProps> = ({
 
       const {text, ...rest} = leaf;
 
-      // console.log("test", Object.keys(rest).join(' '))
       return (
         <span {...props} className={Object.keys(rest).join(' ')}>{
           children}
@@ -116,11 +115,12 @@ const CodeBlock: FC<CMSBlockProps> = ({
 
   const decorate = useDecorate(editor);
 
-  // const setLanguage = (language : string) => {
-  //   console.log("setting language to ", language);
-  //   const path = ReactEditor.findPath(editor, element);
-  //   Transforms.setNodes(editor, { language }, { at: path });
-  // };
+  console.log(language);
+  const setLanguage = (newLanguage : string) => {
+    console.log("setting language to ", newLanguage);
+    // const path = ReactEditor.findPath(editor, element);
+    Transforms.setNodes(editor, { language: newLanguage });
+  };
 
   return (
     <Slate
@@ -129,7 +129,12 @@ const CodeBlock: FC<CMSBlockProps> = ({
       value={initialValue}
       onChange={(value) => update(id, editor.children, editor.operations)}
     >
-      {showToolBar && <LanguageSelect/>}
+      {showToolBar && 
+        <LanguageSelect 
+          value={language}
+          onChange={event => setLanguage(event.target.value)}
+        />
+      }
       {/* insert drop down menu  */}
       <SetNodeToDecorations/>
       <CodeContentBlock focused={showToolBar}>
@@ -151,26 +156,6 @@ const CodeBlock: FC<CMSBlockProps> = ({
 const ElementWrapper = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
   console.log(element.type);
-  // const editor = useSlateStatic();
-
-  // if (element.type === 'code-block') {
-  //   // Define way to change language
-  //   const setLanguage = (language : string) => {
-  //     console.log("setting language to ", language);
-  //     const path = ReactEditor.findPath(editor, element);
-  //     Transforms.setNodes(editor, { language }, { at: path });
-  //   };
-
-  //   return (
-  //     <StyledCodeBlock>
-  //       {/* <LanguageSelect
-  //         value={element.language}
-  //         onChange={e => setLanguage(e.target.value)}
-  //       /> */}
-  //       {children}
-  //     </StyledCodeBlock>
-  //   );
-  // } else if (element.type == "code-line") {
   return (
     <div {...attributes} style={{ position: 'relative' }}>
         {children}
@@ -198,8 +183,8 @@ const getChildNodeToDecorations = ([block, blockPath]: NodeEntry<
   const nodeToDecorations = new Map<Element, Range[]>()
 
   const text = block.children.map((line) => Node.string(line)).join('\n');
-  console.log(block.language);
-  const language = "javascript";
+  console.log(block, block.language);
+  const language = block.language ?? "javascript";
   const tokens = Prism.tokenize(text, Prism.languages[language])
   const normalizedTokens = normalizeTokens(tokens) // make tokens flat and grouped by line
   const blockChildren = block.children as unknown as Element[];
@@ -273,35 +258,6 @@ const mergeMaps = <K, V>(...maps: Map<K, V>[]) => {
   return map;
 
 }
-
-// TODO: Delete below code (example code from reference implementation)
-const toChildren = (content: string) => [{ text: content }]
-const toCodeLines = (content: string): Element[] =>
-  content
-    .split('\n')
-    .map(line => ({ type: 'code-line', children: toChildren(line) }))
-
-const exampleInitialValue: Element[] = [
-  {
-    type: 'code-block',
-    language: 'jsx',
-    children: toCodeLines(`// Add the initial value.
-const initialValue = [
-  {
-    type: 'paragraph',
-    children: [{ text: 'A line of text in a paragraph.' }]
-  }
-]
-const App = () => {
-  const [editor] = useState(() => withReact(createEditor()))
-  return (
-    <Slate editor={editor} value={initialValue}>
-      <Editable />
-    </Slate>
-  )
-}`),
-  }
-]
 
 const prismThemeCss = `
 /**
