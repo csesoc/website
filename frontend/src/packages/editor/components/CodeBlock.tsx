@@ -111,15 +111,6 @@ const CodeBlock: FC<CMSBlockProps> = ({
 
     console.log(editor.children);
 
-  // const blocks = Editor.nodes<Element>(editor, {
-  //   at: [],
-  //   mode: 'highest',
-  //   //  Find all code block nodes
-  //   match: n => Element.isElement(n) && n.type === 'code-block',
-  // })
-
-  // const language = "python";
-
   const decorate = useDecorate(editor);
 
   const setLanguage = (newLanguage : string) => {
@@ -155,6 +146,7 @@ const CodeBlock: FC<CMSBlockProps> = ({
           onClick={() => onEditorClick()}
           autoFocus
           style={{ width: "100%", height: "100%" }}
+          spellCheck={false}
         />
         <style>{prismThemeCss}</style>
       </CodeContentBlock>
