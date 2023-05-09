@@ -44,14 +44,6 @@ import EditorCodeButton from "./buttons/EditorCodeButton";
 import { normalizeTokens } from './util/normalize-tokens';
 
 
-// const StyledCodeBlock = styled.span`
-//   font-family: monospace;
-//   font-size: 16px;
-//   line-height: 20px;
-//   margin-top: 0;
-//   padding: 5px 13px;
-//   spell-check: false;
-// `;
 const ToolbarContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -68,14 +60,9 @@ const LanguageSelectWrapper = styled.select`
   z-index: 1;
 `;
 
-const LanguageSelectContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
-
 const LanguageSelect = (props: JSX.IntrinsicElements['select']) => {
   return (
-    <LanguageSelectWrapper onChange={props.onChange}>
+    <LanguageSelectWrapper value={props.value} onChange={props.onChange}>
       <option value="css">CSS</option>
       <option value="html">HTML</option>
       <option value="java">Java</option>
@@ -98,7 +85,6 @@ const CodeBlock: FC<CMSBlockProps> = ({
   initialValue,
   showToolBar,
   onEditorClick,
-  language
 }) => {
   const editor = useMemo(() => withReact(createEditor()), []);
 
@@ -118,6 +104,21 @@ const CodeBlock: FC<CMSBlockProps> = ({
     },
     []
   );
+
+    const language = editor.children.length > 0 
+      ? (editor.children[0] as Element).language 
+      : "css";
+
+    console.log(editor.children);
+
+  // const blocks = Editor.nodes<Element>(editor, {
+  //   at: [],
+  //   mode: 'highest',
+  //   //  Find all code block nodes
+  //   match: n => Element.isElement(n) && n.type === 'code-block',
+  // })
+
+  // const language = "python";
 
   const decorate = useDecorate(editor);
 
