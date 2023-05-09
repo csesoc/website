@@ -8,7 +8,7 @@ export type StyledProps = {
 export const StyledCodeContent = styled.div<StyledProps>`
   width: 100%;
   max-width: 600px;
-  background: #eee;
+  background: #f7f7f7 ;
   color: #000000;
   box-shadow: ${(props) => props.focused && '0px 2px 3px rgba(0, 0, 0, 0.25);'}
   padding: 30px 20px;

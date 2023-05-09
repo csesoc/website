@@ -273,7 +273,7 @@ const SetNodeToDecorations = () => {
       at: [],
       mode: 'highest',
       //  Find all code block nodes
-      match: n => Element.isElement(n) && n.type === 'code-block',
+      match: n => Element.isElement(n) && n.type === 'code',
     })
   );
   
