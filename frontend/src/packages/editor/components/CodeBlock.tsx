@@ -102,24 +102,32 @@ const CodeBlock: FC<CMSBlockProps> = ({
       };
 
       const {text, ...rest} = leaf;
-      
-      return <StyledCodeBlock {...props}>{children}</StyledCodeBlock>
+
+      // console.log("test", Object.keys(rest).join(' '))
+      return (
+        <span {...props} className={Object.keys(rest).join(' ')}>{
+          children}
+        </span>
+      )
     },
+      
     []
   );
 
   const decorate = useDecorate(editor);
 
-  const initValue = {
-    
-  };
+  // const setLanguage = (language : string) => {
+  //   console.log("setting language to ", language);
+  //   const path = ReactEditor.findPath(editor, element);
+  //   Transforms.setNodes(editor, { language }, { at: path });
+  // };
 
   return (
     <Slate
       editor={editor}
       
       value={initialValue}
-      // onChange={(value) => update(id, editor.children, editor.operations)}
+      onChange={(value) => update(id, editor.children, editor.operations)}
     >
       {showToolBar && <LanguageSelect/>}
       {/* insert drop down menu  */}
@@ -127,7 +135,7 @@ const CodeBlock: FC<CMSBlockProps> = ({
       <CodeContentBlock focused={showToolBar}>
         <Editable
           decorate={decorate}
-          renderElement={ElementWrapper} // maybe don't need a wrapper?
+          renderElement={ElementWrapper}
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}
           // style={{ width: '100%', height: '100%' }}
@@ -142,6 +150,7 @@ const CodeBlock: FC<CMSBlockProps> = ({
 
 const ElementWrapper = (props: RenderElementProps) => {
   const { attributes, children, element } = props;
+  console.log(element.type);
   // const editor = useSlateStatic();
 
   // if (element.type === 'code-block') {
@@ -167,26 +176,17 @@ const ElementWrapper = (props: RenderElementProps) => {
         {children}
     </div>
   );
-  // }
-
-  // // If we reach this point, it is a code line type
-  // const Tag = editor.isInline(element) ? 'span' : 'div';
-  // return (
-  //   <Tag {...attributes} style={{ position: 'relative' }}>
-  //     {children}
-  //   </Tag>
-  // );
 }
 
 const useDecorate = (editor: Editor) => {
   return useCallback(
     ([node, path]) => {
-      if (Element.isElement(node) && node.type === "code-line") {
+      // if (Element.isElement(node) && node.type === "code-line") {
         const ranges = editor.nodeToDecorations?.get(node) || [];
         return ranges;
-      }
+      // }
 
-      return []
+      // return []
     },
     [editor.nodeToDecorations]
   )
@@ -197,8 +197,9 @@ const getChildNodeToDecorations = ([block, blockPath]: NodeEntry<
 >) => {
   const nodeToDecorations = new Map<Element, Range[]>()
 
-  const text = block.children.map((line) => Node.string(line)).join('\n')
-  const language = block.language ?? "javascript";
+  const text = block.children.map((line) => Node.string(line)).join('\n');
+  console.log(block.language);
+  const language = "javascript";
   const tokens = Prism.tokenize(text, Prism.languages[language])
   const normalizedTokens = normalizeTokens(tokens) // make tokens flat and grouped by line
   const blockChildren = block.children as unknown as Element[];
@@ -257,7 +258,7 @@ const SetNodeToDecorations = () => {
   
   editor.nodeToDecorations = nodeToDecorations;
   
-  return null
+  return null;
 }
     
 const mergeMaps = <K, V>(...maps: Map<K, V>[]) => {
@@ -272,6 +273,8 @@ const mergeMaps = <K, V>(...maps: Map<K, V>[]) => {
   return map;
 
 }
+
+// TODO: Delete below code (example code from reference implementation)
 const toChildren = (content: string) => [{ text: content }]
 const toCodeLines = (content: string): Element[] =>
   content
