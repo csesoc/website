@@ -24,7 +24,22 @@ import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-php';
 import 'prismjs/components/prism-sql';
 import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-c';
+import 'prismjs/components/prism-cpp';
+import 'prismjs/components/prism-csharp';
+import 'prismjs/components/prism-prolog';
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-latex';
+import 'prismjs/components/prism-rust';
+import 'prismjs/components/prism-go'
+import 'prismjs/components/prism-haskell';
 
+
+{/* <option value="bash">Shell</option>
+<option value="latex">LaTeX</option>
+<option value="rust">Rust</option>
+<option value="go">Go</option>
+<option value="haskell">Haskell</option> */}
 import styled from 'styled-components';
 import { 
   Range,
@@ -68,12 +83,19 @@ const LanguageSelect = (props: JSX.IntrinsicElements['select']) => {
       <option value="java">Java</option>
       <option value="javascript">JavaScript</option>
       <option value="jsx">JSX</option>
+      <option value="typescript">TypeScript</option>
+      <option value="tsx">TSX</option>
       <option value="markdown">Markdown</option>
+      <option value="c">C</option>
+      <option value="cpp">C++</option>
       <option value="php">PHP</option>
       <option value="python">Python</option>
       <option value="sql">SQL</option>
-      <option value="tsx">TSX</option>
-      <option value="typescript">TypeScript</option>
+      <option value="bash">Shell</option>
+      <option value="latex">LaTeX</option>
+      <option value="rust">Rust</option>
+      <option value="go">Go</option>
+      <option value="haskell">Haskell</option>
     </LanguageSelectWrapper>
   )
 }
