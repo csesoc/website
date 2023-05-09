@@ -1,3 +1,5 @@
+// Default theme for Syntax Highlighting in code blocks
+
 const prismThemeCss = `
 /**
  * prism.js default theme for JavaScript, CSS and HTML

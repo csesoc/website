@@ -101,7 +101,7 @@ const LanguageSelect = (props: JSX.IntrinsicElements['select']) => {
       <option value="haskell">Haskell</option>
       <option value="perl">Perl</option>
     </LanguageSelectWrapper>
-  )
+  );
 }
 
 
@@ -131,11 +131,10 @@ const CodeBlock: FC<CMSBlockProps> = ({
     []
   );
 
-    const language = editor.children.length > 0 
-      ? (editor.children[0] as Element).language 
-      : "css";
-
-    console.log(editor.children);
+  const language = editor.children.length > 0 
+    ? (editor.children[0] as Element).language 
+    : "css"
+  ;
 
   const decorate = useDecorate(editor);
 
@@ -197,21 +196,23 @@ const useDecorate = (editor: Editor) => {
       return ranges;
     },
     [editor.nodeToDecorations]
-  )
+  );
 }
 
+// Tabbing is exclusive behaviour for code blocks
+// Hence this is defined here rather than in buttonHelpers.ts with the other cases.
 const useOnKeydown = (editor: Editor) => {
   const onKeyDown: React.KeyboardEventHandler = useCallback(
     e => {
       if (isHotkey('tab', e)) {
-        // handle tab key, insert spaces
+        // handle tab key, simulate tabbing by adding spaces
         e.preventDefault();
 
-        Editor.insertText(editor, '  ');
+        Editor.insertText(editor, '    ');
       }
     },
     [editor]
-  )
+  );
 
   return onKeyDown;
 }
@@ -219,12 +220,13 @@ const useOnKeydown = (editor: Editor) => {
 const getChildNodeToDecorations = ([block, blockPath]: NodeEntry<
   CustomElement
 >) => {
-  const nodeToDecorations = new Map<Element, Range[]>()
+  const nodeToDecorations = new Map<Element, Range[]>();
 
   const text = block.children.map((line) => Node.string(line)).join('\n');
-  const language = block.language ?? "javascript";
-  const tokens = Prism.tokenize(text, Prism.languages[language])
-  const normalizedTokens = normalizeTokens(tokens) // make tokens flat and grouped by line
+  const language = block.language ?? "css";
+  const tokens = Prism.tokenize(text, Prism.languages[language]);
+  // make tokens flat and grouped by line
+  const normalizedTokens = normalizeTokens(tokens); 
   const blockChildren = block.children as unknown as Element[];
 
   for (let index = 0; index < normalizedTokens.length; index++) {
@@ -258,7 +260,7 @@ const getChildNodeToDecorations = ([block, blockPath]: NodeEntry<
     }
   }
 
-  return nodeToDecorations
+  return nodeToDecorations;
 }
 
 
