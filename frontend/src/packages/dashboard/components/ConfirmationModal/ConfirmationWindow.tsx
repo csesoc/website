@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Modal, Typography, TextField, Box } from "@mui/material";
 import { useDispatch } from "react-redux";
@@ -43,6 +43,10 @@ export default function ConfirmationWindow({
   const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState<string>("");
   const folderState = getFolderState();
+
+  useEffect(() => {
+    setInputValue("");
+  }, [modalState]);
 
   const handleSubmit = () => {
     switch (modalState.type) {
