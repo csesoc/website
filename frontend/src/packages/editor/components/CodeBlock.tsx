@@ -133,7 +133,7 @@ const CodeBlock: FC<CMSBlockProps> = ({
 
   const language = editor.children.length > 0 
     ? (editor.children[0] as Element).language 
-    : "css"
+    : "python"
   ;
 
   const decorate = useDecorate(editor);
@@ -223,7 +223,7 @@ const getChildNodeToDecorations = ([block, blockPath]: NodeEntry<
   const nodeToDecorations = new Map<Element, Range[]>();
 
   const text = block.children.map((line) => Node.string(line)).join('\n');
-  const language = block.language ?? "css";
+  const language = block.language ?? "python";
   const tokens = Prism.tokenize(text, Prism.languages[language]);
   // make tokens flat and grouped by line
   const normalizedTokens = normalizeTokens(tokens); 
