@@ -4,12 +4,8 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 /* MetaData */
 DROP TABLE IF EXISTS metadata;
 CREATE TABLE metadata (
-  
-  MetadataID        uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  EntityID      uuid NOT NULL,
-  CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW(),
-
-  CONSTRAINT unique_id UNIQUE (EntityID)
+  MetadataID    uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 /**
