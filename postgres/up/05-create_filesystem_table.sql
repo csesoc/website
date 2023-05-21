@@ -10,7 +10,7 @@ CREATE TABLE metadata (
   CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW(),
 
   CONSTRAINT unique_id UNIQUE (EntityID)
-)
+);
 
 /**
   The filesystem table models all file heirachies in our system
