@@ -31,7 +31,7 @@ CREATE TABLE filesystem (
   CONSTRAINT fk_owner FOREIGN KEY (OwnedBy) 
     REFERENCES groups(UID),
 
-  CONSTRAINT fk_meta FOREIGN KEY (MetadataID) REFERENCES metadata(MetadataID)
+  CONSTRAINT fk_meta FOREIGN KEY (MetadataID) REFERENCES metadata(MetadataID),
 
   /* Unique name constraint: there should not exist an entity of the same type with the
      same parent and logical name. */
