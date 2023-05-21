@@ -21,7 +21,7 @@ CREATE TABLE filesystem (
   CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW(),
 
   /* MetaData */
-  MetadataID        uuid NOT NULL,
+  -- MetadataID        uuid NOT NULL,
 
   OwnedBy       INT,
   /* Pain */
