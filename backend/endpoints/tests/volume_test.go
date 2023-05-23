@@ -19,6 +19,32 @@ func TestUploadDocument(t *testing.T) {
 }
 
 func TestGetPublishedDocument(t *testing.T) {
+	controller := gomock.NewController(t)
+	assert := assert.New(t)
+	defer controller.Finish()
+
+	// ==== test setup =====
+	entityID := uuid.New()
+
+	tempFile, _ := ioutil.TempFile(os.TempDir(), "expected")
+	if _, err := tempFile.WriteString("hello world"); err != nil {
+		panic(err)
+	}
+	tempFile.Seek(0, 0)
+	defer os.Remove(tempFile.Name())
+
+	mockDockerFileSystemRepo := repMocks.NewMockIPublishedVolumeRepository(controller)
+	mockDockerFileSystemRepo.EXPECT().GetFromVolume(entityID.String()).Return(tempFile, nil).Times(1)
+
+	mockDepFactory := createMockDependencyFactory(controller, nil, true)
+	mockDepFactory.EXPECT().GetPublishedVolumeRepo().Return(mockDockerFileSystemRepo)
+
+	// // ==== test execution =====
+	form := models.ValidGetPublishedDocumentRequest{DocumentID: entityID}
+	response := endpoints.GetPublishedDocument(form, mockDepFactory)
+
+	assert.Equal(response.Status, http.StatusOK)
+	assert.Equal(response.Response, []byte("{\"Contents\": hello world}"))
 }
 
 func TestUploadImage(t *testing.T) {
