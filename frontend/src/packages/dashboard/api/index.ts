@@ -88,6 +88,28 @@ export const newFolder = async (
   return response.Response.NewID;
 };
 
+export const renameFileEntity = async (
+  fileEntityID: string,
+  fileEntityNewName: string
+): Promise<void> => {
+  const rename_resp = await fetch('/api/filesystem/rename', {
+    method: 'POST',
+    body: new URLSearchParams({
+      EntityID: fileEntityID,
+      NewName: fileEntityNewName,
+    }),
+  });
+
+  if (!rename_resp.ok) {
+    const message = `An error has occured: ${rename_resp.status}`;
+    throw new Error(message);
+  }
+  const response = await rename_resp.json();
+
+  console.log(response);
+  return;
+};
+
 export const deleteFileEntity = async (fileEntityID: string): Promise<void> => {
   const delete_resp = await fetch('/api/filesystem/delete', {
     method: 'POST',
@@ -103,6 +125,5 @@ export const deleteFileEntity = async (fileEntityID: string): Promise<void> => {
   const response = await delete_resp.json();
 
   console.log(response);
-  console.log(JSON.stringify(response));
   return;
 };

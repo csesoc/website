@@ -64,3 +64,5 @@ export const renameFileEntityAction = createAction<RenamePayloadType>(
 export const deleteFileEntityAction = createAction<DeletePayloadType>(
   'folders/deleteFileEntity'
 );
+
+// TODO recursive delete function needed from backend
