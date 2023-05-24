@@ -18,6 +18,7 @@ const IconContainer = styled.div`
   align-items: center;
   margin: 20px;
   text-align: center;
+  cursor: pointer;
 `;
 
 interface HighlightProps {
@@ -61,11 +62,11 @@ export default function FolderContainer({
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
         sx={{
-          color: '#e3e3e3',
+          color: selectedFile == id ? '#babef7' : '#e3e3e3',
           fontSize: '100px',
         }}
       />
-      {/* <Folder active={false}/> */}
+      {/* <Folder active={false} /> */}
       <Renamable name={name} id={id} />
     </IconContainer>
   );
