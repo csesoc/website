@@ -62,7 +62,7 @@ export default function FolderContainer({
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
         sx={{
-          color: selectedFile == id ? '#babef7' : '#e3e3e3',
+          color: selectedFile == id ? '#f590a1' : '#e3e3e3',
           fontSize: '100px',
         }}
       />
