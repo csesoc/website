@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	repo        = repositories.NewFilesystemRepo()
+	repo        = repositories.NewFilesystemRepo(contexts.GetDatabaseContext())
 	testContext = repo.GetContext().(*contexts.TestingContext)
 )
 
