@@ -13,8 +13,6 @@ CREATE TABLE filesystem (
   IsPublished   BOOLEAN DEFAULT false,
   CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW(),
 
-  /* Cannot be constrained because parent could be a root (foreign key to 
-  frontend table) OR another file/directory (entity) in this table */
   Parent        uuid NOT NULL,
 
   /* There should not exist an entity of the same type with the
@@ -43,6 +41,23 @@ BEGIN
 
   SELECT newEntity.EntityID INTO newEntityID FROM newEntity;
   RETURN newEntityID;
+END $$;
+
+-- TODO: Add a delete frontend function
+DROP FUNCTION IF EXISTS new_frontend;
+CREATE OR REPLACE FUNCTION new_frontend (frontendIDP uuid, logicalNameP VARCHAR, URLP VARCHAR) RETURNS uuid
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  frontendID frontend.ID%type;
+BEGIN
+  INSERT INTO frontend VALUES (frontendIDP, logicalNameP, URLP)
+    RETURNING ID INTO frontendID;
+                  
+  INSERT INTO filesystem (EntityID, LogicalName, IsDocument, Parent)
+    VALUES (frontendID, logicalNameP, false, uuid_nil());
+    
+  RETURN frontendID;
 END $$;
 
 /* Another utility procedure */

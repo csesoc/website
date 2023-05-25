@@ -1,4 +1,5 @@
 SET timezone = 'Australia/Sydney';
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 /* Simulating data flow of CMS */
 
@@ -20,12 +21,6 @@ DECLARE
 BEGIN
   /* Admin setup */
   
-  -- Create a new frontend
-  INSERT INTO frontend (URL, LogicalName) 
-  VALUES 
-    ('http://localhost:3000', 'CSESoc Main Website') 
-  RETURNING ID INTO rootID;
-  
   -- Account creations
   user1 := (SELECT 
     create_normal_user('z0000000@ad.unsw.edu.au', 'adam', 'password'));
@@ -33,10 +28,12 @@ BEGIN
     create_normal_user('john.smith@gmail.com', 'john', 'password'));
   user3 := (SELECT 
     create_normal_user('jane.doe@gmail.com', 'jane', 'password'));
+    
+  -- Create a new frontend (frontendID should be generated code-side)
+  rootID := (SELECT new_frontend(uuid_generate_v4(), 'CSESoc Main Website', 'http://localhost:3000'));
   
   -- Create access groups
-  INSERT INTO groups (Name) 
-  VALUES 
+  INSERT INTO groups (Name) VALUES 
     ('blog_owners') 
   RETURNING GroupID INTO blogGroup;
   INSERT INTO groups (Name) VALUES 
