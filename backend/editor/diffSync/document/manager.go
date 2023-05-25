@@ -21,7 +21,7 @@ type Manager struct {
 var (
 	managerInstance *Manager
 	lock            = &sync.Mutex{}
-	repo            = repositories.NewFilesystemRepo()
+	repo, _         = repositories.NewFilesystemRepo(uuid.UUID{}, "test", "test1")
 )
 
 // implementation of the singleton pattern :)

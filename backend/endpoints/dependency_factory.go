@@ -5,13 +5,14 @@ package endpoints
 import (
 	repos "cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/internal/logger"
+	"github.com/google/uuid"
 )
 
 type (
 	// DependencyFactory is an interface type that handlers can use to retrieve
 	// and fetch specific dependencies
 	DependencyFactory interface {
-		GetFilesystemRepo() repos.FilesystemRepository
+		GetFilesystemRepo() (repos.FilesystemRepository, error)
 		GetGroupsRepo() repos.GroupsRepository
 		GetFrontendsRepo() repos.FrontendsRepository
 		GetPersonsRepo() repos.PersonRepository
@@ -24,14 +25,16 @@ type (
 
 	// DependencyProvider is a simple implementation of the dependency factory that supports the injection of "dynamic" dependencies
 	DependencyProvider struct {
-		Log        *logger.Log
-		FrontEndID int
+		Log         *logger.Log
+		FrontEndID  uuid.UUID
+		LogicalName string
+		URL         string
 	}
 )
 
 // GetFilesystemRepo is the constructor for FS repos
-func (dp DependencyProvider) GetFilesystemRepo() repos.FilesystemRepository {
-	return repos.NewFilesystemRepo()
+func (dp DependencyProvider) GetFilesystemRepo() (repos.FilesystemRepository, error) {
+	return repos.NewFilesystemRepo(dp.FrontEndID, dp.LogicalName, dp.URL)
 }
 
 // GetGroupsRepo instantiates a new groups repository

@@ -14,7 +14,15 @@ import (
 // UploadImage takes an image from a request and uploads it to the published docker volume
 func UploadImage(form ValidImageUploadRequest, df DependencyFactory) handlerResponse[NewEntityResponse] {
 	unpublishedVol := df.GetUnpublishedVolumeRepo()
-	repository := df.GetFilesystemRepo()
+	repository, err := df.GetFilesystemRepo()
+
+	if err != nil {
+		return handlerResponse[NewEntityResponse]{
+			Status:   http.StatusNotFound,
+			Response: NewEntityResponse{},
+		}
+	}
+
 	log := df.GetLogger()
 
 	// Remember to close all multipart forms
@@ -57,7 +65,15 @@ func UploadImage(form ValidImageUploadRequest, df DependencyFactory) handlerResp
 // UploadImage takes an image from a request and uploads it to the published docker volume
 func UploadDocument(form ValidDocumentUploadRequest, df DependencyFactory) handlerResponse[NewEntityResponse] {
 	unpublishedVol := df.GetUnpublishedVolumeRepo()
-	fsRepo := df.GetFilesystemRepo()
+	fsRepo, err := df.GetFilesystemRepo()
+
+	if err != nil {
+		return handlerResponse[NewEntityResponse]{
+			Status:   http.StatusNotFound,
+			Response: NewEntityResponse{},
+		}
+	}
+
 	log := df.GetLogger()
 
 	// fetch the target file form the unpublished volume

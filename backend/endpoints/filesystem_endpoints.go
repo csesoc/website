@@ -11,7 +11,14 @@ import (
 // Defines endpoints consumable via the API
 func GetEntityInfo(form ValidInfoRequest, df DependencyFactory) handlerResponse[EntityInfoResponse] {
 	log := df.GetLogger()
-	fsRepo := df.GetFilesystemRepo()
+	fsRepo, err := df.GetFilesystemRepo()
+
+	if err != nil {
+		return handlerResponse[EntityInfoResponse]{
+			Status:   http.StatusNotFound,
+			Response: EntityInfoResponse{},
+		}
+	}
 
 	// Query the repository for an existing entity with the given ID
 	entity, err := fsRepo.GetEntryWithID(form.EntityID)
@@ -33,7 +40,13 @@ func GetEntityInfo(form ValidInfoRequest, df DependencyFactory) handlerResponse[
 // CreateNewEntity is the public handler for constructing and creating new entities
 func CreateNewEntity(form ValidEntityCreationRequest, df DependencyFactory) handlerResponse[NewEntityResponse] {
 	log := df.GetLogger()
-	fsRepo := df.GetFilesystemRepo()
+	fsRepo, err := df.GetFilesystemRepo()
+	if err != nil {
+		return handlerResponse[NewEntityResponse]{
+			Status:   http.StatusNotFound,
+			Response: NewEntityResponse{},
+		}
+	}
 	pubRepo := df.GetUnpublishedVolumeRepo()
 
 	entityToCreate := CreationReqToFsEntry(form)
@@ -55,9 +68,16 @@ func CreateNewEntity(form ValidEntityCreationRequest, df DependencyFactory) hand
 // Handler for deleting filesystem entities
 func DeleteFilesystemEntity(form ValidInfoRequest, df DependencyFactory) handlerResponse[empty] {
 	log := df.GetLogger()
-	fsRepo := df.GetFilesystemRepo()
+	fsRepo, err := df.GetFilesystemRepo()
 
-	err := fsRepo.DeleteEntryWithID(form.EntityID)
+	if err != nil {
+		return handlerResponse[empty]{
+			Status:   http.StatusNotFound,
+			Response: empty{},
+		}
+	}
+
+	err = fsRepo.DeleteEntryWithID(form.EntityID)
 	if err != nil {
 		return handlerResponse[empty]{
 			Status: http.StatusNotAcceptable,
@@ -73,7 +93,14 @@ func DeleteFilesystemEntity(form ValidInfoRequest, df DependencyFactory) handler
 // Handler for retrieving children
 func GetChildren(form ValidInfoRequest, df DependencyFactory) handlerResponse[ChildrenRequestResponse] {
 	log := df.GetLogger()
-	fsRepo := df.GetFilesystemRepo()
+	fsRepo, err := df.GetFilesystemRepo()
+
+	if err != nil {
+		return handlerResponse[ChildrenRequestResponse]{
+			Status:   http.StatusNotFound,
+			Response: ChildrenRequestResponse{},
+		}
+	}
 
 	fileInfo, err := fsRepo.GetEntryWithID(form.EntityID)
 	if err != nil {
@@ -93,7 +120,14 @@ func GetChildren(form ValidInfoRequest, df DependencyFactory) handlerResponse[Ch
 
 func GetIDWithPath(form ValidPathRequest, df DependencyFactory) handlerResponse[uuid.UUID] {
 	log := df.GetLogger()
-	repository := df.GetFilesystemRepo()
+	repository, err := df.GetFilesystemRepo()
+
+	if err != nil {
+		return handlerResponse[uuid.UUID]{
+			Status:   http.StatusNotFound,
+			Response: uuid.UUID{},
+		}
+	}
 
 	entityID, err := repository.GetIDWithPath(form.Path)
 	if err != nil {
@@ -110,8 +144,16 @@ func GetIDWithPath(form ValidPathRequest, df DependencyFactory) handlerResponse[
 
 // Handler for renaming filesystem entities
 func RenameFilesystemEntity(form ValidRenameRequest, df DependencyFactory) handlerResponse[empty] {
-	repository := df.GetFilesystemRepo()
-	err := repository.RenameEntity(form.EntityID, form.NewName)
+	repository, err := df.GetFilesystemRepo()
+
+	if err != nil {
+		return handlerResponse[empty]{
+			Status:   http.StatusNotFound,
+			Response: empty{},
+		}
+	}
+
+	err = repository.RenameEntity(form.EntityID, form.NewName)
 	if err != nil {
 		return handlerResponse[empty]{Status: http.StatusNotAcceptable}
 	}

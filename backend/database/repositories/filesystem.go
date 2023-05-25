@@ -10,11 +10,11 @@ import (
 
 // Implements IRepositoryInterface
 type filesystemRepository struct {
+	frontEndID  uuid.UUID
+	logicalName string
+	URL         string
 	embeddedContext
 }
-
-// The ID for root, set this as the ID in a specified request
-var FilesystemRootID uuid.UUID = uuid.Nil
 
 // We really should use an ORM jesus this is ugly
 func (rep filesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
@@ -24,7 +24,7 @@ func (rep filesystemRepository) query(query string, input ...interface{}) (Files
 	err := rep.ctx.Query(query,
 		input,
 		&entity.EntityID, &entity.LogicalName, &entity.IsDocument, &entity.IsPublished,
-		&entity.CreatedAt, &entity.OwnerUserId, &entity.ParentFileID)
+		&entity.CreatedAt, &entity.ParentFileID)
 	if err != nil {
 		return FilesystemEntry{}, err
 	}
@@ -51,16 +51,6 @@ func (rep filesystemRepository) query(query string, input ...interface{}) (Files
 
 // Returns: entry struct containing the entity that was just created
 func (rep filesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEntry, error) {
-	if file.ParentFileID == FilesystemRootID {
-		// determine root ID
-		root, err := rep.GetRoot()
-		if err != nil {
-			return FilesystemEntry{}, errors.New("failed to get root")
-		}
-
-		file.ParentFileID = root.EntityID
-	}
-
 	var newID uuid.UUID
 	err := rep.ctx.Query("SELECT new_entity($1, $2, $3, $4)", []interface{}{file.ParentFileID, file.LogicalName, file.OwnerUserId, file.IsDocument}, &newID)
 	if err != nil {
@@ -69,18 +59,14 @@ func (rep filesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEnt
 	return rep.GetEntryWithID(newID)
 }
 
+// TODO: If parent != entity, handle diff
 func (rep filesystemRepository) GetEntryWithID(ID uuid.UUID) (FilesystemEntry, error) {
-	if ID == FilesystemRootID {
-		return rep.GetRoot()
-	}
-
 	result, err := rep.query("SELECT * FROM filesystem WHERE EntityID = $1", ID)
 	return result, err
 }
 
 func (rep filesystemRepository) GetRoot() (FilesystemEntry, error) {
-	// Root is currently set to ID 1
-	return rep.query("SELECT * FROM filesystem WHERE EntityID = $1", FilesystemRootID)
+	return rep.query("SELECT * FROM filesystem WHERE EntityID = $1", rep.frontEndID)
 }
 
 func (rep filesystemRepository) GetEntryWithParentID(ID uuid.UUID) (FilesystemEntry, error) {
