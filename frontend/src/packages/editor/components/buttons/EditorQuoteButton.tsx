@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useSlate } from 'slate-react';
 import QuoteButton from 'src/cse-ui-kit/small_buttons/QuoteButton';
-import { toggleMark } from './buttonHelpers';
+import { toggleBlock, toggleMark } from './buttonHelpers';
 
 const EditorQuoteButton: FC = () => {
   const editor = useSlate();
@@ -10,7 +10,7 @@ const EditorQuoteButton: FC = () => {
       size={30}
       onMouseDown={(event) => {
         event.preventDefault();
-        toggleMark(editor, 'quote');
+        toggleBlock(editor, 'quote');
       }}
     />
   );

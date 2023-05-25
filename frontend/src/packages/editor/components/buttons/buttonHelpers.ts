@@ -1,5 +1,53 @@
-import { Editor, BaseEditor } from 'slate';
+import { Editor, BaseEditor, Transforms, Element as SlateElement } from 'slate';
 import { ReactEditor } from 'slate-react';
+
+const LIST_TYPES = ['ordered-list', 'unordered-list'];
+const TEXT_ALIGN_TYPES = ['left', 'center', 'right'];
+
+const toggleBlock = (
+  editor: BaseEditor & ReactEditor,
+  format: 'paragraph' | 'heading' | 'quote' | 'ordered-list' | 'unordered-list'
+) => {
+  const isActive = isBlockActive(editor, format);
+  const isList = LIST_TYPES.includes(format);
+
+  Transforms.unwrapNodes(editor, {
+    match: (n) =>
+      !Editor.isEditor(n) &&
+      SlateElement.isElement(n) &&
+      LIST_TYPES.includes(n.type) &&
+      !TEXT_ALIGN_TYPES.includes(format),
+    split: true,
+  });
+  const newProperties: Partial<SlateElement> = {
+    type: isActive ? 'paragraph' : isList ? 'list-item' : format,
+  };
+
+  Transforms.setNodes<SlateElement>(editor, newProperties);
+
+  if (!isActive && isList) {
+    const block = { type: format, children: [] };
+    Transforms.wrapNodes(editor, block);
+  }
+};
+
+const isBlockActive = (
+  editor: BaseEditor & ReactEditor,
+  format: 'paragraph' | 'heading' | 'quote' | 'ordered-list' | 'unordered-list'
+) => {
+  const { selection } = editor;
+  if (!selection) return false;
+
+  const [match] = Array.from(
+    Editor.nodes(editor, {
+      at: Editor.unhangRange(editor, selection),
+      match: (n) =>
+        !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === format,
+    })
+  );
+
+  return !!match;
+};
 
 /**
  * decorate the selected text with the format
@@ -72,9 +120,9 @@ const handleKey = (
   switch (event.key) {
     case '`': {
       event.preventDefault();
-      toggleMark(editor, "code");
+      toggleMark(editor, 'code');
     }
   }
-}
+};
 
-export { toggleMark, isMarkActive, handleKey };
+export { toggleBlock, isBlockActive, toggleMark, isMarkActive, handleKey };

@@ -1,12 +1,25 @@
-import { ReactEditor } from "slate-react";
-import { BaseEditor, BaseOperation, Descendant } from "slate";
+import { ReactEditor } from 'slate-react';
+import { BaseEditor, BaseOperation, Descendant } from 'slate';
 
 export type BlockData = Descendant[];
 
-export type OpPropagator = (id: number, update: BlockData, operation: BaseOperation[]) => void;
+export type OpPropagator = (
+  id: number,
+  update: BlockData,
+  operation: BaseOperation[]
+) => void;
 export type UpdateCallback = (id: number, update: BlockData) => void;
 
-type CustomElement = { type: "paragraph" | "heading"; children: CustomText[] };
+type CustomElement = {
+  type:
+    | 'paragraph'
+    | 'heading'
+    | 'quote'
+    | 'ordered-list'
+    | 'unordered-list'
+    | 'list-item';
+  children: CustomText[];
+};
 export type CustomText = {
   textSize?: number;
   text: string;
@@ -27,8 +40,7 @@ export interface CMSBlockProps {
   onEditorClick: () => void;
 }
 
-
-declare module "slate" {
+declare module 'slate' {
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor;
     Element: CustomElement;
