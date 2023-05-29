@@ -18,8 +18,8 @@ var (
 	frontendID          = uuid.New()
 	frontendLogicalName = "CSESoc Test"
 	frontendURL         = "http://localhost:3001"
-	repo                repositories.FilesystemRepository
 	testContext         = contexts.GetDatabaseContext().(*contexts.TestingContext)
+	repo, _             repositories.FilesystemRepository
 )
 
 func TestMain(m *testing.M) {
@@ -29,7 +29,7 @@ func TestMain(m *testing.M) {
 func TestRootRetrieval(t *testing.T) {
 	assert := assert.New(t)
 	testContext.RunTest(func() {
-		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL)
+		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
 		assert.Nil(err)
 		root, err := repo.GetRoot()
 		if assert.Nil(err) {

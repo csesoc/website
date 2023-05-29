@@ -19,9 +19,7 @@ CREATE TABLE filesystem (
   IsDocument    BOOLEAN DEFAULT false,
   IsPublished   BOOLEAN DEFAULT false,
   CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW(),
-
-  Parent        uuid NOT NULL,
-
+  
   /* MetaData */
   -- MetadataID        uuid NOT NULL,
 
@@ -31,7 +29,7 @@ CREATE TABLE filesystem (
 
   /* FK Constraint */
   CONSTRAINT fk_owner FOREIGN KEY (OwnedBy) 
-    REFERENCES groups(UID),
+    REFERENCES groups(GroupID),
 
   -- CONSTRAINT fk_meta FOREIGN KEY (MetadataID) REFERENCES metadata(MetadataID),
 

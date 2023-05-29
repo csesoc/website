@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"cms.csesoc.unsw.edu.au/database/contexts"
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/internal/logger"
 	"cms.csesoc.unsw.edu.au/internal/session"
@@ -124,7 +125,7 @@ func (fn rawHandler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // getFrontendID gets the frontend id for an incoming http request
 func getFrontendId(r *http.Request) int {
-	frontendRepo := repositories.NewFrontendsRepo()
+	frontendRepo := repositories.NewFrontendsRepo(contexts.GetDatabaseContext())
 	return frontendRepo.GetFrontendFromURL(r.URL.Host)
 }
 

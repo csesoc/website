@@ -23,4 +23,4 @@ CREATE TABLE frontend_membership (
 
   CONSTRAINT fk_AccessGroupID FOREIGN KEY (GroupID)
     REFERENCES groups(GroupID)
-)
+);

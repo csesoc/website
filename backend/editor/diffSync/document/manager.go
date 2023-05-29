@@ -4,6 +4,7 @@ import (
 	"errors"
 	"sync"
 
+	"cms.csesoc.unsw.edu.au/database/contexts"
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/internal/storage"
 	"github.com/google/uuid"
@@ -21,7 +22,7 @@ type Manager struct {
 var (
 	managerInstance *Manager
 	lock            = &sync.Mutex{}
-	repo, _         = repositories.NewFilesystemRepo(uuid.UUID{}, "test", "test1")
+	repo, _         = repositories.NewFilesystemRepo(uuid.UUID{}, "test", "test1", contexts.GetDatabaseContext())
 )
 
 // implementation of the singleton pattern :)

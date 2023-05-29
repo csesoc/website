@@ -16,21 +16,21 @@ var context contexts.DatabaseContext = nil
 // Open constructors available for everyone
 
 // NewFilesystemRepo instantiates a new file system repository with the current embedded context
-func NewFilesystemRepo(frontEndID uuid.UUID, logicalName string, URL string) (FilesystemRepository, error) {
-	return NewFrontendRepo(frontEndID, logicalName, URL, embeddedContext{getContext()})
+func NewFilesystemRepo(frontEndID uuid.UUID, logicalName string, URL string, context contexts.DatabaseContext) (FilesystemRepository, error) {
+	return NewFrontendRepo(frontEndID, logicalName, URL, embeddedContext{context})
 }
 
 // NewGroupsRepo instantiates a new groups repository
-func NewGroupsRepo() GroupsRepository {
+func NewGroupsRepo(context contexts.DatabaseContext) GroupsRepository {
 	return groupsRepository{
-		embeddedContext{getContext()},
+		embeddedContext{context},
 	}
 }
 
 // NewFrontendsRepo instantiates a new frontends repository
-func NewFrontendsRepo() FrontendsRepository {
+func NewFrontendsRepo(context contexts.DatabaseContext) FrontendsRepository {
 	return frontendsRepository{
-		embeddedContext{getContext()},
+		embeddedContext{context},
 	}
 }
 
