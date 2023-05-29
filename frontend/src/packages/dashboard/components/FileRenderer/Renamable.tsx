@@ -26,6 +26,7 @@ export default function Renamable({ name, id }: Props) {
     dispatch(renameFileEntityAction(newPayload));
   };
 
+ 
   return (
     <>
       {toggle ? (
@@ -49,6 +50,14 @@ export default function Renamable({ name, id }: Props) {
               event.stopPropagation();
             }
           }}
+
+          onBlur={(event) => {
+              handleRename(inputName);
+              setToggle(true);
+              event.preventDefault();
+              event.stopPropagation();
+          }}
+        autoFocus
         />
       )}
     </>

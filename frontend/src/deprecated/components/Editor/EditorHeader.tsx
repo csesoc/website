@@ -1,6 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useNavigate } from 'react-router-dom';
+
 
 const Container = styled.div`
   height: 65px;
@@ -16,7 +20,7 @@ const HeaderFlex = styled.div`
 display: flex;
 flex-direction: row;
 flex-wrap: nowrap;
-justify-content: flex-end;
+justify-content: space-between;
 align-items: center;
 padding: 0.3rem 0.5rem;
 `
@@ -37,13 +41,30 @@ const ButtonStyle = styled(Button)`
   min-width: 2px;
 }
 `
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  align-items: center;
+`
+
 /* Preview and text to be changed into a dropdown menu */
 
 const EditorHeader: React.FC = (props) => {
+
+  const navigate = useNavigate();
+
   return (
     <Container>
       <HeaderFlex>
-        {props.children}
+
+        <IconButton aria-label="back" onClick={() => navigate(-1)}>
+          <ArrowBackIcon fontSize="inherit" />
+        </IconButton>
+        <ButtonContainer>
+          {props.children}
+        </ButtonContainer>
         {/* <ButtonGroup>
           <ButtonStyle>
           ←
