@@ -12,9 +12,9 @@ export type positionProps = {
 export const GlassContainer = styled.div<positionProps>`
     position: ${(props) => props.position};
     
-    display: ${(props) => props.center ? "flex": ""};
-    justify-content: ${(props) => props.center ? "center": ""};
-    align-items: ${(props) => props.center ? "center": ""};
+    display: ${(props) => props.center ? "flex" : ""};
+    justify-content: ${(props) => props.center ? "center" : ""};
+    align-items: ${(props) => props.center ? "center" : ""};
 
     top: ${(props) => props.top}vw;
     left: ${(props) => props.left}vw;
@@ -23,24 +23,14 @@ export const GlassContainer = styled.div<positionProps>`
     border-width: 0.15vw;
     border-style: solid;
     border-color: #FAFCFF;
-    width: 80vw;
-    height: 50vw;
-    @media ${device.laptop} {
-        width: 36.7vw;
-        height: 20vw;
-    }
+    width: min(70vmin, 700px);
+    height: min(40vmin, 400px);
 `;
 
 export const ImgContainer = styled.div`
     position: relative;
-    width: 77vw;
-    height: 60vw;
-    top: -4.15vw;
-    left: 1.5vw;
-    @media ${device.laptop} {
-        width: 36vw;
-        height: 17.8vw;
-        top: 2.15vw;
-        left: 1.5vw;
-    }
+    width: 77vmin;
+    height: 60vmin;
+    top: -4.15vmin;
+    left: 1.5vmin;
 `

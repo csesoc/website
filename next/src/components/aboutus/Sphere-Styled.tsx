@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { device } from "../../styles/device";
 
 export type sphereProps = {
-  left? : number;
+  left?: number;
   top?: number;
   leftMobile?: number;
   topMobile?: number;
@@ -22,8 +22,8 @@ export const StyledSphere = styled.div<sphereProps>`
   z-index: 0;
   left: ${props => props.leftMobile}%;
   top: ${props => props.topMobile}%;
-  width: ${props => props.sizeMobile}vw;
-  height: ${props => props.sizeMobile}vw;
+  width: ${props => props.sizeMobile}vmin;
+  height: ${props => props.sizeMobile}vmin;
   background: linear-gradient(
     ${props => props.angle}deg, 
     ${props => props.colourMain} ${props => props.startMainPoint}%, 
@@ -37,11 +37,13 @@ export const StyledSphere = styled.div<sphereProps>`
   align-items: center;
   border-radius: 50%;
 
-  @media ${device.tablet} {
+  max-width: 400px;
+  max-height: 400px;
+  @media ${device.laptop} {
     left: ${props => props.left}%;
     top: ${props => props.top}%;
-    width: ${props => props.size}vw;
-    height: ${props => props.size}vw;
+    width: ${props => props.size}vmin;
+    height: ${props => props.size}vmin;
   }
 `;
 

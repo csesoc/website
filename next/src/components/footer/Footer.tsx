@@ -19,7 +19,7 @@ export const ImagesContainer = styled.div`
   display: flex;
   justify-content: space-between;
   @media ${device.tablet} {
-    width: 55%;
+    width: 75%;
     float: right;
   }
 `
@@ -27,21 +27,27 @@ export const ImagesContainer = styled.div`
 
 const FooterComponent = styled.footer`
   background-color: #A09FE3;
+  width: 100vw;
   padding: 2rem;
   display: flex;
   flex-direction: column;
-
+  position: static;
+  bottom: 0;
   @media ${device.tablet} {
     flex-direction: row;
   }
 `;
 
 const Logo = styled.div`
-  width: 100%;
+  width: 50%;
   display: flex;
+  padding-bottom: 5vmin;
 
   @media ${device.tablet} {
+    padding-bottom: 0vmin;
+
     width: 75%;
+    padding-left: 10vmin;
   }
 `;
 
@@ -49,10 +55,13 @@ const Details = styled.div`
   width: 100%;
   text-align: left;
   color: white;
+  font-size: min(3vmin, 32px);
+  line-height: min(3.5vmin, 45px);
 
   @media ${device.tablet} {
-    width: 25%;
+    width: 40%;
     text-align: right;
+    padding-right: 10vmin;
   }
 `;
 
@@ -63,11 +72,11 @@ const Footer: React.FC<{}> = () => {
         <Image src={CSESocLogo} alt="CSESoc" />
       </Logo>
       <Details>
-        <p>
+        <div>
           B03 CSE Building K17, UNSW
           <br />
           csesoc@csesoc.org.au
-          <br/><br/>
+          <br /><br />
           <ImagesContainer>
             <Link href="https://discord.gg/AM4GB5zuB6">
               <Image src={DiscordLogo} alt="CSESoc Discord" />
@@ -87,7 +96,7 @@ const Footer: React.FC<{}> = () => {
           </ImagesContainer>
           <br /><br />
           © 2022 — CSESoc UNSW
-        </p>
+        </div>
       </Details>
     </FooterComponent>
   );

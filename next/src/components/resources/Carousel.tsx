@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { wrap } from "popmotion";
 import images from "./image-data";
+import { device } from "../../styles/device";
 
 const variants = {
   enter: (direction: number) => {
@@ -57,7 +58,7 @@ const Example = () => {
             x: { type: "spring", stiffness: 300, damping: 30 },
             opacity: { duration: 0.2 }
           }}
-          style={{ width: "30%", position: "absolute", cursor: "pointer"}}
+          style={{ width: "25%", position: "absolute", cursor: "pointer" }}
         />
       </AnimatePresence>
     </>

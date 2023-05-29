@@ -6,10 +6,9 @@ export default function ClearLayeredGlass() {
   return (
     <div>
       <GlassContainer position="relative">
-        <GlassContainer position="absolute" top={1} left={1} />
-        <ImgContainer>
-          <Image src="/assets/CSESocEventsCP.png" layout="fill" objectFit="contain" />
-        </ImgContainer>
+        <GlassContainer position="relative" top={1} left={1} >
+          <Image onClick={() => { window.open("https://www.facebook.com/events/507207411493903", '_blank') }} alt="Events" src="/assets/Oweek.png" layout="fill" objectFit="contain" />
+        </GlassContainer>
       </GlassContainer>
     </div>
   );

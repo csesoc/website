@@ -5,11 +5,11 @@ import { sphereProps } from "./Sphere-Styled";
 export const AboutUsPage = styled.div`
     position: relative;
     top: -50px;
-    height: 100vh;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 22vh;
+    margin-top: 50vmin;
 `
 
 export const AboutUsContent = styled.div`
@@ -24,15 +24,10 @@ export const AboutUsContent = styled.div`
 export const AboutUsText = styled.div`
     color: var(--accent-darker-purple);
     font-family: 'Raleway';
-    font-weight: 810;
-
-    font-size: 40px;
-    @media ${device.tablet} {
-        font-size: 3.5vw;
-        line-height: 1.9vw;
-        text-align: right;
-    }
-
+    font-weight: 800;
+    font-size: min(5vmin, 40px);
+    line-height: min(2vmin, 20px);
+    text-align: right;
 `
 
 export const MainText = styled.div`
@@ -40,17 +35,12 @@ export const MainText = styled.div`
     background: #A09FE3;
     border-radius: 1vw;
     color: #FFFFFF;
-    font-weight: 400;
-    font-size: 18px;
-    padding: 20px;
-    line-height: 20px;
-    @media ${device.tablet} {
-        font-size: 2vw;
-        text-align: center;
-        padding: 1.4vw 2vw;
-        margin-top: 2.8vw;
-        line-height: 2.5vw;
-    }
+    font-weight: 500;
+    font-size: min(3vmin, 32px);
+    line-height: min(3.5vmin, 45px);
+    text-align: center;
+    padding: min(2.5vmin, 25px) min(2vmin, 20px);
+    margin-top: min(2.8vmin, 25px);
 `;
 
 export const BlueText = styled.span`
@@ -61,15 +51,12 @@ export const MoreInfoText = styled.div<sphereProps>`
     transform: rotate(${props => props.rotation ? -props.rotation : 0}deg);
     color: #FFFFFF;
     font-weight: 700;
-    line-height: 58px;
-    font-size: 3.6vw;
-
+    font-size: min(3vmin, 32px);
+    line-height: min(3.5vmin, 40px);
+    text-align: center;
+    
     &:hover { 
       cursor: pointer;
       transform: rotate(${props => props.rotation ? -props.rotation : 0}deg) scale(1.1);
-    }
-
-    @media ${device.tablet} {
-      font-size: 2.3vw;
     }
 `;

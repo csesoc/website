@@ -11,7 +11,6 @@ import HamburgerMenu from "../components/navbar/HamburgerMenu";
 import HPCurve from "../svgs/HPCurve"
 import TopRect from "../svgs/TopRect.svg"
 import BottomRect from "../svgs/BottomRect.svg"
-import Otter from '../svgs/otter.png'
 
 // local
 import Navbar from "../components/navbar/Navbar";
@@ -22,27 +21,32 @@ import Resources from "./MiniResources";
 import Support from "./MiniSupport";
 
 import Footer from "../components/footer/Footer";
-import { device } from '../styles/device'
-import { SectionFadeInFromLeft, SectionFadeInFromRight, Spin } from "../styles/motion"
-import Sponsors from "./Sponsors";
+import { size as deviceSize, device } from '../styles/device'
+import { SectionFadeInFromLeft, SectionFadeInFromRight } from "../styles/motion"
 import ExecDescription from "./ExecDescription";
+import { relative } from "path";
 
 type CurveContainerProps = {
   offset: number;
 };
 
 const PageContainer = styled.div`
-  max-width: 100vw;
   min-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const CurveContainer = styled.div<CurveContainerProps>`
-  position: absolute;
-  top: ${props => props.offset}px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  top: -${props => props.offset}/2px;
   right: 0;
-  z-index: -1;  
+	z-index: -1;
 `;
 
 const NavContainer = styled.div`
@@ -51,27 +55,25 @@ const NavContainer = styled.div`
 
 const PurpleBlock = styled.div`
   background: #BEB8EA;
-  width: 100vw;
-  height: 135vh;
-  position: relative;
-  top: -10px;
+  width: 100%;
+  height: 50vmin;
+  @media ${device.tablet} {
+    height: min(250vmin, 2560px);
+  }
+  @media ${device.laptop} {
+    height: min(150vmin, 2560px);
+  }
 `;
 
 const Background = styled.div<{ offset?: number }>`
+  width: 100%;
 	position: absolute;
-	top: ${(props) => props.offset}px;
 	right: 0;
 	z-index: -1;
+  height: auto;
 `;
 
 const RefLink = styled.div``
-
-const LoaderContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`
 
 
 
@@ -80,7 +82,6 @@ const Index: NextPage = () => {
   const [height, setHeight] = useState<undefined | number>();
   const [loaded, setLoaded] = useState(false);
   const [navbarOpen, setNavbarOpen] = useState(false);
-  const [fakeLoading, setFakeLoading] = useState(true);
 
   const handleToggle: NavbarOpenHandler = () => {
     setNavbarOpen(!navbarOpen);
@@ -102,72 +103,77 @@ const Index: NextPage = () => {
     setWidth(window?.innerWidth)
   }, [width])
 
-  setTimeout(() => {
-    setFakeLoading(false);
-  }, 2000)
-
-  if (fakeLoading) {
-    return (
-      <Spin>
-        <PageContainer>
-          <LoaderContainer>
-            <Image src={Otter} />
-          </LoaderContainer>
-        </PageContainer>
-      </Spin>
-    )
-  }
-
   return (
-    <PageContainer>
-      <Head>
-        <title>CSESoc</title>
-        <meta name="description" content="CSESoc Website Homepage" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <>
       <NavContainer>
         {!navbarOpen && <Navbar open={navbarOpen} setNavbarOpen={handleToggle} variant={NavbarType.HOMEPAGE} />}
         {navbarOpen && <HamburgerMenu open={navbarOpen} setNavbarOpen={handleToggle} />}
       </NavContainer>
-      {(loaded && height && width) && (
-        <>
-          <Background>
-            <CurveContainer offset={0}>
-              {/* <Image src={HPCurve} objectFit="cover"/> */}
-              <HPCurve />
-            </CurveContainer>
-            <CurveContainer offset={height + 300}>
-              <Image src={TopRect} />
-              <PurpleBlock />
-              <div style={{ position: 'relative', top: '-10px' }}>
-                <Image src={BottomRect} />
-              </div>
-            </CurveContainer>
-          </Background>
-          <RefLink id="homepage">
-            <Homepage />
-          </RefLink>
-          <RefLink id="aboutus">
-            <SectionFadeInFromRight>
-              <AboutUs />
-            </SectionFadeInFromRight>
-          </RefLink>
-          <RefLink id="events">
-            <SectionFadeInFromLeft>
-              <Events />
-            </SectionFadeInFromLeft>
-          </RefLink>
-          <RefLink id="resources">
-            <Resources />
-          </RefLink>
-          <RefLink id="support">
-            <Support />
-          </RefLink>
-          <Footer />
-        </>
-      )}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+      }}>
+        <PageContainer>
+          <Head>
+            <title>CSESoc</title>
+            <meta name="description" content="CSESoc Website Homepage" />
+            <link rel="icon" href="/favicon.ico" />
+          </Head>
+          {(loaded && height && width) && (
+            <>
+              <Background>
+                <CurveContainer offset={0}>
+                  {/* <Image src={HPCurve} objectFit="cover"/> */}
+                  <HPCurve />
+                </CurveContainer>
+              </Background>
+              <div style={{ maxWidth: "2560px" }}>
 
-    </PageContainer>
+                <RefLink id="homepage">
+                  <Homepage />
+                </RefLink>
+                <RefLink id="aboutus">
+                  {/* <SectionFadeInFromRight> */}
+                  <AboutUs />
+                  {/* </SectionFadeInFromRight> */}
+                </RefLink>
+              </div>
+              <div style={{ position: "relative", width: "100%", top: -height / 2 }}>
+                <Background>
+                  <CurveContainer offset={height}>
+                    <div style={{ position: "relative", width: width, height: width * 0.503 }}>
+                      <Image alt="purple-top-bg" src={TopRect} layout="fill" />
+                    </div>
+                    <PurpleBlock />
+                    <div style={{ position: "relative", width: width, height: width * 0.4767 }}>
+                      <Image alt="purple-bottom-bg" src={BottomRect} layout="fill" />
+                    </div>
+                  </CurveContainer>
+                </Background>
+              </div>
+              <div style={{ maxWidth: "2560px" }}>
+
+                <RefLink id="events">
+                  {/* <SectionFadeInFromLeft> */}
+                  <Events />
+                  {/* </SectionFadeInFromLeft> */}
+                </RefLink>
+                <RefLink id="resources">
+                  <Resources />
+                </RefLink>
+                <RefLink id="support">
+                  <Support />
+                </RefLink>
+              </div>
+            </>
+          )}
+
+        </PageContainer >
+        <Footer />
+      </div>
+    </>
   );
 };
 
