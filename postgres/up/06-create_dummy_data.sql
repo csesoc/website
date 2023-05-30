@@ -29,9 +29,6 @@ BEGIN
   user3 := (SELECT 
     create_normal_user('jane.doe@gmail.com', 'jane', 'password'));
     
-  -- Create a new frontend (frontendID should be generated code-side)
-  rootID := (SELECT new_frontend(uuid_generate_v4(), 'CSESoc Main Website', 'http://localhost:3000'));
-  
   -- Create access groups
   INSERT INTO groups (Name) VALUES 
     ('blog_owners') 
@@ -39,6 +36,9 @@ BEGIN
   INSERT INTO groups (Name) VALUES 
     ('about_owners') 
   RETURNING GroupID INTO aboutGroup;
+    
+  -- Create a new frontend (frontendID should be generated code-side)
+  rootID := (SELECT new_frontend(uuid_generate_v4(), 'CSESoc Main Website', 'http://localhost:3000'));
   
   -- Assign groups to frontend
   INSERT INTO frontend_membership VALUES (rootID, blogGroup);
@@ -53,17 +53,17 @@ BEGIN
   -- TODO: Add permissions logic (trying to do this via new_entity to save the hassle)
   
   -- Blog group adds directories
-  blogDirectory := (SELECT new_entity(rootID, 'downloads'));
-  blogDirectory := (SELECT new_entity(rootID, 'blog_documents'));
+  blogDirectory := (SELECT new_entity(rootID, 'downloads', 1));
+  blogDirectory := (SELECT new_entity(rootID, 'blog_documents', 1));
   -- Blog group adds documents to 'documents' directory
-  blogDocument := (SELECT new_entity(blogDirectory, 'cool_document.txt', true));
-  blogDocument := (SELECT new_entity(blogDirectory, 'cool_document2.txt', true));
+  blogDocument := (SELECT new_entity(blogDirectory, 'cool_document.txt', 1, true));
+  blogDocument := (SELECT new_entity(blogDirectory, 'cool_document2.txt', 1, true));
   -- Delete and readd
   PERFORM delete_entity(blogDocument);
-  blogDocument := (SELECT new_entity(blogDirectory, 'cool_document2.txt', true));
+  blogDocument := (SELECT new_entity(blogDirectory, 'cool_document2.txt', 1, true));
   
   -- About group adds directory
-  aboutDirectory := (SELECT new_entity(rootID, 'about_page'));
+  aboutDirectory := (SELECT new_entity(rootID, 'about_page', 1));
   -- Proceeds to add second layer directory
-  aboutDirectory2 := (SELECT new_entity(aboutDirectory, 'about_projects'));
+  aboutDirectory2 := (SELECT new_entity(aboutDirectory, 'about_projects', 1));
 END $$;

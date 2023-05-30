@@ -45,6 +45,8 @@ func TestRootInsert(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ==== Test setup ====
+		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
 		root, _ := repo.GetRoot()
 
 		newDir, _ := repo.CreateEntry(repositories.FilesystemEntry{
@@ -86,6 +88,8 @@ func TestDocumentInfoRetrieval(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ==== Setup ====
+		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
 		newDoc, err := repo.CreateEntry(repositories.FilesystemEntry{
 			LogicalName: "test_doc", ParentFileID: frontendID,
 			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: true,
@@ -109,6 +113,8 @@ func TestEntityDeletion(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ====== Setup ======
+		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
 		root, _ := repo.GetRoot()
 
 		newDir, _ := repo.CreateEntry(repositories.FilesystemEntry{
@@ -174,6 +180,8 @@ func TestEntityRename(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ===== Test setup =====
+		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
 		newDir, _ := repo.CreateEntry(getEntity("cool_dir", repositories.GROUPS_ADMIN, frontendID, false))
 		newDoc, _ := repo.CreateEntry(getEntity("cool_doc", repositories.GROUPS_ADMIN, newDir.EntityID, false))
 		newDoc1, _ := repo.CreateEntry(getEntity("cool_doc1", repositories.GROUPS_ADMIN, newDir.EntityID, false))
@@ -202,6 +210,8 @@ func TestEntityChildren(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// Test setup
+		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
 		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, frontendID))
 		dir2, _ := repo.CreateEntry(getEntity("d2", repositories.GROUPS_ADMIN, false, frontendID))
 		dir3, _ := repo.CreateEntry(getEntity("d3", repositories.GROUPS_ADMIN, false, frontendID))
@@ -248,6 +258,8 @@ func TestGetIDWithPath(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// Test setup
+		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
 		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, frontendID))
 		currentDir := dir1
 		for x := 1; x < 3; x++ {

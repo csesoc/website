@@ -39,8 +39,9 @@ CREATE TABLE filesystem (
 );
 
 /* Utility procedure :) */
+-- TODO: Remove ownedByP here
 DROP FUNCTION IF EXISTS new_entity;
-CREATE OR REPLACE FUNCTION new_entity (parentP uuid, logicalNameP VARCHAR, isDocumentP BOOLEAN DEFAULT false) RETURNS uuid
+CREATE OR REPLACE FUNCTION new_entity (parentP uuid, logicalNameP VARCHAR, ownedByP INT, isDocumentP BOOLEAN DEFAULT false) RETURNS uuid
 LANGUAGE plpgsql
 AS $$
 DECLARE
@@ -52,8 +53,8 @@ BEGIN
     RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'cannot make parent a document';
   END If;
   WITH newEntity AS (
-    INSERT INTO filesystem (LogicalName, IsDocument, Parent)
-      VALUES (logicalNameP, isDocumentP, parentP)
+    INSERT INTO filesystem (LogicalName, IsDocument, OwnedBy, Parent)
+      VALUES (logicalNameP, isDocumentP, ownedByP, parentP)
       RETURNING EntityID
   )
 
@@ -71,9 +72,10 @@ DECLARE
 BEGIN
   INSERT INTO frontend VALUES (frontendIDP, logicalNameP, URLP)
     RETURNING ID INTO frontendID;
-                  
-  INSERT INTO filesystem (EntityID, LogicalName, IsDocument, Parent)
-    VALUES (frontendID, logicalNameP, false, uuid_nil());
+       
+  -- TODO: Temporarily setting the OwnedBy field. Going to be deprecated soon.
+  INSERT INTO filesystem (EntityID, LogicalName, IsDocument, Parent, OwnedBy)
+    VALUES (frontendID, logicalNameP, false, uuid_nil(), 1);
     
   RETURN frontendID;
 END $$;

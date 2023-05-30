@@ -3,6 +3,7 @@ package repositories
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/google/uuid"
@@ -24,7 +25,7 @@ func (rep filesystemRepository) query(query string, input ...interface{}) (Files
 	err := rep.ctx.Query(query,
 		input,
 		&entity.EntityID, &entity.LogicalName, &entity.IsDocument, &entity.IsPublished,
-		&entity.CreatedAt, &entity.ParentFileID)
+		&entity.CreatedAt, &entity.OwnerUserId, &entity.ParentFileID)
 	if err != nil {
 		return FilesystemEntry{}, err
 	}
@@ -54,6 +55,7 @@ func (rep filesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEnt
 	var newID uuid.UUID
 	err := rep.ctx.Query("SELECT new_entity($1, $2, $3, $4)", []interface{}{file.ParentFileID, file.LogicalName, file.OwnerUserId, file.IsDocument}, &newID)
 	if err != nil {
+		fmt.Println(err)
 		return FilesystemEntry{}, err
 	}
 	return rep.GetEntryWithID(newID)
