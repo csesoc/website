@@ -20,21 +20,21 @@ I personally feel like its rather easy to understand a system if you understand 
 ### The connection starts
 When the user clicks the "edit" button, this instantiates a HTTP request that's handled by the HTTP handler in `main.go`: `func EditEndpoint(w http.ResponseWriter, r *http.Request)`. This handler takes the incoming request, looks up the requested document and if it exists upgrades the connection to a WebSocket connection. This is important as a WebSocket connection allows for bidirectional communication between the client and server  in real time without needing either to poll for updates
 
-After upgrading the connection to a websocket connection the handler then asks the `DocumentServerFactory` to either create or fetch the object modelling an active edit session for the requested document. If the document does not already have an active edit session the `DocumentServerFactor` will proceed to read the document from disk, parse it (construct an AST for it) and return a `DocumentServer`. 
+After upgrading the connection to a WebSocket connection the handler then asks the `DocumentServerFactory` to either create or fetch the object modelling an active edit session for the requested document. If the document does not already have an active edit session the `DocumentServerFactory` will proceed to read the document from disk, parse it (convert it from a text file to a go struct) and constructs a `DocumentServer`. This `DocumentServer` is responsible for managing the current state of the document, tracking the clients editing the document, and keeping the history of the operations.
 
-After the `DocumentServer` is fetched a client object is allocated and registered with the document server and a new goroutine is spun up to handle incoming operations from the client. The handler code is as follows (note it is subject to change):
+After the `DocumentServer` is created / fetched, a client object is allocated and registered with the document server and a new goroutine is spun up to handle incoming operations from the client. The handler code is as follows (note it is subject to change):
 ```go
 func EditEndpoint(w http.ResponseWriter, r *http.Request) {
 	requestedDocument := // parse request body
 	targetServer := GetDocumentServerFactoryInstance().FetchDocumentServer(requestedDoc)
 
 	wsClient := newClient(ws)
-	commPipe, terminatePipe := targetServer.connectClient(wsClient)
+	commPipe, signalDeparturePipe := targetServer.connectClient(wsClient)
 
-	go wsClient.run(commPipe, terminatePipe)
+	go wsClient.run(commPipe, signalDeparturePipe)
 }
 ```
-Note that during the connection process the document server ended up returning a `pipe`, this `pipe` is actually just a small function that the client (or at least the client's shadow on the server) can use to propagate messages to the server it is connected to. 
+During the connection process the document server returned two "pipes". A "pipe" is a function that the client (or at least the client's shadow on the server) can use to propagate messages to the server it is connected to. 
 
 ### The client applies an operation
 So the client has just applied an operation to their local document, the frontend has captured this and set it to the server via websockets, now what? 😳. If you remember back to the previous code snippet the last bit of code spun up a goroutine to run the `wsClient.run` function, this function is an infinite loop that is constantly reading from the websocket and forwarding the operations to the document server. The `wsClient.run` function at the moment of typing up this document looks something like:
@@ -74,7 +74,7 @@ func (c *clientView) run(serverPipe pipe, signalDeparturePipe alertLeaving) {
 ```
 The bit of interest is what happens in the `default` branch of the select statement (we will talk about the other branches later). Within this branch we attempt to read something from the websocket and then parse that (we will cover parsing a little later as its surprisingly complicated), we then use the `serverPipe` mentioned previously to send that request to the document server. 
 
-This `serverPipe` is a function built by the `document_server` during connection it is a closure returned by the `buildClientPipe` method. The function is relatively intense and hands on so a lot of details have been left out here
+This `serverPipe` is a closure returned by the `buildClientPipe` method during the connection setup with the `DocumentServer`. The function is relatively intense so a lot of details have been left out here.
 ```go
 func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan func(), workerKillHandle chan empty) func(operations.Operation) {
 	return func(op operations.Operation) {
@@ -130,11 +130,11 @@ func (s *documentServer) buildClientPipe(clientID int, workerWorkHandle chan fun
 	}
 }
 ```
-so whenever we get an operation from the client we:
+So whenever we get an operation from the client we:
  1. communicate it to the document_server via a pipe
  2. the operation is then transformed against the entire log of operations the server has applied
  3. the operation is then applied to the server's representation of the document
- 4. the operation is then communicate to all other clients 
+ 4. the operation is then communicated to all other clients 
 
 ### The document server wants to propagate operations
 If you remember previously how it was mentioned that the document server "propagates" operations to the clients? It does that by sending these operations down a channel maintained by each client

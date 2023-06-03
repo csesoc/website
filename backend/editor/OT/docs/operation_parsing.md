@@ -3,12 +3,9 @@
 Surprisingly most of the complexity in the OT editor lives in the operation parsing and application logic. This document aims to help demystify some of it. As a quick aside, everything regarding operations can be found in the `operation` folder.
 
 ## The operation struct
-Operations (in Go) are defined as a struct, the operations we receive from the client conform to this structure and are parsed using a JSON parsing library (more on that later as there is a bit of complexity behind this). 
+Operations (in Go) are defined as a struct. The operations we receive from the client conform to this structure and are parsed using a JSON parsing library (more on that later as there is a bit of complexity behind this). 
 ```go
 type (
-	// EditType is the underlying type of an edit
-	EditType int
-
 	// OperationModel defines an simple interface an operation must implement
 	OperationModel interface {
 		TransformAgainst(op OperationModel, applicationType EditType) (OperationModel, OperationModel)
@@ -25,14 +22,20 @@ type (
 		Operation OperationModel
 	}
 )
+// EditType is an enum with `int` as the base type
+type EditType int
+const (
+	Add EditType = iota
+	Remove
+)
 ```
 The above code snippet uniquely defines an operation. Operations take a path to where in the document AST they are being applied (see the paper on tree based transform functions) and the physical operation being applied. The operation being applied (`OperationModel`) is actually an interface and is the reason why parsing operations is more complex than it seems. This interface defines two functions, one for transforming a operation against another operation and one for applying an operation to an AST. 
 
-The reason why `OperationModel` is an interface is because there are several distinct types of operations we can apply for varying types. Theres different operations for editing an `integer`, `array`, `boolean`, `object` and `string` field. Each of these define their own transformation functions and application logic so in order to maintain a clean abstraction we use an interface. As an example this is how the `string` operation type implements this interface ![here](../operations/string_operation.go), its a rather intense implementation since it also implements string based transform functions.
+The reason why `OperationModel` is an interface is because there are several distinct types of operations we can apply for varying types. Theres different operations for editing an `integer`, `array`, `boolean`, `object` and `string` field. Each of these define their own transformation functions and application logic, so in order to maintain a clean abstraction we use an interface. As an example this is how the `string` operation type implements this interface ![here](../operations/string_operation.go), its a rather intense implementation since it also implements string based transform functions.
 
 
 ## Operation application
-Recall that the `document_server` maintains an abstract syntax tree for the current JSON document, this AST is exactly what `cmsjson.AstNode` is, the document server maintains the **root node**. When applying an operation to a document we invoke the `Operation.ApplyTo` function
+Recall that the `document_server` maintains an abstract syntax tree for the current JSON document, this AST is implemented by `cmsjson.AstNode`, and the document server maintains the **root node**. When applying an operation to a document we invoke the `Operation.ApplyTo` function
 ```go
 func (op Operation) ApplyTo(document cmsjson.AstNode) (cmsjson.AstNode, error) {
 	parent, _, err := Traverse(document, op.Path)
