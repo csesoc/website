@@ -18,7 +18,7 @@ At a very high level our editor server consists of 3 distinct layers.
 I personally feel like its rather easy to understand a system if you understand how it achieves its key features. This section is about what exactly happens when a user clicks the "edit" button on a document and constructs an edit session. What type of objects are created? Where do they live? Etc. 
 
 ### The connection starts
-So the user clicks the "edit" button, this instantiates a HTTP request thats handled by the HTTP handler in `main.go`: `func EditEndpoint(w http.ResponseWriter, r *http.Request)`. This handler takes the incoming request, looks up the requested document and if it exists upgrades the connection to a Websocket connection. 
+When the user clicks the "edit" button, this instantiates a HTTP request that's handled by the HTTP handler in `main.go`: `func EditEndpoint(w http.ResponseWriter, r *http.Request)`. This handler takes the incoming request, looks up the requested document and if it exists upgrades the connection to a WebSocket connection. This is important as a WebSocket connection allows for bidirectional communication between the client and server  in real time without needing either to poll for updates
 
 After upgrading the connection to a websocket connection the handler then asks the `DocumentServerFactory` to either create or fetch the object modelling an active edit session for the requested document. If the document does not already have an active edit session the `DocumentServerFactor` will proceed to read the document from disk, parse it (construct an AST for it) and return a `DocumentServer`. 
 
