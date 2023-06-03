@@ -16,6 +16,8 @@ import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
 import { CMSOperation } from "./api/OTClient/operation";
 
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -33,6 +35,16 @@ const EditorPage: FC = () => {
 
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [focusedId, setFocusedId] = useState<number>(0);
+
+  function handleOnDragEnd(result: any) {
+    if (!result.destination) return;
+
+    const items = Array.from(blocks);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setBlocks(items);
+  }
 
   const updateValues: UpdateCallback = (idx, updatedBlock) => {
     const requiresUpdate = JSON.stringify(blocks[idx]) !== JSON.stringify(updateValues);
@@ -87,11 +99,31 @@ const EditorPage: FC = () => {
           <PublishDocument onClick={() => publishDocument(id ?? "")} />
       </EditorHeader>
       <Container>
-        {blocks.map((block, idx) => createBlock(block, idx, focusedId === idx))}
-        <InsertContentWrapper>
-          <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
-          <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />
-        </InsertContentWrapper>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+          <Droppable droppableId="characters">
+            {(provided) => (
+              <ul className="characters" {...provided.droppableProps} ref={provided.innerRef}>
+                {blocks.map((block, idx) => 
+                  {
+                  return (
+                    <Draggable key={id} draggableId={idx.toString()} index={idx}>
+                      {(provided) => (
+                        <span ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                          {createBlock(block, idx, focusedId === idx)}
+                        </span>
+                      )}
+                    </Draggable>
+                  );}
+                
+                )}
+                <InsertContentWrapper>
+                  <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
+                  <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />
+                </InsertContentWrapper>
+              </ul>
+            )}
+          </Droppable>
+        </DragDropContext>
       </Container>
     </div>
   );
