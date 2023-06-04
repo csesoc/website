@@ -128,7 +128,7 @@ const CodeBlock: FC<CMSBlockProps> = ({
   );
 
   const language = (editor.children[0] as Element) !== undefined
-    ? (editor.children[0] as Element).language 
+    ? (editor.children[0] as Element).language ?? "python"
     : "python"
   ;
 
