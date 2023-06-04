@@ -1,8 +1,0 @@
-{
-  "devDependencies": {
-    "@types/prismjs": "^1.26.0"
-  },
-  "dependencies": {
-    "@types/is-hotkey": "^0.1.7"
-  }
-}
