@@ -8,8 +8,6 @@ import {
   withReact,
   RenderLeafProps,
   RenderElementProps,
-  useSlateStatic,
-  ReactEditor,
   useSlate
 } from 'slate-react';
 
@@ -129,7 +127,7 @@ const CodeBlock: FC<CMSBlockProps> = ({
     []
   );
 
-  const language = editor.children.length > 0 
+  const language = (editor.children[0] as Element) !== undefined
     ? (editor.children[0] as Element).language 
     : "python"
   ;
