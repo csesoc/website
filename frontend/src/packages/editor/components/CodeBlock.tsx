@@ -56,8 +56,6 @@ import {
 import { CMSBlockProps } from '../types';
 
 import CodeContentBlock from "../../../cse-ui-kit/codeblock/codecontentblock-wrapper";
-import { handleKey } from "./buttons/buttonHelpers";
-import EditorCodeButton from "./buttons/EditorCodeButton";
 import { normalizeTokens } from './util/normalize-tokens';
 import isHotkey from 'is-hotkey';
 
