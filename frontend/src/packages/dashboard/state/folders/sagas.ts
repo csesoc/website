@@ -64,12 +64,12 @@ function* deleteFileEntitySaga({
 }
 
 function* renameFileEntitySaga({
-  payload: renamePayload,
-}: {
+  payload,
+}: // : renamePayload,
+{
   payload: actions.RenamePayloadType;
 }) {
-  // todo call backend rename filename/foldername API call
-  yield call(console.log, 'saga rename fired');
+  yield call(API.renameFileEntity, payload.id, payload.newName);
 }
 
 /**

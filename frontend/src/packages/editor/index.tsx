@@ -15,6 +15,7 @@ import { buildComponentFactory } from "./componentFactory";
 import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
 import { CMSOperation } from "./api/OTClient/operation";
+import CreateCodeBlock from "src/cse-ui-kit/CreateCodeBlock_button ";
 
 const Container = styled.div`
   display: flex;
@@ -71,7 +72,7 @@ const EditorPage: FC = () => {
   }
 
   // buildClickHandler builds handlers for events where new blocks are created and propagates them to the OT manager
-  const buildButtonClickHandler = (type: "heading" | "paragraph") => () => {
+  const buildButtonClickHandler = (type: "heading" | "paragraph" | "code") => () => {
     const newElement = { type: type, children: [{ text: "" }] };
 
     // push and update this creation operation to the operation manager
@@ -91,6 +92,7 @@ const EditorPage: FC = () => {
         <InsertContentWrapper>
           <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
           <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />
+          <CreateCodeBlock    onClick={buildButtonClickHandler("code")} />
         </InsertContentWrapper>
       </Container>
     </div>
