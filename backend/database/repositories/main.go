@@ -15,23 +15,23 @@ var context contexts.DatabaseContext = nil
 // Open constructors available for everyone
 
 // NewFilesystemRepo instantiates a new file system repository with the current embedded context
-func NewFilesystemRepo() FilesystemRepository {
+func NewFilesystemRepo(context contexts.DatabaseContext) FilesystemRepository {
 	return filesystemRepository{
-		embeddedContext{getContext()},
+		embeddedContext{context},
 	}
 }
 
 // NewGroupsRepo instantiates a new groups repository
-func NewGroupsRepo() GroupsRepository {
+func NewGroupsRepo(context contexts.DatabaseContext) GroupsRepository {
 	return groupsRepository{
-		embeddedContext{getContext()},
+		embeddedContext{context},
 	}
 }
 
 // NewFrontendsRepo instantiates a new frontends repository
-func NewFrontendsRepo() FrontendsRepository {
+func NewFrontendsRepo(context contexts.DatabaseContext) FrontendsRepository {
 	return frontendsRepository{
-		embeddedContext{getContext()},
+		embeddedContext{context},
 	}
 }
 
