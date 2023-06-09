@@ -28,11 +28,14 @@ const Block = ({ element }: { element: Element }) => {
     return (
       <CodeContainer>
         {element.children.map(({ text, language, ...textStyle }, idx) => (
-        <pre>
-          <code className={`language-${language}}`}>
-            {text}
-          </code>
-        </pre>
+        // <pre>
+        //   <code className={`language-${language}}`}>
+        //     {text}
+        //   </code>
+        // </pre>
+        <Text key={idx} {...textStyle}>
+          {text}
+        </Text>
       ))}
       </CodeContainer>
     )
