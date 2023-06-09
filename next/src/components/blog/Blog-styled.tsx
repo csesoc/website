@@ -39,9 +39,10 @@ const CodeLineWrapper = styled.pre`
   white-space: pre-line;
   padding: 0px;
 `
-
+  
 const CodeLine = styled.code`
   margin: 0px;
+  overflow-wrap: break-word;
 `
 
 const BlogContainer = styled.div`
