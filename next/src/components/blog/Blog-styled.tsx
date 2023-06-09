@@ -26,6 +26,14 @@ const ParagraphContainer = styled.div`
   padding: 10px;
 `;
 
+const CodeContainer = styled.div`
+  margin: 0px 10px;
+  padding: 10px;
+  font-family: monospace;
+  border-radius: 5px;
+  background: #f7f7f7;
+`
+
 const BlogContainer = styled.div`
   font-size: 1.25rem;
   margin: 0px 60px;
@@ -53,4 +61,5 @@ export {
   BlogContainer,
   BlogHeading,
   ParagraphContainer,
+  CodeContainer
 };
