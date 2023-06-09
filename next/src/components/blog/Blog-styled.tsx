@@ -31,7 +31,17 @@ const CodeContainer = styled.div`
   padding: 10px;
   font-family: monospace;
   border-radius: 5px;
-  background: #f7f7f7;
+  background: #f5f2f0;
+`
+
+const CodeLineWrapper = styled.pre`
+  margin: 0px;
+  white-space: pre-line;
+  padding: 0px;
+`
+
+const CodeLine = styled.code`
+  margin: 0px;
 `
 
 const BlogContainer = styled.div`
@@ -61,5 +71,7 @@ export {
   BlogContainer,
   BlogHeading,
   ParagraphContainer,
-  CodeContainer
+  CodeContainer,
+  CodeLine,
+  CodeLineWrapper
 };

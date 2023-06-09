@@ -21,7 +21,7 @@ interface Image {
 interface Code {
   type: "code";
   language: String;
-  children: Text[]
+  children: CodeLine[]
 }
 
 interface Text extends TextStyle {

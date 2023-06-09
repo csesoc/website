@@ -7,37 +7,61 @@ import {
   AlignedText,
   BlogContainer,
   CodeContainer,
+  CodeLine,
+  CodeLineWrapper,
 } from "./Blog-styled";
 import type { Element, Block } from "./types";
 
-// import Prism from 'prismjs';
-// import 'prismjs/themes/prism.css';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism.css';
 import { useEffect } from "react";
 
+// Supported Languages
+//
+// For all languages supported by Prism, visit https://prismjs.com/
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-jsx';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-tsx';
+import 'prismjs/components/prism-markdown';
+import 'prismjs/components/prism-python';
+// import 'prismjs/components/prism-phpCodeline
+import 'prismjs/components/prism-sql';
+import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-c';
+import 'prismjs/components/prism-cpp';
+import 'prismjs/components/prism-csharp';
+import 'prismjs/components/prism-prolog';
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-latex';
+import 'prismjs/components/prism-rust';
+import 'prismjs/components/prism-go'
+import 'prismjs/components/prism-haskell';
+import 'prismjs/components/prism-perl';
+
 const Block = ({ element }: { element: Element }) => {
-  // useEffect(() => {
-  //   Prism.highlightAll();
-  // }, []);
-  // console.log(element.type);
+  useEffect(() => {
+    Prism.highlightAll();
+  }, []);
+  
   if (element.type === "image") {
     return <ImagePlaceholder>{element.url}</ImagePlaceholder>;
   }
 
   if (element.type === "code") {
     console.log(element);
+    const language = "language-" + element.language;
+    console.log(language);
     return (
       <CodeContainer>
-        {element.children.map(({ text, language, ...textStyle }, idx) => (
-        // <pre>
-        //   <code className={`language-${language}}`}>
-        //     {text}
-        //   </code>
-        // </pre>
-        <Text key={idx} {...textStyle}>
-          {text}
-        </Text>
-      ))}
-      </CodeContainer>
+          {element.children.map(({ text, ...textStyle }, idx) => (
+            <CodeLineWrapper> 
+              <CodeLine className={language}>
+                {text}
+              </CodeLine>
+            </CodeLineWrapper>
+        ))}
+        </CodeContainer>
     )
   }
 
