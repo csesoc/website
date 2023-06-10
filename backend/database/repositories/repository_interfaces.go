@@ -19,9 +19,16 @@ type FilesystemEntry struct {
 	IsPublished bool
 	CreatedAt   time.Time
 
+	MetadataID uuid.UUID
+
 	OwnerUserId  int
 	ParentFileID uuid.UUID
 	ChildrenIDs  []uuid.UUID
+}
+
+type MetadataEntry struct {
+	MetadataID uuid.UUID
+	CreatedAt  time.Time
 }
 
 type (
@@ -32,6 +39,7 @@ type (
 		GetRoot() (FilesystemEntry, error)
 		GetEntryWithParentID(ID uuid.UUID) (FilesystemEntry, error)
 		GetIDWithPath(path string) (uuid.UUID, error)
+		GetMetadataFromID(ID uuid.UUID) (MetadataEntry, error)
 
 		CreateEntry(file FilesystemEntry) (FilesystemEntry, error)
 		DeleteEntryWithID(ID uuid.UUID) error
