@@ -10,11 +10,14 @@ DO $$
 DECLARE 
   randomGroup groups.UID%type;
   rootID      filesystem.EntityID%type;
+  newMetadataID  filesystem.MetadataID%type;
 BEGIN
   SELECT groups.UID INTO randomGroup FROM groups WHERE Name = 'admin'::VARCHAR;
+  /* Create metadata */
+  INSERT INTO metadata DEFAULT VALUES RETURNING MetadataID INTO newMetadataID;
   /* Insert the root directory */
-  INSERT INTO filesystem (EntityID, LogicalName, OwnedBy)
-    VALUES (uuid_nil(), 'root', randomGroup);
+  INSERT INTO filesystem (EntityID, LogicalName, MetadataID, OwnedBy)
+    VALUES (uuid_nil(), 'root', newMetadataID, randomGroup);
   SELECT filesystem.EntityID INTO rootID FROM filesystem WHERE LogicalName = 'root'::VARCHAR;
   /* Set parent to uuid_nil() because postgres driver has issue supporting NULL values */
   UPDATE filesystem SET Parent = uuid_nil() WHERE EntityID = rootID;
