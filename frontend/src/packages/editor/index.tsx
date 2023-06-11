@@ -15,6 +15,7 @@ import { buildComponentFactory } from "./componentFactory";
 import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
 import { CMSOperation } from "./api/OTClient/operation";
+import CreateCodeBlock from "src/cse-ui-kit/CreateCodeBlock_button ";
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
@@ -36,13 +37,13 @@ const EditorPage: FC = () => {
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [focusedId, setFocusedId] = useState<number>(0);
 
-  function handleOnDragEnd(result: any) {
+  const handleOnDragEnd = (result: any) => {
     if (!result.destination) return;
 
     const items = Array.from(blocks);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
-
+    console.log("yoo", items);
     setBlocks(items);
   }
 
@@ -83,7 +84,7 @@ const EditorPage: FC = () => {
   }
 
   // buildClickHandler builds handlers for events where new blocks are created and propagates them to the OT manager
-  const buildButtonClickHandler = (type: "heading" | "paragraph") => () => {
+  const buildButtonClickHandler = (type: "heading" | "paragraph" | "code") => () => {
     const newElement = { type: type, children: [{ text: "" }] };
 
     // push and update this creation operation to the operation manager
@@ -100,26 +101,27 @@ const EditorPage: FC = () => {
       </EditorHeader>
       <Container>
       <DragDropContext onDragEnd={handleOnDragEnd}>
-          <Droppable droppableId="characters">
-            {(provided) => (
-              <ul className="characters" {...provided.droppableProps} ref={provided.innerRef}>
+          <Droppable droppableId="blocks">
+            {(provided : any) => (
+              <ul className="blocks" {...provided.droppableProps} ref={provided.innerRef}>
                 {blocks.map((block, idx) => 
                   {
                   return (
-                    <Draggable key={id} draggableId={idx.toString()} index={idx}>
-                      {(provided) => (
+                    <Draggable key={idx} draggableId={idx.toString()} index={idx}>
+                      {(provided : any) => (
                         <span ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                           {createBlock(block, idx, focusedId === idx)}
                         </span>
                       )}
                     </Draggable>
-                  );}
-                
+                  );}    
                 )}
                 <InsertContentWrapper>
                   <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
                   <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />
+                  <CreateCodeBlock    onClick={buildButtonClickHandler("code")} />
                 </InsertContentWrapper>
+                {provided.placeholder}
               </ul>
             )}
           </Droppable>

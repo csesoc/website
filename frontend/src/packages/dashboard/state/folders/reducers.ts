@@ -1,6 +1,10 @@
-import { PayloadAction } from "@reduxjs/toolkit";
-import { RenamePayloadType, SetDirPayloadType } from "./actions";
-import { sliceState, FileEntity, Folder, File, PathObject } from "./types";
+import { PayloadAction } from '@reduxjs/toolkit';
+import {
+  DeletePayloadType,
+  RenamePayloadType,
+  SetDirPayloadType,
+} from './actions';
+import { sliceState, FileEntity, Folder, File, PathObject } from './types';
 
 /**
  * payload takes in:
@@ -33,6 +37,20 @@ export function addFileItems(state: sliceState, action: PayloadAction<File>) {
   return {
     ...state,
     items: [...state.items, newFile],
+  };
+}
+
+export function deleteFileEntityItems(
+  state: sliceState,
+  action: PayloadAction<DeletePayloadType>
+) {
+  const { id } = action.payload;
+  const stateItems = [...state.items]
+    .map((item) => ({ ...item }))
+    .filter((item) => item.id !== id);
+  return {
+    ...state,
+    items: stateItems,
   };
 }
 
