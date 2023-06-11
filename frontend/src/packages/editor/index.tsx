@@ -9,13 +9,16 @@ import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
 import SyncDocument from "src/cse-ui-kit/SyncDocument_button";
 import PublishDocument from "src/cse-ui-kit/PublishDocument_button";
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 
 import { buildComponentFactory } from "./componentFactory";
 import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
 import { CMSOperation } from "./api/OTClient/operation";
 import CreateCodeBlock from "src/cse-ui-kit/CreateCodeBlock_button ";
+
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const Container = styled.div`
   display: flex;
@@ -27,6 +30,19 @@ const InsertContentWrapper = styled.div`
   display: flex;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+`
+
+const LeftContainer = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+type LocationState = {
+  filename: string;
+};
+
 const EditorPage: FC = () => {
   const { id } = useParams();
   const wsClient = useRef<Client | null>(null);
@@ -34,6 +50,9 @@ const EditorPage: FC = () => {
 
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [focusedId, setFocusedId] = useState<number>(0);
+
+  const state = useLocation().state as LocationState;
+  const filename = state != null ? state.filename : "";
 
   const updateValues: UpdateCallback = (idx, updatedBlock) => {
     const requiresUpdate = JSON.stringify(blocks[idx]) !== JSON.stringify(updateValues);
@@ -81,11 +100,21 @@ const EditorPage: FC = () => {
     opManager.current?.pushToServer(newCreationOperation(newElement, blocks.length));
   }  
 
+  const navigate = useNavigate();
+  
   return (
     <div style={{ height: "100%" }}>
       <EditorHeader>
-          <SyncDocument onClick={() => syncDocument()} />
-          <PublishDocument onClick={() => publishDocument(id ?? "")} />
+          <LeftContainer>
+            <IconButton aria-label="back" onClick={() => navigate(-1)} sx={{ 'paddingRight': '20px' }}>
+              <ArrowBackIcon fontSize="inherit"/>
+            </IconButton>
+            {filename}
+          </LeftContainer>
+          <ButtonContainer>
+            <SyncDocument onClick={() => syncDocument()} />
+            <PublishDocument onClick={() => publishDocument(id ?? "")} />
+          </ButtonContainer>
       </EditorHeader>
       <Container>
         {blocks.map((block, idx) => createBlock(block, idx, focusedId === idx))}

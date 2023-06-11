@@ -2,6 +2,7 @@ import { render, fireEvent } from "src/cse-testing-lib"
 // import { queryByDataAnchor } from "src/cse-testing-lib/custom-queries";
 // import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
 import EditorPage from "./index";
+import { BrowserRouter as Router } from "react-router-dom";
 
 describe("Editor Block tests", () => {
   it("On CreateContentBlockButton click should create content block", () => {

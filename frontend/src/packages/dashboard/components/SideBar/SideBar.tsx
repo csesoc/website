@@ -1,12 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
-import Button from '@mui/material/Button';
-import { useNavigate } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import MenuIcon from '@mui/icons-material/Menu';
+import styled from "styled-components";
+import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import MenuIcon from "@mui/icons-material/Menu";
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { useSelector } from "react-redux";
+import { RootState } from "src/redux-state/reducers";
+import { folderSelectors } from "../../state/folders";
+import { getFolderState } from "../../api/helpers";
+import React from 'react';
 
 const Container = styled.div`
     position: relative;
@@ -117,6 +121,59 @@ export default function SideBar({
     isOpen,
     setOpen,
 }: Props) {
+
+
+  const handleNewFile = () => {
+    setModalState({
+      open: true,
+      type: "file",
+      selectedFile: '',
+    }); // sets modal to be open
+  };
+
+  const handleNewFolder = () => {
+    setModalState({
+      open: true,
+      type: "folder",
+      selectedFile: '',
+    });
+  };
+
+  // temporary delete file entity button
+  const handleDeleteFile = () => {
+    if (selectedFile !== null) {
+        setModalState({ open: true, selectedFile, type: 'delete' });
+    }
+  };
+
+  const navigate = useNavigate();
+  const handleEdit = () => {
+    if (selectedFile !== null) {
+      const fileItem = getFolderState().items.find((item) => item.id == selectedFile);
+      const filename = fileItem != null ? fileItem.name : "";
+      navigate("/editor/" + selectedFile, { 
+        replace: false,
+        state: {
+          filename: filename
+        } 
+      }), [navigate];
+    }
+  };
+
+  // TODO
+  const handleRecycle = () => {
+    return;
+  };
+
+  return (
+    <Container style={{ left: isOpen ? "0px" : "-250px" }}>
+      <IconWrapper onClick={() => setOpen(!isOpen)}>
+        <Circle />
+        {isOpen ? <ArrowBackIcon /> : <MenuIcon />}
+      </IconWrapper>
+      <SidebarTitle>Welcome \name\</SidebarTitle>
+      <ButtonFlex>
+        {/* <ButtonGroup>
     const handleNewFile = () => {
         setModalState({
             open: true,

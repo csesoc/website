@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { Breadcrumbs, Link } from '@mui/material';
 
 // local imports
 import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
