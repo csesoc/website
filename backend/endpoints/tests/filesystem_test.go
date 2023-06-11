@@ -146,7 +146,9 @@ func TestValidGetChildren(t *testing.T) {
 // createMockDependencyFactory just constructs an instance of a dependency factory mock
 func createMockDependencyFactory(controller *gomock.Controller, mockFileRepo *repMocks.MockIFilesystemRepository, needsLogger bool) *mocks.MockDependencyFactory {
 	mockDepFactory := mocks.NewMockDependencyFactory(controller)
-	mockDepFactory.EXPECT().GetFilesystemRepo().Return(mockFileRepo)
+	if mockFileRepo != nil {
+		mockDepFactory.EXPECT().GetFilesystemRepo().Return(mockFileRepo)
+	}
 
 	if needsLogger {
 		log := logger.OpenLog("new log")

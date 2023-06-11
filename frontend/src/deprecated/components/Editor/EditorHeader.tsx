@@ -1,11 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
-import IconButton from "@mui/material/IconButton";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useNavigate } from 'react-router-dom';
-import { ReactNode } from 'react'
-
 
 const Container = styled.div`
   height: 65px;

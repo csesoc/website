@@ -1,6 +1,13 @@
 SET timezone = 'Australia/Sydney';
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+/* MetaData */
+DROP TABLE IF EXISTS metadata;
+CREATE TABLE metadata (
+  MetadataID    uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
 /**
   The filesystem table models all file heirachies in our system
 **/
@@ -13,6 +20,9 @@ CREATE TABLE filesystem (
   IsPublished   BOOLEAN DEFAULT false,
   CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW(),
 
+  /* MetaData */
+  -- MetadataID        uuid NOT NULL,
+
   OwnedBy       INT,
   /* Pain */
   Parent        uuid REFERENCES filesystem(EntityID) DEFAULT NULL,
@@ -20,6 +30,9 @@ CREATE TABLE filesystem (
   /* FK Constraint */
   CONSTRAINT fk_owner FOREIGN KEY (OwnedBy) 
     REFERENCES groups(UID),
+
+  -- CONSTRAINT fk_meta FOREIGN KEY (MetadataID) REFERENCES metadata(MetadataID),
+
   /* Unique name constraint: there should not exist an entity of the same type with the
      same parent and logical name. */
   CONSTRAINT unique_name UNIQUE (Parent, LogicalName, IsDocument)        
