@@ -45,7 +45,7 @@ const Text = styled.span<{
   align: string;
 }>`
   font-weight: ${(props) => (props.bold ? 600 : 400)};
-  font-style: ${(props) => (props.italic ? 'italic' : 'normal')};
+  font-style: ${(props) => (props.italic ? 'italic' : 'inherit')};
   font-size: ${(props) => props.textSize}px;
   font-family: ${(props) => (props.code ? 'monospace' : 'inherit')};
   text-decoration-line: ${(props) => (props.underline ? 'underline' : 'none')};
@@ -57,11 +57,8 @@ const Quote = styled.blockquote`
   border-left: 3px solid #9e9e9e;
   margin: 0px;
   padding-left: 10px;
-
-  span {
-    font-style: italic;
-    color: #9e9e9e;
-  }
+  color: #9e9e9e;
+  font-style: italic;
 `;
 const AlignedText = Text.withComponent('div');
 
@@ -78,7 +75,6 @@ const EditorBlock: FC<CMSBlockProps> = ({
     ({ attributes, children, element }) => {
       switch (element.type) {
         case 'quote':
-          console.log('why');
           return <Quote {...attributes}>{children}</Quote>;
         case 'unordered-list':
           return <ul {...attributes}>{children}</ul>;
@@ -87,7 +83,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
         case 'list-item':
           return <li {...attributes}>{children}</li>;
         default:
-          return <span {...attributes}>{children}</span>;
+          return <div {...attributes}>{children}</div>;
       }
     },
     []

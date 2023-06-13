@@ -2,7 +2,6 @@ import { Editor, BaseEditor, Transforms, Element as SlateElement } from 'slate';
 import { ReactEditor } from 'slate-react';
 
 const LIST_TYPES = ['ordered-list', 'unordered-list'];
-const TEXT_ALIGN_TYPES = ['left', 'center', 'right'];
 
 const toggleBlock = (
   editor: BaseEditor & ReactEditor,
@@ -15,8 +14,7 @@ const toggleBlock = (
     match: (n) =>
       !Editor.isEditor(n) &&
       SlateElement.isElement(n) &&
-      LIST_TYPES.includes(n.type) &&
-      !TEXT_ALIGN_TYPES.includes(format),
+      LIST_TYPES.includes(n.type),
     split: true,
   });
   const newProperties: Partial<SlateElement> = {
