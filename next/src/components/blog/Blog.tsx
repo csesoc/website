@@ -49,13 +49,12 @@ const Block = ({ element }: { element: Element }) => {
   }
 
   if (element.type === "code") {
-    console.log(element);
-    const language = "language-" + element.language;
-    console.log(language);
+    const language = "language-" + (element.language ?? "python");
+
     return (
       <CodeContainer>
           {element.children.map(({ text, ...textStyle }, idx) => (
-            <CodeLineWrapper> 
+            <CodeLineWrapper key={idx}> 
               <CodeLine className={language}>
                 {text}
               </CodeLine>
@@ -85,6 +84,7 @@ const Block = ({ element }: { element: Element }) => {
 };
 
 const Blog = ({ blocks }: { blocks: Block[] }) => {
+  console.log(blocks.flat())
   return (
     <BlogContainer>
       {blocks.flat().map((element, idx) => (

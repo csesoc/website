@@ -23,6 +23,7 @@ const MainContainer = styled.div`
 `;
 
 const BlogPage: NextPage<{ data: Block[] }> = ({ data }) => {
+  console.log(data)
   return (
     <PageContainer>
       <Navbar
