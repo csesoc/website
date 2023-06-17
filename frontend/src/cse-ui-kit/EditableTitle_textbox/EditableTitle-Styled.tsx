@@ -1,11 +1,5 @@
 import styled from "styled-components";
 
-export type buttonProps = {
-  background?: string;
-};
-// width: 175px;
-// height: 45px;
-// margin: 5px;
 export const StyledTextBox = styled.input`
   background: transparent;
 
