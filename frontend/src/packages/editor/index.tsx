@@ -68,7 +68,11 @@ const EditorPage: FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const updateFilename = () => {
-    if (filename !== savedFilename && id !== undefined) {
+    // No empty names allowed!
+    if (filename == "") {
+      setFilename(savedFilename);
+      
+    } else if (filename !== savedFilename && id !== undefined) {
       const newPayload: RenamePayloadType = { id, newName: filename };
       dispatch(renameFileEntityAction(newPayload));
       
