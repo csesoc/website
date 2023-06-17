@@ -61,8 +61,6 @@ const EditorPage: FC = () => {
 
   const state = useLocation().state as LocationState;
 
-  console.log(useLocation());
-
   const [filename, setFilename] = useState<string>(state != null ? state.filename : "");
 
   const [savedFilename, setSavedFilename] = useState<string>(`${filename}`);
@@ -77,12 +75,12 @@ const EditorPage: FC = () => {
       // Re-navigate to current page with new file name so that
       // filename changes are persistent on reloads
       navigate("/editor/" + id, { 
-        replace: false,
+        replace: true,
         state: {
           filename
         } 
       }), [navigate];
-  
+      
       setSavedFilename(`${filename}`);
     }
   }
@@ -138,7 +136,10 @@ const EditorPage: FC = () => {
     <div style={{ height: "100%" }}>
       <EditorHeader>
           <LeftContainer>
-            <IconButton aria-label="back" onClick={() => navigate(-1)} sx={{ 'paddingRight': '20px' }}>
+            <IconButton 
+              aria-label="back"
+              onClick={() => navigate(-1)} 
+              sx={{ 'paddingRight': '20px' }}>
               <ArrowBackIcon fontSize="inherit"/>
             </IconButton>
 
