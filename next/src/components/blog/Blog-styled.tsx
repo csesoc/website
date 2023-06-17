@@ -70,13 +70,6 @@ const CodeLineWrapper = styled.pre`
   white-space: pre-wrap !important;
   word-break: break-word !important;
   `
-  
-  
-  // max-width: 100% !important;
-  // word-break: break-all !important;
-  // word-wrap: break-word !important;
-  // overflow-wrap: break-word !important;
-//display: inline-block;white-space: normal;max-width:100%; word-break:break-all; word-wrap:break-word;
 
 const BlogContainer = styled.div`
   font-size: 1.25rem;
