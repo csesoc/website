@@ -83,7 +83,6 @@ const Block = ({ element }: { element: Element }) => {
 };
 
 const Blog = ({ blocks }: { blocks: Block[] }) => {
-  console.log(blocks.flat())
   return (
     <BlogContainer>
       {blocks.flat().map((element, idx) => (
