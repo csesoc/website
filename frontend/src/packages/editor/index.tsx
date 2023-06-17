@@ -8,6 +8,8 @@ import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
 import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
 import SyncDocument from "src/cse-ui-kit/SyncDocument_button";
 import PublishDocument from "src/cse-ui-kit/PublishDocument_button";
+import EditableTitle from "src/cse-ui-kit/EditableTitle_textbox";
+
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 
@@ -109,7 +111,9 @@ const EditorPage: FC = () => {
             <IconButton aria-label="back" onClick={() => navigate(-1)} sx={{ 'paddingRight': '20px' }}>
               <ArrowBackIcon fontSize="inherit"/>
             </IconButton>
-            {filename}
+
+            <EditableTitle value={filename}/>
+
           </LeftContainer>
           <ButtonContainer>
             <SyncDocument onClick={() => syncDocument()} />
