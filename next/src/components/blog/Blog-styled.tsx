@@ -51,30 +51,31 @@ const ParagraphContainer = styled.div`
 `;
 
 const CodeContainer = styled.div`
-  margin: 1em;
-  padding: 0px;
+  margin: 0em;
+  padding-left: 0.5em;
   font-family: monospace;
   background: #f5f2f0;
 `
 
 const CodeLineWrapper = styled.pre`
-  margin: 0;
-  padding: 0px !important; 
-  white-space: pre-line;
-`
+  margin: 0px !important;
+  padding: 1.5px !important; 
+  overflow: hide !important;
+  `
   
-const CodeLine = styled.code`
-  margin: 0px;
-  padding: 0px;
-  display: inline-block !important;
-  white-space: normal !important;
-  max-width: 100% !important;
-  word-break: break-all !important;
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
-  font-size: 1rem !important;
-`
-
+  const CodeLine = styled.code`
+  margin: 0px !important;
+  padding: 0px !important;
+  font-size: 0.85rem !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  `
+  
+  
+  // max-width: 100% !important;
+  // word-break: break-all !important;
+  // word-wrap: break-word !important;
+  // overflow-wrap: break-word !important;
 //display: inline-block;white-space: normal;max-width:100%; word-break:break-all; word-wrap:break-word;
 
 const BlogContainer = styled.div`
