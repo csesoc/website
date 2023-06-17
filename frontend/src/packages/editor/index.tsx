@@ -61,16 +61,28 @@ const EditorPage: FC = () => {
 
   const state = useLocation().state as LocationState;
 
+  console.log(useLocation());
+
   const [filename, setFilename] = useState<string>(state != null ? state.filename : "");
 
   const [savedFilename, setSavedFilename] = useState<string>(`${filename}`);
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const updateFilename = () => {
     if (filename !== savedFilename && id !== undefined) {
       const newPayload: RenamePayloadType = { id, newName: filename };
       dispatch(renameFileEntityAction(newPayload));
-
+      
+      // Re-navigate to current page with new file name so that
+      // filename changes are persistent on reloads
+      navigate("/editor/" + id, { 
+        replace: false,
+        state: {
+          filename
+        } 
+      }), [navigate];
+  
       setSavedFilename(`${filename}`);
     }
   }
@@ -121,7 +133,6 @@ const EditorPage: FC = () => {
     opManager.current?.pushToServer(newCreationOperation(newElement, blocks.length));
   }  
 
-  const navigate = useNavigate();
   
   return (
     <div style={{ height: "100%" }}>
