@@ -22,6 +22,12 @@ import CreateCodeBlock from "src/cse-ui-kit/CreateCodeBlock_button ";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
+import {
+  RenamePayloadType,
+  renameFileEntityAction,
+} from "src/packages/dashboard/state/folders/actions";
+import { useDispatch } from "react-redux";
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -59,13 +65,13 @@ const EditorPage: FC = () => {
 
   const [savedFilename, setSavedFilename] = useState<string>(`${filename}`);
 
+  const dispatch = useDispatch();
   const updateFilename = () => {
-    if (filename !== savedFilename) {
-      console.log(`propagating name change from "${savedFilename}" to "${filename}"`);
+    if (filename !== savedFilename && id !== undefined) {
+      const newPayload: RenamePayloadType = { id, newName: filename };
+      dispatch(renameFileEntityAction(newPayload));
 
       setSavedFilename(`${filename}`);
-    } else {
-      console.log("no change detected, not updating filename");
     }
   }
 
