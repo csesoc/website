@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { InputHTMLAttributes } from "react"
 
 export type buttonProps = {
   background?: string;
@@ -13,19 +12,20 @@ export const StyledTextBox = styled.input`
   border: none;
   border-color: transparent;
 
+  
   padding: 0.5em;
-
+  
   font-size: inherit;
-
+  
   display: flex;
   justify-content: center;
   align-items: center;
   user-select: none;
-
+  
   &:hover {
+    cursor: text;
     color: black;
     transform: scale(1.04);
-    cursor: pointer;
   }
 
   cursor: pointer;
