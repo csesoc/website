@@ -54,7 +54,20 @@ const EditorPage: FC = () => {
   const [focusedId, setFocusedId] = useState<number>(0);
 
   const state = useLocation().state as LocationState;
-  const filename = state != null ? state.filename : "";
+
+  const [filename, setFilename] = useState<string>(state != null ? state.filename : "");
+
+  const [savedFilename, setSavedFilename] = useState<string>(`${filename}`);
+
+  const updateFilename = () => {
+    if (filename !== savedFilename) {
+      console.log(`propagating name change from "${savedFilename}" to "${filename}"`);
+
+      setSavedFilename(`${filename}`);
+    } else {
+      console.log("no change detected, not updating filename");
+    }
+  }
 
   const updateValues: UpdateCallback = (idx, updatedBlock) => {
     const requiresUpdate = JSON.stringify(blocks[idx]) !== JSON.stringify(updateValues);
@@ -112,7 +125,13 @@ const EditorPage: FC = () => {
               <ArrowBackIcon fontSize="inherit"/>
             </IconButton>
 
-            <EditableTitle value={filename}/>
+            <EditableTitle 
+              value={filename}
+              onChange={(event) => {
+                setFilename(event.target.value)
+              }}
+              onBlur={updateFilename}
+            />
 
           </LeftContainer>
           <ButtonContainer>

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { InputHTMLAttributes } from "react"
 
 export type buttonProps = {
   background?: string;

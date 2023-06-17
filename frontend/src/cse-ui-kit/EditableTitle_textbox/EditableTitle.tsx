@@ -3,13 +3,14 @@ import { StyledTextBox, buttonProps } from "./EditableTitle-Styled";
 import { AiFillEdit } from "react-icons/ai";
 
 type Props = {
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>
   value: string
 } & buttonProps;
 
-export default function EditableTitle({ onClick, value, ...styleProps }: Props) {
+export default function EditableTitle({ onChange, onBlur, value, ...styleProps }: Props) { 
   return (
-    <StyledTextBox onClick={onClick} value={value} {...styleProps}/>
+    <StyledTextBox onChange={onChange} onBlur={onBlur} value={value} {...styleProps}/>
   );
 }
 
