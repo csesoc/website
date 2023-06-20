@@ -4,16 +4,18 @@
 // Wraps the contents of a file stored on the CMS into its own
 // functional component, with hovering capabilities
 
-import React from "react";
-import styled, { css } from "styled-components";
-import { useNavigate } from "react-router-dom";
-import Renamable from "./Renamable";
+import React, { useRef } from 'react';
+import styled, { css } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import Renamable from './Renamable';
+import { useDispatch } from 'react-redux';
 
 type Props = {
   name: string;
   id: string;
   selectedFile: string | null;
   setSelectedFile: (id: string) => void;
+  handleDeleteKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 };
 
 type styledProps = {
@@ -34,13 +36,22 @@ const IconContainer = styled.div<styledProps>`
   cursor: pointer;
 
   border: ${(props) =>
-    props.active ? "3px solid red" : "3px solid var(--background-color)"};
+    props.active ? '3px solid red' : '3px solid var(--background-color)'};
 `;
 
-function FileContainer({ name, id, selectedFile, setSelectedFile }: Props) {
+function FileContainer({
+  name,
+  id,
+  selectedFile,
+  setSelectedFile,
+  handleDeleteKeyDown,
+}: Props) {
   const handleClick = () => {
     console.log(id);
     setSelectedFile(id);
+    if (fileEntityRef && fileEntityRef.current) {
+      fileEntityRef.current.focus();
+    }
   };
 
   const navigate = useNavigate();
@@ -48,18 +59,30 @@ function FileContainer({ name, id, selectedFile, setSelectedFile }: Props) {
     console.log(id);
     setSelectedFile(id);
     if (selectedFile !== null) {
-      navigate("/editor/" + selectedFile, { replace: false }), [navigate];
+      navigate('/editor/' + selectedFile, { replace: false }), [navigate];
     }
   };
+
+  const fileEntityRef = useRef<HTMLDivElement>(null);
+
+  const handleBlur = () => {
+    setSelectedFile('');
+  };
+
+  const dispatch = useDispatch();
 
   return (
     <div
       style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "35px",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '35px',
       }}
+      tabIndex={0}
+      ref={fileEntityRef}
+      onBlur={handleBlur}
+      onKeyDown={handleDeleteKeyDown}
     >
       <IconContainer
         onClick={handleClick}

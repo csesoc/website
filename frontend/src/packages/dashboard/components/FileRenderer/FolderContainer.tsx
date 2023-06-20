@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { traverseIntoFolder } from 'src/packages/dashboard/state/folders/actions';
@@ -10,6 +10,7 @@ interface Props {
   id: string;
   selectedFile: string | null;
   setSelectedFile: (id: string) => void;
+  handleDeleteKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
 const IconContainer = styled.div`
@@ -43,12 +44,16 @@ export default function FolderContainer({
   id,
   selectedFile,
   setSelectedFile,
+  handleDeleteKeyDown,
 }: Props) {
   const dispatch = useDispatch();
 
   const handleClick = () => {
     console.log(id);
     setSelectedFile(id);
+    if (fileEntityRef && fileEntityRef.current) {
+      fileEntityRef.current.focus();
+    }
   };
 
   const handleDoubleClick = () => {
@@ -56,16 +61,30 @@ export default function FolderContainer({
     dispatch(traverseIntoFolder(id));
   };
 
+  const fileEntityRef = useRef<HTMLInputElement>(null);
+
+  const handleBlur = () => {
+    setSelectedFile('');
+  };
+
   return (
     <IconContainer>
-      <FolderIcon
-        onClick={handleClick}
-        onDoubleClick={handleDoubleClick}
-        sx={{
-          color: selectedFile == id ? '#f590a1' : '#e3e3e3',
-          fontSize: '100px',
-        }}
-      />
+      <div
+        tabIndex={0}
+        ref={fileEntityRef}
+        onBlur={handleBlur}
+        onKeyDown={handleDeleteKeyDown}
+      >
+        <FolderIcon
+          onClick={handleClick}
+          onDoubleClick={handleDoubleClick}
+          sx={{
+            color: selectedFile == id ? '#f590a1' : '#e3e3e3',
+            fontSize: '100px',
+          }}
+        />
+      </div>
+
       {/* <Folder active={false} /> */}
       <Renamable name={name} id={id} />
     </IconContainer>
