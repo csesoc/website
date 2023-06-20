@@ -59,7 +59,13 @@ function FileContainer({
     console.log(id);
     setSelectedFile(id);
     if (selectedFile !== null) {
-      navigate('/editor/' + selectedFile, { replace: false }), [navigate];
+      navigate('/editor/' + selectedFile, {
+        replace: false,
+        state: {
+          filename: name,
+        },
+      }),
+        [navigate];
     }
   };
 
