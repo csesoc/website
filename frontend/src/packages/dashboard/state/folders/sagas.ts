@@ -82,6 +82,7 @@ function* traverseIntoFolderSaga({ payload: id }: { payload: string }) {
     parentFolder: id,
     folderName: folder.name,
   };
+  console.log("traversing to", folder.name)
   // change path
   yield put(actions.setDirectory(dirPayload));
   // set children

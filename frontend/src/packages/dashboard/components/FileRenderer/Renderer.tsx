@@ -17,8 +17,13 @@ export default function Renderer({ selectedFile, setSelectedFile }: Props) {
 
   const folderItems = folders.items;
 
+  // folderItems
+
   const renderItems = () =>
-    folderItems.map((item, index) => {
+  [...folderItems]
+  .sort((a, b) => (a.name < b.name ? -1: ( a.name > b.name ? 1 : 0)))
+  .map((item, index) => {
+      console.log(item.name)
       switch (item.type) {
         case 'Folder':
           return (
@@ -44,6 +49,7 @@ export default function Renderer({ selectedFile, setSelectedFile }: Props) {
           return;
       }
     });
+  console.log(" ");
   return (
     <div
       style={{

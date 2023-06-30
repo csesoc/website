@@ -14,6 +14,8 @@ export function setItems(
   state: sliceState,
   action: PayloadAction<FileEntity[]>
 ) {
+  console.log(action.payload);
+
   const newEntityList: FileEntity[] = [...action.payload];
   return {
     ...state,
@@ -58,19 +60,26 @@ export function renameFileEntity(
   state: sliceState,
   action: PayloadAction<RenamePayloadType>
 ) {
+
   const { id, newName } = action.payload;
+
+  const items = (state.items.map((item) => {
+    if (item.id == id) {
+      return {
+        ...item,
+        name: newName,
+      };
+      // item.name = newName;
+    }
+    // else
+    return item;
+  }))
+
+  console.log(items);
+  
   return {
     ...state,
-    items: state.items.map((item) => {
-      if (item.id == id) {
-        return {
-          ...item,
-          name: newName,
-        };
-      }
-      // else
-      return item;
-    }),
+    items
   };
 }
 
