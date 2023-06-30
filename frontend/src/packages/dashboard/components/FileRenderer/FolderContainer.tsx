@@ -54,7 +54,6 @@ export default function FolderContainer({
     console.log(id);
     dispatch(traverseIntoFolder(id));
   };
-
   return (
     <IconContainer>
       <FolderIcon
