@@ -4,6 +4,7 @@ import { RootState } from 'src/redux-state/reducers';
 import { folderSelectors } from '../../state/folders/index';
 import FileContainer from './FileContainer';
 import FolderContainer from './FolderContainer';
+import { FileEntity } from '../../state/folders/types';
 
 type Props = {
   selectedFile: string | null;
@@ -19,9 +20,26 @@ export default function Renderer({ selectedFile, setSelectedFile }: Props) {
 
   // folderItems
 
-  const renderItems = () =>
+  const fileComparator = (a : FileEntity, b : FileEntity) => {
+    if (a.type === b.type) {
+      return (
+        a.name.toLowerCase() < b.name.toLowerCase() 
+        ? -1
+        : ( a.name.toLowerCase() > b.name.toLowerCase() 
+            ? 1 
+            : 0
+          )
+        );
+    } else if (a.type === "folder") {
+      return 1
+    }
+    return -1;
+  };
+
+  const renderItems = () => 
+
   [...folderItems]
-  .sort((a, b) => (a.name < b.name ? -1: ( a.name > b.name ? 1 : 0)))
+  .sort(fileComparator)
   .map((item, index) => {
       console.log(item.name)
       switch (item.type) {
