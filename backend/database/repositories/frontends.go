@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"fmt"
+
 	"github.com/google/uuid"
 )
 
@@ -13,7 +15,7 @@ const InvalidFrontend = -1
 func NewFrontendRepo(frontEndID uuid.UUID, logicalName string, URL string, embeddedContext embeddedContext) (filesystemRepository, error) {
 	err := embeddedContext.ctx.Query("SELECT new_frontend($1, $2, $3)", []interface{}{frontEndID, logicalName, URL}, &frontEndID)
 	if err != nil {
-		return filesystemRepository{}, err
+		return filesystemRepository{}, fmt.Errorf("Error setting up frontend in Postgres (new_frontend): %w", err)
 	}
 	return filesystemRepository{
 		frontEndID,

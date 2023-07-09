@@ -12,10 +12,9 @@ import (
 func GetEntityInfo(form ValidInfoRequest, df DependencyFactory) handlerResponse[EntityInfoResponse] {
 	log := df.GetLogger()
 	fsRepo, err := df.GetFilesystemRepo()
-
 	if err != nil {
 		return handlerResponse[EntityInfoResponse]{
-			Status:   http.StatusNotFound,
+			Status:   http.StatusInternalServerError,
 			Response: EntityInfoResponse{},
 		}
 	}
@@ -43,7 +42,7 @@ func CreateNewEntity(form ValidEntityCreationRequest, df DependencyFactory) hand
 	fsRepo, err := df.GetFilesystemRepo()
 	if err != nil {
 		return handlerResponse[NewEntityResponse]{
-			Status:   http.StatusNotFound,
+			Status:   http.StatusInternalServerError,
 			Response: NewEntityResponse{},
 		}
 	}

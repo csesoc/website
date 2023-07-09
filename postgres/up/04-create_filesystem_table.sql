@@ -24,7 +24,8 @@ CREATE TABLE filesystem (
   -- MetadataID        uuid NOT NULL,
 
   OwnedBy       INT,
-  /* Pain */
+  
+  /* nil() if Root */
   Parent        uuid NOT NULL,
 
   /* FK Constraint */
@@ -62,24 +63,6 @@ BEGIN
   RETURN newEntityID;
 END $$;
 
--- TODO: Add a delete frontend function
-DROP FUNCTION IF EXISTS new_frontend;
-CREATE OR REPLACE FUNCTION new_frontend (frontendIDP uuid, logicalNameP VARCHAR, URLP VARCHAR) RETURNS uuid
-LANGUAGE plpgsql
-AS $$
-DECLARE
-  frontendID frontend.ID%type;
-BEGIN
-  INSERT INTO frontend VALUES (frontendIDP, logicalNameP, URLP)
-    RETURNING ID INTO frontendID;
-       
-  -- TODO: Temporarily setting the OwnedBy field. Going to be deprecated soon.
-  INSERT INTO filesystem (EntityID, LogicalName, IsDocument, Parent, OwnedBy)
-    VALUES (frontendID, logicalNameP, false, uuid_nil(), 1);
-    
-  RETURN frontendID;
-END $$;
-
 /* Another utility procedure */
 DROP FUNCTION IF EXISTS delete_entity;
 CREATE OR REPLACE FUNCTION delete_entity (entityIDP uuid) RETURNS void
@@ -87,7 +70,7 @@ LANGUAGE plpgsql
 AS $$
 DECLARE
   numKids INT := (SELECT COUNT(EntityID) FROM filesystem WHERE Parent = entityIDP);
-  isRoot  BOOLEAN := ((SELECT Parent FROM filesystem WHERE EntityID = entityIDP) IS NULL);
+  isRoot  BOOLEAN := ((SELECT Parent FROM filesystem WHERE EntityID = entityIDP) = uuid_nil());
 BEGIN
   /* If this is a directory and has kids raise an error */
   IF numKids > 0

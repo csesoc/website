@@ -3,6 +3,8 @@ package endpoints
 //go:generate mockgen -source=dependency_factory.go -destination=mocks/dependency_factory_mock.go -package=mocks
 
 import (
+	"fmt"
+
 	"cms.csesoc.unsw.edu.au/database/contexts"
 	repos "cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/internal/logger"
@@ -35,7 +37,11 @@ type (
 
 // GetFilesystemRepo is the constructor for FS repos
 func (dp DependencyProvider) GetFilesystemRepo() (repos.FilesystemRepository, error) {
-	return repos.NewFilesystemRepo(dp.FrontEndID, dp.LogicalName, dp.URL, contexts.GetDatabaseContext())
+	fsRepo, err := repos.NewFilesystemRepo(dp.FrontEndID, dp.LogicalName, dp.URL, contexts.GetDatabaseContext())
+	if err != nil {
+		return fsRepo, fmt.Errorf("Error getting FSRepo: %w", err)
+	}
+	return fsRepo, nil
 }
 
 // GetGroupsRepo instantiates a new groups repository

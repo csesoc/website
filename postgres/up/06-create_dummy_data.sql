@@ -37,8 +37,8 @@ BEGIN
     ('about_owners') 
   RETURNING GroupID INTO aboutGroup;
     
-  -- Create a new frontend (frontendID should be generated code-side)
-  rootID := (SELECT new_frontend(uuid_generate_v4(), 'CSESoc Main Website', 'http://localhost:3000'));
+  -- Create a new frontend
+  rootID := (SELECT new_frontend('CSESoc Main Website', 'http://localhost:3000'));
   
   -- Assign groups to frontend
   INSERT INTO frontend_membership VALUES (rootID, blogGroup);
