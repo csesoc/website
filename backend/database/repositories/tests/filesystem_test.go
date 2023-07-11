@@ -29,7 +29,7 @@ func TestMain(m *testing.M) {
 func TestRootRetrieval(t *testing.T) {
 	assert := assert.New(t)
 	testContext.RunTest(func() {
-		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
 		assert.Nil(err)
 		root, err := repo.GetRoot()
 		if assert.Nil(err) {
@@ -45,12 +45,12 @@ func TestRootInsert(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ==== Test setup ====
-		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
 		assert.Nil(err)
 		root, _ := repo.GetRoot()
 
 		newDir, _ := repo.CreateEntry(repositories.FilesystemEntry{
-			LogicalName: "test_directory", ParentFileID: frontendID,
+			LogicalName: "test_directory", ParentFileID: root.EntityID,
 			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: false,
 		})
 
@@ -88,7 +88,7 @@ func TestDocumentInfoRetrieval(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ==== Setup ====
-		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
 		assert.Nil(err)
 		newDoc, err := repo.CreateEntry(repositories.FilesystemEntry{
 			LogicalName: "test_doc", ParentFileID: frontendID,
@@ -113,7 +113,7 @@ func TestEntityDeletion(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ====== Setup ======
-		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
 		assert.Nil(err)
 		root, _ := repo.GetRoot()
 
@@ -180,7 +180,7 @@ func TestEntityRename(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ===== Test setup =====
-		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
 		assert.Nil(err)
 		newDir, _ := repo.CreateEntry(getEntity("cool_dir", repositories.GROUPS_ADMIN, frontendID, false))
 		newDoc, _ := repo.CreateEntry(getEntity("cool_doc", repositories.GROUPS_ADMIN, newDir.EntityID, false))
@@ -210,7 +210,7 @@ func TestEntityChildren(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// Test setup
-		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
 		assert.Nil(err)
 		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, frontendID))
 		dir2, _ := repo.CreateEntry(getEntity("d2", repositories.GROUPS_ADMIN, false, frontendID))
@@ -258,7 +258,7 @@ func TestGetIDWithPath(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// Test setup
-		repo, err := repositories.NewFilesystemRepo(frontendID, frontendLogicalName, frontendURL, testContext)
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
 		assert.Nil(err)
 		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, frontendID))
 		currentDir := dir1

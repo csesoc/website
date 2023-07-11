@@ -10,9 +10,10 @@ import (
 
 // Implements IRepositoryInterface
 type filesystemRepository struct {
-	frontEndID  uuid.UUID
-	logicalName string
-	URL         string
+	frontEndID   uuid.UUID
+	frontendRoot uuid.UUID
+	logicalName  string
+	URL          string
 	embeddedContext
 }
 
@@ -65,7 +66,7 @@ func (rep filesystemRepository) GetEntryWithID(ID uuid.UUID) (FilesystemEntry, e
 }
 
 func (rep filesystemRepository) GetRoot() (FilesystemEntry, error) {
-	return rep.query("SELECT * FROM filesystem WHERE EntityID = $1", rep.frontEndID)
+	return rep.query("SELECT * FROM filesystem WHERE EntityID = $1", rep.frontendRoot)
 }
 
 func (rep filesystemRepository) GetEntryWithParentID(ID uuid.UUID) (FilesystemEntry, error) {

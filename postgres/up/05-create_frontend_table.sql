@@ -15,7 +15,8 @@ CREATE TABLE frontend
 
 -- TODO: Add a delete frontend function
 DROP FUNCTION IF EXISTS new_frontend;
-CREATE OR REPLACE FUNCTION new_frontend (logicalNameP VARCHAR, URLP VARCHAR) RETURNS uuid
+CREATE OR REPLACE FUNCTION new_frontend (logicalNameP VARCHAR, URLP VARCHAR) 
+  RETURNS TABLE (feID uuid, feRoot uuid)
 LANGUAGE plpgsql
 AS $$
 DECLARE
@@ -31,7 +32,7 @@ BEGIN
     VALUES (uuid_generate_v4(), logicalNameP, URLP, frontendRoot)
     RETURNING ID INTO frontendIDP;
     
-  RETURN frontendIDP;
+  RETURN QUERY SELECT frontendIDP, frontendRoot;
 END $$;
 
 

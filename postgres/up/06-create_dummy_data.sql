@@ -5,7 +5,8 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 DO $$
 DECLARE
-  rootID              frontend.ID%type;
+  frontendID          frontend.ID%type;
+  rootID              frontend.root%type;
   blogGroup           INT;  
   aboutGroup          INT;
   user1               INT;
@@ -38,11 +39,12 @@ BEGIN
   RETURNING GroupID INTO aboutGroup;
     
   -- Create a new frontend
-  rootID := (SELECT new_frontend('CSESoc Main Website', 'http://localhost:3000'));
+  SELECT feID, feRoot INTO frontendID, rootID FROM 
+    new_frontend('CSESoc Main Website', 'http://localhost:3000');
   
   -- Assign groups to frontend
-  INSERT INTO frontend_membership VALUES (rootID, blogGroup);
-  INSERT INTO frontend_membership VALUES (rootID, aboutGroup);
+  INSERT INTO frontend_membership VALUES (frontendID, blogGroup);
+  INSERT INTO frontend_membership VALUES (frontendID, aboutGroup);
   
   -- Add users to groups
   INSERT INTO group_membership VALUES (blogGroup, user1);

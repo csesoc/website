@@ -37,7 +37,7 @@ type (
 
 // GetFilesystemRepo is the constructor for FS repos
 func (dp DependencyProvider) GetFilesystemRepo() (repos.FilesystemRepository, error) {
-	fsRepo, err := repos.NewFilesystemRepo(dp.FrontEndID, dp.LogicalName, dp.URL, contexts.GetDatabaseContext())
+	fsRepo, err := repos.NewFilesystemRepo(dp.LogicalName, dp.URL, contexts.GetDatabaseContext())
 	if err != nil {
 		return fsRepo, fmt.Errorf("Error getting FSRepo: %w", err)
 	}

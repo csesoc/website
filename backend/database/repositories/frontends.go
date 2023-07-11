@@ -12,13 +12,27 @@ type frontendsRepository struct {
 
 const InvalidFrontend = -1
 
-func NewFrontendRepo(frontEndID uuid.UUID, logicalName string, URL string, embeddedContext embeddedContext) (filesystemRepository, error) {
-	err := embeddedContext.ctx.Query("SELECT new_frontend($1, $2, $3)", []interface{}{frontEndID, logicalName, URL}, &frontEndID)
+func NewFrontendRepo(logicalName string, URL string, embeddedContext embeddedContext) (filesystemRepository, error) {
+	rows, err := embeddedContext.ctx.QueryRow("SELECT * from new_frontend($1, $2)", []interface{}{logicalName, URL})
 	if err != nil {
 		return filesystemRepository{}, fmt.Errorf("Error setting up frontend in Postgres (new_frontend): %w", err)
 	}
+
+	defer rows.Close()
+
+	var frontendID uuid.UUID
+	var frontendRoot uuid.UUID
+
+	if rows.Next() {
+		err := rows.Scan(&frontendID, &frontendRoot)
+		if err != nil {
+			return filesystemRepository{}, fmt.Errorf("Error scanning columns within new_frontend: %w", err)
+		}
+	}
+
 	return filesystemRepository{
-		frontEndID,
+		frontendID,
+		frontendRoot,
 		logicalName,
 		URL,
 		embeddedContext,
