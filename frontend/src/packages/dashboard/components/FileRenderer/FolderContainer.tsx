@@ -18,6 +18,7 @@ const IconContainer = styled.div`
   align-items: center;
   margin: 20px;
   text-align: center;
+  // border: black solid 1px;
 `;
 
 interface HighlightProps {

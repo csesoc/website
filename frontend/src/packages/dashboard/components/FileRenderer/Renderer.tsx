@@ -48,6 +48,7 @@ export default function Renderer({ selectedFile, setSelectedFile }: Props) {
     <div
       style={{
         display: 'flex',
+        flexWrap: 'wrap',
       }}
     >
       {renderItems()}
