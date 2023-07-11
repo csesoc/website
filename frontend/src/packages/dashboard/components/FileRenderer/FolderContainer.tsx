@@ -48,6 +48,8 @@ export default function FolderContainer({
 }: Props) {
   const dispatch = useDispatch();
 
+  const fileEntityRef = useRef<HTMLInputElement>(null);
+
   const handleClick = () => {
     console.log(id);
     setSelectedFile(id);
@@ -61,18 +63,12 @@ export default function FolderContainer({
     dispatch(traverseIntoFolder(id));
   };
 
-  const fileEntityRef = useRef<HTMLInputElement>(null);
-
-  const handleBlur = () => {
-    setSelectedFile('');
-  };
-
   return (
     <IconContainer>
       <div
         tabIndex={0}
         ref={fileEntityRef}
-        onBlur={handleBlur}
+        onBlur={() => setSelectedFile('')}
         onKeyDown={handleDeleteKeyDown}
       >
         <FolderIcon

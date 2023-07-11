@@ -46,6 +46,8 @@ function FileContainer({
   setSelectedFile,
   handleDeleteKeyDown,
 }: Props) {
+  const fileEntityRef = useRef<HTMLDivElement>(null);
+
   const handleClick = () => {
     console.log(id);
     setSelectedFile(id);
@@ -69,14 +71,6 @@ function FileContainer({
     }
   };
 
-  const fileEntityRef = useRef<HTMLDivElement>(null);
-
-  const handleBlur = () => {
-    setSelectedFile('');
-  };
-
-  const dispatch = useDispatch();
-
   return (
     <div
       style={{
@@ -87,7 +81,7 @@ function FileContainer({
       }}
       tabIndex={0}
       ref={fileEntityRef}
-      onBlur={handleBlur}
+      onBlur={() => setSelectedFile('')}
       onKeyDown={handleDeleteKeyDown}
     >
       <IconContainer
