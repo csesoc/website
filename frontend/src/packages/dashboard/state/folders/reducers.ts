@@ -14,8 +14,6 @@ export function setItems(
   state: sliceState,
   action: PayloadAction<FileEntity[]>
 ) {
-  console.log(action.payload);
-
   const newEntityList: FileEntity[] = [...action.payload];
   return {
     ...state,
@@ -69,13 +67,10 @@ export function renameFileEntity(
         ...item,
         name: newName,
       };
-      // item.name = newName;
     }
     // else
     return item;
   }))
-
-  console.log(items);
   
   return {
     ...state,

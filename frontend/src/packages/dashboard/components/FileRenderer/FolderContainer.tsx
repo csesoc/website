@@ -46,10 +46,12 @@ export default function FolderContainer({
   const dispatch = useDispatch();
 
   const handleClick = () => {
+    console.log(id);
     setSelectedFile(id);
   };
 
   const handleDoubleClick = () => {
+    console.log(id);
     dispatch(traverseIntoFolder(id));
   };
   return (

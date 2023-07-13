@@ -31,7 +31,6 @@ export async function updateContents(id: string) {
   const children_json = await children_resp.json();
   const children = children_json.Response.Children.map(
     (child: JSONFileFormat) => {
-      console.log(child);
       return toFileOrFolder(child);
     }
   );
