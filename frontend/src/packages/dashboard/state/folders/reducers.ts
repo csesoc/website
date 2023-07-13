@@ -60,21 +60,18 @@ export function renameFileEntity(
 ) {
 
   const { id, newName } = action.payload;
-
-  const items = (state.items.map((item) => {
-    if (item.id == id) {
-      return {
-        ...item,
-        name: newName,
-      };
-    }
-    // else
-    return item;
-  }))
-  
   return {
     ...state,
-    items
+    items: state.items.map((item) => {
+      if (item.id == id) {
+        return {
+          ...item,
+          name: newName,
+        };
+      }
+      // else
+      return item;
+    }),
   };
 }
 
