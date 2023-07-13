@@ -35,7 +35,7 @@ export default function Renamable({ name, id }: Props) {
           // required as browser doesn't update inputName
           // after first refresh of page after renaming
           setInputName(name); 
-        }} onClick={() => console.log(inputName, name, id)}>{name}</div>
+        }}>{name}</div>
       ) : (
         <input
           style={{

@@ -21,7 +21,6 @@ export default function Renderer({ selectedFile, setSelectedFile }: Props) {
   // folderItems
 
   const fileComparator = (a : FileEntity, b : FileEntity) => {
-    console.log(a.type, b.type);
     if (a.type === b.type) {
       return (
         a.name.toLowerCase() < b.name.toLowerCase() 
@@ -42,7 +41,6 @@ export default function Renderer({ selectedFile, setSelectedFile }: Props) {
   [...folderItems]
   .sort(fileComparator)
   .map((item, index) => {
-      console.log(item.name)
       switch (item.type) {
         case 'Folder':
           return (
@@ -68,7 +66,6 @@ export default function Renderer({ selectedFile, setSelectedFile }: Props) {
           return;
       }
     });
-  console.log(" ");
   return (
     <div
       style={{
