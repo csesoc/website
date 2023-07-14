@@ -124,6 +124,7 @@ export default function ConfirmationWindow({
                             onKeyDown={handleKeyDown}
                             sx={{ marginRight: '10px' }}
                             autoFocus
+                            autoComplete='off'
                         />
                         <Button background="#73EEDC" onClick={handleSubmit}>
                             submit
