@@ -22,11 +22,10 @@ const MainContainer = styled.div`
   min-height: 80vh;
 `;
 
-const BlogPage: NextPage<{ data: Block[]; blogName: any }> = ({
+const BlogPage: NextPage<{ data: Block[]; blogName: string }> = ({
   data,
   blogName,
 }) => {
-  console.log("data", data);
   return (
     <PageContainer>
       <Navbar
@@ -45,6 +44,7 @@ const BlogPage: NextPage<{ data: Block[]; blogName: any }> = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  // get blog data
   const data = await fetch(
     `http://backend:8080/api/filesystem/get/published?DocumentID=${
       params && params.bid
@@ -52,26 +52,25 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     {
       method: "GET",
     }
-  ).then((res) => res.text());
+  )
+    .then((res) => res.text())
+    .then((res) => JSON.parse(res).Contents);
 
-  const blogInfo = await fetch(
+  // get blog name
+  const blogName = await fetch(
     `http://backend:8080/api/filesystem/info?EntityID=${params && params.bid}`,
     {
       method: "GET",
     }
-  );
-
-  if (!blogInfo.ok) {
-    const message = `An error has occured: ${blogInfo.status}`;
-    throw new Error(message);
-  }
-
-  const blogInfo_json = await blogInfo.json();
+  )
+    .then((blogInfo) => blogInfo.json())
+    .then((blogInfo_json) => blogInfo_json.Response.EntityName)
+    .catch((err) => console.log("ERROR fetching blogInfo: ", err));
 
   return {
     props: {
-      data: JSON.parse(data).Contents,
-      blogName: blogInfo_json.Response.EntityName,
+      data: data,
+      blogName: blogName,
     },
   };
 };
