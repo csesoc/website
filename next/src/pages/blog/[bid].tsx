@@ -22,7 +22,11 @@ const MainContainer = styled.div`
   min-height: 80vh;
 `;
 
-const BlogPage: NextPage<{ data: Block[] }> = ({ data }) => {
+const BlogPage: NextPage<{ data: Block[]; blogName: any }> = ({
+  data,
+  blogName,
+}) => {
+  console.log("data", data);
   return (
     <PageContainer>
       <Navbar
@@ -32,7 +36,7 @@ const BlogPage: NextPage<{ data: Block[] }> = ({ data }) => {
       />{" "}
       {/** ignore the styling */}
       <MainContainer>
-        <BlogHeading>Blog Title</BlogHeading>
+        <BlogHeading>{blogName}</BlogHeading>
         <Blog blocks={data} />
       </MainContainer>
       <Footer />
@@ -49,7 +53,27 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       method: "GET",
     }
   ).then((res) => res.text());
-  return { props: { data: JSON.parse(data).Contents } };
+
+  const blogInfo = await fetch(
+    `http://backend:8080/api/filesystem/info?EntityID=${params && params.bid}`,
+    {
+      method: "GET",
+    }
+  );
+
+  if (!blogInfo.ok) {
+    const message = `An error has occured: ${blogInfo.status}`;
+    throw new Error(message);
+  }
+
+  const blogInfo_json = await blogInfo.json();
+
+  return {
+    props: {
+      data: JSON.parse(data).Contents,
+      blogName: blogInfo_json.Response.EntityName,
+    },
+  };
 };
 
 export default BlogPage;
