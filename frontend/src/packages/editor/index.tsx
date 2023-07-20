@@ -19,6 +19,7 @@ import CreateCodeBlock from "src/cse-ui-kit/CreateCodeBlock_button ";
 
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CreateMediaBlock from "src/cse-ui-kit/CreateMediaBlock_button";
 
 const Container = styled.div`
   display: flex;
@@ -122,6 +123,7 @@ const EditorPage: FC = () => {
           <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
           <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />
           <CreateCodeBlock    onClick={buildButtonClickHandler("code")} />
+          <CreateMediaBlock   onClick={() => console.log("creating new image")}/>
         </InsertContentWrapper>
       </Container>
     </div>
