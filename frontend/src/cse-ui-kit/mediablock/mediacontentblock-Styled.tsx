@@ -13,12 +13,12 @@ export const StyledMediaContent = styled.div<StyledProps>`
   padding: 30px 20px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   border-radius: 5px;
   margin: 5px;
   padding: 5px;
-`;
+`;1
 
 export const StyledMediaContentDots = styled.div`
   height: 100;
