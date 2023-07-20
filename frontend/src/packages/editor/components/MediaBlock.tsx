@@ -7,6 +7,8 @@ import { CMSBlockProps } from "../types";
 import EditorSelectFont from './buttons/EditorSelectFont'
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
 import { handleKey } from "./buttons/buttonHelpers";
+import MediaContentBlockWrapper from "../../../cse-ui-kit/mediablock/mediacontentblock-wrapper";
+import MediaContentBlock from "src/cse-ui-kit/MediaContentBlock/MediaContentBlock";
 
 const defaultTextSize = 24;
 
@@ -54,20 +56,16 @@ const MediaBlock: FC<CMSBlockProps> = ({
       value={initialValue}
       onChange={(value) => { update(id, editor.children, editor.operations); }}
     >
-      {showToolBar && (
-        <ToolbarContainer>
-          <EditorSelectFont />
-        </ToolbarContainer>
-      )}
-      <ContentBlock>
-        <Editable
+      <MediaContentBlockWrapper focused={showToolBar}>
+        {/* <Editable
           renderLeaf={renderLeaf}
           onClick={() => onEditorClick()}
           style={{ width: "100%", height: "100%" }}
           onKeyDown={(event) => handleKey(event, editor)}
           autoFocus
-        />
-      </ContentBlock>
+        /> */}
+          <MediaContentBlock onClick={() => onEditorClick()}/>
+      </MediaContentBlockWrapper>
     </Slate>
   );
 };

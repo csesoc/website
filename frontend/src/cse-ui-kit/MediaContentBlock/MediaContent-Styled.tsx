@@ -5,6 +5,7 @@ export type buttonProps = {
 };
 
 export const StyledContent = styled.div`
+  // background: #f7f7f7;
   items: center;
   display: flex;
   flex-direction: column;
