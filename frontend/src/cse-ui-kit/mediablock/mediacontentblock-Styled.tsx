@@ -18,7 +18,7 @@ export const StyledMediaContent = styled.div<StyledProps>`
   border-radius: 5px;
   margin: 5px;
   padding: 5px;
-`;1
+`;
 
 export const StyledMediaContentDots = styled.div`
   height: 100;
