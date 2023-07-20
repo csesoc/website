@@ -50,6 +50,16 @@ const MediaBlock: FC<CMSBlockProps> = ({
     []
   );
 
+  /*
+    Planning
+    - Have a ternary op to decide whether to display the editor or placeholder graphic
+    - REMINDER - need to support urls AND uploading to the backend
+      - The former seems a little less complicated ;)
+    - Get clarification on how backend to store and retrieve images
+      - Does the getPublishedDoc endpoint contain a url to the image source in BE, or is it the
+        actual image itself??
+  */
+
   return (
     <Slate
       editor={editor}
