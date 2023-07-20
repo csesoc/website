@@ -92,7 +92,9 @@ const EditorPage: FC = () => {
   }
 
   // buildClickHandler builds handlers for events where new blocks are created and propagates them to the OT manager
-  const buildButtonClickHandler = (type: "heading" | "paragraph" | "code") => () => {
+  const buildButtonClickHandler = (
+    type: "heading" | "paragraph" | "code" | "media"
+  ) => () => {
     const newElement = { type: type, children: [{ text: "" }] };
 
     // push and update this creation operation to the operation manager
@@ -123,7 +125,7 @@ const EditorPage: FC = () => {
           <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
           <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />
           <CreateCodeBlock    onClick={buildButtonClickHandler("code")} />
-          <CreateMediaBlock   onClick={() => console.log("creating new image")}/>
+          <CreateMediaBlock   onClick={buildButtonClickHandler("media")}/>
         </InsertContentWrapper>
       </Container>
     </div>

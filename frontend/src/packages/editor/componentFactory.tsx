@@ -5,6 +5,7 @@ import { BlockData, UpdateCallback, CMSBlockProps } from "./types";
 import EditorBlock from "./components/EditorBlock";
 import { OperationManager, slateToCmsOperation } from "./operationManager";
 import CodeBlock from "./components/CodeBlock";
+import MediaBlock from "./components/MediaBlock";
 
 // TODO: not now because I want to get this over and done with but the idea of attaching the operation path to the id irks me
 //  because logically the operation paths aren't actually coupled to the id, it is just a coincidence, ideally the source of the operation path index
@@ -17,7 +18,8 @@ type callbackHandler = (id: number, update: BlockData) => void;
 const constructors: Record<string, (props: CMSBlockProps) => JSX.Element> = {
     "paragraph": (props) => <EditorBlock {...props} />,
     "heading": (props) => <HeadingBlock {...props} />,
-    "code" : (props) => <CodeBlock {...props} />
+    "code" : (props) => <CodeBlock {...props} />,
+    "media" : (props) => <MediaBlock {...props} />
 }
 
 /**
