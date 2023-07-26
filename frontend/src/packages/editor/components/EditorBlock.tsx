@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import { createEditor } from 'slate';
-import React, { FC, useMemo, useCallback } from 'react';
-import { Slate, Editable, withReact, RenderLeafProps } from 'slate-react';
+import React, { FC, useMemo, useCallback, Fragment } from 'react';
+import { Slate, Editable, withReact, RenderLeafProps, useSlateStatic, useReadOnly, ReactEditor } from 'slate-react';
+import { Editor, Transforms, Range, Point, createEditor, Descendant, Element as SlateElement } from 'slate'
 
-import { CMSBlockProps } from '../types';
+import { CMSBlockProps, CustomEditor, CustomText } from '../types';
 import EditorBoldButton from './buttons/EditorBoldButton';
 import EditorItalicButton from './buttons/EditorItalicButton';
 import EditorUnderlineButton from './buttons/EditorUnderlineButton';
@@ -12,10 +12,11 @@ import EditorSelectFont from './buttons/EditorSelectFont';
 import EditorCenterAlignButton from './buttons/EditorCenterAlignButton';
 import EditorLeftAlignButton from './buttons/EditorLeftAlignButton';
 import EditorRightAlignButton from './buttons/EditorRightAlignButton';
+import EditorCodeButton from "./buttons/EditorCodeButton";
+import EditorChecklistButton from "./buttons/EditorChecklistButton";
 
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
 import { handleKey } from "./buttons/buttonHelpers";
-import EditorCodeButton from "./buttons/EditorCodeButton";
 
 const defaultTextSize = 16;
 
@@ -35,6 +36,8 @@ const Text = styled.span<{
   quote: boolean;
   textSize: number;
   align: string;
+  checklist: boolean;
+  checked: boolean;
 }>`
   font-weight: ${(props) => (props.bold ? 600 : 400)};
   font-style: ${(props) => (props.italic || props.quote ? 'italic' : 'normal')};
@@ -45,6 +48,47 @@ const Text = styled.span<{
   text-align: ${(props) => props.align};
   background-color: ${(props) => props.code ? "#eee" : "#fff"};
 `;
+
+
+const CheckListItemElement = (props: any) => {
+  console.log("?????? why");
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: '0',
+        userSelect: 'none'
+      }} 
+      contentEditable={false}
+    >
+      <span
+        contentEditable={false}
+        style={{
+          marginRight: '0.75em'
+        }}
+      >
+        <input
+          type="checkbox"
+          checked={props.checked}
+          onChange={event => {
+            props.checked = event.target.checked
+          }}
+        />
+      </span>
+      <span
+        suppressContentEditableWarning
+        style = {{ 
+          flex: 1,
+          opacity: props.checked ? 0.666 : 1,
+          textDecoration: props.checked ? 'line-through' : 'none',}}
+      >
+      </span>
+    </div>
+  )
+}
+
 
 const Quote = styled.blockquote`
   border-left: 3px solid #9e9e9e;
@@ -73,8 +117,48 @@ const EditorBlock: FC<CMSBlockProps> = ({
         code: leaf.code ?? false,
         align: leaf.align ?? 'left',
         textSize: leaf.textSize ?? defaultTextSize,
+        checklist: leaf.checklist ?? false,
+        checked: leaf.checklist ?? false,
         ...attributes,
       };
+
+
+      if (leaf.checklist) {
+        console.log(leaf.checked);
+        return (
+          <div {...attributes} style={{display: 'flex', alignItems: 'left'}}>
+            <div
+              style={{ userSelect: "none" }}
+              contentEditable={false}
+            >
+              <span
+                contentEditable={false}
+                style={{
+                  marginRight: '0.75em'
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={leaf.checked}
+                  onChange={event => {
+                    leaf.checked = event.target.checked;
+                    console.log("what", event.target.checked);
+                  }}
+                />
+              </span>
+            </div>
+            <span
+                suppressContentEditableWarning
+                style = {{ 
+                  flex: 1,
+                  opacity: leaf.checked ? 0.666 : 1,
+                  textDecoration: leaf.checked ? 'line-through' : 'none',}}
+              >
+                {children}
+              </span>
+        </div>
+      )
+      }
 
       return leaf.quote ? (
         <QuoteText {...props}>{children}</QuoteText>
@@ -100,6 +184,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
           <EditorUnderlineButton />
           <EditorCodeButton />
           <EditorQuoteButton />
+          <EditorChecklistButton/>
           <EditorSelectFont />
           <EditorLeftAlignButton />
           <EditorCenterAlignButton />
