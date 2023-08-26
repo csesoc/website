@@ -12,7 +12,6 @@ const EditorChecklistButton: FC = () => {
       onMouseDown={(event) => {
         event.preventDefault();
         toggleMark(editor, "checklist")
-        toggleMark(editor, "checked")
       }}
     />
   );

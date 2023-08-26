@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import React, { FC, useMemo, useCallback, Fragment } from 'react';
-import { Slate, Editable, withReact, RenderLeafProps, useSlateStatic, useReadOnly, ReactEditor } from 'slate-react';
-import { Editor, Transforms, Range, Point, createEditor, Descendant, Element as SlateElement } from 'slate'
+import React, { FC, useMemo, useCallback } from 'react';
+import { Slate, Editable, withReact, RenderLeafProps, useReadOnly } from 'slate-react';
+import { createEditor } from 'slate'
 
-import { CMSBlockProps, CustomEditor, CustomText } from '../types';
+import { CMSBlockProps } from '../types';
 import EditorBoldButton from './buttons/EditorBoldButton';
 import EditorItalicButton from './buttons/EditorItalicButton';
 import EditorUnderlineButton from './buttons/EditorUnderlineButton';
@@ -16,7 +16,7 @@ import EditorCodeButton from "./buttons/EditorCodeButton";
 import EditorChecklistButton from "./buttons/EditorChecklistButton";
 
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
-import { handleKey, toggleMark } from "./buttons/buttonHelpers";
+import { handleKey } from "./buttons/buttonHelpers";
 import { withHistory } from 'slate-history';
 
 const defaultTextSize = 16;
@@ -70,7 +70,7 @@ const CheckListItemElement = ({children, attributes, leaf}: any) => {
             type="checkbox"
             checked={checked}
             onChange={event => {
-              // TODO: figure out why ReactEditor.findPath does not work
+              // Figure out why ReactEditor.findPath does not work
               // const path = ReactEditor.findPath(editor as ReactEditor, leaf);
               // const newProperties = {
               //   checked: event.target.checked,
