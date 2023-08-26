@@ -16,7 +16,8 @@ import EditorCodeButton from "./buttons/EditorCodeButton";
 import EditorChecklistButton from "./buttons/EditorChecklistButton";
 
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
-import { handleKey } from "./buttons/buttonHelpers";
+import { handleKey, toggleMark } from "./buttons/buttonHelpers";
+import { withHistory } from 'slate-history';
 
 const defaultTextSize = 16;
 
@@ -50,44 +51,48 @@ const Text = styled.span<{
 `;
 
 
-const CheckListItemElement = (props: any) => {
-  console.log("?????? why");
+const CheckListItemElement = ({children, attributes, leaf}: any) => {
+  const readOnly = useReadOnly()
+  const [checked, setChecked] = React.useState(false)
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: '0',
-        userSelect: 'none'
-      }} 
-      contentEditable={false}
-    >
-      <span
+    <div {...attributes} style={{display: 'flex', alignItems: 'left'}}>
+      <div
+        style={{ userSelect: "none" }}
         contentEditable={false}
-        style={{
-          marginRight: '0.75em'
-        }}
       >
-        <input
-          type="checkbox"
-          checked={props.checked}
-          onChange={event => {
-            props.checked = event.target.checked
+        <span
+          contentEditable={false}
+          style={{
+            marginRight: '0.75em'
           }}
-        />
-      </span>
-      <span
+        >
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={event => {
+              // TODO: figure out why ReactEditor.findPath does not work
+              // const path = ReactEditor.findPath(editor as ReactEditor, leaf);
+              // const newProperties = {
+              //   checked: event.target.checked,
+              // }
+              // Transforms.setNodes(editor, newProperties, { at: path })
+              setChecked(event.target.checked);
+            }}
+          />
+        </span>
+    </div>
+    <span
+        contentEditable={!readOnly}
         suppressContentEditableWarning
         style = {{ 
           flex: 1,
-          opacity: props.checked ? 0.666 : 1,
-          textDecoration: props.checked ? 'line-through' : 'none',}}
+          opacity: checked ? 0.666 : 1,
+          textDecoration: checked ? 'line-through' : 'none',}}
       >
-      </span>
-    </div>
-  )
-}
+        {children}
+    </span>
+  </div>
+)}
 
 
 const Quote = styled.blockquote`
@@ -105,7 +110,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
   showToolBar,
   onEditorClick,
 }) => {
-  const editor = useMemo(() => withReact(createEditor()), []);
+  const editor = useMemo(() => withHistory(withReact(createEditor())), [])
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
@@ -124,40 +129,8 @@ const EditorBlock: FC<CMSBlockProps> = ({
 
 
       if (leaf.checklist) {
-        console.log(leaf.checked);
-        return (
-          <div {...attributes} style={{display: 'flex', alignItems: 'left'}}>
-            <div
-              style={{ userSelect: "none" }}
-              contentEditable={false}
-            >
-              <span
-                contentEditable={false}
-                style={{
-                  marginRight: '0.75em'
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={leaf.checked}
-                  onChange={event => {
-                    leaf.checked = event.target.checked;
-                    console.log("what", event.target.checked);
-                  }}
-                />
-              </span>
-            </div>
-            <span
-                suppressContentEditableWarning
-                style = {{ 
-                  flex: 1,
-                  opacity: leaf.checked ? 0.666 : 1,
-                  textDecoration: leaf.checked ? 'line-through' : 'none',}}
-              >
-                {children}
-              </span>
-        </div>
-      )
+        const checklistProps = {attributes, children, leaf}
+        return <CheckListItemElement {...checklistProps}/>
       }
 
       return leaf.quote ? (
