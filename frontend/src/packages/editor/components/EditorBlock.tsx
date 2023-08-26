@@ -37,8 +37,6 @@ const Text = styled.span<{
   quote: boolean;
   textSize: number;
   align: string;
-  checklist: boolean;
-  checked: boolean;
 }>`
   font-weight: ${(props) => (props.bold ? 600 : 400)};
   font-style: ${(props) => (props.italic || props.quote ? 'italic' : 'normal')};

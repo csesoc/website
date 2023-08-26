@@ -17,7 +17,6 @@ export type CustomText = {
   align?: string;
   code?: string;
   checklist?: boolean;
-  checked?: boolean;
 };
 
 export type CustomElement = { 
