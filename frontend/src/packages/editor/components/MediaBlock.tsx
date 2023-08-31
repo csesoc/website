@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { createEditor } from "slate";
-import React, { FC, useMemo, useCallback, useRef } from "react";
+import React, { FC, useMemo, useCallback, useRef, useState } from "react";
 import { Slate, Editable, withReact, RenderLeafProps } from "slate-react";
 
 import { CMSBlockProps } from "../types";
@@ -9,6 +9,41 @@ import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper"
 import { handleKey } from "./buttons/buttonHelpers";
 import MediaContentBlockWrapper from "../../../cse-ui-kit/mediablock/mediacontentblock-wrapper";
 import MediaContentBlock from "src/cse-ui-kit/MediaContentBlock/MediaContentBlock";
+
+
+/**
+ * (Adopted from 22T3 COMP6080 Ass3 Starter code hehe)
+ * 
+ * Given a js file object representing a jpg or png image, such as one taken
+ * from a html file input element, return a promise which resolves to the file
+ * data as a data url.
+ * More info:
+ *   https://developer.mozilla.org/en-US/docs/Web/API/File
+ *   https://developer.mozilla.org/en-US/docs/Web/API/FileReader
+ *   https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs
+ *
+ * Example Usage:
+ *   const file = document.querySelector('input[type="file"]').files[0];
+ *   console.log(fileToDataUrl(file));
+ * @param {File} file The file to be read.
+ * @return {Promise<string>} Promise which resolves to the file as a data url.
+ */
+export function fileToDataUrl (file : File) {
+  const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg']
+  const valid = validFileTypes.find(type => type === file.type);
+  // Bad data, let's walk away.
+  if (!valid) {
+    throw Error('provided file is not a png, jpg or jpeg image.');
+  }
+  const reader = new FileReader();
+  const dataUrlPromise = new Promise<string | ArrayBuffer | null>((resolve, reject) => {
+    reader.onerror = reject;
+    reader.onload = () => resolve(reader.result);
+  });
+  reader.readAsDataURL(file);
+  return dataUrlPromise;
+}
+
 
 const defaultTextSize = 24;
 
@@ -42,6 +77,8 @@ const MediaBlock: FC<CMSBlockProps> = ({
 
   const hiddenFileInput = useRef<HTMLInputElement>(null);
 
+  const [media, setMedia] = useState<string | null>(null);
+
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
       return (
@@ -55,6 +92,23 @@ const MediaBlock: FC<CMSBlockProps> = ({
     },
     []
   );
+
+  const uploadMedia = async (rawMedia : File) => {
+    let convertedMedia : string | ArrayBuffer | null;
+    try {
+      // converts to base64 i think
+      convertedMedia = await fileToDataUrl(rawMedia);
+    } catch (err) {
+      alert(err);
+      return;
+    }
+
+    if (!(convertedMedia instanceof ArrayBuffer)) 
+      setMedia(convertedMedia);
+
+    // TODO - upload image to docker store
+
+  }
 
   /*
     Planning
@@ -82,12 +136,23 @@ const MediaBlock: FC<CMSBlockProps> = ({
           autoFocus
         /> */}
           {/* <MediaContentBlock onClick={() => onEditorClick()}> */}
-          <MediaContentBlock onClick={() => {
-            hiddenFileInput.current?.click();
-            onEditorClick();
-          }}>
-            <InputFile type="file" ref={hiddenFileInput}/>
-          </MediaContentBlock>
+          { !media ?
+            <>
+              <MediaContentBlock onClick={() => {
+                console.log("hi")
+                hiddenFileInput.current?.click();
+                onEditorClick();
+              }}>
+              </MediaContentBlock>
+              <InputFile 
+                type="file" 
+                ref={hiddenFileInput}
+                onChange={event => event.target.files && uploadMedia(event.target.files[0])}
+              /> 
+            </>
+          :
+            <img src={media ?? ""} alt="" />
+        }
       </MediaContentBlockWrapper>
     </Slate>
   );
