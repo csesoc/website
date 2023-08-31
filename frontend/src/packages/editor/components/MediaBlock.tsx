@@ -139,7 +139,6 @@ const MediaBlock: FC<CMSBlockProps> = ({
           { !media ?
             <>
               <MediaContentBlock onClick={() => {
-                console.log("hi")
                 hiddenFileInput.current?.click();
                 onEditorClick();
               }}>
