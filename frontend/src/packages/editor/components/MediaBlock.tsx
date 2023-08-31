@@ -40,7 +40,7 @@ const MediaBlock: FC<CMSBlockProps> = ({
 }) => {
   const editor = useMemo(() => withReact(createEditor()), []);
 
-  const hiddenFileInput = React.useRef<HTMLInputElement>(null);
+  const hiddenFileInput = useRef<HTMLInputElement>(null);
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
@@ -83,11 +83,10 @@ const MediaBlock: FC<CMSBlockProps> = ({
         /> */}
           {/* <MediaContentBlock onClick={() => onEditorClick()}> */}
           <MediaContentBlock onClick={() => {
-            console.log("hey best friend", hiddenFileInput.current)
             hiddenFileInput.current?.click();
             onEditorClick();
           }}>
-            <InputFile type="file"/>
+            <InputFile type="file" ref={hiddenFileInput}/>
           </MediaContentBlock>
       </MediaContentBlockWrapper>
     </Slate>
