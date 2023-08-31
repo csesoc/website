@@ -65,6 +65,25 @@ const Text = styled.span<{
   font-size: ${(props) => (props.textSize)}px;
 `;
 
+/* Notes
+  All non empty media blocks should store the address of the corresponding media on the BE
+  - (storing base64 on FE is simply too exxy)
+  Should each node have a `src` or `url` key which stores this address
+  - If empty, should display the placeholder upload node
+  - else, a request to the BE should be made to fetch the corresponding image/media
+    - This will be in its raw base64 form
+
+  TODO
+  - Create function for handling non empty media blocks
+    - GET request to BE to fetch corresponding image 
+    - website/backend/endpoints/registration.go Ln 15 for reference
+  - Define a robust schema for how urls or src's will be stored on FE for non empty blocks
+  - To `uploadMedia`, add code to upload the image to the BE
+    
+  
+  https://csesoc.atlassian.net/browse/WEB-29 
+
+*/
 
 const MediaBlock: FC<CMSBlockProps> = ({
   id,
@@ -93,6 +112,8 @@ const MediaBlock: FC<CMSBlockProps> = ({
     []
   );
 
+  
+  
   const uploadMedia = async (rawMedia : File) => {
     let convertedMedia : string | ArrayBuffer | null;
     try {
@@ -109,17 +130,6 @@ const MediaBlock: FC<CMSBlockProps> = ({
     // TODO - upload image to docker store
 
   }
-
-  /*
-    Planning
-    - Have a ternary op to decide whether to display the editor or placeholder graphic
-    - REMINDER - need to support urls AND uploading to the backend
-      - The former seems a little less complicated ;)
-    - Get clarification on how backend to store and retrieve images
-      - Does the getPublishedDoc endpoint contain a url to the image source in BE, or is it the
-        actual image itself??
-        - update: it's the base64 bits
-  */
 
   return (
     <Slate
