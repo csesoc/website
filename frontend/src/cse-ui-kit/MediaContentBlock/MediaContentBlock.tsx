@@ -5,9 +5,10 @@ import MoveableContentBlock from '../contentblock/contentblock-wrapper';
 
 type Props = {
   onClick?: MouseEventHandler<HTMLDivElement>;
+  children?: React.ReactElement | any;
 } & buttonProps;
 
-export default function MediaContentBlock({ onClick, ...styleProps }: Props) {
+export default function MediaContentBlock({ onClick, children, ...styleProps }: Props) {
   return (
     <MoveableContentBlock onClick={onClick} {...styleProps}>
       <StyledContent>
@@ -15,6 +16,7 @@ export default function MediaContentBlock({ onClick, ...styleProps }: Props) {
           height={100}
           width={100}/>
         <Text>Upload Images/Gifs</Text>
+        {children}
         </StyledContent>
     </MoveableContentBlock>
   );

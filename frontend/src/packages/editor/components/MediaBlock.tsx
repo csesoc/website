@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { createEditor } from "slate";
-import React, { FC, useMemo, useCallback } from "react";
+import React, { FC, useMemo, useCallback, useRef } from "react";
 import { Slate, Editable, withReact, RenderLeafProps } from "slate-react";
 
 import { CMSBlockProps } from "../types";
@@ -20,6 +20,10 @@ const ToolbarContainer = styled.div`
   margin: 5px;
 `;
 
+const InputFile = styled.input`
+  display: none;
+`
+
 const Text = styled.span<{
   textSize: number;
 }>`
@@ -35,6 +39,8 @@ const MediaBlock: FC<CMSBlockProps> = ({
   onEditorClick,
 }) => {
   const editor = useMemo(() => withReact(createEditor()), []);
+
+  const hiddenFileInput = React.useRef<HTMLInputElement>(null);
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
@@ -75,7 +81,14 @@ const MediaBlock: FC<CMSBlockProps> = ({
           onKeyDown={(event) => handleKey(event, editor)}
           autoFocus
         /> */}
-          <MediaContentBlock onClick={() => onEditorClick()}/>
+          {/* <MediaContentBlock onClick={() => onEditorClick()}> */}
+          <MediaContentBlock onClick={() => {
+            console.log("hey best friend", hiddenFileInput.current)
+            hiddenFileInput.current?.click();
+            onEditorClick();
+          }}>
+            <InputFile type="file"/>
+          </MediaContentBlock>
       </MediaContentBlockWrapper>
     </Slate>
   );
