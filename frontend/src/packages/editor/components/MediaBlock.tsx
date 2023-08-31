@@ -58,6 +58,7 @@ const MediaBlock: FC<CMSBlockProps> = ({
     - Get clarification on how backend to store and retrieve images
       - Does the getPublishedDoc endpoint contain a url to the image source in BE, or is it the
         actual image itself??
+        - update: it's the base64 bits
   */
 
   return (
