@@ -1,9 +1,13 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux-state/reducers';
 import { folderSelectors } from '../../state/folders/index';
 import FileContainer from './FileContainer';
 import FolderContainer from './FolderContainer';
+import {
+  DeletePayloadType,
+  deleteFileEntityAction,
+} from '../../state/folders/actions';
 
 type Props = {
   selectedFile: string | null;
@@ -17,6 +21,17 @@ export default function Renderer({ selectedFile, setSelectedFile }: Props) {
 
   const folderItems = folders.items;
 
+  const dispatch = useDispatch();
+
+  const handleDeleteKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Delete' && selectedFile !== null) {
+      const folderPayload: DeletePayloadType = {
+        id: selectedFile,
+      };
+      dispatch(deleteFileEntityAction(folderPayload));
+    }
+  };
+
   const renderItems = () =>
     folderItems.map((item, index) => {
       switch (item.type) {
@@ -28,6 +43,7 @@ export default function Renderer({ selectedFile, setSelectedFile }: Props) {
               name={item.name}
               selectedFile={selectedFile}
               setSelectedFile={setSelectedFile}
+              handleDeleteKeyDown={handleDeleteKeyDown}
             />
           );
         case 'File':
@@ -38,6 +54,7 @@ export default function Renderer({ selectedFile, setSelectedFile }: Props) {
               name={item.name}
               selectedFile={selectedFile}
               setSelectedFile={setSelectedFile}
+              handleDeleteKeyDown={handleDeleteKeyDown}
             />
           );
         default:
