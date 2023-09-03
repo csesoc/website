@@ -81,7 +81,7 @@ func (rep filesystemRepository) GetIDWithPath(path string) (uuid.UUID, error) {
 	}
 
 	// Determine main parent
-	parent, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = $1", parentNames[1])
+	parent, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = $1 AND Parent = $2", parentNames[1], rep.frontendRoot)
 	if err != nil {
 		return uuid.Nil, err
 	}

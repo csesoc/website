@@ -283,6 +283,55 @@ func TestGetIDWithPath(t *testing.T) {
 	})
 }
 
+func TestMultiApplications(t *testing.T) {
+	assert := assert.New(t)
+
+	getEntity := func(name string, permissions int, parent uuid.UUID, isDocument bool) repositories.FilesystemEntry {
+		return repositories.FilesystemEntry{
+			LogicalName:  name,
+			OwnerUserId:  permissions,
+			ParentFileID: parent,
+			IsDocument:   isDocument,
+		}
+	}
+
+	testContext.RunTest(func() {
+		// ===== Test setup =====
+
+		// Application 1
+		repo1, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
+		root1, _ := repo1.GetRoot()
+		newDir1, _ := repo1.CreateEntry(getEntity("cool_dir", repositories.GROUPS_ADMIN, root1.EntityID, false))
+		newDoc1, _ := repo1.CreateEntry(getEntity("cool_doc", repositories.GROUPS_ADMIN, newDir1.EntityID, false))
+
+		// Application 2
+		repo2, err := repositories.NewFilesystemRepo("CSESoc Website", "http://localhost:3002", testContext)
+		assert.Nil(err)
+		root2, _ := repo2.GetRoot()
+		newDir2, _ := repo2.CreateEntry(getEntity("c00l_dir", repositories.GROUPS_ADMIN, root2.EntityID, false))
+		newDoc2, _ := repo2.CreateEntry(getEntity("c00l_doc", repositories.GROUPS_ADMIN, newDir2.EntityID, false))
+
+		assert.True(newDir1.LogicalName == "cool_dir")
+		assert.True(newDoc1.LogicalName == "cool_doc")
+
+		assert.True(newDir2.LogicalName == "c00l_dir")
+		assert.True(newDoc2.LogicalName == "c00l_doc")
+
+		_, error1 := repo1.GetIDWithPath("/c00l_dir")
+		_, error2 := repo1.GetIDWithPath("/c00l_doc")
+
+		assert.True(error1 != nil)
+		assert.True(error2 != nil)
+
+		_, error3 := repo2.GetIDWithPath("/cool_dir")
+		_, error4 := repo2.GetIDWithPath("/cool_doc")
+
+		assert.True(error3 != nil)
+		assert.True(error4 != nil)
+	})
+}
+
 func scanArray[T any](rows pgx.Rows) []T {
 	arr := []T{}
 	for rows.Next() {
