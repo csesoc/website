@@ -7,7 +7,7 @@ import (
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	repMocks "cms.csesoc.unsw.edu.au/database/repositories/mocks"
 	"cms.csesoc.unsw.edu.au/endpoints"
-	"cms.csesoc.unsw.edu.au/endpoints/mocks"
+	mock_endpoints "cms.csesoc.unsw.edu.au/endpoints/mocks"
 	"cms.csesoc.unsw.edu.au/endpoints/models"
 	"cms.csesoc.unsw.edu.au/internal/logger"
 	"github.com/golang/mock/gomock"
@@ -19,7 +19,7 @@ func TestValidEntityInfo(t *testing.T) {
 	controller := gomock.NewController(t)
 	assert := assert.New(t)
 	defer controller.Finish()
-
+	parentID := uuid.New()
 	// ==== test setup =====
 	entityID := uuid.New()
 	mockFileRepo := repMocks.NewMockIFilesystemRepository(controller)
@@ -27,7 +27,7 @@ func TestValidEntityInfo(t *testing.T) {
 		EntityID:     entityID,
 		LogicalName:  "random name",
 		IsDocument:   false,
-		ParentFileID: repositories.FilesystemRootID,
+		ParentFileID: parentID,
 		ChildrenIDs:  []uuid.UUID{},
 	}, nil).Times(1)
 
@@ -42,7 +42,7 @@ func TestValidEntityInfo(t *testing.T) {
 		EntityID:   entityID,
 		EntityName: "random name",
 		IsDocument: false,
-		Parent:     repositories.FilesystemRootID,
+		Parent:     parentID,
 		Children:   []models.EntityInfoResponse{},
 	})
 }
@@ -144,10 +144,11 @@ func TestValidGetChildren(t *testing.T) {
 }
 
 // createMockDependencyFactory just constructs an instance of a dependency factory mock
-func createMockDependencyFactory(controller *gomock.Controller, mockFileRepo *repMocks.MockIFilesystemRepository, needsLogger bool) *mocks.MockDependencyFactory {
-	mockDepFactory := mocks.NewMockDependencyFactory(controller)
+func createMockDependencyFactory(controller *gomock.Controller, mockFileRepo *repMocks.MockIFilesystemRepository, needsLogger bool) *mock_endpoints.MockDependencyFactory {
+	mockDepFactory := mock_endpoints.NewMockDependencyFactory(controller)
+
 	if mockFileRepo != nil {
-		mockDepFactory.EXPECT().GetFilesystemRepo().Return(mockFileRepo)
+		mockDepFactory.EXPECT().GetFilesystemRepo().Return(mockFileRepo, nil)
 	}
 
 	if needsLogger {

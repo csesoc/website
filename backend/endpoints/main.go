@@ -9,6 +9,7 @@ import (
 	"cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/internal/logger"
 	"cms.csesoc.unsw.edu.au/internal/session"
+	"github.com/google/uuid"
 )
 
 // Basic organization of a response we will receive from the API
@@ -69,7 +70,7 @@ func (fn handler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// acquire the frontend ID and error out if the client isn't registered to use the CMS
-	frontendId := 0 // getFrontendId(r)
+	frontendId := uuid.Nil // getFrontendId(r)
 	// if frontendId == repositories.InvalidFrontend {
 	// writeResponse(w, handlerResponse[empty]{
 	// Status:   http.StatusUnauthorized,
