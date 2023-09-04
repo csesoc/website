@@ -50,6 +50,27 @@ const ParagraphContainer = styled.div`
   }
 `;
 
+const CodeContainer = styled.div`
+  margin: 0em;
+  padding-left: 0.5em;
+  font-family: monospace;
+  background: #f5f2f0;
+`
+
+const CodeLineWrapper = styled.pre`
+  margin: 0px !important;
+  padding: 1.5px !important; 
+  overflow: hide !important;
+  `
+  
+  const CodeLine = styled.code`
+  margin: 0px !important;
+  padding: 0px !important;
+  font-size: 0.85rem !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  `
+
 const BlogContainer = styled.div`
   font-size: 1.25rem;
   margin: 0px 60px;
@@ -77,4 +98,7 @@ export {
   BlogContainer,
   BlogHeading,
   ParagraphContainer,
+  CodeContainer,
+  CodeLine,
+  CodeLineWrapper
 };

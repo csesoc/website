@@ -26,7 +26,6 @@ import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-tsx';
 import 'prismjs/components/prism-markdown';
 import 'prismjs/components/prism-python';
-import 'prismjs/components/prism-php';
 import 'prismjs/components/prism-sql';
 import 'prismjs/components/prism-java';
 import 'prismjs/components/prism-c';
@@ -87,7 +86,6 @@ const LanguageSelect = (props: JSX.IntrinsicElements['select']) => {
       <option value="markdown">Markdown</option>
       <option value="c">C</option>
       <option value="cpp">C++</option>
-      <option value="php">PHP</option>
       <option value="python">Python</option>
       <option value="sql">SQL</option>
       <option value="bash">Shell</option>
