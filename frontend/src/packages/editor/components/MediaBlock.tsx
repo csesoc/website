@@ -106,7 +106,7 @@ const MediaBlock: FC<CMSBlockProps> = ({
   : ""
   console.log(mediaSrc);
 
-  const [media, setMedia] = useState<string | null>(null);
+  const [media, setMedia] = useState<string>("");
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
@@ -131,6 +131,7 @@ const MediaBlock: FC<CMSBlockProps> = ({
   
   const uploadMedia = async (rawMedia : File) => {
     let convertedMedia : string | ArrayBuffer | null;
+    console.log(rawMedia)
     try {
       // converts to base64 i think
       convertedMedia = await fileToDataUrl(rawMedia);
@@ -138,22 +139,20 @@ const MediaBlock: FC<CMSBlockProps> = ({
       alert(err);
       return;
     }
-    console.log("yeet");
-    if (!(convertedMedia instanceof ArrayBuffer)) {
-      setMedia(convertedMedia);
-      if (convertedMedia) {
-        // TODO: pretty sure i should pass the document id, not just the block id
-        // TODO: Figure out how to propagate the document id to this level :S
-        const newUploadId = await publishImage(`${id}`, convertedMedia)
+    if (!(convertedMedia instanceof ArrayBuffer) && convertedMedia) {
+      // TODO: pretty sure i should pass the document id, not just the block id
+      // TODO: Figure out how to propagate the document id to this level :S
+      console.log(convertedMedia)
+      const newUploadId = await publishImage(`${id}`, rawMedia)
 
-        Transforms.select(editor, {
-          anchor: Editor.start(editor, []),
-          focus: Editor.end(editor, []),
-        })
-        Transforms.setNodes(editor, { mediaSrc: newUploadId });
-        console.log("set image id!");
-        console.log(newUploadId);
-      }
+      Transforms.select(editor, {
+        anchor: Editor.start(editor, []),
+        focus: Editor.end(editor, []),
+      })
+      Transforms.setNodes(editor, { mediaSrc: newUploadId });
+      console.log("set image id!");
+      console.log(newUploadId);
+
     }
   }
 
