@@ -14,6 +14,8 @@ export const publishDocument = (documentId: string) => {
 
 // upload an image to the docker volume
 export const publishImage = (documentId: string, imageSrc: string) => {
+  // console.log("publishing image", imageSrc)
+  const OwnerGroup = 23;
   const imageId = fetch("/api/filesystem/upload-image", {
     method: "POST",
     headers: {
@@ -24,12 +26,15 @@ export const publishImage = (documentId: string, imageSrc: string) => {
       // TODO: find out what you're supposed to pass for
       // LogicalName and OwnerGroup
       LogicalName: "foo",
-      OwnerGroup:  "0",
-      Image: imageSrc
+      OwnerGroup: '1',
+      Image: btoa(imageSrc)
     }),
   })
   .then(rawData => rawData.json())
-  .then(data => data.Response.NewID)
+  .then(data => {
+    console.log(data);
+    return data.Response.NewID
+  })
   .catch((err) => console.log("ERROR uploading image: ", err))
   ;
 

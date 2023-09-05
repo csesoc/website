@@ -97,13 +97,14 @@ const MediaBlock: FC<CMSBlockProps> = ({
   onEditorClick,
 }) => {
   const editor = useMemo(() => withReact(createEditor()), []);
-
+  
   const hiddenFileInput = useRef<HTMLInputElement>(null);
-
+  
   // Fetch id of media in BE (if it exists)
   const mediaSrc = (editor.children[0] as Element) !== undefined
   ? (editor.children[0] as Element).mediaSrc ?? ""
   : ""
+  console.log(mediaSrc);
 
   const [media, setMedia] = useState<string | null>(null);
 
@@ -137,7 +138,7 @@ const MediaBlock: FC<CMSBlockProps> = ({
       alert(err);
       return;
     }
-
+    console.log("yeet");
     if (!(convertedMedia instanceof ArrayBuffer)) {
       setMedia(convertedMedia);
       if (convertedMedia) {
@@ -150,6 +151,8 @@ const MediaBlock: FC<CMSBlockProps> = ({
           focus: Editor.end(editor, []),
         })
         Transforms.setNodes(editor, { mediaSrc: newUploadId });
+        console.log("set image id!");
+        console.log(newUploadId);
       }
     }
   }
