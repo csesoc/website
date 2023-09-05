@@ -21,6 +21,7 @@ export type CustomText = {
 export type CustomElement = { 
   type: "paragraph" | "heading" | "code" | "media"; 
   language?: string, 
+  mediaSrc?: string,
   children: Descendant[] 
 };
 
