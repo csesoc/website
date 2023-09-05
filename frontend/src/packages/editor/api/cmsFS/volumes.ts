@@ -30,8 +30,18 @@ export const publishImage = (documentId: string, imageSrc: string) => {
   })
   .then(rawData => rawData.json())
   .then(data => data.Response.NewID)
-  .catch((err) => console.log("ERROR uploading image: ", err));
+  .catch((err) => console.log("ERROR uploading image: ", err))
   ;
 
   return imageId;
+}
+
+export const getImage = (imageId: string) => {
+  const image = fetch(`/api/filesystem/get/published?DocumentID=${imageId}`, {
+    method: "GET"
+  })
+  .then(rawData => rawData.json())
+  .then(resp => resp.Response) 
+
+  return image;
 }

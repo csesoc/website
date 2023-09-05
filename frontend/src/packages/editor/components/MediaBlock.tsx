@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { createEditor } from "slate";
-import React, { FC, useMemo, useCallback, useRef, useState } from "react";
-import { Slate, Editable, withReact, RenderLeafProps } from "slate-react";
+import { createEditor, Editor, Element, Transforms} from "slate";
+import React, { FC, useMemo, useCallback, useRef, useState, useEffect } from "react";
+import { Slate, Editable, withReact,  RenderLeafProps } from "slate-react";
 
 import { CMSBlockProps } from "../types";
 import EditorSelectFont from './buttons/EditorSelectFont'
@@ -9,6 +9,10 @@ import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper"
 import { handleKey } from "./buttons/buttonHelpers";
 import MediaContentBlockWrapper from "../../../cse-ui-kit/mediablock/mediacontentblock-wrapper";
 import MediaContentBlock from "src/cse-ui-kit/MediaContentBlock/MediaContentBlock";
+
+import { CustomElement } from '../types';
+import { getImage, publishImage } from "../api/cmsFS/volumes";
+
 
 
 /**
@@ -96,6 +100,11 @@ const MediaBlock: FC<CMSBlockProps> = ({
 
   const hiddenFileInput = useRef<HTMLInputElement>(null);
 
+  // Fetch id of media in BE (if it exists)
+  const mediaSrc = (editor.children[0] as Element) !== undefined
+  ? (editor.children[0] as Element).mediaSrc ?? ""
+  : ""
+
   const [media, setMedia] = useState<string | null>(null);
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
@@ -112,7 +121,12 @@ const MediaBlock: FC<CMSBlockProps> = ({
     []
   );
 
-  
+  useEffect(() => {
+    if (mediaSrc !== "") {
+      const image = getImage(mediaSrc)
+      setMedia(image as unknown as string);
+    }
+  }, [])
   
   const uploadMedia = async (rawMedia : File) => {
     let convertedMedia : string | ArrayBuffer | null;
@@ -124,11 +138,20 @@ const MediaBlock: FC<CMSBlockProps> = ({
       return;
     }
 
-    if (!(convertedMedia instanceof ArrayBuffer)) 
+    if (!(convertedMedia instanceof ArrayBuffer)) {
       setMedia(convertedMedia);
+      if (convertedMedia) {
+        // TODO: pretty sure i should pass the document id, not just the block id
+        // TODO: Figure out how to propagate the document id to this level :S
+        const newUploadId = await publishImage(`${id}`, convertedMedia)
 
-    // TODO - upload image to docker store
-
+        Transforms.select(editor, {
+          anchor: Editor.start(editor, []),
+          focus: Editor.end(editor, []),
+        })
+        Transforms.setNodes(editor, { mediaSrc: newUploadId });
+      }
+    }
   }
 
   return (
@@ -146,7 +169,7 @@ const MediaBlock: FC<CMSBlockProps> = ({
           autoFocus
         /> */}
           {/* <MediaContentBlock onClick={() => onEditorClick()}> */}
-          { !media ?
+          { mediaSrc === "" ?
             <>
               <MediaContentBlock onClick={() => {
                 hiddenFileInput.current?.click();
