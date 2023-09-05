@@ -11,3 +11,27 @@ export const publishDocument = (documentId: string) => {
         }),
     });
 }
+
+// upload an image to the docker volume
+export const publishImage = (documentId: string, imageSrc: string) => {
+  const imageId = fetch("/api/filesystem/upload-image", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      Parent: `${documentId}`,
+      // TODO: find out what you're supposed to pass for
+      // LogicalName and OwnerGroup
+      LogicalName: "foo",
+      OwnerGroup:  "0",
+      Image: imageSrc
+    }),
+  })
+  .then(rawData => rawData.json())
+  .then(data => data.Response.NewID)
+  .catch((err) => console.log("ERROR uploading image: ", err));
+  ;
+
+  return imageId;
+}
