@@ -8,13 +8,25 @@ import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
 import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
 import SyncDocument from "src/cse-ui-kit/SyncDocument_button";
 import PublishDocument from "src/cse-ui-kit/PublishDocument_button";
+import EditableTitle from "src/cse-ui-kit/EditableTitle_textbox";
+
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 
 import { buildComponentFactory } from "./componentFactory";
 import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
 import { CMSOperation } from "./api/OTClient/operation";
+import CreateCodeBlock from "src/cse-ui-kit/CreateCodeBlock_button ";
+
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
+import {
+  RenamePayloadType,
+  renameFileEntityAction,
+} from "src/packages/dashboard/state/folders/actions";
+import { useDispatch } from "react-redux";
 
 const Container = styled.div`
   display: flex;
@@ -26,6 +38,19 @@ const InsertContentWrapper = styled.div`
   display: flex;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+`
+
+const LeftContainer = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+type LocationState = {
+  filename: string;
+};
+
 const EditorPage: FC = () => {
   const { id } = useParams();
   const wsClient = useRef<Client | null>(null);
@@ -33,6 +58,36 @@ const EditorPage: FC = () => {
 
   const [blocks, setBlocks] = useState<BlockData[]>([]);
   const [focusedId, setFocusedId] = useState<number>(0);
+
+  const state = useLocation().state as LocationState;
+
+  const [filename, setFilename] = useState<string>(state != null ? state.filename : "");
+
+  const [savedFilename, setSavedFilename] = useState<string>(`${filename}`);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const updateFilename = () => {
+    // No empty names allowed!
+    if (filename == "") {
+      setFilename(savedFilename);
+      
+    } else if (filename !== savedFilename && id !== undefined) {
+      const newPayload: RenamePayloadType = { id, newName: filename };
+      dispatch(renameFileEntityAction(newPayload));
+      
+      // Re-navigate to current page with new file name so that
+      // filename changes are persistent on reloads
+      navigate("/editor/" + id, { 
+        replace: true,
+        state: {
+          filename
+        } 
+      }), [navigate];
+      
+      setSavedFilename(`${filename}`);
+    }
+  }
 
   const updateValues: UpdateCallback = (idx, updatedBlock) => {
     const requiresUpdate = JSON.stringify(blocks[idx]) !== JSON.stringify(updateValues);
@@ -71,7 +126,7 @@ const EditorPage: FC = () => {
   }
 
   // buildClickHandler builds handlers for events where new blocks are created and propagates them to the OT manager
-  const buildButtonClickHandler = (type: "heading" | "paragraph") => () => {
+  const buildButtonClickHandler = (type: "heading" | "paragraph" | "code") => () => {
     const newElement = { type: type, children: [{ text: "" }] };
 
     // push and update this creation operation to the operation manager
@@ -80,17 +135,38 @@ const EditorPage: FC = () => {
     opManager.current?.pushToServer(newCreationOperation(newElement, blocks.length));
   }  
 
+  
   return (
     <div style={{ height: "100%" }}>
       <EditorHeader>
-          <SyncDocument onClick={() => syncDocument()} />
-          <PublishDocument onClick={() => publishDocument(id ?? "")} />
+          <LeftContainer>
+            <IconButton 
+              aria-label="back"
+              onClick={() => navigate(-1)} 
+              sx={{ 'paddingRight': '20px' }}>
+              <ArrowBackIcon fontSize="inherit"/>
+            </IconButton>
+
+            <EditableTitle 
+              value={filename}
+              onChange={(event) => {
+                setFilename(event.target.value)
+              }}
+              onBlur={updateFilename}
+            />
+
+          </LeftContainer>
+          <ButtonContainer>
+            <SyncDocument onClick={() => syncDocument()} />
+            <PublishDocument onClick={() => publishDocument(id ?? "")} />
+          </ButtonContainer>
       </EditorHeader>
       <Container>
         {blocks.map((block, idx) => createBlock(block, idx, focusedId === idx))}
         <InsertContentWrapper>
           <CreateHeadingBlock onClick={buildButtonClickHandler("heading")} />
           <CreateContentBlock onClick={buildButtonClickHandler("paragraph")} />
+          <CreateCodeBlock    onClick={buildButtonClickHandler("code")} />
         </InsertContentWrapper>
       </Container>
     </div>

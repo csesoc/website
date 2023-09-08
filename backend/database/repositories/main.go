@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"cms.csesoc.unsw.edu.au/database/contexts"
+	"github.com/google/uuid"
 )
 
 // Start up a database connection with a provided context
@@ -15,28 +16,26 @@ var context contexts.DatabaseContext = nil
 // Open constructors available for everyone
 
 // NewFilesystemRepo instantiates a new file system repository with the current embedded context
-func NewFilesystemRepo() FilesystemRepository {
-	return filesystemRepository{
-		embeddedContext{getContext()},
-	}
+func NewFilesystemRepo(logicalName string, URL string, context contexts.DatabaseContext) (FilesystemRepository, error) {
+	return NewFrontendRepo(logicalName, URL, embeddedContext{context})
 }
 
 // NewGroupsRepo instantiates a new groups repository
-func NewGroupsRepo() GroupsRepository {
+func NewGroupsRepo(context contexts.DatabaseContext) GroupsRepository {
 	return groupsRepository{
-		embeddedContext{getContext()},
+		embeddedContext{context},
 	}
 }
 
 // NewFrontendsRepo instantiates a new frontends repository
-func NewFrontendsRepo() FrontendsRepository {
+func NewFrontendsRepo(context contexts.DatabaseContext) FrontendsRepository {
 	return frontendsRepository{
-		embeddedContext{getContext()},
+		embeddedContext{context},
 	}
 }
 
 // NewPersonRepo instantiates a new person repository
-func NewPersonRepo(frontendId int) PersonRepository {
+func NewPersonRepo(frontendId uuid.UUID) PersonRepository {
 	return personRepository{
 		frontendId,
 		embeddedContext{getContext()},

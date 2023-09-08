@@ -15,8 +15,9 @@ import (
 )
 
 var (
-	repo        = repositories.NewFilesystemRepo()
-	testContext = repo.GetContext().(*contexts.TestingContext)
+	frontendLogicalName = "CSESoc Test"
+	frontendURL         = "http://localhost:3001"
+	testContext         = contexts.GetDatabaseContext().(*contexts.TestingContext)
 )
 
 func TestMain(m *testing.M) {
@@ -26,9 +27,11 @@ func TestMain(m *testing.M) {
 func TestRootRetrieval(t *testing.T) {
 	assert := assert.New(t)
 	testContext.RunTest(func() {
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
 		root, err := repo.GetRoot()
 		if assert.Nil(err) {
-			assert.Equal("root", root.LogicalName)
+			assert.Equal("CSESoc Test", root.LogicalName)
 			assert.False(root.IsDocument)
 			assert.GreaterOrEqual(len(root.ChildrenIDs), 0)
 		}
@@ -40,10 +43,12 @@ func TestRootInsert(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ==== Test setup ====
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
 		root, _ := repo.GetRoot()
 
 		newDir, _ := repo.CreateEntry(repositories.FilesystemEntry{
-			LogicalName: "test_directory", ParentFileID: repositories.FilesystemRootID,
+			LogicalName: "test_directory", ParentFileID: root.EntityID,
 			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: false,
 		})
 
@@ -81,8 +86,11 @@ func TestDocumentInfoRetrieval(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ==== Setup ====
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
+		root, _ := repo.GetRoot()
 		newDoc, err := repo.CreateEntry(repositories.FilesystemEntry{
-			LogicalName: "test_doc", ParentFileID: repositories.FilesystemRootID,
+			LogicalName: "test_doc", ParentFileID: root.EntityID,
 			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: true,
 		})
 		// ==== Assertions ====
@@ -104,11 +112,13 @@ func TestEntityDeletion(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ====== Setup ======
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
 		root, _ := repo.GetRoot()
 
 		newDir, _ := repo.CreateEntry(repositories.FilesystemEntry{
 			LogicalName: "cool_dir", OwnerUserId: repositories.GROUPS_ADMIN,
-			ParentFileID: repositories.FilesystemRootID, IsDocument: false,
+			ParentFileID: root.EntityID, IsDocument: false,
 		})
 
 		newDoc, _ := repo.CreateEntry(repositories.FilesystemEntry{
@@ -131,7 +141,7 @@ func TestEntityDeletion(t *testing.T) {
 		// ======= Secondary setup ==========
 		anotherDirectory, _ := repo.CreateEntry(repositories.FilesystemEntry{
 			LogicalName: "cheese", OwnerUserId: repositories.GROUPS_ADMIN,
-			ParentFileID: repositories.FilesystemRootID, IsDocument: false,
+			ParentFileID: root.EntityID, IsDocument: false,
 		})
 
 		nestedDirectory, _ := repo.CreateEntry(repositories.FilesystemEntry{
@@ -169,7 +179,10 @@ func TestEntityRename(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// ===== Test setup =====
-		newDir, _ := repo.CreateEntry(getEntity("cool_dir", repositories.GROUPS_ADMIN, repositories.FilesystemRootID, false))
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
+		root, _ := repo.GetRoot()
+		newDir, _ := repo.CreateEntry(getEntity("cool_dir", repositories.GROUPS_ADMIN, root.EntityID, false))
 		newDoc, _ := repo.CreateEntry(getEntity("cool_doc", repositories.GROUPS_ADMIN, newDir.EntityID, false))
 		newDoc1, _ := repo.CreateEntry(getEntity("cool_doc1", repositories.GROUPS_ADMIN, newDir.EntityID, false))
 		newDoc2, _ := repo.CreateEntry(getEntity("cool_doc2", repositories.GROUPS_ADMIN, newDir.EntityID, false))
@@ -197,11 +210,14 @@ func TestEntityChildren(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// Test setup
-		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, repositories.FilesystemRootID))
-		dir2, _ := repo.CreateEntry(getEntity("d2", repositories.GROUPS_ADMIN, false, repositories.FilesystemRootID))
-		dir3, _ := repo.CreateEntry(getEntity("d3", repositories.GROUPS_ADMIN, false, repositories.FilesystemRootID))
-		dir4, _ := repo.CreateEntry(getEntity("d4", repositories.GROUPS_ADMIN, false, repositories.FilesystemRootID))
-		emptyDir, _ := repo.CreateEntry(getEntity("de", repositories.GROUPS_ADMIN, false, repositories.FilesystemRootID))
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
+		root, _ := repo.GetRoot()
+		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, root.EntityID))
+		dir2, _ := repo.CreateEntry(getEntity("d2", repositories.GROUPS_ADMIN, false, root.EntityID))
+		dir3, _ := repo.CreateEntry(getEntity("d3", repositories.GROUPS_ADMIN, false, root.EntityID))
+		dir4, _ := repo.CreateEntry(getEntity("d4", repositories.GROUPS_ADMIN, false, root.EntityID))
+		emptyDir, _ := repo.CreateEntry(getEntity("de", repositories.GROUPS_ADMIN, false, root.EntityID))
 
 		for x := 1; x < 10; x++ {
 			if x%3 == 0 {
@@ -243,7 +259,10 @@ func TestGetIDWithPath(t *testing.T) {
 
 	testContext.RunTest(func() {
 		// Test setup
-		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, repositories.FilesystemRootID))
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
+		root, _ := repo.GetRoot()
+		dir1, _ := repo.CreateEntry(getEntity("d1", repositories.GROUPS_ADMIN, false, root.EntityID))
 		currentDir := dir1
 		for x := 1; x < 3; x++ {
 			newDir, _ := repo.CreateEntry(getEntity("cool_doc"+fmt.Sprint(x), repositories.GROUPS_ADMIN, false, currentDir.EntityID))
@@ -261,6 +280,55 @@ func TestGetIDWithPath(t *testing.T) {
 		assert.True(error2 != nil)
 		assert.True(child1.EntityID == child2.ParentFileID)
 		assert.True(dir1.EntityID == child1.ParentFileID)
+	})
+}
+
+func TestMultiApplications(t *testing.T) {
+	assert := assert.New(t)
+
+	getEntity := func(name string, permissions int, parent uuid.UUID, isDocument bool) repositories.FilesystemEntry {
+		return repositories.FilesystemEntry{
+			LogicalName:  name,
+			OwnerUserId:  permissions,
+			ParentFileID: parent,
+			IsDocument:   isDocument,
+		}
+	}
+
+	testContext.RunTest(func() {
+		// ===== Test setup =====
+
+		// Application 1
+		repo1, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
+		root1, _ := repo1.GetRoot()
+		newDir1, _ := repo1.CreateEntry(getEntity("cool_dir", repositories.GROUPS_ADMIN, root1.EntityID, false))
+		newDoc1, _ := repo1.CreateEntry(getEntity("cool_doc", repositories.GROUPS_ADMIN, newDir1.EntityID, false))
+
+		// Application 2
+		repo2, err := repositories.NewFilesystemRepo("CSESoc Website", "http://localhost:3002", testContext)
+		assert.Nil(err)
+		root2, _ := repo2.GetRoot()
+		newDir2, _ := repo2.CreateEntry(getEntity("c00l_dir", repositories.GROUPS_ADMIN, root2.EntityID, false))
+		newDoc2, _ := repo2.CreateEntry(getEntity("c00l_doc", repositories.GROUPS_ADMIN, newDir2.EntityID, false))
+
+		assert.True(newDir1.LogicalName == "cool_dir")
+		assert.True(newDoc1.LogicalName == "cool_doc")
+
+		assert.True(newDir2.LogicalName == "c00l_dir")
+		assert.True(newDoc2.LogicalName == "c00l_doc")
+
+		_, error1 := repo1.GetIDWithPath("/c00l_dir")
+		_, error2 := repo1.GetIDWithPath("/c00l_doc")
+
+		assert.True(error1 != nil)
+		assert.True(error2 != nil)
+
+		_, error3 := repo2.GetIDWithPath("/cool_dir")
+		_, error4 := repo2.GetIDWithPath("/cool_doc")
+
+		assert.True(error3 != nil)
+		assert.True(error4 != nil)
 	})
 }
 

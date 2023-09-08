@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import styled from "styled-components";
-import { Breadcrumbs, Link } from "@mui/material";
+import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
 
 // local imports
-import SideBar from "src/packages/dashboard/components/SideBar/SideBar";
-import Renderer from "./components/FileRenderer/Renderer";
-import { initAction, traverseBackFolder } from "./state/folders/actions";
-import ConfirmationWindow from "./components/ConfirmationModal/ConfirmationWindow";
-import Directory from "./components/Directory";
+import SideBar from 'src/packages/dashboard/components/SideBar/SideBar';
+import Renderer from './components/FileRenderer/Renderer';
+import {
+  initAction,
+  traverseBackFolder,
+  traverseIntoFolder,
+} from './state/folders/actions';
+import ConfirmationWindow from './components/ConfirmationModal/ConfirmationWindow';
+import Directory from './components/Directory';
+import { getFolderState } from './api/helpers';
 
 const Container = styled.div`
   display: flex;
@@ -25,20 +29,23 @@ const FlexWrapper = styled.div`
 export default function Dashboard() {
   const [isOpen, setOpen] = useState(true);
 
-  const [modalState, setModalState] = useState<{ open: boolean; type: string }>(
-    {
-      open: false,
-      type: "",
-    }
-  );
+  const [modalState, setModalState] = useState<{
+    open: boolean;
+    selectedFile: string;
+    type: string;
+  }>({
+    open: false,
+    selectedFile: '',
+    type: '',
+  });
 
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
-  // const parentFolder = getFolderState().parentFolder;
+  const parentFolder = getFolderState().parentFolder;
   const dispatch = useDispatch();
-
   useEffect(() => {
     // fetches all folders and files from backend and displays it
-    dispatch(initAction());
+    // dispatch(initAction());
+    dispatch(traverseIntoFolder(parentFolder));
   }, []);
 
   return (
@@ -49,7 +56,7 @@ export default function Dashboard() {
         isOpen={isOpen}
         setOpen={setOpen}
       />
-      <FlexWrapper style={{ left: isOpen ? "0px" : "-250px" }}>
+      <FlexWrapper style={{ left: isOpen ? '0px' : '-250px' }}>
         <Directory />
         <Renderer
           selectedFile={selectedFile}

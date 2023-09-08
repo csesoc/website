@@ -29,6 +29,7 @@ const FooterComponent = styled.footer`
   background-color: #A09FE3;
   padding: 2rem;
   display: flex;
+  margin-top: 1.5em;
   flex-direction: column;
 
   @media ${device.tablet} {
@@ -63,7 +64,7 @@ const Footer: React.FC<{}> = () => {
         <Image src={CSESocLogo} alt="CSESoc" />
       </Logo>
       <Details>
-        <p>
+        <div>
           B03 CSE Building K17, UNSW
           <br />
           csesoc@csesoc.org.au
@@ -87,7 +88,7 @@ const Footer: React.FC<{}> = () => {
           </ImagesContainer>
           <br /><br />
           © 2022 — CSESoc UNSW
-        </p>
+        </div>
       </Details>
     </FooterComponent>
   );

@@ -17,7 +17,7 @@ interface Props {
 
 export default function Renamable({ name, id }: Props) {
   const [toggle, setToggle] = useState(true);
-  const [inputName, setInputName] = useState(name);
+  const [inputName, setInputName] = useState<string>(name);
 
   const dispatch = useDispatch();
 
@@ -30,7 +30,12 @@ export default function Renamable({ name, id }: Props) {
   return (
     <>
       {toggle ? (
-        <div onDoubleClick={() => setToggle(false)}>{name}</div>
+        <div onDoubleClick={() => {
+          setToggle(false);
+          // required as browser doesn't update inputName
+          // after first refresh of page after renaming
+          setInputName(name); 
+        }}>{name}</div>
       ) : (
         <input
           style={{
