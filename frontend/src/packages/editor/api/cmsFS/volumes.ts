@@ -16,36 +16,69 @@ export const publishDocument = (documentId: string) => {
 export const publishImage = (documentId: string, imageSrc: File) => {
   // console.log("publishing image", imageSrc)
 
-  const formData = new FormData
+  /*
+// V2 - Using FormData and passing imageSrc as a `File`
+
+export const publishImage = (documentId: string, imageSrc: File) => {
+  const formData = new FormData()
+
+  // passing in placeholder values for now
   formData.append('Parent', `58fe2b96-50c6-4100-802c-a29664aa5c86`);
   formData.append('LogicalName', `placeholder`);
   formData.append('OwnerGroup', `1`);
   formData.append('Image', imageSrc);
-  console.log(formData);
+}
+
+fetch("/api/filesystem/upload-image", {
+  method: "POST",
+  body: formData
+})
+.then(..)
+  */
+
+  /*
+
+  // V1 - Passing image as base64 String
+export const publishImage = (documentId: string, imageSrc: string) => {
+  fetch("/api/filesystem/upload-image", {
+    method: "POST",
+    headers: {
+    //  "Content-Type": "multipart/form-data",
+    },
+    body: new URLSearchParams({
+      Parent: `58fe2b96-50c6-4100-802c-a29664aa5c86`, // (placeholder)
+      LogicalName: "placeholder",
+      OwnerGroup: '1',
+      Image: imageSrc 
+    }),
+  })
+  .then(..)
+}
+  */
+  const formData = new FormData()
+
+  // passing in placeholder values for now
+  formData.append('Parent', `58fe2b96-50c6-4100-802c-a29664aa5c86`);
+  formData.append('LogicalName', imageSrc.name);
+  formData.append('OwnerGroup', `1`);
+  formData.append('Image', imageSrc);
+
   const imageId = 
     fetch("/api/filesystem/upload-image", {
+      // headers: {
+      //   "Content-Type": "multipart/form-data",
+      // },
       method: "POST",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      // TODO: find out what you're supposed to pass for
-      // LogicalName and OwnerGroup
       body: formData
-      // body: new URLSearchParams({
-      //   Parent: `58fe2b96-50c6-4100-802c-a29664aa5c86`,
-      //   LogicalName: "placeholder",
-      //   OwnerGroup: '1',
-      //   Image: btoa(imageSrc)
-      // }),
     })
-  .then(rawData => rawData.json())
-  .then(data => {
-    if (data.ok) {
-      return data.Response.NewID
-    }
-    throw new Error(data.Message);
-  })
-  .catch((err) => console.log("ERROR uploading image: ", err))
+    .then(rawData => rawData.json())
+    .then(data => {
+      if (data.ok) {
+        return data.Response.NewID
+      }
+      throw new Error(data.Message);
+    })
+    .catch((err) => console.log("ERROR uploading image: ", err))
   ;
 
   return imageId;

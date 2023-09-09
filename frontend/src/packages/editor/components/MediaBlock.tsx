@@ -142,7 +142,7 @@ const MediaBlock: FC<CMSBlockProps> = ({
     if (!(convertedMedia instanceof ArrayBuffer) && convertedMedia) {
       // TODO: pretty sure i should pass the document id, not just the block id
       // TODO: Figure out how to propagate the document id to this level :S
-      console.log(convertedMedia)
+      // console.log(convertedMedia)
       const newUploadId = await publishImage(`${id}`, rawMedia)
 
       Transforms.select(editor, {
