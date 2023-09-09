@@ -58,7 +58,7 @@ func (fn handler[T, V]) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	parser := getParser(fn)
 	parsedForm := new(T)
 
-	if parseStatus := parser(r, fn.FormType, parsedForm); parseStatus != http.StatusOK {
+	if parseStatus, err := parser(r, fn.FormType, parsedForm); err != nil {
 		writeResponse(w, handlerResponse[empty]{
 			Status:   parseStatus,
 			Response: empty{},
@@ -194,7 +194,7 @@ func logResponse[V any](logger *logger.Log, response handlerResponse[V]) {
 }
 
 // formParser is a type indicating a valid form parser (see below)
-type formParser = func(*http.Request, string, interface{}) int
+type formParser = func(*http.Request, string, interface{}) (int, error)
 
 // getParser fetches the required parser for a specific handler configuration
 func getParser[T, V any](config handler[T, V]) formParser {

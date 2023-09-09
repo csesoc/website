@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"errors"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -10,42 +11,43 @@ import (
 )
 
 // ParseParamsToSchema parses a simple request struct, it expects the target to be a pointer
-func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interface{}) int {
-	if r.ParseForm() != nil {
-		return http.StatusBadRequest
-	} else {
-		form, status := getForm(r, acceptingMethod)
-		if status != http.StatusOK {
-			return status
-		}
-
-		decoder := schema.NewDecoder()
-		if decoder.Decode(target, form) != nil {
-			return http.StatusBadRequest
-		}
+func ParseParamsToSchema(r *http.Request, acceptingMethod string, target interface{}) (int, error) {
+	if err := r.ParseForm(); err != nil {
+		return http.StatusBadRequest, err
 	}
-	return http.StatusOK
+	form, status := getForm(r, acceptingMethod)
+	if status != http.StatusOK {
+		return status, errors.New("invalid form")
+	}
+
+	decoder := schema.NewDecoder()
+	if err := decoder.Decode(target, form); err != nil {
+		return http.StatusBadRequest, err
+	}
+	return http.StatusOK, nil
 }
 
 // ParseMultiPartFormToSchema parses a multipart form into a request schema, note that it replaces all instances of
 // multipart.file with the actual parsed file, like ParseParamsToSchema it expects the target to be a pointer
-func ParseMultiPartFormToSchema(r *http.Request, acceptingMethod string, target interface{}) int {
+func ParseMultiPartFormToSchema(r *http.Request, acceptingMethod string, target interface{}) (int, error) {
 	var maxUploadSize int64 = 10 << 20
-	if r.ParseMultipartForm(maxUploadSize) != nil {
-		return http.StatusBadRequest
-	} else {
-		form, status := getForm(r, acceptingMethod)
-		if status != http.StatusOK {
-			return status
-		}
-
-		decoder := schema.NewDecoder()
-		if decoder.Decode(target, form) != nil || parseFormFiles(r, target) != nil {
-			return http.StatusBadRequest
-		}
+	if err := r.ParseMultipartForm(maxUploadSize); err != nil {
+		return http.StatusBadRequest, err
 	}
 
-	return http.StatusOK
+	form, status := getForm(r, acceptingMethod)
+	if status != http.StatusOK {
+		return status, errors.New("invalid form")
+	}
+
+	decoder := schema.NewDecoder()
+	if err := decoder.Decode(target, form); err != nil {
+		return http.StatusBadRequest, err
+	}
+	if err := parseFormFiles(r, target); err != nil {
+		return http.StatusBadRequest, err
+	}
+	return http.StatusOK, nil
 }
 
 // parseFormFiles parses any form files in our target struct
