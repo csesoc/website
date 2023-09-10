@@ -59,7 +59,8 @@ func parseFormFiles(r *http.Request, target interface{}) error {
 
 		if field.Type() == formFileType {
 			// Parse the incoming form file
-			uploadedFile, _, err := r.FormFile(field.Type().Name())
+			fileName := v.Type().Field(i).Name
+			uploadedFile, _, err := r.FormFile(fileName)
 			if err != nil {
 				return err
 			}
