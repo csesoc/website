@@ -1,0 +1,1 @@
+FROM sqitch/sqitch:latest
