@@ -10,11 +10,12 @@ import (
 
 // Implements IRepositoryInterface
 type filesystemRepository struct {
+	frontEndID   uuid.UUID
+	frontendRoot uuid.UUID
+	logicalName  string
+	URL          string
 	embeddedContext
 }
-
-// The ID for root, set this as the ID in a specified request
-var FilesystemRootID uuid.UUID = uuid.Nil
 
 // We really should use an ORM jesus this is ugly
 func (rep filesystemRepository) query(query string, input ...interface{}) (FilesystemEntry, error) {
@@ -51,16 +52,6 @@ func (rep filesystemRepository) query(query string, input ...interface{}) (Files
 
 // Returns: entry struct containing the entity that was just created
 func (rep filesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEntry, error) {
-	if file.ParentFileID == FilesystemRootID {
-		// determine root ID
-		root, err := rep.GetRoot()
-		if err != nil {
-			return FilesystemEntry{}, errors.New("failed to get root")
-		}
-
-		file.ParentFileID = root.EntityID
-	}
-
 	var newID uuid.UUID
 	err := rep.ctx.Query("SELECT new_entity($1, $2, $3, $4)", []interface{}{file.ParentFileID, file.LogicalName, file.OwnerUserId, file.IsDocument}, &newID)
 	if err != nil {
@@ -70,17 +61,12 @@ func (rep filesystemRepository) CreateEntry(file FilesystemEntry) (FilesystemEnt
 }
 
 func (rep filesystemRepository) GetEntryWithID(ID uuid.UUID) (FilesystemEntry, error) {
-	if ID == FilesystemRootID {
-		return rep.GetRoot()
-	}
-
 	result, err := rep.query("SELECT * FROM filesystem WHERE EntityID = $1", ID)
 	return result, err
 }
 
 func (rep filesystemRepository) GetRoot() (FilesystemEntry, error) {
-	// Root is currently set to ID 1
-	return rep.query("SELECT * FROM filesystem WHERE EntityID = $1", FilesystemRootID)
+	return rep.query("SELECT * FROM filesystem WHERE EntityID = $1", rep.frontendRoot)
 }
 
 func (rep filesystemRepository) GetEntryWithParentID(ID uuid.UUID) (FilesystemEntry, error) {
@@ -95,7 +81,7 @@ func (rep filesystemRepository) GetIDWithPath(path string) (uuid.UUID, error) {
 	}
 
 	// Determine main parent
-	parent, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = $1", parentNames[1])
+	parent, err := rep.query("SELECT * FROM filesystem WHERE LogicalName = $1 AND Parent = $2", parentNames[1], rep.frontendRoot)
 	if err != nil {
 		return uuid.Nil, err
 	}

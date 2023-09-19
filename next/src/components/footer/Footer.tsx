@@ -29,6 +29,7 @@ const FooterComponent = styled.footer`
   background-color: #A09FE3;
   padding: 2rem;
   display: flex;
+  margin-top: 1.5em;
   flex-direction: column;
 
   @media ${device.tablet} {

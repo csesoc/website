@@ -49,6 +49,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       method: "GET",
     }
   ).then((res) => res.text());
+
   return { props: { data: JSON.parse(data).Contents } };
 };
 

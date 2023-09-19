@@ -6,7 +6,7 @@ export interface Document {
 
 export type Block = Element[];
 
-export type Element = Paragraph | Image;
+export type Element = Paragraph | Image | Code;
 
 interface Paragraph {
   type: "paragraph";
@@ -18,9 +18,20 @@ interface Image {
   url: string;
 }
 
+interface Code {
+  type: "code";
+  language: String;
+  children: CodeLine[]
+}
+
 interface Text extends TextStyle {
   text: string;
   link?: string;
+}
+
+interface CodeLine extends TextStyle {
+  text: string;
+  language: string;
 }
 
 export interface TextStyle {

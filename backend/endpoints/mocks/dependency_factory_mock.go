@@ -36,11 +36,12 @@ func (m *MockDependencyFactory) EXPECT() *MockDependencyFactoryMockRecorder {
 }
 
 // GetFilesystemRepo mocks base method.
-func (m *MockDependencyFactory) GetFilesystemRepo() repositories.FilesystemRepository {
+func (m *MockDependencyFactory) GetFilesystemRepo() (repositories.FilesystemRepository, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetFilesystemRepo")
 	ret0, _ := ret[0].(repositories.FilesystemRepository)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GetFilesystemRepo indicates an expected call of GetFilesystemRepo.

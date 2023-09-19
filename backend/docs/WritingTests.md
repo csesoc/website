@@ -31,7 +31,7 @@ Once you've written your test it can be run with:
 ```sh
 # To run specifically this test
 go test myTest_test.go
-# To run all tests
+# To run all tests in the current directory and subdirectories
 go test  ./...
 ```
 

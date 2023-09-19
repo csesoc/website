@@ -3,16 +3,19 @@ package endpoints
 //go:generate mockgen -source=dependency_factory.go -destination=mocks/dependency_factory_mock.go -package=mocks
 
 import (
+	"fmt"
+
 	"cms.csesoc.unsw.edu.au/database/contexts"
 	repos "cms.csesoc.unsw.edu.au/database/repositories"
 	"cms.csesoc.unsw.edu.au/internal/logger"
+	"github.com/google/uuid"
 )
 
 type (
 	// DependencyFactory is an interface type that handlers can use to retrieve
 	// and fetch specific dependencies
 	DependencyFactory interface {
-		GetFilesystemRepo() repos.FilesystemRepository
+		GetFilesystemRepo() (repos.FilesystemRepository, error)
 		GetGroupsRepo() repos.GroupsRepository
 		GetFrontendsRepo() repos.FrontendsRepository
 		GetPersonsRepo() repos.PersonRepository
@@ -25,14 +28,20 @@ type (
 
 	// DependencyProvider is a simple implementation of the dependency factory that supports the injection of "dynamic" dependencies
 	DependencyProvider struct {
-		Log        *logger.Log
-		FrontEndID int
+		Log         *logger.Log
+		FrontEndID  uuid.UUID
+		LogicalName string
+		URL         string
 	}
 )
 
 // GetFilesystemRepo is the constructor for FS repos
-func (dp DependencyProvider) GetFilesystemRepo() repos.FilesystemRepository {
-	return repos.NewFilesystemRepo(contexts.GetDatabaseContext())
+func (dp DependencyProvider) GetFilesystemRepo() (repos.FilesystemRepository, error) {
+	fsRepo, err := repos.NewFilesystemRepo(dp.LogicalName, dp.URL, contexts.GetDatabaseContext())
+	if err != nil {
+		return fsRepo, fmt.Errorf("Error getting FSRepo: %w", err)
+	}
+	return fsRepo, nil
 }
 
 // GetGroupsRepo instantiates a new groups repository
