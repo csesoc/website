@@ -8,7 +8,7 @@ SET timezone = 'Australia/Sydney';
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 /* MetaData */
-CREATE TABLE metadata (
+CREATE TABLE IF NOT EXISTS metadata (
   MetadataID    uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -16,7 +16,7 @@ CREATE TABLE metadata (
 /**
   The filesystem table models all file heirachies in our system
 **/
-CREATE TABLE filesystem (
+CREATE TABLE IF NOT EXISTS filesystem (
   EntityID      uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   LogicalName   VARCHAR(50) NOT NULL,
   

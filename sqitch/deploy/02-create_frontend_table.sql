@@ -3,7 +3,7 @@
 
 BEGIN;
 
-CREATE TABLE frontend (
+CREATE TABLE IF NOT EXISTS frontend (
   FrontendID  SERIAL PRIMARY KEY,
   FrontendURL VARCHAR(100)
 );

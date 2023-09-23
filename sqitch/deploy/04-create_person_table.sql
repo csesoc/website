@@ -4,7 +4,7 @@
 BEGIN;
 
 -- XXX Add DDLs here.
-CREATE TABLE person (
+CREATE TABLE IF NOT EXISTS person (
   UID           SERIAL PRIMARY KEY,
   Email         VARCHAR(50) UNIQUE NOT NULL,
   First_name    VARCHAR(50) NOT NULL,

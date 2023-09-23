@@ -7,6 +7,7 @@ BEGIN;
 CREATE EXTENSION IF NOT EXISTS hstore;
 SET timezone = 'Australia/Sydney';
 
+DROP TYPE IF EXISTS permissions_enum CASCADE;
 CREATE TYPE permissions_enum as ENUM ('read', 'write', 'delete');
 
 CREATE TABLE IF NOT EXISTS groups (
