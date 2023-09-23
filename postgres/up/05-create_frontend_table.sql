@@ -22,10 +22,12 @@ AS $$
 DECLARE
   frontendIDP  frontend.ID%type;
   frontendRoot frontend.Root%type;
+  newMetadataID filesystem.MetadataID%type;
 BEGIN
   -- TODO: Temporarily setting the OwnedBy field. Going to be deprecated soon.
-  INSERT INTO filesystem (LogicalName, IsDocument, Parent, OwnedBy)
-    VALUES (logicalNameP, false, uuid_nil(), 1)
+  INSERT INTO metadata DEFAULT VALUES RETURNING MetadataID INTO newMetadataID;
+  INSERT INTO filesystem (LogicalName, IsDocument, Parent, OwnedBy, MetadataID)
+    VALUES (logicalNameP, false, uuid_nil(), 1, newMetadataID)
     RETURNING entityID INTO frontendRoot;
     
   INSERT INTO frontend 
