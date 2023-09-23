@@ -283,27 +283,30 @@ func TestGetIDWithPath(t *testing.T) {
 	})
 }
 
-// func TestMetadataRetrieval(t *testing.T) {
-// 	assert := assert.New(t)
+func TestMetadataRetrieval(t *testing.T) {
+	assert := assert.New(t)
 
-// 	testContext.RunTest(func() {
-// 		// ==== Setup ====
-// 		newDoc, err := repo.CreateEntry(repositories.FilesystemEntry{
-// 			LogicalName: "test_doc", ParentFileID: repositories.FilesystemRootID,
-// 			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: true,
-// 		})
-// 		// ==== Assertions ====
-// 		if err != nil {
-// 			log.Fatalf(err.Error())
-// 		}
+	testContext.RunTest(func() {
+		// ==== Setup ====
+		repo, err := repositories.NewFilesystemRepo(frontendLogicalName, frontendURL, testContext)
+		assert.Nil(err)
+		root, _ := repo.GetRoot()
+		newDoc, err := repo.CreateEntry(repositories.FilesystemEntry{
+			LogicalName: "test_doc", ParentFileID: root.EntityID,
+			OwnerUserId: repositories.GROUPS_ADMIN, IsDocument: true,
+		})
+		// ==== Assertions ====
+		if err != nil {
+			log.Fatalf(err.Error())
+		}
 
-// 		// Query for metadata in database
-// 		if info, err := repo.GetMetadataFromID(newDoc.EntityID); assert.Nil(err) {
-// 			assert.Equal(newDoc.MetadataID, info.MetadataID)
-// 			assert.NotEmpty(info.CreatedAt)
-// 		}
-// 	})
-// }
+		// Query for metadata in database
+		if info, err := repo.GetMetadataFromID(newDoc.EntityID); assert.Nil(err) {
+			assert.Equal(newDoc.MetadataID, info.MetadataID)
+			assert.NotEmpty(info.CreatedAt)
+		}
+	})
+}
 
 func TestMultiApplications(t *testing.T) {
 	assert := assert.New(t)

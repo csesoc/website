@@ -100,7 +100,7 @@ func (rep filesystemRepository) GetIDWithPath(path string) (uuid.UUID, error) {
 
 func (rep filesystemRepository) GetMetadataFromID(ID uuid.UUID) (MetadataEntry, error) {
 	// Get entry from ID
-	metadataId, err := rep.GetEntryWithID(ID)
+	entry, err := rep.GetEntryWithID(ID)
 	if err != nil {
 		return MetadataEntry{}, err
 	}
@@ -109,7 +109,7 @@ func (rep filesystemRepository) GetMetadataFromID(ID uuid.UUID) (MetadataEntry, 
 	entity := MetadataEntry{}
 
 	err = rep.ctx.Query("SELECT * FROM metadata WHERE MetadataID = $1",
-		[]interface{}{metadataId},
+		[]interface{}{entry.MetadataID},
 		&entity.MetadataID, &entity.CreatedAt)
 	if err != nil {
 		return MetadataEntry{}, err
