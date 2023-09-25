@@ -21,6 +21,8 @@ import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CreateMediaBlock from "src/cse-ui-kit/CreateMediaBlock_button";
 
+import ollie from '../../assets/byzantine_fault.png'
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -43,6 +45,12 @@ const LeftContainer = styled.div`
 type LocationState = {
   filename: string;
 };
+
+const Ollie = styled.a`
+  height: 50px;
+  width: 50px;
+  cursor: pointer;
+`
 
 const EditorPage: FC = () => {
   const { id } = useParams();
@@ -117,6 +125,9 @@ const EditorPage: FC = () => {
           <ButtonContainer>
             <SyncDocument onClick={() => syncDocument()} />
             <PublishDocument onClick={() => publishDocument(id ?? "")} />
+            <Ollie href="https://en.wikipedia.org/wiki/Byzantine_fault#Solutions" target="_blank">
+              <img style={{width:"50px", height:"50px"}} src={ollie} alt="Projects Fair Hint"/>
+            </Ollie>
           </ButtonContainer>
       </EditorHeader>
       <Container>

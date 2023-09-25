@@ -122,7 +122,7 @@ export default function SideBar({
     setOpen,
 }: Props) {
 
-
+    const folders = getFolderState();
   const handleNewFile = () => {
     setModalState({
       open: true,
@@ -149,14 +149,14 @@ export default function SideBar({
   const navigate = useNavigate();
   const handleEdit = () => {
     if (selectedFile !== null) {
-      const fileItem = getFolderState().items.find((item) => item.id == selectedFile);
-      const filename = fileItem != null ? fileItem.name : "";
-      navigate("/editor/" + selectedFile, { 
-        replace: false,
-        state: {
-          filename: filename
-        } 
-      }), [navigate];
+        const fileItem = folders.items.find((item) => item.id == selectedFile);
+        const filename = fileItem != null ? fileItem.name : "";
+        navigate("/editor/" + selectedFile, { 
+            replace: false,
+            state: {
+            filename: filename
+            } 
+        }), [navigate];
     }
   };
 
