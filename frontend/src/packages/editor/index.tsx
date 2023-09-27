@@ -17,7 +17,7 @@ import { buildComponentFactory } from "./componentFactory";
 import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
 import { CMSOperation } from "./api/OTClient/operation";
-import CreateCodeBlock from "src/cse-ui-kit/CreateCodeBlock_button ";
+import CreateCodeBlock from "src/cse-ui-kit/CreateCodeBlock_button";
 
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
