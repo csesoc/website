@@ -48,12 +48,13 @@ function FileContainer({ name, id, selectedFile, setSelectedFile }: Props) {
     console.log(id);
     setSelectedFile(id);
     if (selectedFile !== null) {
-      navigate("/editor/" + selectedFile, { 
+      navigate("/editor/" + selectedFile, {
         replace: false,
         state: {
-          filename: name
-        } 
-      }), [navigate];
+          filename: name,
+        },
+      }),
+        [navigate];
     }
   };
 
