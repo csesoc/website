@@ -8,6 +8,8 @@ import CreateContentBlock from "src/cse-ui-kit/CreateContentBlock_button";
 import CreateHeadingBlock from "src/cse-ui-kit/CreateHeadingBlock_button";
 import SyncDocument from "src/cse-ui-kit/SyncDocument_button";
 import PublishDocument from "src/cse-ui-kit/PublishDocument_button";
+import EditableTitle from "src/cse-ui-kit/EditableTitle_textbox";
+
 import EditorHeader from "src/deprecated/components/Editor/EditorHeader";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 
@@ -15,10 +17,16 @@ import { buildComponentFactory } from "./componentFactory";
 import { OperationManager } from "./operationManager";
 import { publishDocument } from "./api/cmsFS/volumes";
 import { CMSOperation } from "./api/OTClient/operation";
-import CreateCodeBlock from "src/cse-ui-kit/CreateCodeBlock_button ";
+import CreateCodeBlock from "src/cse-ui-kit/CreateCodeBlock_button";
 
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
+import {
+  RenamePayloadType,
+  renameFileEntityAction,
+} from "src/packages/dashboard/state/folders/actions";
+import { useDispatch } from "react-redux";
 
 const Container = styled.div`
   display: flex;
@@ -52,7 +60,34 @@ const EditorPage: FC = () => {
   const [focusedId, setFocusedId] = useState<number>(0);
 
   const state = useLocation().state as LocationState;
-  const filename = state != null ? state.filename : "";
+
+  const [filename, setFilename] = useState<string>(state != null ? state.filename : "");
+
+  const [savedFilename, setSavedFilename] = useState<string>(`${filename}`);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const updateFilename = () => {
+    // No empty names allowed!
+    if (filename == "") {
+      setFilename(savedFilename);
+      
+    } else if (filename !== savedFilename && id !== undefined) {
+      const newPayload: RenamePayloadType = { id, newName: filename };
+      dispatch(renameFileEntityAction(newPayload));
+      
+      // Re-navigate to current page with new file name so that
+      // filename changes are persistent on reloads
+      navigate("/editor/" + id, { 
+        replace: true,
+        state: {
+          filename
+        } 
+      }), [navigate];
+      
+      setSavedFilename(`${filename}`);
+    }
+  }
 
   const updateValues: UpdateCallback = (idx, updatedBlock) => {
     const requiresUpdate = JSON.stringify(blocks[idx]) !== JSON.stringify(updateValues);
@@ -100,16 +135,26 @@ const EditorPage: FC = () => {
     opManager.current?.pushToServer(newCreationOperation(newElement, blocks.length));
   }  
 
-  const navigate = useNavigate();
   
   return (
     <div style={{ height: "100%" }}>
       <EditorHeader>
           <LeftContainer>
-            <IconButton aria-label="back" onClick={() => navigate(-1)} sx={{ 'paddingRight': '20px' }}>
+            <IconButton 
+              aria-label="back"
+              onClick={() => navigate(-1)} 
+              sx={{ 'paddingRight': '20px' }}>
               <ArrowBackIcon fontSize="inherit"/>
             </IconButton>
-            {filename}
+
+            <EditableTitle 
+              value={filename}
+              onChange={(event) => {
+                setFilename(event.target.value)
+              }}
+              onBlur={updateFilename}
+            />
+
           </LeftContainer>
           <ButtonContainer>
             <SyncDocument onClick={() => syncDocument()} />

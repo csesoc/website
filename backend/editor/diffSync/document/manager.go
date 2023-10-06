@@ -22,7 +22,7 @@ type Manager struct {
 var (
 	managerInstance *Manager
 	lock            = &sync.Mutex{}
-	repo            = repositories.NewFilesystemRepo(contexts.GetDatabaseContext())
+	repo, _         = repositories.NewFilesystemRepo("test", "test1", contexts.GetDatabaseContext())
 )
 
 // implementation of the singleton pattern :)

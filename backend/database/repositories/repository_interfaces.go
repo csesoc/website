@@ -1,6 +1,6 @@
 package repositories
 
-//go:generate mockgen -source=models.go -destination=mocks/models_mock.go -package=mocks
+//go:generate mockgen -source=repository_interfaces.go -destination=mocks/repositories_mock.go -package=mocks
 
 import (
 	"os"

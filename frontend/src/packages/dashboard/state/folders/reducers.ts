@@ -58,6 +58,7 @@ export function renameFileEntity(
   state: sliceState,
   action: PayloadAction<RenamePayloadType>
 ) {
+
   const { id, newName } = action.payload;
   return {
     ...state,

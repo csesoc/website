@@ -1,10 +1,10 @@
-backend/ @hdphuong
-postgres/ @hdphuong
-utilities/ @hdphuong
-services/ @hdphuong
+backend/ @ShunyaoLiang
+postgres/ @ShunyaoLiang
+utilities/ @ShunyaoLiang
+services/ @ShunyaoLiang
 
 frontend/ @lauraw0 @james-teng-0
-frontend/src/packages/editor @lauraw0 @james-teng-0 @hdphuong
+frontend/src/packages/editor @lauraw0 @james-teng-0 @ShunyaoLiang
 next/ @lauraw0 @james-teng-0
 
 .github/ @csesoc/technical
