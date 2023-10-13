@@ -38,16 +38,16 @@ func TestUnmarshallsProperly(t *testing.T) {
 		},
 		"Interfaces": [
 			{
-				"$type": "NestedStruct",
+				"type": "NestedStruct",
 				"Key": "Key",
 				"Val": "Val"
 			},
 			{
-				"$type": "UnnestedStruct",
+				"type": "UnnestedStruct",
 				"RandomInteger": 3
 			}
 			{
-				"$type": "NestedStruct",
+				"type": "NestedStruct",
 				"Key": None,
 				"Val": None
 			},
@@ -120,5 +120,5 @@ func TestMarshallsProperly(t *testing.T) {
 		},
 	}
 
-	assert.Equal(config.Marshall(sampleJson), `{"Int": 3,"String": "hello world","Float": 3.200000,"NestedStruct": {"Key": "Key","Val": "Val"},"Interfaces": [{"$type": "NestedStruct", "Key": "Key","Val": "Val"},{"$type": "UnnestedStruct", "RandomInteger": 3}]}`)
+	assert.Equal(config.Marshall(sampleJson), `{"Int": 3,"String": "hello world","Float": 3.200000,"NestedStruct": {"Key": "Key","Val": "Val"},"Interfaces": [{"type": "NestedStruct", "Key": "Key","Val": "Val"},{"type": "UnnestedStruct", "RandomInteger": 3}]}`)
 }

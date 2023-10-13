@@ -5,11 +5,11 @@ package operations
 func TransformPipeline(x Operation, y Operation) (Operation, Operation) {
 	// Finally normalise the operations to account for no-op return values
 	needsAppSpecific := false
-	x.Path, y.Path, needsAppSpecific = transformPaths(x.Path, y.Path, x.OperationType, y.OperationType)
+	x.Path, y.Path, needsAppSpecific = transformPaths(x.Path, y.Path, x.Operation.GetEditType(), y.Operation.GetEditType())
 	x, y = normaliseOperation(x), normaliseOperation(y)
 
 	if needsAppSpecific {
-		x.Operation.TransformAgainst(y.Operation, x.OperationType)
+		x.Operation.TransformAgainst(y.Operation, x.Operation.GetEditType())
 	}
 
 	return x, y

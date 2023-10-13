@@ -39,12 +39,12 @@ func setupDocument() cmsjson.AstNode {
 		"DocumentId": "%s",
 		"Content": [
 			{
-				"$type": "Image",
+				"type": "Image",
 				"ImageDocumentID": "%s",
 				"ImageSource": "big_morb.png"
 			},
 			{
-				"$type": "Paragraph",
+				"type": "Paragraph",
 				"ParagraphID": "%s",
 				"ParagraphAlign": "center",
 				"ParagraphChildren": [
@@ -58,7 +58,7 @@ func setupDocument() cmsjson.AstNode {
 				]
 			}, 
 			{
-				"$type": "ArraysData",
+				"type": "ArraysData",
 				"Data": [1, -10, 213],
 				"IntField": 7
 			}
@@ -194,14 +194,14 @@ func TestInsertStringOperation(t *testing.T) {
 
 	jsonOperation := `{
 		"Path": [2, 0, 1],
-		"OperationType": 0,
 		"AcknowledgedServerOps": 0,
 		"IsNoOp": false,
 		"Operation": {
-			"$type": "stringOperation",
+			"type": "stringOperation",
 			"RangeStart": 5,
 			"RangeEnd": 5,
 			"NewValue": "0"
+			"OperationType": "Insert",
 		}
 	}`
 
@@ -234,14 +234,14 @@ func TestDeleteStringOperation(t *testing.T) {
 
 	jsonOperation := `{
 		"Path": [2, 0, 1],
-		"OperationType": 1,
 		"AcknowledgedServerOps": 0,
 		"IsNoOp": false,
 		"Operation": {
-			"$type": "stringOperation",
+			"type": "stringOperation",
 			"RangeStart": 5,
 			"RangeEnd": 5,
 			"NewValue": "0"
+			"OperationType": "Delete",
 		}
 	}`
 
@@ -274,12 +274,12 @@ func TestInsertArrayOperation(t *testing.T) {
 
 	jsonOperation := `{
 		"Path": [2, 2, 0],
-		"OperationType": 0,
 		"AcknowledgedServerOps": 0,
 		"IsNoOp": false,
 		"Operation": {
-			"$type": "arrayOperation",
+			"type": "arrayOperation",
 			"NewValue": 6
+			"OperationType": "Insert",
 		}
 	}`
 
@@ -317,12 +317,12 @@ func TestUpdateArrayElement(t *testing.T) {
 
 	jsonOperation := `{
 		"Path": [2, 2, 0],
-		"OperationType": 0,
 		"AcknowledgedServerOps": 0,
 		"IsNoOp": false,
 		"Operation": {
-			"$type": "arrayOperation",
+			"type": "arrayOperation",
 			"NewValue": 6
+			"OperationType": "Insert",
 		}
 	}`
 
@@ -351,13 +351,13 @@ func TestUpdateObjectElement(t *testing.T) {
 
 	jsonOperation := `{
 		"Path": [2, 0, 0],
-		"OperationType": 0,
 		"AcknowledgedServerOps": 0,
 		"IsNoOp": false,
 		"Operation": {
-			"$type": "objectOperation",
+			"type": "objectOperation",
+			"OperationType": "Insert",
 			"NewValue": {
-				"$type": "image",
+				"type": "image",
 				"ImageDocumentID": "NEW_UUID",
 				"ImageSource": "morb_dead_meme.jpg"
 			}

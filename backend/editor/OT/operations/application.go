@@ -36,5 +36,5 @@ func (op Operation) ApplyTo(document cmsjson.AstNode) (cmsjson.AstNode, error) {
 	}
 
 	applicationIndex := op.Path[len(op.Path)-1]
-	return op.Operation.Apply(parent, applicationIndex, op.OperationType)
+	return op.Operation.Apply(parent, applicationIndex, op.Operation.GetEditType())
 }

@@ -13,8 +13,8 @@ describe("String transformation functions", () => {
 
   describe("insert insert", () => {
     test("non overlap", () => {
-      const o1 = new StringOperation(1, 2, "1");
-      const o2 = new StringOperation(2, 3, "2");
+      const o1 = new StringOperation(1, 2, "1", "insert");
+      const o2 = new StringOperation(2, 3, "2", "insert");
       expect(apply(o1, s)).toBe("a1bcde");
       expect(apply(o2, s)).toBe("ab2cde");
 
@@ -25,8 +25,8 @@ describe("String transformation functions", () => {
     });
 
     test("same location", () => {
-      const o1 = new StringOperation(1, 2, "2");
-      const o2 = new StringOperation(1, 2, "1");
+      const o1 = new StringOperation(1, 2, "2", "insert");
+      const o2 = new StringOperation(1, 2, "1", "insert");
       const [o1_t1, o2_t1] = o1.transformAgainst(o2);
       const [o1_t2, o2_t2] = o2.transformAgainst(o1);
       expect(apply(o1_t1, apply(o2_t1, s))).toBe("a12bcde");
@@ -34,8 +34,8 @@ describe("String transformation functions", () => {
     });
 
     test("overlap", () => {
-      const o1 = new StringOperation(1, 3, "11");
-      const o2 = new StringOperation(2, 4, "22");
+      const o1 = new StringOperation(1, 3, "11", "insert");
+      const o2 = new StringOperation(2, 4, "22", "insert");
       const [o1_t1, o2_t1] = o1.transformAgainst(o2);
       const [o1_t2, o2_t2] = o2.transformAgainst(o1);
       expect(apply(o1_t1, apply(o2_t1, s))).toBe("a11b22cde");
@@ -45,8 +45,8 @@ describe("String transformation functions", () => {
 
   describe("insert delete", () => {
     test("non overlap", () => {
-      const o1 = new StringOperation(1, 2, "1");
-      const o2 = new StringOperation(2, 3, "");
+      const o1 = new StringOperation(1, 2, "1", "insert");
+      const o2 = new StringOperation(2, 3, "", "delete");
       const [o1_t1, o2_t1] = o1.transformAgainst(o2);
       const [o1_t2, o2_t2] = o2.transformAgainst(o1);
       expect(apply(o1_t1, apply(o2_t1, s))).toBe("a1bde");
@@ -54,8 +54,8 @@ describe("String transformation functions", () => {
     });
 
     test("same location", () => {
-      const o1 = new StringOperation(1, 2, "1");
-      const o2 = new StringOperation(0, 1, "");
+      const o1 = new StringOperation(1, 2, "1", "insert");
+      const o2 = new StringOperation(0, 1, "", "insert");
       const [o1_t1, o2_t1] = o1.transformAgainst(o2);
       const [o1_t2, o2_t2] = o2.transformAgainst(o1);
       expect(apply(o1_t1, apply(o2_t1, s))).toBe("1bcde");
@@ -63,8 +63,8 @@ describe("String transformation functions", () => {
     });
 
     test("overlap insert before delete", () => {
-      const o1 = new StringOperation(1, 3, "12");
-      const o2 = new StringOperation(0, 1, "");
+      const o1 = new StringOperation(1, 3, "12", "insert");
+      const o2 = new StringOperation(0, 1, "", "delete");
       const [o1_t1, o2_t1] = o1.transformAgainst(o2);
       const [o1_t2, o2_t2] = o2.transformAgainst(o1);
       expect(apply(o1_t1, apply(o2_t1, s))).toBe("12bcde");
@@ -72,8 +72,8 @@ describe("String transformation functions", () => {
     });
 
     test("overlap delete before insert", () => {
-      const o1 = new StringOperation(2, 3, "1");
-      const o2 = new StringOperation(0, 3, "");
+      const o1 = new StringOperation(2, 3, "1", "delete");
+      const o2 = new StringOperation(0, 3, "", "delete");
       const [o1_t1, o2_t1] = o1.transformAgainst(o2);
       const [o1_t2, o2_t2] = o2.transformAgainst(o1);
       expect(apply(o1_t1, apply(o2_t1, s))).toBe("1de");
@@ -81,8 +81,8 @@ describe("String transformation functions", () => {
     });
 
     test("overlap less insert than delete", () => {
-      const o1 = new StringOperation(0, 1, "1");
-      const o2 = new StringOperation(0, 5, "");
+      const o1 = new StringOperation(0, 1, "1", "insert");
+      const o2 = new StringOperation(0, 5, "", "delete");
       const [o1_t1, o2_t1] = o1.transformAgainst(o2);
       const [o1_t2, o2_t2] = o2.transformAgainst(o1);
       expect(apply(o1_t1, apply(o2_t1, s))).toBe("1");
@@ -90,8 +90,8 @@ describe("String transformation functions", () => {
     });
 
     test("overlap more insert than delete", () => {
-      const o1 = new StringOperation(0, 5, "11111");
-      const o2 = new StringOperation(0, 1, "");
+      const o1 = new StringOperation(0, 5, "11111", "insert");
+      const o2 = new StringOperation(0, 1, "", "delete");
       const [o1_t1, o2_t1] = o1.transformAgainst(o2);
       const [o1_t2, o2_t2] = o2.transformAgainst(o1);
       expect(apply(o1_t1, apply(o2_t1, s))).toBe("11111bcde");
@@ -101,8 +101,8 @@ describe("String transformation functions", () => {
 
   describe("delete delete", () => {
     test("non overlap", () => {
-      const o1 = new StringOperation(1, 2, "");
-      const o2 = new StringOperation(2, 3, "");
+      const o1 = new StringOperation(1, 2, "", "delete");
+      const o2 = new StringOperation(2, 3, "", "delete");
       const [o1_t1, o2_t1] = o1.transformAgainst(o2);
       const [o1_t2, o2_t2] = o2.transformAgainst(o1);
       expect(apply(o1_t1, apply(o2_t1, s))).toBe("ade");
@@ -110,8 +110,8 @@ describe("String transformation functions", () => {
     });
 
     test("same operations", () => {
-      const o1 = new StringOperation(1, 2, "");
-      const o2 = new StringOperation(1, 2, "");
+      const o1 = new StringOperation(1, 2, "", "insert");
+      const o2 = new StringOperation(1, 2, "", "insert");
       const [o1_t1, o2_t1] = o1.transformAgainst(o2);
       const [o1_t2, o2_t2] = o2.transformAgainst(o1);
       expect(apply(o1_t1, apply(o2_t1, s))).toBe("acde");
@@ -119,8 +119,8 @@ describe("String transformation functions", () => {
     });
 
     test("overlap", () => {
-      const o1 = new StringOperation(1, 3, "");
-      const o2 = new StringOperation(2, 3, "");
+      const o1 = new StringOperation(1, 3, "", "delete");
+      const o2 = new StringOperation(2, 3, "", "delete");
       const [o1_t1, o2_t1] = o1.transformAgainst(o2);
       const [o1_t2, o2_t2] = o2.transformAgainst(o1);
       expect(apply(o1_t1, apply(o2_t1, s))).toBe("ade");

@@ -12,16 +12,15 @@ type (
 	OperationModel interface {
 		TransformAgainst(op OperationModel, applicationType EditType) (OperationModel, OperationModel)
 		Apply(parentNode cmsjson.AstNode, applicationIndex int, applicationType EditType) (cmsjson.AstNode, error)
+		GetEditType() EditType
 	}
 
 	// Operation is the fundamental incoming type from the frontend
 	Operation struct {
 		Path                  []int
-		OperationType         EditType
 		AcknowledgedServerOps int
-
-		IsNoOp    bool
-		Operation OperationModel
+		IsNoOp                bool
+		Operation             OperationModel
 	}
 )
 

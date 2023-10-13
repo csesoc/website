@@ -2,6 +2,7 @@ package cmsjson
 
 import (
 	"errors"
+	"log"
 	"reflect"
 
 	"github.com/tidwall/gjson"
@@ -94,7 +95,7 @@ func (c Configuration) parseArray(result gjson.Result, underlyingType reflect.Ty
 // that the interface points to :O, this is done via the type registration within the configuration
 // note: unlike parseStruct the actual output of parseInterface is written to reflect.Value
 func (c Configuration) parseInterface(root gjson.Result, underlyingType reflect.Type, dest reflect.Value) error {
-	targetType := root.Get("$type").String()
+	targetType := root.Get("type").String()
 	typeRegistration := c.RegisteredTypes[underlyingType]
 	alternativeDest := reflect.New(typeRegistration[targetType]).Elem()
 	if err := c.parseStruct(root, typeRegistration[targetType], alternativeDest); err != nil {
@@ -140,6 +141,7 @@ func (c Configuration) parsePrimitive(result gjson.Result, expected reflect.Type
 	}
 
 	if value != nil {
+		log.Printf("setting %s to %v", expected, value)
 		dest.Set(reflect.ValueOf(value).Convert(expected))
 		return nil
 	}

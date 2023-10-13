@@ -12,6 +12,7 @@ import (
 type StringOperation struct {
 	RangeStart, RangeEnd int
 	NewValue             string
+	OperationType        EditType
 }
 
 // If NewValue == "", delete every character between RangeStart and RangeEnd
@@ -139,3 +140,9 @@ func deleteDelete(o1 StringOperation, o2 StringOperation, isLast bool) StringOpe
 	}
 	return o1
 }
+
+// getEditType is the ArrayOperation implementation of the OperationModel interface
+func (arrOp StringOperation) GetEditType() EditType {
+	return arrOp.OperationType
+}
+

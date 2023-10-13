@@ -28,11 +28,11 @@ const transformPaths = (a: Operation, b: Operation): [number[], number[]] => {
   const tp = transformationPoint(a.path, b.path);
   if (!effectIndependent(a.path, b.path, tp)) {
     switch (true) {
-      case a.opType === "insert" && b.opType === "insert":
+      case a.atomicOp.opType === "insert" && b.atomicOp.opType === "insert":
         return transformInserts(a.path, b.path, tp);
-      case a.opType === "delete" && b.opType === "delete":
+      case a.atomicOp.opType === "delete" && b.atomicOp.opType === "delete":
         return transformDeletes(a.path, b.path, tp);
-      case a.opType === "insert" && b.opType === "delete":
+      case a.atomicOp.opType === "insert" && b.atomicOp.opType === "delete":
         return transformInsertDelete(a.path, b.path, tp);
       default:
         const result = transformInsertDelete(b.path, a.path, tp);
