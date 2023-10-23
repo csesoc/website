@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version: 1.18
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Building docker containers using docker-compose
         run: GO_MOD=go.mod docker-compose up -d --build
       - name: Golang Tests
@@ -30,7 +30,7 @@ jobs:
   frontend_testing:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: type check
         run: cd frontend && npm install && npm run types
       - name: react tests
