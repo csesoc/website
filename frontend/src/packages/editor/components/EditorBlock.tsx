@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { createEditor } from 'slate';
 import React, { FC, useMemo, useCallback } from 'react';
-import { Slate, Editable, withReact, RenderLeafProps } from 'slate-react';
+import { Slate, Editable, withReact, RenderLeafProps, useReadOnly } from 'slate-react';
+import { createEditor } from 'slate'
 
 import { CMSBlockProps } from '../types';
 import EditorBoldButton from './buttons/EditorBoldButton';
@@ -12,10 +12,12 @@ import EditorSelectFont from './buttons/EditorSelectFont';
 import EditorCenterAlignButton from './buttons/EditorCenterAlignButton';
 import EditorLeftAlignButton from './buttons/EditorLeftAlignButton';
 import EditorRightAlignButton from './buttons/EditorRightAlignButton';
+import EditorCodeButton from "./buttons/EditorCodeButton";
+import EditorChecklistButton from "./buttons/EditorChecklistButton";
 
 import ContentBlock from "../../../cse-ui-kit/contentblock/contentblock-wrapper";
 import { handleKey } from "./buttons/buttonHelpers";
-import EditorCodeButton from "./buttons/EditorCodeButton";
+import { withHistory } from 'slate-history';
 
 const defaultTextSize = 16;
 
@@ -46,6 +48,51 @@ const Text = styled.span<{
   background-color: ${(props) => props.code ? "#eee" : "#fff"};
 `;
 
+
+const CheckListItemElement = ({children, attributes, leaf}: any) => {
+  const readOnly = useReadOnly()
+  const [checked, setChecked] = React.useState(false)
+  return (
+    <div {...attributes} style={{display: 'flex', alignItems: 'left'}}>
+      <div
+        style={{ userSelect: "none" }}
+        contentEditable={false}
+      >
+        <span
+          contentEditable={false}
+          style={{
+            marginRight: '0.75em'
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={event => {
+              // Figure out why ReactEditor.findPath does not work
+              // const path = ReactEditor.findPath(editor as ReactEditor, leaf);
+              // const newProperties = {
+              //   checked: event.target.checked,
+              // }
+              // Transforms.setNodes(editor, newProperties, { at: path })
+              setChecked(event.target.checked);
+            }}
+          />
+        </span>
+    </div>
+    <span
+        contentEditable={!readOnly}
+        suppressContentEditableWarning
+        style = {{ 
+          flex: 1,
+          opacity: checked ? 0.666 : 1,
+          textDecoration: checked ? 'line-through' : 'none',}}
+      >
+        {children}
+    </span>
+  </div>
+)}
+
+
 const Quote = styled.blockquote`
   border-left: 3px solid #9e9e9e;
   margin: 0px;
@@ -61,7 +108,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
   showToolBar,
   onEditorClick,
 }) => {
-  const editor = useMemo(() => withReact(createEditor()), []);
+  const editor = useMemo(() => withHistory(withReact(createEditor())), [])
 
   const renderLeaf: (props: RenderLeafProps) => JSX.Element = useCallback(
     ({ attributes, children, leaf }) => {
@@ -73,8 +120,16 @@ const EditorBlock: FC<CMSBlockProps> = ({
         code: leaf.code ?? false,
         align: leaf.align ?? 'left',
         textSize: leaf.textSize ?? defaultTextSize,
+        checklist: leaf.checklist ?? false,
+        checked: leaf.checklist ?? false,
         ...attributes,
       };
+
+
+      if (leaf.checklist) {
+        const checklistProps = {attributes, children, leaf}
+        return <CheckListItemElement {...checklistProps}/>
+      }
 
       return leaf.quote ? (
         <QuoteText {...props}>{children}</QuoteText>
@@ -100,6 +155,7 @@ const EditorBlock: FC<CMSBlockProps> = ({
           <EditorUnderlineButton />
           <EditorCodeButton />
           <EditorQuoteButton />
+          <EditorChecklistButton/>
           <EditorSelectFont />
           <EditorLeftAlignButton />
           <EditorCenterAlignButton />
