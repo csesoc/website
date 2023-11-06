@@ -21,7 +21,7 @@ CREATE TABLE filesystem (
   CreatedAt     TIMESTAMP NOT NULL DEFAULT NOW(),
   
   /* MetaData */
-  -- MetadataID        uuid NOT NULL,
+  MetadataID        uuid NOT NULL,
 
   OwnedBy       INT,
   
@@ -32,7 +32,7 @@ CREATE TABLE filesystem (
   CONSTRAINT fk_owner FOREIGN KEY (OwnedBy) 
     REFERENCES groups(GroupID),
 
-  -- CONSTRAINT fk_meta FOREIGN KEY (MetadataID) REFERENCES metadata(MetadataID),
+  CONSTRAINT fk_meta FOREIGN KEY (MetadataID) REFERENCES metadata(MetadataID),
 
   /* Unique name constraint: there should not exist an entity of the same type with the
      same parent and logical name. */
@@ -48,14 +48,16 @@ AS $$
 DECLARE
   newEntityID filesystem.EntityID%type;
   parentIsDocument BOOLEAN := (SELECT IsDocument FROM filesystem WHERE EntityID = parentP LIMIT 1);
+  newMetadataID filesystem.MetadataID%type;
 BEGIN
   IF parentIsDocument THEN
     /* We shouldn't be declaring that a document is our parent */
     RAISE EXCEPTION SQLSTATE '90001' USING MESSAGE = 'cannot make parent a document';
   END If;
+  INSERT INTO metadata DEFAULT VALUES RETURNING MetadataID INTO newMetadataID;
   WITH newEntity AS (
-    INSERT INTO filesystem (LogicalName, IsDocument, OwnedBy, Parent)
-      VALUES (logicalNameP, isDocumentP, ownedByP, parentP)
+    INSERT INTO filesystem (LogicalName, IsDocument, MetadataID, OwnedBy, Parent)
+      VALUES (logicalNameP, isDocumentP, newMetadataID, ownedByP, parentP)
       RETURNING EntityID
   )
 

@@ -125,6 +125,21 @@ func (mr *MockFilesystemRepositoryMockRecorder) GetIDWithPath(path interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetIDWithPath", reflect.TypeOf((*MockFilesystemRepository)(nil).GetIDWithPath), path)
 }
 
+// GetMetadataFromID mocks base method.
+func (m *MockFilesystemRepository) GetMetadataFromID(ID uuid.UUID) (repositories.MetadataEntry, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMetadataFromID", ID)
+	ret0, _ := ret[0].(repositories.MetadataEntry)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMetadataFromID indicates an expected call of GetMetadataFromID.
+func (mr *MockFilesystemRepositoryMockRecorder) GetMetadataFromID(ID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetadataFromID", reflect.TypeOf((*MockFilesystemRepository)(nil).GetMetadataFromID), ID)
+}
+
 // GetRoot mocks base method.
 func (m *MockFilesystemRepository) GetRoot() (repositories.FilesystemEntry, error) {
 	m.ctrl.T.Helper()

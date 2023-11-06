@@ -25,7 +25,7 @@ func (rep filesystemRepository) query(query string, input ...interface{}) (Files
 	err := rep.ctx.Query(query,
 		input,
 		&entity.EntityID, &entity.LogicalName, &entity.IsDocument, &entity.IsPublished,
-		&entity.CreatedAt, &entity.OwnerUserId, &entity.ParentFileID)
+		&entity.CreatedAt, &entity.MetadataID, &entity.OwnerUserId, &entity.ParentFileID)
 	if err != nil {
 		return FilesystemEntry{}, err
 	}
@@ -96,6 +96,26 @@ func (rep filesystemRepository) GetIDWithPath(path string) (uuid.UUID, error) {
 	}
 
 	return parent.EntityID, err
+}
+
+func (rep filesystemRepository) GetMetadataFromID(ID uuid.UUID) (MetadataEntry, error) {
+	// Get entry from ID
+	entry, err := rep.GetEntryWithID(ID)
+	if err != nil {
+		return MetadataEntry{}, err
+	}
+
+	// Get metadata
+	entity := MetadataEntry{}
+
+	err = rep.ctx.Query("SELECT * FROM metadata WHERE MetadataID = $1",
+		[]interface{}{entry.MetadataID},
+		&entity.MetadataID, &entity.CreatedAt)
+	if err != nil {
+		return MetadataEntry{}, err
+	}
+	return entity, nil
+
 }
 
 func (rep filesystemRepository) DeleteEntryWithID(ID uuid.UUID) error {
