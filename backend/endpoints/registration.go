@@ -26,6 +26,7 @@ func RegisterEditorEndpoints(mux *http.ServeMux) {
 	mux.Handle("/editor", newRawHandler("GET", EditHandler, false, false, true)) // auth
 }
 
+// TODO: think of a better abstraction to remove all these boolean flags
 // newHandler is just a small wrapper around a handler that returns an instance of a handler struct
 func newHandler[T, V any](formType string, handlerFunc func(T, DependencyFactory) handlerResponse[V], isMultipart bool) handler[T, V] {
 	return handler[T, V]{

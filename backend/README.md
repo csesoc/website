@@ -20,6 +20,20 @@ The backend folder contains all our backend code 🤯. Theres a few important fo
    - WIP TypeScript implementation of client server for operational transform
 
 
+## Architectural Overview
+At a very high level our CMS looks as follows
+![CMS arch](./docs/CMS%20high%20level%20architecture.png)
+There are a few core parts of the CMS
+ - Handlers (within the `endpoints` directory)
+ - Repository Layer (within the `database` directory)
+ - Concurrent Editor (within the `editor` directory)
+
+Each of these sections has their own little bit of documentation in their respective directory so this bit will focus more on the high level aspects of the CMS.
+
+At a very high level the CMS allows users to easily manage, collaborate on and create static web content, the whole goal of this is to allow for the easy extension of maintenance of the CSESoc Website as well as any other websites CSESoc produces. The CMS identifies different websites as "frontends", each frontend gets its own unique file tree that members of the frontend can manage, this file tree is stored within the `Postgres DB`. 
+
+Users of the CMS work on the idea of "documents", documents are unique pages that they can create and edit, there are two different types of documents: `published` and `unpublished`, published documents are visible to any unauthenticated user, regardless of if they are a member of the frontend group or not while `unpublished` documents are only visible to editors. Each of these document types are stored in their respective content volumes, we duplicate these documents as we may have a version A of a document that we wish to be public but have a version A' that we're still editing, that should be private. We also store other types of content such as images and videos but such content does not receive a published/unpublished distinction.
+
 ## Papers worth Reading
 Most of the complexity of the CMS backend is within the editor, to aid with your tickets we have accumilated a few great resources that are worth a read.
   - [A survey of OT algorithms](https://www.researchgate.net/profile/Ajay-Khunteta-2/publication/45183356_A_Survey_on_Operational_Transformation_Algorithms_Challenges_Issues_and_Achievements/links/5b9b27dca6fdccd3cb533171/A-Survey-on-Operational-Transformation-Algorithms-Challenges-Issues-and-Achievements.pdf?origin=publication_detail)
