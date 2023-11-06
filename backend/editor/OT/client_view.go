@@ -33,7 +33,7 @@ func newClient(socket *websocket.Conn) *clientView {
 // them down the websocket, it also pulls stuff up the websocket
 // the documentServer will use the appropriate channels to communicate
 // updates to the client, namely: sendOp and sendAcknowledgement
-func (c *clientView) run(serverPipe pipe, terminatePipe alertLeaving) {
+func (c *clientView) run(serverPipe pipe, signalDeparturePipe alertLeaving) {
 	for {
 		select {
 		case <-c.sendOp:
@@ -59,7 +59,7 @@ func (c *clientView) run(serverPipe pipe, terminatePipe alertLeaving) {
 				}
 			} else {
 				// todo: push a terminate signal to the client, also tell the server we're leaving
-				terminatePipe()
+				signalDeparturePipe()
 				c.socket.Close()
 			}
 		}
