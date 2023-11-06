@@ -4,10 +4,10 @@
 // Wraps the contents of a file stored on the CMS into its own
 // functional component, with hovering capabilities
 
-import React from "react";
-import styled, { css } from "styled-components";
-import { useNavigate } from "react-router-dom";
-import Renamable from "./Renamable";
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import Renamable from './Renamable';
 
 type Props = {
   name: string;
@@ -32,9 +32,10 @@ const IconContainer = styled.div<styledProps>`
   text-align: center;
   margin-bottom: 10px;
   cursor: pointer;
+  margin: 20px;
 
   border: ${(props) =>
-    props.active ? "3px solid red" : "3px solid var(--background-color)"};
+    props.active ? '3px solid red' : '3px solid var(--background-color)'};
 `;
 
 function FileContainer({ name, id, selectedFile, setSelectedFile }: Props) {
@@ -48,22 +49,23 @@ function FileContainer({ name, id, selectedFile, setSelectedFile }: Props) {
     console.log(id);
     setSelectedFile(id);
     if (selectedFile !== null) {
-      navigate("/editor/" + selectedFile, { 
+      navigate('/editor/' + selectedFile, {
         replace: false,
         state: {
-          filename: name
-        } 
-      }), [navigate];
+          filename: name,
+        },
+      }),
+        [navigate];
     }
   };
 
   return (
     <div
       style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "35px",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '140px',
       }}
     >
       <IconContainer
