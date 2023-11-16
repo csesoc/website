@@ -22,7 +22,7 @@
     "react-dom": "18.2.0",
     "react-is": "18.2.0",
     "redux-persist": "^6.0.0",
-    "sharp": "0.31.0",
+    "sharp": "0.32.6",
     "styled-components": "5.3.5"
   },
   "devDependencies": {
