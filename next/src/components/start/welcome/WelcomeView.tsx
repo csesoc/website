@@ -9,6 +9,7 @@ const MainContainer = styled.div`
   justify-content: center;
   align-items: center;
   row-gap: 30px;
+  width: 100%;
 `;
 
 const blink = keyframes`  
