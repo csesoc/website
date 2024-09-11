@@ -1,21 +1,31 @@
-import degree_planner from "../../svgs/degree_planner.svg"
-import jobs_board from "../../svgs/jobs_board.svg"
-import notangles from "../../svgs/notangles.svg"
+import circles from "../../svgs/Circles.png"
+import jobsboard from "../../svgs/Jobsboard.png"
+import notangles from "../../svgs/Notangles.png"
+import structs from "../../svgs/Structs.png"
+import cselectives from "../../svgs/Cselectives.png"
+
 
 const images = [
     {
-        url: degree_planner.src,
-        link: "https://circles.csesoc.app/degree-wizard"
+        url: circles.src,
+        link: "https://circles.csesoc.app/"
     },
     {
-        url: jobs_board.src,
+        url: jobsboard.src,
         link: "https://jobsboard.csesoc.unsw.edu.au/"
     },
     {
         url: notangles.src,
         link: "https://notangles.csesoc.app/"
-    }
-
+    },
+    {
+        url: structs.src,
+        link: "https://structs.sh/"
+    },
+    {
+        url: cselectives.src,
+        link: "https://cselectives.csesoc.app/"
+    },
 ];
 
 export default images;

@@ -9,12 +9,14 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 100px;
+    gap: 10vmin;
+    margin: 40vmin 0vmin;
+    max-width: 100%;
     @media ${device.laptop} {
         flex-direction: row;
         justify-content: space-evenly;
         align-items: center;
-        margin: 30vh 10vw;
+        margin: 50vmin 15vmin;
     }
     z-index: 100;
 `
@@ -22,7 +24,7 @@ const Container = styled.div`
 const ColumnContainer = styled.div`
     display: flex;
     flex-direction: column;
-    width: 60vw;
+    width: 40%;
     @media ${device.laptop} {
         padding: 30px;
     }
@@ -32,26 +34,20 @@ const HeadingText = styled.div`
     color: var(--accent-darker-purple);
     font-family: 'Raleway';
     font-weight: 800;
-    font-size: 40px;
-    @media ${device.laptop} {
-        font-size: 3.5vw;
-        line-height: 0vw;
-        text-align: left;
-        margin-top: 2vw;
-    }
+    font-size: min(5vmin, 40px);
+    line-height: min(2vmin, 20px);
+    text-align: left;
 `
 
 const BodyText = styled.div`
     color: var(--accent-darker-purple);
-    font-weight: 200;
-    font-size: 20px;
+    font-weight: 600;
+    font-size: min(3vmin, 32px);
+    line-height: min(3.5vmin, 45px);
+    text-align: left;
+    padding: 20px 0;
+    margin-top: min(2.8vmin, 25px);
     @media ${device.tablet} {
-        font-size: 1.9vw;
-        line-height: 2.5vw;
-        margin-top: 3vw;
-    }
-
-    @media ${device.laptop} {
         color: white;
     }
 
